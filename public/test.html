@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Chat Example</title>
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="http://68.12.157.176:3000/socket.io/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+  <script src="ng-socket-io.js"></script>
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="myCtrl">
+First Name: <input type="text" ng-model="firstName"><br>
+Last Name: <input type="text" ng-model="lastName"><br>
+<br>
+Full Name: {{firstName + " " + lastName}}
+    <ul>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <button ng-click="raise('all off')">all on</button>
+</div>
+<script>
+var app = angular.module('myApp', ['socket-io']);
+app.controller('myCtrl', function($scope, socket) {
+    $scope.firstName = "John";
+    $scope.lastName = "Doe";
+  $scope.games = [1,2,3];
+  $scope.test = function(text) {
+    alert(text);
+  }
+        $scope.raise = function(message) {            
+            socket.emit('lights', 'all on');
+        };
+}).directive('li',function(){
+  return {
+      restrict: 'E', 
+      replace: true, 
+      template: '<games> <game  ng-click="test(game)" ng-repeat="game in games"> {{ game }}   </game></br></games> '
+  }     
+});
+</script>
+
+</body>
+</html>
