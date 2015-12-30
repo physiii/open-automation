@@ -9,4 +9,8 @@ nodejs automation and media server
 5. nano /etc/apache2/sites-enabled/000-default.conf (ubuntu: apache2.conf)
 6. 
 
+
+![Alt text](https://github.com/physiii/media-server/blob/master/Screenshot%20from%202015-12-30%2012-35-47.png "Dashboard")
+![Alt text](https://github.com/physiii/media-server/blob/master/Screenshot%20from%202015-12-30%2012-36-57.png "Devices")
+
 [still editing]
