@@ -14,18 +14,10 @@ server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
-
-
-
-
 // Routing
 app.use(express.static(__dirname + '/public'), php.cgi("/"));
 
-// Chatroom
 
-// usernames which are currently connected to the chat
-var usernames = {};
-var numUsers = 0;
 var d = new Date();
 var light_delay = 0; //command delay in ms
 var previous_data = 0;
@@ -39,7 +31,6 @@ function send_command(command){
         }
       });
 }
-
 
 io.on('connection', function (socket) {
 

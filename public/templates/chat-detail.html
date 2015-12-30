@@ -1,0 +1,411 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+
+
+<ion-view view-title="{{chat.name}}">
+  <ion-content class="padding">
+    <div style="margin:auto;max-width:1300px;">
+    <div ng-app="myApp">
+
+<div ng-if="chat.name == 'Alerts'" ng-controller="MapsCtrl">
+  <div class="card">
+    <ion-header-bar class="bar-dark" >
+      <h1 class="title">
+        <button ng-click="centerOnMe()" class="button button-dark">Beacon</button>                        
+      </h1>
+    </ion-header-bar>
+    <ion-content>
+      <div id="map"></div>
+    </ion-content>
+  </div>
+</div>
+
+
+<div ng-controller="MediaCtrl" style="margin:10px 0px 0px 0px" ng-if="chat.name == 'Media'">
+
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    Upstairs
+  </div>
+  <div style="padding:10px 0px 10px 30px">
+<div class="row">
+      <button style="height:100px" ng-click="media_upstairs('mute')" class="fa fa-volume-off fa-5x col"></button>
+      <button style="height:100px" ng-click="media_upstairs('volume down')" class="fa fa-volume-down fa-5x col"></button>
+      <button style="height:100px" ng-click="media_upstairs('volume up')" class="fa fa-volume-up fa-5x col"></button>
+</div>
+<div class="row">
+      <button style="height:100px" ng-click="media_upstairs('power')" class=" fa fa-power-off fa-5x col"></button>
+      <button style="height:100px" ng-click="media_upstairs('play')" class="fa fa-pause fa-5x col"></button>
+      <button style="height:100px" ng-click="media_upstairs('next')" class="fa fa-forward fa-5x col"></button>
+</div>
+
+<div class="list list-inset">
+  <label class="item item-input">
+    <input ng-model="link" ng-change="peerflix_upstairs(link)" type="text" style="text-align:center" placeholder="...paste link...">
+  </label>
+</div>
+
+</div>
+</div>
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    Downstairs
+  </div>
+  <div style="padding:10px 0px 10px 30px">
+<div class="row">
+      <button style="height:100px" ng-click="media_downstairs('mute')" class="fa fa-volume-off fa-5x col"></button>
+      <button style="height:100px" ng-click="media_downstairs('volume down')" class="fa fa-volume-down fa-5x col"></button>
+      <button style="height:100px" ng-click="media_downstairs('volume up')" class="fa fa-volume-up fa-5x col"></button>
+</div>
+<div class="row">
+      <button style="height:100px" ng-click="media_downstairs('power')" class=" fa fa-power-off fa-5x col"></button>
+      <button style="height:100px" ng-click="media_downstairs('play')" class="fa fa-pause fa-5x col"></button>
+      <button style="height:100px" ng-click="media_downstairs('next')" class="fa fa-forward fa-5x col"></button>
+</div>
+
+<div class="list list-inset">
+  <label class="item item-input">
+    <input ng-model="link"  ng-change="peerflix_downstairs(link)"  type="text" style="text-align:center" placeholder="...paste link...">
+  </label>
+</div>
+
+</div>
+</div>
+</div>
+<div ng-controller="LightsCtrl" ng-if="chat.name == 'Lights'">
+  <div class="card">
+  <div style="padding:10px">
+      <button style="background:#e8e8e8;height:100px" ng-click="send_lights('warm')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:#fff;height:100px" ng-click="send_lights('white')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:#111;height:100px" ng-click="send_lights('off')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:#cc0000;height:100px" ng-click="send_lights('red')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:blue;height:100px" ng-click="send_lights('blue')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:green;height:100px" ng-click="send_lights('green')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:orange;height:100px" ng-click="send_lights('orange')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:purple;height:100px" ng-click="send_lights('purple')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="background:magenta;height:100px" ng-click="send_lights('magenta')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+  </div>
+</div>
+  <div class="card">
+  <div style="padding:10px">
+      <div style="width:100%" class="item range range-positive">
+        <i class="icon ion-ios-sunny"></i>
+        <input ng-model="slider_value" ng-change="send_lights(slider_value)" type="range" name="volume" min="0" max="254" value="33">
+        <i class="icon ion-ios-sunny-outline"></i>
+      </div>
+  </div>
+</div>
+
+  
+</div>
+
+<div ng-if="chat.name == 'Video'">
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    <b>Video 1</b>
+  </div>
+  <div style="border:2px solid #444;border-radius:0px 0px 3px 3px;margin:10px auto 10px auto;max-width:720px;">
+<img id="mainUrl" width="100%" height="100%" src="http://68.12.157.176:7777/videostream.cgi" scrolling="no" frameborder="0" allowTransparency="true"></img>  
+  </div>
+</div>
+
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    <b>Video 2</b>
+  </div>
+  <div style="border:2px solid #444;border-radius:0px 0px 3px 3px;margin:10px auto 10px auto;max-width:720px;">
+<img id="mainUrl" width="100%" height="100%" src="http://68.12.131.101:8081" scrolling="no" frameborder="0" allowTransparency="true"></img>
+  </div>
+</div>
+
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    <b>Video 3</b>
+  </div>
+  <div style="border:2px solid #444;border-radius:0px 0px 3px 3px;margin:10px auto 10px auto;max-width:720px;">
+<img id="mainUrl" width="100%" height="100%" src="http://68.12.157.176:8082" scrolling="no" frameborder="0" allowTransparency="true"></img>
+  </div>
+</div>
+
+</div>
+
+<div ng-if="chat.name == 'Files'">
+  <div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    <b>127.0.0.1</b>
+  </div>
+  <div style="padding:10px">
+     <iframe id="forecast_embed" type="text/html" frameborder="0" height="900px" width="100%" src="ftp://pi:raspberry@192.168.0.18/motion/"> </iframe>
+  </div>
+</div>
+</div>
+
+<div ng-if="chat.name == 'Pi\'s'">
+<div class="card">
+  <div class="item item-divider">
+    Raspberry Pi <b>127.0.0.1</b>
+  </div>
+  <div style="padding:10px">
+
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 3
+  </div>
+  <div style="padding:0px">
+    <ion-toggle  ng-model="pin3">
+        High {{_status}}
+    </ion-toggle>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 5
+  </div>
+  <div style="padding:10px">
+    <ion-toggle  ng-model="pin5">
+        High {{_status}}
+    </ion-toggle>
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 7
+  </div>
+  <div style="padding:0px">
+    <ion-toggle  ng-model="pin7">
+        High {{PIN1_status}}
+    </ion-toggle>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 8
+  </div>
+  <div style="padding:10px">
+    <ion-toggle  ng-model="pin8">
+        High {{PIN1_status}}
+    </ion-toggle>
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 10
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 11
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 12
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 13
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 15
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 16
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 18
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin18">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 19 - MOSI
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 21 - MISO
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin21">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 22
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 23 - SCLK
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin23">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 24 - SPI
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 26 - SPI
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+</div>
+
+
+<div class="card">
+  <div class="item item-divider">
+    GPIO 22
+  </div>
+  <div style="padding:10px;text-align:center">
+    Pulse width  <b>{{pwm_value}} ms</b> | frequency <b>{{pwm_freq}} 100 Hz</b>
+  </div>
+  <input type="hidden" ng-model="$scope.pwm_value"/>
+  <div class="item range range-balanced">
+    <i class="icon ion-ios-sunny"></i>
+    <input ng-model="pwm_value" ng-change="pwm(pwm_value)" type="range" name="volume" min="0" max="254" value="33">
+    <i class="icon ion-ios-sunny-outline"></i>
+  </div>
+</div>
+
+  </div>
+ </div>
+</div>
+
+<div ng-if="chat.name == 'Climate'">
+  <div class="card">
+    <div class="item item-divider">
+      Thermostat
+    </div>
+
+    <div style="text-align:center;font-size:40px;background:#f8f8f8;border:2px solid #555;border-radius:3px 3px 0px 0px;">70F</div>     
+
+    <div style="text-align:center;width:100%;background:#f8f8f8;color:#222;">
+<div class="row" style="padding:10px 0px 10px 30px">
+      <button style="height:100px" ng-click="thermostat_up('mute')" class="fa fa-chevron-up  fa-5x col"></button>
+      <button style="height:100px" ng-click="thermostat_down('volume down')" class="fa fa-chevron-down fa-5x col"></button>
+      <button style="height:100px" ng-click="thermostat_power('volume up')" class="fa fa-power-off fa-5x col"></button>
+</div> 
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="item item-divider">
+      Weather
+    </div>
+    <div style="padding:10px">
+      <div style="background:#f8f8f8;border:2px solid #444;">
+      <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>      
+      </div>
+    <div style="background:#f8f8f8;border:2px solid #444;border-width:0px 2px 2px 2px">
+        <img src='//radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+</div>
+  </ion-content>
+</ion-view>
+
+
