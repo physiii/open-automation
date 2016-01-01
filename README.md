@@ -15,9 +15,7 @@ nodejs automation and media server
 10. --change to stream_localhost off
 11. sudo chmod 777 /var/lib/motion
 12. got to http://127.0.0.1 and create master account (token for userfrosting database in the uf_configuration table)
-13. 
-
-[still editing]
+13. [still editing]
 
 
 ##Dashboard
