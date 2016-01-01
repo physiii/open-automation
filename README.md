@@ -13,6 +13,7 @@ nodejs automation and media server
 9. sudo nano /etc/motion/motion.conf
 10. --change to stream_localhost off
 11. sudo chmod 777 /var/lib/motion
+
 [still editing]
 
 
