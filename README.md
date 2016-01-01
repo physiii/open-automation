@@ -1,6 +1,7 @@
 # media-server
 nodejs automation and media server
 
+##installation
 1. apt-get install apache2 mysql-server php5 php5-mysql motion
 2. mysql -u admin -p
 3. create database userfrosting;
