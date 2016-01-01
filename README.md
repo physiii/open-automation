@@ -7,7 +7,7 @@ nodejs automation and media server
 3. create database userfrosting;
 3. add database info to assets/config-userfrosting.php
 4. sudo a2enmod rewrite
-5. nano /etc/apache2/apache2.conf (ubuntu: apache2.conf)
+5. nano /etc/apache2/apache2.conf
 6. --change AllowOverride All for /var/www/
 7. sudo nano /etc/default/motion
 8. --change to start_motion_daemon=yes
