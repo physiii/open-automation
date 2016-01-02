@@ -1,0 +1,130 @@
+<ion-view view-title="Account">
+  <ion-content>
+<div class="list">
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    Gateways
+  </div>
+  <div class="item item-button-right">
+    127.0.0.1:<font color="999999">3000</font>
+    <i ng-click="get_info(this.ip)" class="icon ion-information-circled"></i>
+    <button class="button">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </div>
+
+  <div class="item item-button-right">  127.0.0.1 <font color="999999">81</font>
+      <i ng-click="get_info(this.ip)" class="icon ion-information-circled"></i>
+    <button class="button">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </div>
+
+<div ng-repeat="(key, value) in myObj"> 
+
+</div>
+
+
+
+<div style="padding:10px" class="card">
+  
+
+<div data-ng-app="" data-ng-init="names=['Jani','Hege','Kai']">
+  <p>Looping with ng-repeat:</p>
+  <ul>
+    <li data-ng-repeat="x in names">
+      {{ x }}
+    </li>
+  </ul>
+</div>
+
+  <form novalidate class="simple-form">
+  <label class="item item-input">
+    <input ng-click="" type="text" ng-model="user.ip" placeholder="Enter IP Address ({{ipAddress}})">
+  </label>
+  <label class="item item-input">
+    <input type="text" ng-model="user.port" placeholder="Enter Port (3000)">
+  </label>  
+
+    <input class="button button-block" type="submit" ng-click="update(user)" value="Add" />
+  </form>
+  <pre>user = {{user | json}}</pre>
+  <pre>master = {{master | json}}</pre>
+
+
+</div>
+</div>
+
+<div class="list">
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    Hue
+  </div>
+    <ion-toggle  ng-model="settings.enableFriends">
+        light 1 <font color="999999">on {{gpio1_status}}</font>
+    </ion-toggle>
+    <ion-toggle  ng-model="settings.enableFriends">
+        light 2 <font color="999999">on {{gpio1_status}}</font>
+    </ion-toggle>
+    <ion-toggle  ng-model="settings.enableFriends">
+        light 3 <font color="999999">on {{gpio1_status}}</font>
+    </ion-toggle>
+<div class="list list-inset">
+  <button class="button button-block">
+    Scan
+  </button>
+</div>
+  </div>
+</div>
+
+
+<div class="list">
+<div class="card">
+  <div class="item item-divider">
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    Video
+  </div>
+
+  <div class="item item-button-right">
+    127.0.0.1 <font color="999999">81</font>
+    <button class="button">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </div>
+  <div class="item item-button-right">
+    127.0.0.1 <font color="999999">7777</font>
+    <button class="button">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </div>
+  <div class="item item-button-right">
+    127.0.0.1 <font color="999999">8181</font>
+    <button class="button">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </div>
+<div style="padding:10px" class="card">
+  <label class="item item-input">
+    <input ng-model="ipAddress" type="text" placeholder="IP Address">
+    <input type="text" placeholder="Port">    
+  </label>
+  <label class="item item-input">
+  </label>
+  <label class="item item-input">
+    <input type="text" placeholder="Username">
+    <input type="text" placeholder="Password">    
+  </label>
+  <label class="item item-input">
+  </label>
+  <button class="button button-block">
+    Add
+  </button>
+</div>
+  </div>
+</div>
+
+
+  </ion-content>
+</ion-view>
