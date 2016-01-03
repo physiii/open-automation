@@ -15,7 +15,7 @@ nodejs automation and media server
 8. -- change to start_motion_daemon=yes
 9. sudo nano /etc/motion/motion.conf
 10. -- change to stream_localhost off
-11. sudo chmod 777 /var/lib/motion
+11. sudo chown -R pi /var/lib/motion; sudo chmod -R u+rX /var/lib/motion
 12. go to http://127.0.0.1 and create master account (token for userfrosting database in the uf_configuration table)
 13. [still editing]
 
