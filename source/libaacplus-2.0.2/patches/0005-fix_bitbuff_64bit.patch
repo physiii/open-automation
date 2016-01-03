@@ -1,0 +1,30 @@
+diff -Nupr src.p4/bitbuffer.c src.p5/bitbuffer.c
+--- src.p4/bitbuffer.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p5/bitbuffer.c	2010-10-21 13:06:37.000000000 +0300
+@@ -191,7 +191,7 @@ unsigned long ReadBits(HANDLE_BIT_BUF hB
+ 
+   
+ 
+-  /* return value is of type unsigned int, it can hold up to 32 bits 
++  /* return value is of type unsigned int, it can hold up to 32 bits OETELAAR TODO wat is dit een 64 platform is??
+      this optimized code can read upto 25 Bits a time*/
+    
+   if (noBitsToRead >= 25) {
+@@ -235,7 +235,7 @@ unsigned long ReadBits(HANDLE_BIT_BUF hB
+   } 
+     
+    
+-  returnValue = returnValue << (31 - noBitsToRead - hBitBuf->rBitPos) >> (32 - noBitsToRead);
++  returnValue = returnValue << ((LongSize-1) - noBitsToRead - hBitBuf->rBitPos) >> (LongSize - noBitsToRead);
+ 
+   
+   return (returnValue);
+@@ -281,7 +281,7 @@ unsigned char WriteBits(HANDLE_BIT_BUF h
+     bitsToWrite = min(hBitBuf->wBitPos + 1, noBitsToWrite);
+ 	
+      
+-    tmp = (unsigned char) ( writeValue << (32 - noBitsToWrite) >> (32 - bitsToWrite) << (hBitBuf->wBitPos + 1 - bitsToWrite) );
++    tmp = (unsigned char) ( writeValue << (LongSize - noBitsToWrite) >> (LongSize - bitsToWrite) << (hBitBuf->wBitPos + 1 - bitsToWrite) );
+ 
+        /* (hBitBuf->wBitPos + 1 - bitsToWrite) --> already calculated */
+     msk = ~(((1 << bitsToWrite) - 1) << (hBitBuf->wBitPos + 1 - bitsToWrite));

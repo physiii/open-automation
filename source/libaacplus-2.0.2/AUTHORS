@@ -1,0 +1,5 @@
+Reference implementation: 3GPP TS 26.410 V8.0.0
+Wrapper and library code: Stanislav Brabec <utx@penguin.cz>, 
+Adopted for aac+: Sergiy Guriev <piratfm@ua.fm>, 
+Encoder code: Matteo Croce
+Patches and fixes: Rafael Diniz, Edwin van den Oetelaar

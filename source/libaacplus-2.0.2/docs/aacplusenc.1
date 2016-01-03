@@ -1,0 +1,46 @@
+.TH AACPLUSENC 1 "2007-10-11" "1.26" "non-Free High Efficiency Advanced Audio Coder"
+
+.SH NAME
+aacplusenc \- proprietary MPEG-4 and MPEG-2 AAC+ encoder
+
+.SH SYNOPSIS
+.B aacplusenc
+.I < infile >
+.RI \-o\  <\fIoutfile\fP>
+.RI [-s]
+
+.SH DESCRIPTION
+.B aacplusenc
+is an 3gpp's implementation of MPEG-4 and MPEG-2 AAC+ encoder, it is need to be licensed by owners (Dolby/VIA).
+
+.SH FEATURES
+.TP
+* Portable
+.TP
+* Fast
+.TP
+* LC support
+
+.SH OPTIONS
+.TP
+.BR <\fIinfile\fP>
+Set Input wave file, can be "\-", which means stdin.
+.TP
+.BR \-o\  <\fIoutfile\fP>
+Set Output aac file, can be "\-", which means stdout.
+.TP
+.BR \-s\ 
+Set stereo encoding mode
+.TP
+
+.SH AUTHORS
+.TP
+Reference implementation: 3GPP TS 26.410 V8.0.0
+.TP
+Wrapper and library code: Stanislav Brabec <utx@penguin.cz>,
+.TP
+Adopted for aac+: Sergiy Guriev <piratfm@ua.fm>,
+.TP
+Encoder code: Matteo Croce
+.TP
+Patches and fixes: Rafael Diniz, Edwin van den Oetelaar

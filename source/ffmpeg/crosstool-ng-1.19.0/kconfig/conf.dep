@@ -1,0 +1,1 @@
+conf.o conf.dep: conf.c lkc.h expr.h lkc_proto.h

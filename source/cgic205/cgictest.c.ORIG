@@ -1,0 +1,292 @@
+/* Change this if the SERVER_NAME environment variable does not report
+	the true name of your web server. */
+#if 1
+#define SERVER_NAME cgiServerName
+#endif
+#if 0
+#define SERVER_NAME "www.boutell.com"
+#endif
+
+#include <assert.h>
+#include <stdio.h>
+#include "cgic.h"
+#include <string.h>
+#include <stdlib.h>
+#include <mysql.h>
+#include <string.h>
+//#include <my_global.h>
+
+
+
+//////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////splits whatever is after '?' into fragments separated by ','//////////////
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+char** str_split(char* a_str, const char a_delim)
+{
+    char** result    = 0;
+    size_t count     = 0;
+    char* tmp        = a_str;
+    char* last_comma = 0;
+
+    /* Count how many elements will be extracted. */
+    while (*tmp)
+    {
+        if (a_delim == *tmp)
+        {
+            count++;
+            last_comma = tmp;
+        }
+        tmp++;
+    }
+
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
+
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char*) * count);
+
+    if (result)
+    {
+        size_t idx  = 0;
+        char* token = strtok(a_str, ",");
+
+        while (token)
+        {
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, ",");
+        }
+        assert(idx == count - 1);
+        *(result + idx) = 0;
+    }
+
+    return result;
+}
+//////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+//////////////////
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+void finish_with_error(MYSQL *con)
+{
+  fprintf(stderr, "%s\n", mysql_error(con));
+  mysql_close(con);
+  exit(1);        
+}
+
+
+int cgiMain() {
+
+
+
+
+
+
+
+fprintf(cgiOut, "<HTML><HEAD>\n");
+fprintf(cgiOut, "<TITLE></TITLE></HEAD>\n");
+fprintf(cgiOut, "<BODY><H1></H1>\n");
+
+
+
+
+////////
+////////
+///query for most recent Id
+////////
+//////////
+////////
+
+
+  MYSQL *con = mysql_init(NULL);
+  if (con == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      exit(1);
+  }  
+  if (mysql_real_connect(con, "localhost", "root", "qscwdvpk", 
+          "doordb", 0, NULL, 0) == NULL) 
+  {
+      finish_with_error(con);
+  }
+  if (mysql_query(con, "select Id from event_history order by Id desc limit 1"))
+  {
+
+      finish_with_error(con);
+  } 
+  MYSQL_RES *result = mysql_store_result(con);  
+  if (result == NULL) 
+  {
+      finish_with_error(con);
+  }
+  int num_fields = mysql_num_fields(result);
+  MYSQL_ROW row;
+  char Id_str[100]="start";
+  char new_id[100] = "start";
+
+         fprintf(cgiOut,Id);
+  while ((row = mysql_fetch_row(result))) 
+  { 
+      for(int i = 0; i < num_fields; i++) 
+      { 
+        //printf(cgiOut, row[i] ? row[i] : "NULL");
+         sprintf(Id_str,"%s", row[i] ? row[i] : "NULL");
+         fprintf(cgiOut, Id_str);
+         Id_int = strtol(Id_str, &ap, 10); //turn results into int
+         Id_int++;
+         sprintf(Id,"%d",Id_int); //and convert back to string
+	  strcpy(new_id,Id);
+         fprintf(cgiOut,new_id);
+         strcpy (insert_sql,"INSERT INTO event_history values(");
+
+//  strcat (insert_sql,Id);
+//  strcat (insert_sql,",CURRENT_DATE(),NOW(),'door',1)");
+//  fprintf(cgiOut, insert_sql);
+
+      }
+//          printf("\n"); 
+  }
+
+//////////
+//////////
+//////////
+//////////
+/////////////
+///////////////
+///split cgiquerystring
+//////////////////
+///////
+
+    strcpy(frag, *(tokens)); //first device fragment
+
+    if (tokens)
+    {
+        int i;
+        for (i = 0; *(tokens + i); i++)
+        {
+
+strcpy(frag, *(tokens+i)); //load next fragment
+if(strcmp(frag,"door") == 0){
+fprintf(cgiOut, "DooR!");
+door_flag=1;
+}
+////create door open sql string
+if(strcmp(frag,"open")==0 && (door_flag==1)) {
+  fprintf(cgiOut, "OPEN!");
+  Id_str[10]="start";
+  strcpy (insert_sql,"INSERT INTO event_history values(");
+  strcat (insert_sql,new_id);
+  strcat (insert_sql,",CURRENT_DATE(),NOW(),'door',1)");
+  fprintf(cgiOut, insert_sql);
+}
+
+////create door close sql string
+if(strcmp(frag,"close")==0 && (door_flag==1)) {
+  fprintf(cgiOut, "CLOSE!");
+//  Id_str[10]="start";
+  strcpy (insert_sql,"INSERT INTO event_history values(");
+  strcat (insert_sql,new_id);
+  fprintf(cgiOut, new_id);
+  strcat (insert_sql,",CURRENT_DATE(),NOW(),'door',0)");
+  fprintf(cgiOut, insert_sql);
+}
+
+            free(*(tokens + i));
+        }
+        free(tokens);
+    }
+/*
+  MYSQL *con = mysql_init(NULL);
+  if (con == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      exit(1);
+  }  
+  if (mysql_real_connect(con, "localhost", "root", "qscwdvpk", 
+          "doordb", 0, NULL, 0) == NULL) 
+  {
+      finish_with_error(con);
+  }
+  if (mysql_query(con, "select Id from event_history order by Id desc limit 1"))
+  {
+
+      finish_with_error(con);
+  }
+*/ 
+//////////display result//////
+/*
+MYSQL_RES *result = mysql_store_result(con);  
+  if (result == NULL) 
+  {
+      finish_with_error(con);
+  }
+  int num_fields = mysql_num_fields(result);
+  MYSQL_ROW row;
+  while ((row = mysql_fetch_row(result))) 
+  { 
+      for(int i = 0; i < num_fields; i++) 
+      { 
+         //printf(cgiOut, row[i] ? row[i] : "NULL");
+         sprintf(Id_str,"%s", row[i] ? row[i] : "NULL");
+fprintf(cgiOut, Id_str);
+char *ap;
+Id_int = strtol(Id_str, &ap, 10);
+//Id_int = 4;
+Id_int++;
+sprintf(Id,"%d",Id_int);
+
+//  strcpy (insert_sql,"INSERT INTO event_history values(");
+
+//  strcat (insert_sql,Id);
+//  strcat (insert_sql,",CURRENT_DATE(),NOW(),'door',1)");
+//  fprintf(cgiOut, insert_sql);
+
+      }
+//          printf("\n"); 
+  }
+*/
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+
+
+
+
+  
+  if (mysql_query(con, insert_sql)) {
+      finish_with_error(con);
+  }
+
+mysql_free_result(result);
+mysql_close(con);
+
+///////////////
+////////////////
+///////
+///////////////
+
+
+
+	/* Finish up the page */
+	fprintf(cgiOut, "</BODY></HTML>\n");
+	return 0;
+}
+
+
+
+

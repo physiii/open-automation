@@ -1,0 +1,15 @@
+prefix=/home/pi/ctng
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/aacplus
+toolsdir=${exec_prefix}/bin
+cppflags=-I 
+cflags_only=
+
+
+Name: aacplus
+Description: AAC+ encoder library
+Requires: 
+Version: 2.0.2
+Libs: -laacplus -lm 
+Cflags: -I${includedir} 

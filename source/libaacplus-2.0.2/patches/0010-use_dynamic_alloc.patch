@@ -1,0 +1,894 @@
+diff -Nupr src.p9/aacenc.c src.p10/aacenc.c
+--- src.p9/aacenc.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/aacenc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -130,7 +130,7 @@ AacEncOpen ( struct AAC_ENCODER      *hA
+   if (!error) {
+ 
+         
+-    error = (PsyNew(&hAacEnc->psyKernel, elInfo->nChannelsInEl) ||
++    error = (PsyNew(hAacEnc->aac_ram, hAacEnc->sbr_ram, &hAacEnc->psyKernel, elInfo->nChannelsInEl) ||
+              PsyOutNew(&hAacEnc->psyOut));
+   }
+   
+@@ -157,7 +157,7 @@ AacEncOpen ( struct AAC_ENCODER      *hA
+   
+   if (!error) {
+       
+-    error = QCOutNew(&hAacEnc->qcOut,
++    error = QCOutNew(hAacEnc->aac_ram, &hAacEnc->qcOut,
+                      elInfo->nChannelsInEl);
+   }
+   
+@@ -198,7 +198,7 @@ AacEncOpen ( struct AAC_ENCODER      *hA
+     qcInit.bitrate = config->bitRate;
+     
+       
+-    error = QCInit(&hAacEnc->qcKernel, &qcInit);
++    error = QCInit(hAacEnc->aac_ram, &hAacEnc->qcKernel, &qcInit);
+   }
+   
+   /* init bitstream encoder */
+@@ -307,7 +307,8 @@ int AacEncEncode(struct AAC_ENCODER *aac
+   }
+ 
+     
+-  psyMain(timeInStride,
++  psyMain(aacEnc->fftctx,
++          timeInStride,
+           elInfo,
+           timeSignal,
+           &aacEnc->psyKernel.psyData[elInfo->ChannelIndex[0]],
+@@ -332,7 +333,8 @@ int AacEncEncode(struct AAC_ENCODER *aac
+                */
+ 
+      /* min() */   
+-  QCMain( &aacEnc->qcKernel,
++  QCMain( aacEnc->aac_ram,
++          &aacEnc->qcKernel,
+           elInfo->nChannelsInEl,
+           &aacEnc->qcKernel.elementBits,
+           &aacEnc->qcKernel.adjThr.adjThrStateElem,
+diff -Nupr src.p9/dyn_bits.c src.p10/dyn_bits.c
+--- src.p9/dyn_bits.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/dyn_bits.c	2010-10-21 13:06:37.000000000 +0300
+@@ -417,7 +417,7 @@ gmStage2(SECTION_INFO * section,
+    count bits used by the noiseless coder
+  */
+ static void
+-noiselessCounter(SECTION_DATA * sectionData,
++noiselessCounter(AACRam_t *aacram, SECTION_DATA * sectionData,
+                  int mergeGainLookUp[MAX_SFB_LONG],
+                  int bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
+                  const short *quantSpectrum,
+@@ -441,12 +441,12 @@ noiselessCounter(SECTION_DATA * sectionD
+   case STOP_WINDOW:
+ 
+     
+-    sideInfoTab = sideInfoTabLong;
++    sideInfoTab = aacram->sideInfoTabLong;
+     break;
+   case SHORT_WINDOW:
+ 
+     
+-    sideInfoTab = sideInfoTabShort;
++    sideInfoTab = aacram->sideInfoTabShort;
+     break;
+   }
+ 
+@@ -715,7 +715,8 @@ static void scfCount(const short *scalef
+ typedef int (*lookUpTable)[CODE_BOOK_ESC_NDX + 1];
+ 
+ int
+-dynBitCount(const short          *quantSpectrum,
++dynBitCount(AACRam_t *aacram,
++            const short          *quantSpectrum,
+             const unsigned short   *maxValueInSfb,
+             const signed short     *scalefac,
+             const int             blockType,
+@@ -742,7 +743,7 @@ dynBitCount(const short          *quantS
+   sectionData->maxSfbPerGroup = maxSfbPerGroup;
+ 
+   
+-  noiselessCounter(sectionData,
++  noiselessCounter(aacram, sectionData,
+                    mergeGainLookUp,
+                    (lookUpTable)bitLookUp,
+                    quantSpectrum,
+@@ -766,7 +767,7 @@ dynBitCount(const short          *quantS
+ 
+ 
+ int
+-BCInit(void)
++BCInit(AACRam_t *aacram)
+ {
+   int i;
+ 
+@@ -777,14 +778,14 @@ BCInit(void)
+   for (i = 0; i <= MAX_SFB_LONG; i++)
+   {
+      
+-    sideInfoTabLong[i] = calcSideInfoBits(i, LONG_WINDOW);
++      aacram->sideInfoTabLong[i] = calcSideInfoBits(i, LONG_WINDOW);
+   }
+ 
+    /* sideInfoTabShort[] */
+   for (i = 0; i <= MAX_SFB_SHORT; i++)
+   {
+      
+-    sideInfoTabShort[i] = calcSideInfoBits(i, SHORT_WINDOW);
++      aacram->sideInfoTabShort[i] = calcSideInfoBits(i, SHORT_WINDOW);
+   }
+ 
+   
+diff -Nupr src.p9/dyn_bits.h src.p10/dyn_bits.h
+--- src.p9/dyn_bits.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/dyn_bits.h	2010-10-21 13:06:37.000000000 +0300
+@@ -36,10 +36,10 @@ typedef struct
+ }
+ SECTION_DATA;
+ 
++int  BCInit(AACRam_t *aacram);
+ 
+-int  BCInit(void);
+-
+-int  dynBitCount(const short *quantSpectrum,
++int  dynBitCount(AACRam_t *aacram,
++                 const short *quantSpectrum,
+                  const unsigned short *maxValueInSfb,
+                  const signed  short  *scalefac,
+                  const int blockType,
+diff -Nupr src.p9/env_est.c src.p10/env_est.c
+--- src.p9/env_est.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/env_est.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1675,7 +1675,7 @@ extractSbrEnvelope (FFTWFContext_t *fftc
+ 
+ ****************************************************************************/
+ int
+-CreateExtractSbrEnvelope (int chan,
++CreateExtractSbrEnvelope (SBRRam_t *sbrram, int chan,
+                           HANDLE_SBR_EXTRACT_ENVELOPE  hSbrCut,
+                           int start_index)
+ {
+@@ -1723,7 +1723,7 @@ CreateExtractSbrEnvelope (int chan,
+    
+   for (i = 0; i < YBufferLength; i++) {
+       
+-    hSbrCut->YBuffer[i] = &sbr_envYBuffer[chan*YBufferLength*64 + i*QMF_CHANNELS];
++    hSbrCut->YBuffer[i] = &sbrram->sbr_envYBuffer[chan*YBufferLength*64 + i*QMF_CHANNELS];
+   }
+ 
+    /* hSbrCut->rBuffer[]
+@@ -1732,10 +1732,10 @@ CreateExtractSbrEnvelope (int chan,
+    
+   for (i = 0; i < rBufferLength; i++) {
+       
+-    hSbrCut->rBuffer[i] = &sbr_envRBuffer[chan*QMF_TIME_SLOTS*QMF_CHANNELS + i*QMF_CHANNELS];
++    hSbrCut->rBuffer[i] = &sbrram->sbr_envRBuffer[chan*QMF_TIME_SLOTS*QMF_CHANNELS + i*QMF_CHANNELS];
+ 
+       
+-    hSbrCut->iBuffer[i] = &sbr_envIBuffer[chan*QMF_TIME_SLOTS*QMF_CHANNELS + i*QMF_CHANNELS];
++    hSbrCut->iBuffer[i] = &sbrram->sbr_envIBuffer[chan*QMF_TIME_SLOTS*QMF_CHANNELS + i*QMF_CHANNELS];
+   }
+ 
+ 
+diff -Nupr src.p9/env_est.h src.p10/env_est.h
+--- src.p9/env_est.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/env_est.h	2010-10-21 13:06:37.000000000 +0300
+@@ -29,7 +29,7 @@ typedef SBR_EXTRACT_ENVELOPE *HANDLE_SBR
+ /************  Function Declarations ***************/
+ 
+ int
+-CreateExtractSbrEnvelope (int chan,
++CreateExtractSbrEnvelope (SBRRam_t *sbrram, int chan,
+                           HANDLE_SBR_EXTRACT_ENVELOPE hSbr,
+ 
+ 
+diff -Nupr src.p9/mh_det.c src.p10/mh_det.c
+--- src.p9/mh_det.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/mh_det.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1264,7 +1264,8 @@ SbrMissingHarmonicsDetectorQmf(HANDLE_SB
+ */
+ /**************************************************************************/
+ int
+-CreateSbrMissingHarmonicsDetector (int chan,
++CreateSbrMissingHarmonicsDetector (SBRRam_t *sbrram,
++                                   int chan,
+                                    HANDLE_SBR_MISSING_HARMONICS_DETECTOR hSbrMHDet,
+                                    int sampleFreq,
+                                    unsigned char* freqBandTable,
+@@ -1305,7 +1306,7 @@ CreateSbrMissingHarmonicsDetector (int c
+   hs->noEstPerFrame = noEstPerFrame;
+ 
+     
+-  ptr = &sbr_toncorrBuff[chan*5*NO_OF_ESTIMATES*MAX_FREQ_COEFFS];
++  ptr = &sbrram->sbr_toncorrBuff[chan*5*NO_OF_ESTIMATES*MAX_FREQ_COEFFS];
+ 
+    /* hs->tonalityDiff[i]
+                   hs->sfmOrig[i]
+@@ -1347,13 +1348,13 @@ CreateSbrMissingHarmonicsDetector (int c
+     memset(hs->guideVectors[i].guideVectorOrig,0,sizeof(float)*MAX_FREQ_COEFFS);
+ 
+        
+-    hs->detectionVectors[i] = &(sbr_detectionVectors[chan*NO_OF_ESTIMATES*MAX_FREQ_COEFFS + i*MAX_FREQ_COEFFS]);
++    hs->detectionVectors[i] = &(sbrram->sbr_detectionVectors[chan*NO_OF_ESTIMATES*MAX_FREQ_COEFFS + i*MAX_FREQ_COEFFS]);
+ 
+         
+     memset(hs->detectionVectors[i],0,sizeof(unsigned char)*MAX_FREQ_COEFFS);
+ 
+        
+-    hs->guideVectors[i].guideVectorDetected = &(sbr_guideVectorDetected[chan*NO_OF_ESTIMATES*MAX_FREQ_COEFFS + i*MAX_FREQ_COEFFS]);
++    hs->guideVectors[i].guideVectorDetected = &(sbrram->sbr_guideVectorDetected[chan*NO_OF_ESTIMATES*MAX_FREQ_COEFFS + i*MAX_FREQ_COEFFS]);
+ 
+         
+     memset(hs->guideVectors[i].guideVectorDetected,0,sizeof(unsigned char)*MAX_FREQ_COEFFS);
+@@ -1361,13 +1362,13 @@ CreateSbrMissingHarmonicsDetector (int c
+   }
+ 
+     
+-  hs->prevEnvelopeCompensation = &(sbr_prevEnvelopeCompensation[chan*MAX_FREQ_COEFFS]);
++  hs->prevEnvelopeCompensation = &(sbrram->sbr_prevEnvelopeCompensation[chan*MAX_FREQ_COEFFS]);
+ 
+       
+   memset( hs->prevEnvelopeCompensation,0, sizeof(char)*MAX_FREQ_COEFFS);
+ 
+     
+-  hs->guideScfb = &(sbr_guideScfb[chan*MAX_FREQ_COEFFS]);
++  hs->guideScfb = &(sbrram->sbr_guideScfb[chan*MAX_FREQ_COEFFS]);
+ 
+       
+   memset( hs->guideScfb,0, sizeof(unsigned char)*MAX_FREQ_COEFFS);
+@@ -1377,7 +1378,7 @@ CreateSbrMissingHarmonicsDetector (int c
+   hs->previousTransientFrame = 0;
+   hs->previousTransientPos = 0;
+ 
+-  assert (ptr-&sbr_toncorrBuff[0] <= 5*MAX_CHANNELS*NO_OF_ESTIMATES*MAX_FREQ_COEFFS);
++  assert (ptr-&sbrram->sbr_toncorrBuff[0] <= 5*MAX_CHANNELS*NO_OF_ESTIMATES*MAX_FREQ_COEFFS);
+ 
+   
+ 
+diff -Nupr src.p9/mh_det.h src.p10/mh_det.h
+--- src.p9/mh_det.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/mh_det.h	2010-10-21 13:06:37.000000000 +0300
+@@ -61,7 +61,8 @@ SbrMissingHarmonicsDetectorQmf(HANDLE_SB
+ 
+ 
+ int
+-CreateSbrMissingHarmonicsDetector(int chan,
++CreateSbrMissingHarmonicsDetector(SBRRam_t *sbrram,
++                                  int chan,
+                                   HANDLE_SBR_MISSING_HARMONICS_DETECTOR h_sbrMissingHarmonicsDetector,
+                                   int sampleFreq,
+                                   unsigned char* freqBandTable,
+diff -Nupr src.p9/ps_enc.c src.p10/ps_enc.c
+--- src.p9/ps_enc.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/ps_enc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -56,7 +56,8 @@ int GetPsMode(int bitRate)
+ }
+ 
+ int
+-CreatePsEnc(HANDLE_PS_ENC h_ps_e,
++CreatePsEnc(SBRRam_t *sbrram,
++            HANDLE_PS_ENC h_ps_e,
+             int psMode)
+ {
+   int i;
+@@ -67,10 +68,10 @@ CreatePsEnc(HANDLE_PS_ENC h_ps_e,
+   
+ 
+   
+-  ptr1 = &sbr_envYBuffer[QMF_TIME_SLOTS * QMF_CHANNELS];
+-  ptr2 = &PsBuf2[0];
+-  ptr3 = &PsBuf3[0];
+-  ptr4 = &PsBuf4[0];
++  ptr1 = &sbrram->sbr_envYBuffer[QMF_TIME_SLOTS * QMF_CHANNELS];
++  ptr2 = &sbrram->PsBuf2[0];
++  ptr3 = &sbrram->PsBuf3[0];
++  ptr4 = &sbrram->PsBuf4[0];
+ 
+   
+   if (h_ps_e == NULL)
+diff -Nupr src.p9/ps_enc.h src.p10/ps_enc.h
+--- src.p9/ps_enc.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/ps_enc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -85,7 +85,8 @@ typedef struct PS_ENC *HANDLE_PS_ENC;
+ int GetPsMode(int bitRate);
+ 
+ int
+-CreatePsEnc(HANDLE_PS_ENC h_ps_enc,
++CreatePsEnc(SBRRam_t *sbrram,
++            HANDLE_PS_ENC h_ps_enc,
+             int psMode);
+ 
+ void
+diff -Nupr src.p9/psy_main.c src.p10/psy_main.c
+--- src.p9/psy_main.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/psy_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -44,7 +44,7 @@ static int advancePsychShortMS (PSY_DATA
+     input:        pointer to a psych handle
+ 
+ *****************************************************************************/
+-int PsyNew(PSY_KERNEL  *hPsy, int nChan)
++int PsyNew(AACRam_t *aacram, SBRRam_t *sbrram, PSY_KERNEL  *hPsy, int nChan)
+ {
+     int i;
+ 
+@@ -60,7 +60,7 @@ int PsyNew(PSY_KERNEL  *hPsy, int nChan)
+         reserve memory for mdct delay buffer
+       */
+       
+-      hPsy->psyData[i].mdctDelayBuffer = &mdctDelayBuffer[i*BLOCK_SWITCHING_OFFSET];
++      hPsy->psyData[i].mdctDelayBuffer = &aacram->mdctDelayBuffer[i*BLOCK_SWITCHING_OFFSET];
+ 
+       
+       /*
+@@ -68,12 +68,12 @@ int PsyNew(PSY_KERNEL  *hPsy, int nChan)
+       */
+       
+       
+-      hPsy->psyData[i].mdctSpectrum = &sbr_envRBuffer[i*FRAME_LEN_LONG];
++      hPsy->psyData[i].mdctSpectrum = &sbrram->sbr_envRBuffer[i*FRAME_LEN_LONG];
+ 
+     }
+   
+      
+-    hPsy->pScratchTns = sbr_envIBuffer;
++    hPsy->pScratchTns = sbrram->sbr_envIBuffer;
+ 
+     
+  
+diff -Nupr src.p9/psy_main.h src.p10/psy_main.h
+--- src.p9/psy_main.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/psy_main.h	2010-10-21 13:06:37.000000000 +0300
+@@ -16,7 +16,7 @@ typedef struct  {
+ }PSY_KERNEL;
+ 
+ 
+-int PsyNew( PSY_KERNEL  *hPsy, int nChan);
++int PsyNew( AACRam_t *aacram, SBRRam_t *sbrram, PSY_KERNEL  *hPsy, int nChan);
+ int PsyDelete( PSY_KERNEL  *hPsy);
+ 
+ int PsyOutNew( PSY_OUT *hPsyOut);
+diff -Nupr src.p9/qc_main.c src.p10/qc_main.c
+--- src.p9/qc_main.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/qc_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -118,7 +118,7 @@ static int framePadding(int bitRate,
+ 
+ **********************************************************************************/
+ 
+-int QCOutNew(QC_OUT *hQC, int nChannels)
++int QCOutNew(AACRam_t *aacram, QC_OUT *hQC, int nChannels)
+ {
+   int error=0;
+   int i;
+@@ -135,13 +135,13 @@ int QCOutNew(QC_OUT *hQC, int nChannels)
+   
+   for (i=0; i<nChannels; i++) {
+     
+-    hQC->qcChannel[i].quantSpec = &quantSpec[i*FRAME_LEN_LONG];
++    hQC->qcChannel[i].quantSpec = &aacram->quantSpec[i*FRAME_LEN_LONG];
+ 
+     
+-    hQC->qcChannel[i].maxValueInSfb = &maxValueInSfb[i*MAX_GROUPED_SFB];
++    hQC->qcChannel[i].maxValueInSfb = &aacram->maxValueInSfb[i*MAX_GROUPED_SFB];
+ 
+     
+-    hQC->qcChannel[i].scf = &scf[i*MAX_GROUPED_SFB];
++    hQC->qcChannel[i].scf = &aacram->scf[i*MAX_GROUPED_SFB];
+   }
+  
+   
+@@ -231,7 +231,7 @@ void QCDelete(QC_STATE *hQC)
+          return:
+ 
+ **********************************************************************************/
+-int QCInit(QC_STATE *hQC,
++int QCInit(AACRam_t *aacram, QC_STATE *hQC,
+            struct QC_INIT *init)
+ {
+   
+@@ -264,7 +264,7 @@ int QCInit(QC_STATE *hQC,
+              hQC->elementBits.chBitrate);
+ 
+   
+-  BCInit();
++  BCInit(aacram);
+ 
+   
+ 
+@@ -279,7 +279,8 @@ int QCInit(QC_STATE *hQC,
+          return:
+ 
+ **********************************************************************************/
+-int QCMain(QC_STATE* hQC,
++int QCMain(AACRam_t *aacram,
++           QC_STATE* hQC,
+            int nChannels,
+            ELEMENT_BITS* elBits,
+            ATS_ELEMENT* adjThrStateElement,
+@@ -350,7 +351,8 @@ int QCMain(QC_STATE* hQC,
+                   qcOutElement->staticBitsUsed+qcOutElement->ancBitsUsed);
+ 
+   
+-  EstimateScaleFactors(psyOutChannel,
++  EstimateScaleFactors(aacram,
++                       psyOutChannel,
+                        qcOutChannel,
+                        sfbFormFactor,
+                        sfbNRelevantLines,
+@@ -427,7 +429,8 @@ int QCMain(QC_STATE* hQC,
+ 
+          
+         chDynBits =
+-            dynBitCount(qcOutChannel[ch].quantSpec,
++            dynBitCount(aacram,
++                        qcOutChannel[ch].quantSpec,
+                         qcOutChannel[ch].maxValueInSfb,
+                         qcOutChannel[ch].scf,
+                         psyOutChannel[ch].windowSequence,
+diff -Nupr src.p9/qc_main.h src.p10/qc_main.h
+--- src.p9/qc_main.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/qc_main.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,19 +4,18 @@
+ #ifndef _QC_MAIN_H
+ #define _QC_MAIN_H
+ 
+-
+-
+-int  QCOutNew(QC_OUT *hQC, int nChannels);
++int  QCOutNew(AACRam_t *aacram, QC_OUT *hQC, int nChannels);
+ 
+ void QCOutDelete(QC_OUT *hQC);
+ 
+ int  QCNew(QC_STATE *hQC);
+ 
+-int  QCInit(QC_STATE *hQC, struct QC_INIT *init);
++int  QCInit(AACRam_t *aacram, QC_STATE *hQC, struct QC_INIT *init);
+ void QCDelete(QC_STATE *hQC);
+ 
+ 
+-int QCMain(QC_STATE *hQC,
++int QCMain(AACRam_t *aacram,
++           QC_STATE *hQC,
+            int nChannels,
+            ELEMENT_BITS* elBits,
+            ATS_ELEMENT* adjThrStateElement,
+diff -Nupr src.p9/qmf_enc.c src.p10/qmf_enc.c
+--- src.p9/qmf_enc.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/qmf_enc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1094,7 +1094,8 @@ getEnergyFromCplxQmfData(float **energyV
+ */
+ 
+ int
+-createQmfBank (int chan,
++createQmfBank (SBRRam_t *sbrram,
++               int chan,
+                HANDLE_SBR_QMF_FILTER_BANK   h_sbrQmf
+ 
+ 
+@@ -1112,7 +1113,7 @@ createQmfBank (int chan,
+   h_sbrQmf->p_filter = sbr_qmf_64_640;
+ 
+      
+-  h_sbrQmf->qmf_states_buffer = sbr_QmfStatesAnalysis + chan * 640;
++  h_sbrQmf->qmf_states_buffer = sbrram->sbr_QmfStatesAnalysis + chan * 640;
+ 
+   
+ 
+@@ -1228,14 +1229,14 @@ SynthesisQmfFiltering (float **sbrReal,
+ 
+ *******************************************************************************/
+ int
+-CreateSynthesisQmfBank (HANDLE_SBR_QMF_FILTER_BANK hs)
++CreateSynthesisQmfBank (SBRRam_t *sbrram,HANDLE_SBR_QMF_FILTER_BANK hs)
+ {
+   float *ptr;
+ 
+   
+ 
+   
+-  ptr = &PsBuf5[0];
++  ptr = &sbrram->PsBuf5[0];
+ 
+       
+   memset (hs, 0, sizeof (SBR_QMF_FILTER_BANK));
+diff -Nupr src.p9/qmf_enc.h src.p10/qmf_enc.h
+--- src.p9/qmf_enc.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/qmf_enc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -31,7 +31,7 @@ void sbrAnalysisFiltering (const float *
+                            HANDLE_SBR_QMF_FILTER_BANK qmfBank);
+ 
+ 
+-int createQmfBank (int chan,HANDLE_SBR_QMF_FILTER_BANK h_sbrQmf);
++int createQmfBank (SBRRam_t *sbrram,int chan,HANDLE_SBR_QMF_FILTER_BANK h_sbrQmf);
+ 
+ 
+ void deleteQmfBank (HANDLE_SBR_QMF_FILTER_BANK  h_sbrQmf);
+@@ -52,7 +52,7 @@ SynthesisQmfFiltering (float **sbrReal,
+ 
+ 
+ int
+-CreateSynthesisQmfBank (HANDLE_SBR_QMF_FILTER_BANK h_sbrQmf);
++CreateSynthesisQmfBank (SBRRam_t *sbrram,HANDLE_SBR_QMF_FILTER_BANK h_sbrQmf);
+ 
+ 
+ 
+diff -Nupr src.p9/sbr_main.c src.p10/sbr_main.c
+--- src.p9/sbr_main.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/sbr_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -377,7 +377,7 @@ EnvClose (HANDLE_SBR_ENCODER hEnvEnc)
+ 
+         
+         deleteEnvChannel (hEnvEnc->hEnvChannel[i]);
+-
++        free(hEnvEnc->hEnvChannel[i]);
+         
+         hEnvEnc->hEnvChannel[i] = NULL;
+       }
+@@ -390,6 +390,7 @@ EnvClose (HANDLE_SBR_ENCODER hEnvEnc)
+     {
+        
+       DeleteSynthesisQmfBank ((HANDLE_SBR_QMF_FILTER_BANK*)&hEnvEnc->hSynthesisQmfBank);
++      free(hEnvEnc->hSynthesisQmfBank);
+     }
+ 
+      
+@@ -397,6 +398,7 @@ EnvClose (HANDLE_SBR_ENCODER hEnvEnc)
+     {
+        
+       DeletePsEnc(&hEnvEnc->hPsEnc);
++      free(hEnvEnc->hPsEnc);
+     }
+ #endif /* #ifndef MONO_ONLY */
+ 
+@@ -535,7 +537,8 @@ EnvEncodeFrame (HANDLE_SBR_ENCODER hEnvE
+ 
+ 
+        
+-     extractSbrEnvelope(samples,
++     extractSbrEnvelope(hEnvEncoder->fftctx,
++                        samples,
+                         pCoreBuffer,
+                         timeInStride,
+                         &hEnvEncoder->sbrConfigData,
+@@ -587,7 +590,8 @@ EnvEncodeFrame (HANDLE_SBR_ENCODER hEnvE
+ *****************************************************************************/
+ 
+ static int
+-createEnvChannel (int chan,
++createEnvChannel (SBRRam_t *sbrram,
++                  int chan,
+                   HANDLE_SBR_CONFIG_DATA sbrConfigData,
+                   HANDLE_SBR_HEADER_DATA sbrHeaderData,
+                   HANDLE_ENV_CHANNEL     hEnv,
+@@ -616,7 +620,7 @@ createEnvChannel (int chan,
+ 
+ 
+      
+-  if(createQmfBank (chan, &hEnv->sbrQmf)){
++  if(createQmfBank (sbrram, chan, &hEnv->sbrQmf)){
+ 
+     
+     return (1); /* initialisation failed */
+@@ -627,7 +631,8 @@ createEnvChannel (int chan,
+ 
+ 
+      
+-  if(CreateTonCorrParamExtr (chan,
++  if(CreateTonCorrParamExtr (sbrram,
++                             chan,
+                              &hEnv->TonCorr,
+ 
+ 
+@@ -691,7 +696,8 @@ createEnvChannel (int chan,
+ 
+ 
+      
+-  if(CreateExtractSbrEnvelope (chan,
++  if(CreateExtractSbrEnvelope (sbrram,
++                               chan,
+                                &hEnv->sbrExtractEnvelope,
+ 
+                                startIndex
+@@ -742,7 +748,8 @@ createEnvChannel (int chan,
+                             hEnv->encEnvData.freq_res_fixfix);
+ 
+      
+-  if(CreateSbrTransientDetector (chan,
++  if(CreateSbrTransientDetector (sbrram,
++                                 chan,
+                                  &hEnv->sbrTransientDetector,
+ 
+                                  sbrConfigData->sampleFreq,
+@@ -782,7 +789,8 @@ createEnvChannel (int chan,
+ 
+ *****************************************************************************/
+ int
+-EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
++EnvOpen (SBRRam_t *sbrram,
++         HANDLE_SBR_ENCODER   hEnvEnc,
+          float *pCoreBuffer,
+          sbrConfigurationPtr params,
+          int      *coreBandWith)
+@@ -802,7 +810,7 @@ EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
+   for (ch=0; ch<MAX_CHANNELS; ch++)
+   {
+     
+-    hEnvEnc->hEnvChannel[ch] = &EnvChannel[ch];
++    hEnvEnc->hEnvChannel[ch] = calloc(1, sizeof(struct ENV_CHANNEL));
+   }
+ 
+      
+@@ -817,19 +825,19 @@ EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
+ 
+ 
+    
+-  hEnvEnc->sbrConfigData.freqBandTable[LO] =  sbr_freqBandTableLO;
++  hEnvEnc->sbrConfigData.freqBandTable[LO] =  sbrram->sbr_freqBandTableLO;
+ 
+       
+   memset(hEnvEnc->sbrConfigData.freqBandTable[LO],0,sizeof(unsigned char)*MAX_FREQ_COEFFS/2+1);
+ 
+    
+-  hEnvEnc->sbrConfigData.freqBandTable[HI] =  sbr_freqBandTableHI;
++  hEnvEnc->sbrConfigData.freqBandTable[HI] =  sbrram->sbr_freqBandTableHI;
+ 
+       
+   memset(hEnvEnc->sbrConfigData.freqBandTable[HI],0,sizeof(unsigned char)*MAX_FREQ_COEFFS+1);
+ 
+    
+-  hEnvEnc->sbrConfigData.v_k_master =  sbr_v_k_master;
++  hEnvEnc->sbrConfigData.v_k_master =  sbrram->sbr_v_k_master;
+ 
+       
+   memset(hEnvEnc->sbrConfigData.v_k_master,0,sizeof(unsigned char)*MAX_FREQ_COEFFS+1);
+@@ -986,7 +994,8 @@ EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
+   for ( ch = 0; ch < hEnvEnc->sbrConfigData.nChannels; ch++ ) {
+ 
+      
+-    if(createEnvChannel(ch,
++    if(createEnvChannel(sbrram,
++                        ch,
+                         &hEnvEnc->sbrConfigData,
+                         &hEnvEnc->sbrHeaderData,
+                         hEnvEnc->hEnvChannel[ch],
+@@ -1011,12 +1020,13 @@ EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
+   if (params->usePs)
+   {
+        
+-    if(createQmfBank (1, &hEnvEnc->hEnvChannel[1]->sbrQmf)){
++    if(createQmfBank (sbrram, 1, &hEnvEnc->hEnvChannel[1]->sbrQmf)){
+       
+       return (1);
+     }
+        
+-    if(CreateExtractSbrEnvelope (1,
++    if(CreateExtractSbrEnvelope (sbrram,
++                                 1,
+                                  &hEnvEnc->hEnvChannel[1]->sbrExtractEnvelope,
+                                  576
+                                  )) {
+@@ -1025,10 +1035,10 @@ EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
+     }
+ 
+      
+-    hEnvEnc->hSynthesisQmfBank = &SynthesisQmfBank;
++    hEnvEnc->hSynthesisQmfBank = calloc(1, sizeof(SBR_QMF_FILTER_BANK));
+ 
+        
+-    if(CreateSynthesisQmfBank (hEnvEnc->hSynthesisQmfBank)){
++    if(CreateSynthesisQmfBank (sbrram, hEnvEnc->hSynthesisQmfBank)){
+ 
+       
+       DeleteSynthesisQmfBank ((HANDLE_SBR_QMF_FILTER_BANK*)&hEnvEnc->hSynthesisQmfBank);
+@@ -1038,10 +1048,11 @@ EnvOpen (HANDLE_SBR_ENCODER   hEnvEnc,
+     }
+ 
+      
+-    hEnvEnc->hPsEnc = &psEncoder;
++    hEnvEnc->hPsEnc  = calloc(1, sizeof(struct PS_ENC));
+ 
+        
+-    if(CreatePsEnc (hEnvEnc->hPsEnc,
++    if(CreatePsEnc (sbrram,
++                    hEnvEnc->hPsEnc,
+                     params->psMode)){
+ 
+       
+diff -Nupr src.p9/sbr_main.h src.p10/sbr_main.h
+--- src.p9/sbr_main.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/sbr_main.h	2010-10-21 13:06:37.000000000 +0300
+@@ -102,7 +102,8 @@ typedef struct SBR_ENCODER *HANDLE_SBR_E
+ 
+ 
+ int
+-EnvOpen (HANDLE_SBR_ENCODER       hEnvEnc,
++EnvOpen (SBRRam_t *sbrram,
++         HANDLE_SBR_ENCODER       hEnvEnc,
+          float *pCoreBuffer,
+          sbrConfigurationPtr      params,
+          int                      *coreBandWith
+diff -Nupr src.p9/sf_estim.c src.p10/sf_estim.c
+--- src.p9/sf_estim.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/sf_estim.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1035,7 +1035,8 @@ static void assimilateMultipleScf(PSY_OU
+ 
+ 
+ static void
+-estimateScaleFactorsChannel(PSY_OUT_CHANNEL *psyOutChan,
++estimateScaleFactorsChannel(AACRam_t *aacram,
++                            PSY_OUT_CHANNEL *psyOutChan,
+                             short *scf,
+                             int *globalGain,
+                             float *sfbFormFactor,
+@@ -1062,7 +1063,7 @@ estimateScaleFactorsChannel(PSY_OUT_CHAN
+   for (i=0; i<FRAME_LEN_LONG; i++) {
+     
+     
+-    expSpec[i] = 0.0f;
++    aacram->expSpec[i] = 0.0f;
+     quantSpec[i] = 0;
+   }
+ 
+@@ -1124,15 +1125,15 @@ estimateScaleFactorsChannel(PSY_OUT_CHAN
+ 
+         /* find better scalefactor with analysis by synthesis */
+          
+-        calcExpSpec(expSpec+psyOutChan->sfbOffsets[i],
++        calcExpSpec(aacram->expSpec+psyOutChan->sfbOffsets[i],
+                     psyOutChan->mdctSpectrum+psyOutChan->sfbOffsets[i],
+                     psyOutChan->sfbOffsets[i+1]-psyOutChan->sfbOffsets[i]);
+         
+          
+         scfInt = improveScf(psyOutChan->mdctSpectrum+psyOutChan->sfbOffsets[i],
+-                            expSpec+psyOutChan->sfbOffsets[i],
++                            aacram->expSpec+psyOutChan->sfbOffsets[i],
+                             quantSpec+psyOutChan->sfbOffsets[i],
+-                            quantSpecTmp+psyOutChan->sfbOffsets[i],
++                            aacram->quantSpecTmp+psyOutChan->sfbOffsets[i],
+                             psyOutChan->sfbOffsets[i+1]-psyOutChan->sfbOffsets[i],
+                             thresh, scfInt, minSfMaxQuant[i], 
+                             &sfbDist[i], &minScfCalculated[i]);
+@@ -1155,12 +1156,12 @@ estimateScaleFactorsChannel(PSY_OUT_CHAN
+     }
+      
+     
+-    assimilateSingleScf(psyOutChan, expSpec, quantSpec, quantSpecTmp, scf, 
++    assimilateSingleScf(psyOutChan, aacram->expSpec, quantSpec, aacram->quantSpecTmp, scf,
+                          minSfMaxQuant, sfbDist, sfbConstPePart,
+                          sfbFormFactor, sfbNRelevantLines, minScfCalculated, 1);
+ 
+     
+-    assimilateMultipleScf(psyOutChan, expSpec, quantSpec, quantSpecTmp, scf, 
++    assimilateMultipleScf(psyOutChan, aacram->expSpec, quantSpec, aacram->quantSpecTmp, scf,
+                           minSfMaxQuant, sfbDist, sfbConstPePart,
+                           sfbFormFactor, sfbNRelevantLines);
+   }
+@@ -1204,7 +1205,7 @@ estimateScaleFactorsChannel(PSY_OUT_CHAN
+         /* ??? */
+       sfbDist[i] =
+         calcSfbDist(psyOutChan->mdctSpectrum+psyOutChan->sfbOffsets[i],
+-                    expSpec+psyOutChan->sfbOffsets[i],
++                    aacram->expSpec+psyOutChan->sfbOffsets[i],
+                     quantSpec+psyOutChan->sfbOffsets[i],
+                     psyOutChan->sfbOffsets[i+1]-psyOutChan->sfbOffsets[i],
+                     scf[i]);
+@@ -1301,7 +1302,8 @@ CalcFormFactor(float sfbFormFactor[MAX_C
+ 
+ 
+ void
+-EstimateScaleFactors(PSY_OUT_CHANNEL psyOutChannel[MAX_CHANNELS],
++EstimateScaleFactors(AACRam_t *aacram,
++                     PSY_OUT_CHANNEL psyOutChannel[MAX_CHANNELS],
+                      QC_OUT_CHANNEL  qcOutChannel[MAX_CHANNELS],
+                      float  sfbFormFactor[MAX_CHANNELS][MAX_GROUPED_SFB],
+                      float sfbNRelevantLines[MAX_CHANNELS][MAX_GROUPED_SFB],
+@@ -1315,7 +1317,8 @@ EstimateScaleFactors(PSY_OUT_CHANNEL psy
+    for (j=0; j<nChannels; j++) {
+ 
+       
+-      estimateScaleFactorsChannel(&psyOutChannel[j],
++      estimateScaleFactorsChannel(aacram,
++                                  &psyOutChannel[j],
+                                   qcOutChannel[j].scf,
+                                   &(qcOutChannel[j].globalGain),
+                                   sfbFormFactor[j],
+diff -Nupr src.p9/sf_estim.h src.p10/sf_estim.h
+--- src.p9/sf_estim.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/sf_estim.h	2010-10-21 13:06:37.000000000 +0300
+@@ -13,7 +13,8 @@ CalcFormFactor(float sfbFormFactor[MAX_C
+                const int nChannels);
+ 
+ void
+-EstimateScaleFactors(PSY_OUT_CHANNEL psyOutChannel[MAX_CHANNELS],
++EstimateScaleFactors(AACRam_t *aacram,
++                     PSY_OUT_CHANNEL psyOutChannel[MAX_CHANNELS],
+                      QC_OUT_CHANNEL   qcOutChannel[MAX_CHANNELS],
+                      float sfbFormFactor[MAX_CHANNELS][MAX_GROUPED_SFB],
+                      float sfbNRelevantLines[MAX_CHANNELS][MAX_GROUPED_SFB],
+diff -Nupr src.p9/ton_corr.c src.p10/ton_corr.c
+--- src.p9/ton_corr.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/ton_corr.c	2010-10-21 13:06:37.000000000 +0300
+@@ -712,7 +712,8 @@ resetPatch(HANDLE_SBR_TON_CORR_EST hTonC
+ */
+ /**************************************************************************/
+ int
+-CreateTonCorrParamExtr (int chan,
++CreateTonCorrParamExtr (SBRRam_t *sbrram,
++                        int chan,
+                         HANDLE_SBR_TON_CORR_EST hTonCorr,
+                         int fs,
+                         int usb,
+@@ -762,7 +763,7 @@ CreateTonCorrParamExtr (int chan,
+    
+   for(i=0;i<hTonCorr->numberOfEstimates;i++) {
+     
+-    hTonCorr->quotaMatrix[i] = &(sbr_quotaMatrix[chan* NO_OF_ESTIMATES*QMF_CHANNELS + i*noQmfChannels]);
++    hTonCorr->quotaMatrix[i] = &(sbrram->sbr_quotaMatrix[chan* NO_OF_ESTIMATES*QMF_CHANNELS + i*noQmfChannels]);
+ 
+         
+     memset(hTonCorr->quotaMatrix[i] ,0, sizeof(float)*QMF_CHANNELS);
+@@ -815,7 +816,8 @@ CreateTonCorrParamExtr (int chan,
+ 
+ 
+     
+-  if(CreateSbrMissingHarmonicsDetector (chan,
++  if(CreateSbrMissingHarmonicsDetector (sbrram,
++                                        chan,
+                                         &hTonCorr->sbrMissingHarmonicsDetector,
+                                         fs,
+                                         freqBandTable[HI],
+diff -Nupr src.p9/ton_corr.h src.p10/ton_corr.h
+--- src.p9/ton_corr.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/ton_corr.h	2010-10-21 13:06:37.000000000 +0300
+@@ -72,7 +72,8 @@ TonCorrParamExtr(HANDLE_SBR_TON_CORR_EST
+ 
+ 
+ int
+-CreateTonCorrParamExtr (int chan,
++CreateTonCorrParamExtr (SBRRam_t *sbrram,
++                        int chan,
+                         HANDLE_SBR_TON_CORR_EST hTonCorr,
+                         int fs,
+                         int usb,
+diff -Nupr src.p9/tran_det.c src.p10/tran_det.c
+--- src.p9/tran_det.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/tran_det.c	2010-10-21 13:06:37.000000000 +0300
+@@ -489,7 +489,8 @@ transientDetect (float **Energies,
+ 
+ 
+ int
+-CreateSbrTransientDetector (int chan,
++CreateSbrTransientDetector (SBRRam_t *sbrram,
++                            int chan,
+                             HANDLE_SBR_TRANSIENT_DETECTOR h_sbrTransientDetector,
+ 
+                             int   sampleFreq,
+@@ -555,13 +556,13 @@ CreateSbrTransientDetector (int chan,
+   h_sbrTransientDetector->prevLowBandEnergy = 0;
+ 
+    
+-  h_sbrTransientDetector->thresholds = &sbr_thresholds[chan*QMF_CHANNELS];
++  h_sbrTransientDetector->thresholds = &sbrram->sbr_thresholds[chan*QMF_CHANNELS];
+ 
+       
+   memset(h_sbrTransientDetector->thresholds,0,sizeof(float)*QMF_CHANNELS);
+ 
+     
+-  h_sbrTransientDetector->transients =  &sbr_transients[chan*h_sbrTransientDetector->buffer_length];
++  h_sbrTransientDetector->transients =  &sbrram->sbr_transients[chan*h_sbrTransientDetector->buffer_length];
+ 
+       
+   memset(h_sbrTransientDetector->transients,0,sizeof(float)*h_sbrTransientDetector->buffer_length);
+diff -Nupr src.p9/tran_det.h src.p10/tran_det.h
+--- src.p9/tran_det.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p10/tran_det.h	2010-10-21 13:06:37.000000000 +0300
+@@ -36,7 +36,8 @@ void transientDetect (float **Energies,
+                       );
+ 
+ int
+-CreateSbrTransientDetector (int chan,
++CreateSbrTransientDetector (SBRRam_t *sbrram,
++                            int chan,
+                             HANDLE_SBR_TRANSIENT_DETECTOR h_sbrTransientDetector,
+ 
+                             int   sampleFreq,

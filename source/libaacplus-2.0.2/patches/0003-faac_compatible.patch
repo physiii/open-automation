@@ -1,0 +1,94 @@
+diff -Nupr src.p2/aacenc.c src.p3/aacenc.c
+--- src.p2/aacenc.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p3/aacenc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -402,7 +402,7 @@ int AacEncEncode(struct AAC_ENCODER *aac
+                           &aacEnc->qcOut);
+ 
+     
+-  WriteBitstream( aacEnc->hBitStream,
++  WriteBitstreamData( aacEnc->hBitStream,
+                   *elInfo,
+                   &aacEnc->qcOut,
+                   &aacEnc->psyOut,
+diff -Nupr src.p2/bitenc.c src.p3/bitenc.c
+--- src.p2/bitenc.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p3/bitenc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -812,14 +812,14 @@ static void writeFillElement( const unsi
+ 
+ /*****************************************************************************
+ 
+-    functionname: WriteBitStream
++    functionname: WriteBitStreamData
+     description:  main function of write process
+     returns:
+     input:
+     output:
+ 
+ *****************************************************************************/
+-int WriteBitstream (HANDLE_BIT_BUF hBitStream,
++int WriteBitstreamData (HANDLE_BIT_BUF hBitStream,
+                     ELEMENT_INFO elInfo,
+                     QC_OUT *qcOut,
+                     PSY_OUT* psyOut,
+diff -Nupr src.p2/bitenc.h src.p3/bitenc.h
+--- src.p2/bitenc.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p3/bitenc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -16,7 +16,7 @@ struct BITSTREAMENCODER_INIT
+ 
+ 
+ 
+-int WriteBitstream (HANDLE_BIT_BUF hBitstream,
++int WriteBitstreamData (HANDLE_BIT_BUF hBitstream,
+                     ELEMENT_INFO elInfo,
+                     QC_OUT* qcOut,
+                     PSY_OUT* psyOut,
+diff -Nupr src.p2/psy_main.c src.p3/psy_main.c
+--- src.p2/psy_main.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p3/psy_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -597,7 +597,7 @@ static int advancePsychLong(PSY_DATA* ps
+     }
+ 
+       
+-    TnsEncode(  &psyOutChannel->tnsInfo,
++    TnsEncodeData(  &psyOutChannel->tnsInfo,
+                 tnsData,
+                 psyConfLong->sfbCnt,
+                 psyConfLong->tnsConf,
+@@ -826,7 +826,7 @@ static int advancePsychShort(PSY_DATA* p
+         }
+ 
+           
+-        TnsEncode(  &psyOutChannel->tnsInfo,
++        TnsEncodeData(  &psyOutChannel->tnsInfo,
+                     tnsData,
+                     psyConfShort->sfbCnt,
+                     psyConfShort->tnsConf,
+diff -Nupr src.p2/tns.c src.p3/tns.c
+--- src.p2/tns.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p3/tns.c	2010-10-21 13:06:37.000000000 +0300
+@@ -463,11 +463,11 @@ void TnsSync(TNS_DATA *tnsDataDest,
+ 
+ 
+ /*****************************************************************************
+-    functionname: TnsEncode
++    functionname: TnsEncodeData
+     description:
+ 
+ *****************************************************************************/
+-int TnsEncode(TNS_INFO* tnsInfo,
++int TnsEncodeData(TNS_INFO* tnsInfo,
+               TNS_DATA* tnsData,
+               int numOfSfb,
+               TNS_CONFIG tC,
+diff -Nupr src.p2/tns_func.h src.p3/tns_func.h
+--- src.p2/tns_func.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p3/tns_func.h	2010-10-21 13:06:37.000000000 +0300
+@@ -33,7 +33,7 @@ void TnsSync(TNS_DATA *tnsDataDest,
+              const int subBlockNumber,
+              const int blockType);
+ 
+-int TnsEncode(TNS_INFO* tnsInfo,
++int TnsEncodeData(TNS_INFO* tnsInfo,
+               TNS_DATA* tnsData,
+               int numOfSfb,
+               TNS_CONFIG tC,
