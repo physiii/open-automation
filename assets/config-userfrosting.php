@@ -36,14 +36,14 @@
             'js.path' => $public_path . "/js",
             'css.path' => $public_path . "/css",
             'session' => [
-                'name' => 'Pyfi',
+                'name' => 'Demo',
                 'cache_limiter' => false
             ],
             'db'            =>  [
                 'db_host'  => 'localhost',
-                'db_name'  => 'pyfi',
-                'db_user'  => 'physiii',
-                'db_pass'  => 'qweasdzxc',
+                'db_name'  => 'userfrosting',
+                'db_user'  => 'root',
+                'db_pass'  => 'password',
                 'db_prefix'=> 'uf_'
             ],
             'mail' => 'smtp',
