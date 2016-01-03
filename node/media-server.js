@@ -73,40 +73,40 @@ console.log( Date.now() + " playing vlc_dowstairs...");
          if (data > 200) data = 254;
          diff = Math.abs(data - previous_data);
          if (diff > 20){
-           send_command("perl /home/physiii/node/huepl bri 1 " + data);
-           send_command("perl /home/physiii/node/huepl bri 2 " + data);
-           send_command("perl /home/physiii/node/huepl bri 3 " + data);
-           send_command("perl /home/physiii/node/huepl bri 4 " + data);
-           send_command("perl /home/physiii/node/huepl bri 5 " + data); 
-           send_command("perl /home/physiii/node/huepl bri 6 " + data); 
-           send_command("perl /home/physiii/node/huepl bri 7 " + data); 
-           send_command("perl /home/physiii/node/huepl bri 8 " + data);
-           send_command("perl /home/physiii/node/huepl bri 9 " + data); 
+           send_command("perl huepl bri 1 " + data);
+           send_command("perl huepl bri 2 " + data);
+           send_command("perl huepl bri 3 " + data);
+           send_command("perl huepl bri 4 " + data);
+           send_command("perl huepl bri 5 " + data); 
+           send_command("perl huepl bri 6 " + data); 
+           send_command("perl huepl bri 7 " + data); 
+           send_command("perl huepl bri 8 " + data);
+           send_command("perl huepl bri 9 " + data); 
            previous_data = data;
          }
       } else {
       if (data != "off") {
-        send_command("perl /home/physiii/node/huepl on 1");
-        send_command("perl /home/physiii/node/huepl on 2");
-        send_command("perl /home/physiii/node/huepl on 3");
-        send_command("perl /home/physiii/node/huepl on 4");
-        send_command("perl /home/physiii/node/huepl on 5");         
-        send_command("perl /home/physiii/node/huepl on 6");
-        send_command("perl /home/physiii/node/huepl on 7");         
-        send_command("perl /home/physiii/node/huepl on 8");
-        send_command("perl /home/physiii/node/huepl on 9");         
-        send_command("perl /home/physiii/node/huepl on 10");
+        send_command("perl huepl on 1");
+        send_command("perl huepl on 2");
+        send_command("perl huepl on 3");
+        send_command("perl huepl on 4");
+        send_command("perl huepl on 5");         
+        send_command("perl huepl on 6");
+        send_command("perl huepl on 7");         
+        send_command("perl huepl on 8");
+        send_command("perl huepl on 9");         
+        send_command("perl huepl on 10");
        }
-       send_command("perl /home/physiii/node/huepl "+data+" 1");
-       send_command("perl /home/physiii/node/huepl "+data+" 2");
-       send_command("perl /home/physiii/node/huepl "+data+" 3");
-       send_command("perl /home/physiii/node/huepl "+data+" 4");
-       send_command("perl /home/physiii/node/huepl "+data+" 5");
-       send_command("perl /home/physiii/node/huepl "+data+" 6");
-       send_command("perl /home/physiii/node/huepl "+data+" 7");
-       send_command("perl /home/physiii/node/huepl "+data+" 8");
-       send_command("perl /home/physiii/node/huepl "+data+" 9");
-       send_command("perl /home/physiii/node/huepl "+data+" 10");
+       send_command("perl huepl "+data+" 1");
+       send_command("perl huepl "+data+" 2");
+       send_command("perl huepl "+data+" 3");
+       send_command("perl huepl "+data+" 4");
+       send_command("perl huepl "+data+" 5");
+       send_command("perl huepl "+data+" 6");
+       send_command("perl huepl "+data+" 7");
+       send_command("perl huepl "+data+" 8");
+       send_command("perl huepl "+data+" 9");
+       send_command("perl huepl "+data+" 10");
        }
   });
 
