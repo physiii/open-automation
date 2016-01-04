@@ -5,7 +5,7 @@ nodejs automation and media server
 1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion
 2. clone repository into web directory
 2. -- sudo git clone https://github.com/physiii/media-server.git /var/www/html
-2. mysql -u admin -p
+2. mysql -u root -p
 3. create database userfrosting;
 3. add database info to assets/config-userfrosting.php
 4. sudo a2enmod rewrite
