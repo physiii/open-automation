@@ -10,6 +10,7 @@ nodejs automation and media server
 4. sudo a2enmod rewrite
 5. sudo nano /etc/apache2/apache2.conf
 6. -- change AllowOverride All for /var/www/
+7. -- Require all granted
 7. sudo nano /etc/default/motion
 8. -- change to start_motion_daemon=yes
 9. sudo nano /etc/motion/motion.conf
