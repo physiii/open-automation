@@ -2,7 +2,7 @@
 nodejs automation and media server
 
 ##installation
-1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient16 libmysqlclient-dev
+1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev
 2. clone repository into web directory
 2. -- sudo git clone https://github.com/physiii/media-server.git /var/www/html
 2. mysql -u root -p
