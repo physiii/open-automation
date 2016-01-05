@@ -1,4 +1,6 @@
 // Setup basic express server
+var fs = require('fs');
+var os = require('os');
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
@@ -13,6 +15,7 @@ var exec = require('child_process').exec;
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
+
 
 // Routing
 app.use(express.static(__dirname + '/public'), php.cgi("/"));
@@ -73,40 +76,40 @@ console.log( Date.now() + " playing vlc_dowstairs...");
          if (data > 200) data = 254;
          diff = Math.abs(data - previous_data);
          if (diff > 20){
-           send_command("perl huepl bri 1 " + data);
-           send_command("perl huepl bri 2 " + data);
-           send_command("perl huepl bri 3 " + data);
-           send_command("perl huepl bri 4 " + data);
-           send_command("perl huepl bri 5 " + data); 
-           send_command("perl huepl bri 6 " + data); 
-           send_command("perl huepl bri 7 " + data); 
-           send_command("perl huepl bri 8 " + data);
-           send_command("perl huepl bri 9 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 1 " + data);
+           send_command("perl "+__dirname+"/huepl bri 2 " + data);
+           send_command("perl "+__dirname+"/huepl bri 3 " + data);
+           send_command("perl "+__dirname+"/huepl bri 4 " + data);
+           send_command("perl "+__dirname+"/huepl bri 5 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 6 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 7 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 8 " + data);
+           send_command("perl "+__dirname+"/huepl bri 9 " + data); 
            previous_data = data;
          }
       } else {
       if (data != "off") {
-        send_command("perl huepl on 1");
-        send_command("perl huepl on 2");
-        send_command("perl huepl on 3");
-        send_command("perl huepl on 4");
-        send_command("perl huepl on 5");         
-        send_command("perl huepl on 6");
-        send_command("perl huepl on 7");         
-        send_command("perl huepl on 8");
-        send_command("perl huepl on 9");         
-        send_command("perl huepl on 10");
+        send_command("perl "+__dirname+"/huepl on 1");
+        send_command("perl "+__dirname+"/huepl on 2");
+        send_command("perl "+__dirname+"/huepl on 3");
+        send_command("perl "+__dirname+"/huepl on 4");
+        send_command("perl "+__dirname+"/huepl on 5");         
+        send_command("perl "+__dirname+"/huepl on 6");
+        send_command("perl "+__dirname+"/huepl on 7");         
+        send_command("perl "+__dirname+"/huepl on 8");
+        send_command("perl "+__dirname+"/huepl on 9");         
+        send_command("perl "+__dirname+"/huepl on 10");
        }
-       send_command("perl huepl "+data+" 1");
-       send_command("perl huepl "+data+" 2");
-       send_command("perl huepl "+data+" 3");
-       send_command("perl huepl "+data+" 4");
-       send_command("perl huepl "+data+" 5");
-       send_command("perl huepl "+data+" 6");
-       send_command("perl huepl "+data+" 7");
-       send_command("perl huepl "+data+" 8");
-       send_command("perl huepl "+data+" 9");
-       send_command("perl huepl "+data+" 10");
+       send_command("perl "+__dirname+"/huepl "+data+" 1");
+       send_command("perl "+__dirname+"/huepl "+data+" 2");
+       send_command("perl "+__dirname+"/huepl "+data+" 3");
+       send_command("perl "+__dirname+"/huepl "+data+" 4");
+       send_command("perl "+__dirname+"/huepl "+data+" 5");
+       send_command("perl "+__dirname+"/huepl "+data+" 6");
+       send_command("perl "+__dirname+"/huepl "+data+" 7");
+       send_command("perl "+__dirname+"/huepl "+data+" 8");
+       send_command("perl "+__dirname+"/huepl "+data+" 9");
+       send_command("perl "+__dirname+"/huepl "+data+" 10");
        }
   });
 
