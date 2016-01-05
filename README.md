@@ -2,12 +2,20 @@
 nodejs automation and media server
 
 ##installation
+<<<<<<< HEAD
 1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion
+=======
+1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev
+>>>>>>> 0bcefc5d88553b0fb8b33cc3ec32fb77127f9ce3
 2. clone repository into web directory
 2. -- sudo git clone https://github.com/physiii/media-server.git /var/www/html
 2. mysql -u root -p
 3. create database userfrosting;
+<<<<<<< HEAD
 4. sudo a2enmod rewrite
+=======
+4. sudo a2enmod rewrite cgi
+>>>>>>> 0bcefc5d88553b0fb8b33cc3ec32fb77127f9ce3
 5. sudo nano /etc/apache2/apache2.conf
 6. -- change AllowOverride All for /var/www/
 7. -- Require all granted
