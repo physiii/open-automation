@@ -1,0 +1,31 @@
+2010-11-10  Sergiy Guriev  <piratfm@ua.fm>
+	* Added AOT_SBR as extra object type to codec config (now ffplay works fine).
+
+2010-11-04  Sergiy Guriev  <piratfm@ua.fm>
+	* Fixed aac config creation.
+	* Add floating point samples as supported input format.
+	* Decreased export symbols
+
+2010-10-12  Sergiy Guriev  <piratfm@ua.fm>
+	* New API, incompatible with older libs.
+	* Removed static data, supported multiple instances in one application.
+
+2010-10-04  Sergiy Guriev  <piratfm@ua.fm>
+	* fix 64 bit support for SBR+PS encoding.
+
+2009-08-10  Sergiy Guriev  <piratfm@ua.fm>
+	* update to 8.0.0 core
+
+2009-03-22  Sergiy Guriev  <piratfm@ua.fm>
+	* added pkg-config file
+
+2008-11-06  Rafael Diniz
+	* small namespaces changes (not colide w/ faad ones)
+
+2008-11-06  Sergiy Guriev  <piratfm@ua.fm>
+	* Autogen added.
+	* _FFTW3 define is not needed any more.
+	* adts code moved to c-file (based on faac)
+
+2008-11-04  Sergiy Guriev  <piratfm@ua.fm>
+	* New package.

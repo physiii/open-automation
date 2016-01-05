@@ -1,0 +1,2 @@
+zconf.tab.o zconf.tab.dep: zconf.tab.c lkc.h expr.h lkc_proto.h zconf.hash.c \
+ lex.zconf.c util.c confdata.c expr.c symbol.c menu.c

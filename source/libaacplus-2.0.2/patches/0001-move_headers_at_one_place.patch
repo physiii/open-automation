@@ -1,0 +1,1210 @@
+diff -Nupr src.orig/aacenc.c src.p1/aacenc.c
+--- src.orig/aacenc.c	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/aacenc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -6,16 +6,7 @@
+ #include <string.h>
+ #include <assert.h>
+ 
+-#include "aacenc.h"
+-#include "bitenc.h"
+-
+-#include "psy_configuration.h"
+-#include "psy_main.h"
+-#include "qc_main.h"
+-#include "psy_main.h"
+-#include "channel_map.h"
+-#include "stprepro.h"
+-#include "minmax.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/aac_rom.c src.p1/aac_rom.c
+--- src.orig/aac_rom.c	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/aac_rom.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,9 @@
+ */
+ 
+ #include <stdio.h>
+-#include "aac_rom.h"
+-#include "FloatFR.h"
++
++#include "aacplusenc.h"
++
+ 
+ #ifdef _WIN32
+ #pragma warning(disable : 4305) /* disable truncation from double to float warning */
+diff -Nupr src.orig/aac_rom.h src.p1/aac_rom.h
+--- src.orig/aac_rom.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/aac_rom.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef AAC_ROM_H
+ #define AAC_ROM_H
+ 
+-#include "psy_const.h"
+-#include "tns_param.h"
+-
+ #define LD_FFT_TWIDDLE_TABLE_SIZE 9
+ #define FFT_TWIDDLE_TABLE_SIZE (1 << LD_FFT_TWIDDLE_TABLE_SIZE)
+ 
+diff -Nupr src.orig/adj_thr.c src.p1/adj_thr.c
+--- src.orig/adj_thr.c	2010-10-11 14:57:30.000000000 +0300
++++ src.p1/adj_thr.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,11 +5,7 @@
+ #include <math.h>
+ #include <float.h>
+ 
+-#include "adj_thr_data.h"
+-#include "adj_thr.h"
+-#include "qc_data.h"
+-#include "line_pe.h"
+-#include "minmax.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/adj_thr_data.h src.p1/adj_thr_data.h
+--- src.orig/adj_thr_data.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/adj_thr_data.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,6 @@
+ #ifndef __ADJ_THR_DATA_H
+ #define __ADJ_THR_DATA_H
+ 
+-#include "psy_const.h"
+-
+ typedef struct {
+    float clipSaveLow, clipSaveHigh;
+    float minBitSave, maxBitSave;
+diff -Nupr src.orig/adj_thr.h src.p1/adj_thr.h
+--- src.orig/adj_thr.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/adj_thr.h	2010-10-21 13:06:37.000000000 +0300
+@@ -1,10 +1,6 @@
+ #ifndef __ADJ_THR_H
+ #define __ADJ_THR_H
+ 
+-#include "adj_thr_data.h"
+-#include "qc_data.h"
+-#include "interface.h"
+-
+ float bits2pe(const float bits);
+ 
+ int  AdjThrNew(ADJ_THR_STATE** phAdjThr,
+diff -Nupr src.orig/band_nrg.c src.p1/band_nrg.c
+--- src.orig/band_nrg.c	2010-10-11 14:57:30.000000000 +0300
++++ src.p1/band_nrg.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,7 +1,7 @@
+ /*
+   calculation of band energies
+ */
+-#include "band_nrg.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/bitbuffer.c src.p1/bitbuffer.c
+--- src.orig/bitbuffer.c	2010-10-11 14:57:30.000000000 +0300
++++ src.p1/bitbuffer.c	2010-10-21 13:06:37.000000000 +0300
+@@ -2,10 +2,7 @@
+   Bit Buffer Management
+ */
+ 
+-#include "stdio.h"
+-#include "assert.h"
+-#include "FFR_bitbuffer.h"
+-#include "FloatFR.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/bit_cnt.c src.p1/bit_cnt.c
+--- src.orig/bit_cnt.c	2010-10-11 14:57:30.000000000 +0300
++++ src.p1/bit_cnt.c	2010-10-21 13:06:37.000000000 +0300
+@@ -2,9 +2,8 @@
+  Huffman Bitcounter & coder
+ */
+ #include <stdlib.h>
+-#include "bit_cnt.h"
+-#include "minmax.h"
+-#include "aac_rom.h"
++
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/bit_cnt.h src.p1/bit_cnt.h
+--- src.orig/bit_cnt.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/bit_cnt.h	2010-10-21 13:06:37.000000000 +0300
+@@ -2,7 +2,7 @@
+ #define __BITCOUNT_H
+ 
+ #include <limits.h>
+-#include "FFR_bitbuffer.h"
++
+ #define INVALID_BITCOUNT (INT_MAX/4)
+ 
+ /*
+diff -Nupr src.orig/bitenc.c src.p1/bitenc.c
+--- src.orig/bitenc.c	2010-10-11 14:57:30.000000000 +0300
++++ src.p1/bitenc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,12 +4,8 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+-#include "bitenc.h"
+-#include "bit_cnt.h"
+-#include "dyn_bits.h"
+-#include "qc_data.h"
+-#include "interface.h"
+-#include "minmax.h"
++#include "aacplusenc.h"
++
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/bitenc.h src.p1/bitenc.h
+--- src.orig/bitenc.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/bitenc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,7 @@
+ #ifndef _BITENC_H
+ #define _BITENC_H
+ 
+-#include "qc_data.h"
+-#include "tns.h"
+-#include "channel_map.h"
+-#include "interface.h"
++#include "aacplusenc.h"
+ 
+ struct BITSTREAMENCODER_INIT
+ {
+diff -Nupr src.orig/bit_sbr.c src.p1/bit_sbr.c
+--- src.orig/bit_sbr.c	2010-10-11 14:57:30.000000000 +0300
++++ src.p1/bit_sbr.c	2010-10-21 13:06:37.000000000 +0300
+@@ -3,13 +3,7 @@
+ */
+ #include <stdlib.h>
+ #include <assert.h>
+-#include "sbr_def.h"
+-#include "FFR_bitbuffer.h"
+-#include "bit_sbr.h"
+-#include "sbr.h"
+-#include "code_env.h"
+-#include "cmondata.h"
+-#include "ps_bitenc.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/block_switch.c src.p1/block_switch.c
+--- src.orig/block_switch.c	2010-10-11 14:57:31.000000000 +0300
++++ src.p1/block_switch.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,12 +1,11 @@
+ /*
+   Block Switching
+ */
+-#include "psy_const.h"
+-#include "block_switch.h"
+-#include "minmax.h"
+ #include <stdio.h>
+ #include <math.h>
+ 
++#include "aacplusenc.h"
++
+  /* the 3GPP instrumenting tool */
+ 
+ 
+diff -Nupr src.orig/channel_map.c src.p1/channel_map.c
+--- src.orig/channel_map.c	2010-10-11 14:57:31.000000000 +0300
++++ src.p1/channel_map.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,11 +1,8 @@
+ /*
+   Channel Mapping
+ */
+-#include "channel_map.h"
+-#include "bitenc.h"
+-#include "psy_const.h"
+-#include "qc_data.h"
+ #include <string.h>
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/channel_map.h src.p1/channel_map.h
+--- src.orig/channel_map.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/channel_map.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,7 @@
+ #ifndef _CHANNEL_MAP_H
+ #define _CHANNEL_MAP_H
+ 
+-#include "psy_const.h"
+-#include "qc_data.h"
++#include "aacplusenc.h"
+ 
+ 
+ int InitElementInfo (int nChannels,
+diff -Nupr src.orig/cmondata.h src.p1/cmondata.h
+--- src.orig/cmondata.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/cmondata.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef __SBR_CMONDATA_H
+ #define __SBR_CMONDATA_H
+ 
+-#include "FFR_bitbuffer.h"
+-
+-
+ struct COMMON_DATA {
+   int                   sbrHdrBits;
+   int                   sbrCrcLen;
+diff -Nupr src.orig/code_env.c src.p1/code_env.c
+--- src.orig/code_env.c	2010-10-11 14:57:31.000000000 +0300
++++ src.p1/code_env.c	2010-10-21 13:06:37.000000000 +0300
+@@ -6,9 +6,7 @@
+ #include <string.h>
+ #include <assert.h>
+ 
+-#include "code_env.h"
+-#include "sbr.h"
+-#include "sbr_rom.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/code_env.h src.p1/code_env.h
+--- src.orig/code_env.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/code_env.h	2010-10-21 13:06:37.000000000 +0300
+@@ -5,10 +5,6 @@
+ #ifndef __CODE_ENV_H
+ #define __CODE_ENV_H
+ 
+-#include "sbr_main.h"
+-#include "sbr_def.h"
+-#include "fram_gen.h"
+-
+ typedef struct
+ {
+   int offset;
+diff -Nupr src.orig/dyn_bits.c src.p1/dyn_bits.c
+--- src.orig/dyn_bits.c	2010-10-11 14:57:31.000000000 +0300
++++ src.p1/dyn_bits.c	2010-10-21 13:06:37.000000000 +0300
+@@ -3,12 +3,7 @@
+ */
+ #include <stdlib.h>
+ #include <limits.h>
+-#include "dyn_bits.h"
+-#include "bit_cnt.h"
+-#include "psy_const.h"
+-#include "minmax.h"
+-#include "aac_ram.h"
+-
++#include "aacplusenc.h"
+  /* the 3GPP instrumenting tool */
+ 
+ 
+diff -Nupr src.orig/dyn_bits.h src.p1/dyn_bits.h
+--- src.orig/dyn_bits.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/dyn_bits.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,6 @@
+ #ifndef __DYN_BITS_H
+ #define __DYN_BITS_H
+ 
+-#include "psy_const.h"
+-#include "tns.h"
+-#include "bit_cnt.h"
+-
+ #define MAX_SECTIONS          MAX_GROUPED_SFB
+ #define SECT_ESC_VAL_LONG    31
+ #define SECT_ESC_VAL_SHORT    7
+diff -Nupr src.orig/env_bit.c src.p1/env_bit.c
+--- src.orig/env_bit.c	2010-10-11 14:57:31.000000000 +0300
++++ src.p1/env_bit.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,7 @@
+ 
+ #include <stdlib.h>
+ #include <string.h>
+-#include "env_bit.h"
+-#include "cmondata.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/env_bit.h src.p1/env_bit.h
+--- src.orig/env_bit.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/env_bit.h	2010-10-21 13:06:37.000000000 +0300
+@@ -5,8 +5,6 @@
+ #ifndef BIT_ENV_H
+ #define BIT_ENV_H
+ 
+-#include "FFR_bitbuffer.h"
+-
+ #define SBR_CRC_POLY     (0x0233)
+ #define SBR_CRC_MASK     (0x0200)
+ #define SBR_CRC_RANGE    (0x03FF)
+diff -Nupr src.orig/env_est.c src.p1/env_est.c
+--- src.orig/env_est.c	2010-10-11 14:57:31.000000000 +0300
++++ src.p1/env_est.c	2010-10-21 13:06:37.000000000 +0300
+@@ -7,15 +7,7 @@
+ #include <limits.h>
+ #include <math.h>
+ 
+-#include "sbr.h"
+-#include "env_est.h"
+-#include "tran_det.h"
+-#include "qmf_enc.h"
+-#include "fram_gen.h"
+-#include "bit_sbr.h"
+-#include "cmondata.h"
+-#include "sbr_ram.h"
+-#include "ps_enc.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/env_est.h src.p1/env_est.h
+--- src.orig/env_est.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/env_est.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,6 @@
+ #ifndef __ENV_EST_H
+ #define __ENV_EST_H
+ 
+-#include "sbr_def.h"
+-#include "aacenc.h"
+-#include "qmf_enc.h"
+-
+ typedef struct
+ {
+   int pre_transient_info[2];
+diff -Nupr src.orig/fram_gen.c src.p1/fram_gen.c
+--- src.orig/fram_gen.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/fram_gen.c	2010-10-21 13:06:37.000000000 +0300
+@@ -6,9 +6,7 @@
+ #include <string.h>
+ #include <math.h>
+ #include <assert.h>
+-#include "fram_gen.h"
+-#include "sbr_misc.h"
+-#include "FloatFR.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/fram_gen.h src.p1/fram_gen.h
+--- src.orig/fram_gen.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/fram_gen.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef _FRAM_GEN_H
+ #define _FRAM_GEN_H
+ 
+-#include "sbr_def.h"
+-#include "sbr_main.h"
+-
+ #define MAX_ENVELOPES_VARVAR MAX_ENVELOPES
+ #define MAX_ENVELOPES_FIXVAR_VARFIX 4
+ #define MAX_NUM_REL 3
+diff -Nupr src.orig/freq_sca.c src.p1/freq_sca.c
+--- src.orig/freq_sca.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/freq_sca.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,8 +5,7 @@
+ #include <stdlib.h>
+ #include <assert.h>
+ #include <math.h>
+-#include "freq_sca.h"
+-#include "sbr_misc.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/freq_sca.h src.p1/freq_sca.h
+--- src.orig/freq_sca.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/freq_sca.h	2010-10-21 13:06:37.000000000 +0300
+@@ -3,7 +3,6 @@
+ */
+ #ifndef __FREQ_SCA2_H
+ #define __FREQ_SCA2_H
+-#include "sbr_def.h"
+ 
+ #define MAX_OCTAVE        29
+ #define MAX_SECOND_REGION 50
+diff -Nupr src.orig/grp_data.c src.p1/grp_data.c
+--- src.orig/grp_data.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/grp_data.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,10 +1,7 @@
+ /*
+   Short block grouping
+ */
+-#include "psy_const.h"
+-#include "interface.h"
+-#include "minmax.h"
+-#include "grp_data.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/grp_data.h src.p1/grp_data.h
+--- src.orig/grp_data.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/grp_data.h	2010-10-21 13:06:37.000000000 +0300
+@@ -3,7 +3,6 @@
+ */
+ #ifndef __GRP_DATA_H__
+ #define __GRP_DATA_H__
+-#include "psy_data.h"
+ 
+ void
+ groupShortData(float         *mdctSpectrum,
+diff -Nupr src.orig/hybrid.c src.p1/hybrid.c
+--- src.orig/hybrid.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/hybrid.c	2010-10-21 13:06:37.000000000 +0300
+@@ -6,11 +6,7 @@
+ #include <math.h>
+ #include <assert.h>
+ 
+-#include "hybrid.h"
+-#include "sbr_ram.h"
+-#include "sbr_rom.h"
+-#include "sbr_def.h"
+-#include "cfftn.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/interface.c src.p1/interface.c
+--- src.orig/interface.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/interface.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,9 +1,7 @@
+ /*
+   Interface psychoaccoustic/quantizer
+ */
+-#include "minmax.h"
+-#include "psy_const.h"
+-#include "interface.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/interface.h src.p1/interface.h
+--- src.orig/interface.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/interface.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,6 @@
+ #ifndef _INTERFACE_H
+ #define _INTERFACE_H
+ 
+-#include "psy_const.h"
+-#include "psy_data.h"
+ 
+ enum
+ {
+diff -Nupr src.orig/invf_est.c src.p1/invf_est.c
+--- src.orig/invf_est.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/invf_est.c	2010-10-21 13:06:37.000000000 +0300
+@@ -6,9 +6,7 @@
+ #include <assert.h>
+ #include <stdio.h>
+ #include <math.h>
+-#include "invf_est.h"
+-#include "sbr_misc.h"
+-#include "sbr_def.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/invf_est.h src.p1/invf_est.h
+--- src.orig/invf_est.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/invf_est.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,6 @@
+ #ifndef _INV_FILT_DET_H
+ #define _INV_FILT_DET_H
+ 
+-#include "sbr_main.h"
+-#include "sbr_def.h"
+-
+-
+ #define INVF_SMOOTHING_LENGTH 2
+ 
+ typedef struct
+diff -Nupr src.orig/line_pe.c src.p1/line_pe.c
+--- src.orig/line_pe.c	2010-10-11 14:57:32.000000000 +0300
++++ src.p1/line_pe.c	2010-10-21 13:06:37.000000000 +0300
+@@ -2,8 +2,7 @@
+   Perceptual entropie module
+ */
+ #include <math.h>
+-#include "float.h"
+-#include "line_pe.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/line_pe.h src.p1/line_pe.h
+--- src.orig/line_pe.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/line_pe.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,6 @@
+ #ifndef __LINE_PE_H
+ #define __LINE_PE_H
+ 
+-
+-#include "psy_const.h" 
+-
+-
+ typedef struct {
+    /* these two are calculated by prepareSfbPe */
+    float sfbLdEnergy[MAX_GROUPED_SFB];    /* log(sfbEnergy)/log(2) */
+diff -Nupr src.orig/mh_det.c src.p1/mh_det.c
+--- src.orig/mh_det.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/mh_det.c	2010-10-21 13:06:37.000000000 +0300
+@@ -7,11 +7,7 @@
+ #include <string.h>
+ #include <assert.h>
+ #include <math.h>
+-#include "FloatFR.h"
+-#include "sbr.h"
+-#include "sbr_def.h"
+-#include "mh_det.h"
+-#include "sbr_ram.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/mh_det.h src.p1/mh_det.h
+--- src.orig/mh_det.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/mh_det.h	2010-10-21 13:06:37.000000000 +0300
+@@ -5,12 +5,6 @@
+ #ifndef __MH_DETECT_H
+ #define __MH_DETECT_H
+ 
+-
+-#include "sbr_main.h"
+-#include "fram_gen.h"
+-
+-
+-
+ typedef struct
+ {
+   float* guideVectorDiff;
+diff -Nupr src.orig/ms_stereo.c src.p1/ms_stereo.c
+--- src.orig/ms_stereo.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/ms_stereo.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,10 +1,8 @@
+ /*
+   MS stereo processing
+ */
+-#include "psy_const.h"
+-#include "ms_stereo.h"
+-#include "minmax.h"
+ #include <math.h> /* for atan() */
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/nf_est.c src.p1/nf_est.c
+--- src.orig/nf_est.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/nf_est.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+-#include "sbr.h"
+-#include "nf_est.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/nf_est.h src.p1/nf_est.h
+--- src.orig/nf_est.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/nf_est.h	2010-10-21 13:06:37.000000000 +0300
+@@ -5,10 +5,6 @@
+ #ifndef __NF_EST_H
+ #define __NF_EST_H
+ 
+-#include "sbr_main.h"
+-#include "sbr_def.h"
+-#include "fram_gen.h"
+-
+ 
+ #define NF_SMOOTHING_LENGTH 4
+ 
+diff -Nupr src.orig/pre_echo_control.c src.p1/pre_echo_control.c
+--- src.orig/pre_echo_control.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/pre_echo_control.c	2010-10-21 13:06:37.000000000 +0300
+@@ -2,7 +2,7 @@
+   Pre echo control
+ */
+ #include <math.h>
+-#include "pre_echo_control.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/ps_bitenc.c src.p1/ps_bitenc.c
+--- src.orig/ps_bitenc.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/ps_bitenc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -2,12 +2,7 @@
+   Parametric stereo bitstream encoder
+ */
+ 
+-#include "sbr_def.h"
+-#include "ps_bitenc.h"
+-#include "ps_enc.h"
+-#include "env_bit.h"
+-#include "sbr_ram.h"
+-#include "sbr_rom.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/ps_bitenc.h src.p1/ps_bitenc.h
+--- src.orig/ps_bitenc.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/ps_bitenc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,7 @@
+ #ifndef __PS_BITENC_H
+ #define __PS_BITENC_H
+ 
+-#include "FFR_bitbuffer.h"
+-#include "sbr_main.h"
++#include "aacplusenc.h"
+ 
+ #define CODE_BOOK_LAV_IID 14
+ #define CODE_BOOK_LAV_ICC 7
+diff -Nupr src.orig/ps_enc.c src.p1/ps_enc.c
+--- src.orig/ps_enc.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/ps_enc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,11 +5,7 @@
+ #include <stdlib.h>
+ #include <memory.h>
+ #include <assert.h>
+-#include "ps_enc.h"
+-#include "sbr_def.h"
+-
+-#include "sbr_rom.h"
+-#include "sbr_ram.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/ps_enc.h src.p1/ps_enc.h
+--- src.orig/ps_enc.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/ps_enc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef __PS_ENC_H
+ #define __PS_ENC_H
+ 
+-#include "ps_bitenc.h"
+-#include "hybrid.h"
+-
+ /*############################################################################*/
+ /* Constant definitions                                                       */
+ /*############################################################################*/
+diff -Nupr src.orig/psy_configuration.c src.p1/psy_configuration.c
+--- src.orig/psy_configuration.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/psy_configuration.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,10 +5,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <assert.h>
+-#include "psy_configuration.h"
+-#include "minmax.h"
+-#include "adj_thr.h"
+-#include "aac_rom.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/psy_configuration.h src.p1/psy_configuration.h
+--- src.orig/psy_configuration.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/psy_configuration.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef _PSY_CONFIGURATION_H
+ #define _PSY_CONFIGURATION_H
+ 
+-#include "psy_const.h"
+-#include "tns.h"
+-
+ typedef struct{
+ 
+   int sfbCnt;
+diff -Nupr src.orig/psy_const.h src.p1/psy_const.h
+--- src.orig/psy_const.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/psy_const.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,6 @@
+ #ifndef _PSYCONST_H
+ #define _PSYCONST_H
+ 
+-#include "aacenc.h"
+-
+ #define TRUE  1
+ #define FALSE 0
+ 
+diff -Nupr src.orig/psy_data.h src.p1/psy_data.h
+--- src.orig/psy_data.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/psy_data.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef _PSY_DATA_H
+ #define _PSY_DATA_H
+ 
+-#include "block_switch.h"
+-#include "tns.h"
+-
+ /*
+   the structs can be implemented as unions
+ */
+diff -Nupr src.orig/psy_main.c src.p1/psy_main.c
+--- src.orig/psy_main.c	2010-10-11 14:57:33.000000000 +0300
++++ src.p1/psy_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -3,22 +3,7 @@
+ */
+ #include <stdlib.h>
+ #include <string.h>
+-#include "psy_const.h"
+-#include "block_switch.h"
+-#include "transform.h"
+-#include "spreading.h"
+-#include "pre_echo_control.h"
+-#include "band_nrg.h"
+-#include "psy_configuration.h"
+-#include "psy_data.h"
+-#include "ms_stereo.h"
+-#include "interface.h"
+-#include "psy_main.h"
+-#include "grp_data.h"
+-#include "tns_func.h"
+-#include "minmax.h"
+-#include "aac_ram.h"
+-#include "sbr_ram.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/psy_main.h src.p1/psy_main.h
+--- src.orig/psy_main.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/psy_main.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,6 @@
+ #ifndef _PSYMAIN_H
+ #define _PSYMAIN_H
+ 
+-#include "psy_configuration.h"
+-#include "qc_data.h"
+-
+-
+ /*
+   psy kernel
+ */
+diff -Nupr src.orig/qc_data.h src.p1/qc_data.h
+--- src.orig/qc_data.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/qc_data.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,11 +4,6 @@
+ #ifndef _QC_DATA_H
+ #define _QC_DATA_H
+ 
+-#include "psy_const.h"
+-#include "dyn_bits.h"
+-#include "adj_thr_data.h"
+-
+-
+ typedef enum {
+   ID_SCE=0,     /* Single Channel Element   */
+   ID_CPE=1,     /* Channel Pair Element     */
+diff -Nupr src.orig/qc_main.c src.p1/qc_main.c
+--- src.orig/qc_main.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/qc_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,17 +4,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include "qc_main.h"
+-#include "quantize.h"
+-#include "interface.h"
+-#include "adj_thr.h"
+-#include "sf_estim.h"
+-#include "stat_bits.h"
+-#include "bit_cnt.h"
+-#include "dyn_bits.h"
+-#include "minmax.h"
+-#include "channel_map.h"
+-#include "aac_ram.h"
++#include "aacplusenc.h"
+ 
+ #include <math.h>
+ 
+diff -Nupr src.orig/qc_main.h src.p1/qc_main.h
+--- src.orig/qc_main.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/qc_main.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,6 @@
+ #ifndef _QC_MAIN_H
+ #define _QC_MAIN_H
+ 
+-#include "qc_data.h"
+-#include "interface.h"
+ 
+ 
+ int  QCOutNew(QC_OUT *hQC, int nChannels);
+diff -Nupr src.orig/qmf_enc.c src.p1/qmf_enc.c
+--- src.orig/qmf_enc.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/qmf_enc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,10 +4,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+-#include "qmf_enc.h"
+-#include "sbr_rom.h"
+-#include "sbr_ram.h"
+-#include "sbr_def.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/qmf_enc.h src.p1/qmf_enc.h
+--- src.orig/qmf_enc.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/qmf_enc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,6 +4,8 @@
+ #ifndef __QMF_ENC_H
+ #define __QMF_ENC_H
+ 
++#include "aacplusenc.h"
++
+ typedef struct
+ {
+   const float *p_filter;
+diff -Nupr src.orig/quantize.c src.p1/quantize.c
+--- src.orig/quantize.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/quantize.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,11 +5,7 @@
+ #include <math.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include "minmax.h"
+-#include "quantize.h"
+-#include "float.h"
+-#include "aac_rom.h"
+-#include "FloatFR.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/resampler.c src.p1/resampler.c
+--- src.orig/resampler.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/resampler.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,7 +5,7 @@
+ #include <memory.h>
+ #include <assert.h>
+ #include <stdio.h>
+-#include "resampler.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/sbr.h src.p1/sbr.h
+--- src.orig/sbr.h	2010-10-11 14:57:28.000000000 +0300
++++ src.p1/sbr.h	2010-10-21 13:06:37.000000000 +0300
+@@ -5,17 +5,6 @@
+ #ifndef __SBR_H
+ #define __SBR_H
+ 
+-#include "qmf_enc.h"
+-#include "tran_det.h"
+-#include "fram_gen.h"
+-#include "nf_est.h"
+-#include "mh_det.h"
+-#include "invf_est.h"
+-#include "env_est.h"
+-#include "code_env.h"
+-#include "sbr_main.h"
+-#include "ton_corr.h"
+-
+ struct SBR_BITSTREAM_DATA
+ {
+   int TotalBits;
+diff -Nupr src.orig/sbr_main.c src.p1/sbr_main.c
+--- src.orig/sbr_main.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/sbr_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,16 +4,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <assert.h>
+-#include "sbr_main.h"
+-#include "sbr.h"
+-#include "sbr_ram.h"
+-#include "freq_sca.h"
+-#include "ps_enc.h"
+-#include "qmf_enc.h"
+-#include "env_est.h"
+-#include "env_bit.h"
+-#include "cmondata.h"
+-#include "FloatFR.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/sbr_misc.c src.p1/sbr_misc.c
+--- src.orig/sbr_misc.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/sbr_misc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,7 +1,7 @@
+ /*
+   Sbr miscellaneous helper functions
+ */
+-#include "sbr_misc.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/sbr_rom.c src.p1/sbr_rom.c
+--- src.orig/sbr_rom.c	2010-10-11 14:57:34.000000000 +0300
++++ src.p1/sbr_rom.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,8 +5,7 @@
+ */
+ 
+ #include <stdio.h>
+-#include "sbr_rom.h"
+-#include "sbr_main.h"
++#include "aacplusenc.h"
+ 
+ #define NEGATE_IPD_MASK                 ( 0x00001000 )
+ 
+diff -Nupr src.orig/sf_estim.c src.p1/sf_estim.c
+--- src.orig/sf_estim.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/sf_estim.c	2010-10-21 13:06:37.000000000 +0300
+@@ -3,12 +3,9 @@
+ */
+ #include <memory.h>
+ #include <limits.h>
+-#include "float.h"
+-#include "sf_estim.h"
+-#include "minmax.h"
+-#include "quantize.h"
+-#include "bit_cnt.h"
+-#include "aac_ram.h"
++#include <float.h>
++#include <math.h>
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/sf_estim.h src.p1/sf_estim.h
+--- src.orig/sf_estim.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/sf_estim.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,7 @@
+ #ifndef __SF_ESTIM_H__
+ #define __SF_ESTIM_H__
+ 
+-#include "psy_const.h"
+-#include "interface.h"
+-#include "qc_data.h"
++#include "aacplusenc.h"
+ 
+ void
+ CalcFormFactor(float sfbFormFactor[MAX_CHANNELS][MAX_GROUPED_SFB],
+diff -Nupr src.orig/spreading.c src.p1/spreading.c
+--- src.orig/spreading.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/spreading.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,7 @@
+ #include <math.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include "spreading.h"
+-#include "minmax.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/stat_bits.c src.p1/stat_bits.c
+--- src.orig/stat_bits.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/stat_bits.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,9 +1,7 @@
+ /*
+   Static bit counter $Revision
+ */
+-#include "stat_bits.h"
+-#include "bitenc.h"
+-#include "tns.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/stat_bits.h src.p1/stat_bits.h
+--- src.orig/stat_bits.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/stat_bits.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef __STAT_BITS_H
+ #define __STAT_BITS_H
+ 
+-#include "psy_const.h"
+-#include "interface.h"
+-
+ int countStaticBitdemand(PSY_OUT_CHANNEL psyOutChannel[MAX_CHANNELS],
+                          PSY_OUT_ELEMENT *psyOutElement,
+                          int nChannels);
+diff -Nupr src.orig/stprepro.c src.p1/stprepro.c
+--- src.orig/stprepro.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/stprepro.c	2010-10-21 13:06:37.000000000 +0300
+@@ -3,7 +3,8 @@
+ */
+ #include <string.h>
+ #include <stdlib.h>
+-#include "stprepro.h"
++#include <math.h>
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/stprepro.h src.p1/stprepro.h
+--- src.orig/stprepro.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/stprepro.h	2010-10-21 13:06:37.000000000 +0300
+@@ -7,9 +7,6 @@
+ struct STEREO_PREPRO;
+ typedef struct STEREO_PREPRO *HANDLE_STEREO_PREPRO;
+ 
+-#include "interface.h"
+-#include "channel_map.h"
+-
+ struct STEREO_PREPRO {
+ 
+   float   normPeFac;              /*! factor to normalize input PE, depends on bitrate and bandwidth */
+diff -Nupr src.orig/tns.c src.p1/tns.c
+--- src.orig/tns.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/tns.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,16 +1,10 @@
+ /*
+   Temporal Noise Shaping
+ */
+-#include "assert.h"
+-#include "psy_const.h"
+-#include "tns.h"
+-#include "tns_param.h"
+-#include "psy_configuration.h"
+-#include "tns_func.h"
+-#include "minmax.h"
+-#include "aac_rom.h"
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <math.h>
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/tns_func.h src.p1/tns_func.h
+--- src.orig/tns_func.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/tns_func.h	2010-10-21 13:06:37.000000000 +0300
+@@ -3,7 +3,6 @@
+ */
+ #ifndef _TNS_FUNC_H
+ #define _TNS_FUNC_H
+-#include "psy_configuration.h"
+ 
+ int InitTnsConfiguration(int bitrate,
+                          long samplerate,
+diff -Nupr src.orig/tns.h src.p1/tns.h
+--- src.orig/tns.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/tns.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,9 +4,6 @@
+ #ifndef _TNS_H
+ #define _TNS_H
+ 
+-#include "psy_const.h"
+-#include "math.h"
+-
+ #define TNS_MAX_ORDER       12
+ #define TNS_MAX_ORDER_SHORT 5
+ #define FILTER_DIRECTION    0
+diff -Nupr src.orig/tns_param.c src.p1/tns_param.c
+--- src.orig/tns_param.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/tns_param.c	2010-10-21 13:06:37.000000000 +0300
+@@ -2,7 +2,7 @@
+   Temporal Noise Shaping parameters
+ */
+ #include <stdio.h>
+-#include "aac_rom.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/tns_param.h src.p1/tns_param.h
+--- src.orig/tns_param.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/tns_param.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,8 +4,6 @@
+ #ifndef _TNS_PARAM_H
+ #define _TNS_PARAM_H
+ 
+-#include "tns.h"
+-
+ typedef struct{
+   int samplingRate;
+   int maxBandLong;
+diff -Nupr src.orig/ton_corr.c src.p1/ton_corr.c
+--- src.orig/ton_corr.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/ton_corr.c	2010-10-21 13:06:37.000000000 +0300
+@@ -5,12 +5,7 @@
+ #include <string.h>
+ #include <math.h>
+ 
+-#include "sbr.h"
+-#include "sbr_ram.h"
+-#include "ton_corr.h"
+-#include "invf_est.h"
+-#include "sbr_misc.h"
+-#include "sbr_def.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/ton_corr.h src.p1/ton_corr.h
+--- src.orig/ton_corr.h	2010-10-11 14:57:29.000000000 +0300
++++ src.p1/ton_corr.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,14 +4,6 @@
+ #ifndef _TON_CORR_EST_H
+ #define _TON_CORR_EST_H
+ 
+-#include "sbr.h"
+-#include "sbr_main.h"
+-#include "sbr_def.h"
+-#include "mh_det.h"
+-#include "invf_est.h"
+-#include "nf_est.h"
+-
+-
+ #define MAX_NUM_PATCHES 6
+ 
+ /** parameter set for one single patch */
+diff -Nupr src.orig/tran_det.c src.p1/tran_det.c
+--- src.orig/tran_det.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/tran_det.c	2010-10-21 13:06:37.000000000 +0300
+@@ -6,11 +6,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <assert.h>
+-#include "FloatFR.h"
+-#include "tran_det.h"
+-#include "sbr_def.h"
+-#include "fram_gen.h"
+-#include "sbr_ram.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/transcendent.c src.p1/transcendent.c
+--- src.orig/transcendent.c	2010-10-11 14:57:35.000000000 +0300
++++ src.p1/transcendent.c	2010-10-21 13:06:37.000000000 +0300
+@@ -4,7 +4,7 @@
+    
+ #include <math.h>
+ #include <assert.h>
+-#include "FloatFR.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+diff -Nupr src.orig/transform.c src.p1/transform.c
+--- src.orig/transform.c	2010-10-11 14:57:36.000000000 +0300
++++ src.p1/transform.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,15 +1,12 @@
+ /*
+   MDCT transform
+ */
+-#include "psy_const.h"
+-#include "transform.h"
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <assert.h>
+ #include <math.h>
+-#include "aac_rom.h"
+-#include "cfftn.h"
++#include "aacplusenc.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 

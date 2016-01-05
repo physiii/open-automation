@@ -1,0 +1,31 @@
+.container-narrow {
+    width: 800px;
+}
+
+.panel-heading-buttons h3 {
+    padding-top: 7.5px;
+}
+
+.pager-lg {
+    font-size: large;
+}
+
+.pager-control {
+    font-size: x-large;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+/* Use to collapse empty button columns */
+
+.hideable {
+    min-height: 0px;
+}
+
+label.label-switch {
+    margin-top: 5px;
+}
+
+form textarea {
+  resize: vertical; /* user can resize vertically, but width is fixed */
+}

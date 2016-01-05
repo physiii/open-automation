@@ -1,0 +1,459 @@
+diff -Nupr src.p1/cfftn.c src.p2/cfftn.c
+--- src.p1/cfftn.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/cfftn.c	2010-10-21 13:06:37.000000000 +0300
+@@ -1,10 +1,19 @@
+ /*
+   Complex FFT core for transforms
+ */
++#include "cfftn.h"
++#include <stdlib.h>
++
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#ifdef _FFTW3
++#include <fftw3.h>
++#else
+ #include <math.h>
+ #include <string.h>
+ 
+-#include "cfftn.h"
+ 
+  /* the 3GPP instrumenting tool */
+ 
+@@ -17,8 +26,29 @@
+ #define SIN60	0.86602540378443865
+ #define COS72	0.30901699437494742
+ #define SIN72	0.95105651629515357
++#endif
++
++#ifdef _FFTW3
++void init_plans(FFTWFContext_t *ctx)
++{
++	fftwf_complex fft_data;
+ 
++	ctx->plan4 = fftwf_plan_dft_1d(4, &fft_data, &fft_data, FFTW_BACKWARD, FFTW_ESTIMATE);
++	ctx->plan8 = fftwf_plan_dft_1d(8, &fft_data, &fft_data, FFTW_BACKWARD, FFTW_ESTIMATE);
++	ctx->plan64 = fftwf_plan_dft_1d(64, &fft_data, &fft_data, FFTW_FORWARD, FFTW_ESTIMATE);
++	ctx->plan512 = fftwf_plan_dft_1d(512, &fft_data, &fft_data, FFTW_FORWARD, FFTW_ESTIMATE);
++}
+ 
++void destroy_plans(FFTWFContext_t *ctx)
++{
++	fftwf_destroy_plan(ctx->plan512);
++	fftwf_destroy_plan(ctx->plan64);
++	fftwf_destroy_plan(ctx->plan8);
++	fftwf_destroy_plan(ctx->plan4);
++}
++#endif
++
++#ifndef _FFTW3
+ int cfftn(float Re[],
+           float Im[],
+           int  nTotal,
+@@ -1336,40 +1366,36 @@ Permute_Single_Label:
+   
+   return 1;
+ }
++#endif
+ 
+ /*
+    computes complex fourier transform of length len
+                   
+    returns status
+ */
+-int CFFTN(float *afftData,int len, int isign)
++int CFFTN(FFTWFContext_t *ctx, float *afftData,int len, int isign)
+ {
+-  return(cfftn(afftData,afftData+1,len,len,len,2*isign));
+-}
+-
+-/*
+-  computes complex fourier transform of length len
+-                  
+-  returns status
+-*/
+-int CFFTNRI(float *afftDataReal,float *afftDataImag,int len, int isign)
+-{
+-  return(cfftn(afftDataReal,afftDataImag,len,len,len,isign));
+-}
++#ifdef _FFTW3
++	switch(len) {
++	case 4:
++		fftwf_execute_dft(ctx->plan4, (fftwf_complex*)afftData, (fftwf_complex*)afftData);
++		break;
++	case 8:
++		fftwf_execute_dft(ctx->plan8, (fftwf_complex*)afftData, (fftwf_complex*)afftData);
++		break;
++	case 64:
++		fftwf_execute_dft(ctx->plan64, (fftwf_complex*)afftData, (fftwf_complex*)afftData);
++		break;
++	case 512:
++		fftwf_execute_dft(ctx->plan512, (fftwf_complex*)afftData, (fftwf_complex*)afftData);
++		break;
++	default:
++		printf("non standard len for FFT: %d\nWill now die", len);
++		exit(1);
++	}
+ 
+-/*
+-  computes complex fourier transform of length len
+-                  
+-  returns status
+-**/
+-int CFFTN_NI(float *InRealData,
+-             float *InImagData,
+-             float *OutRealData,
+-             float *OutImagData,
+-             int len, int isign)
+-{
+-  memcpy ( OutRealData, InRealData, len*sizeof(float) ) ; 
+-  memcpy ( OutImagData, InImagData, len*sizeof(float) ) ; 
+-
+-  return cfftn(OutRealData,OutImagData,len,len,len,isign);
++	return 1;
++#else
++  return(cfftn(afftData,afftData+1,len,len,len,2*isign));
++#endif
+ }
+diff -Nupr src.p1/cfftn.h src.p2/cfftn.h
+--- src.p1/cfftn.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/cfftn.h	2010-10-21 13:06:37.000000000 +0300
+@@ -5,30 +5,24 @@
+ #ifndef __cfftn_h
+ #define __cfftn_h
+ 
+-void forwardFFT( float *data, int length );
+-
+-int cfftn(float Re[],
+-          float Im[],
+-          int  nTotal,
+-          int  nPass,
+-          int  nSpan,
+-          int  iSign);
+-
+-int CFFTN(float *afftData,int len, int isign);
+-int CFFTNRI(float *afftDataReal,float *afftDataImag,int len, int isign);
+-
+-int CFFTN_NI(float *InRealData,
+-              float *InImagData,
+-              float *OutRealData,
+-              float *OurImagData,
+-              int len, int isign);
+-
+-#ifndef min
+-#define min(a, b) ((a) < (b) ? (a) : (b))
++#ifdef HAVE_CONFIG_H
++#include "config.h"
+ #endif
+-#ifndef max
+-#define max(a, b) ((a) > (b) ? (a) : (b))
++
++#ifdef _FFTW3
++#include <fftw3.h>
++typedef struct {
++        fftwf_plan plan4, plan8, plan64, plan512;
++} FFTWFContext_t;
++void init_plans(FFTWFContext_t *ctx);
++void destroy_plans(FFTWFContext_t *ctx);
++#else
++#define init_plans(c);
++#define destroy_plans(c);
++typedef int FFTWFContext_t;
+ #endif
+ 
+ 
++int CFFTN(FFTWFContext_t *ctx, float *afftData,int len, int isign);
++
+ #endif
+diff -Nupr src.p1/env_est.c src.p2/env_est.c
+--- src.p1/env_est.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/env_est.c	2010-10-21 13:06:37.000000000 +0300
+@@ -582,7 +582,8 @@ calculateSbrEnvelope (float **YBufferLef
+ 
+ ****************************************************************************/
+ void
+-extractSbrEnvelope (float *timeInPtr,
++extractSbrEnvelope (FFTWFContext_t *fftctx,
++                    float *timeInPtr,
+                     float *pCoreBuffer,
+                     unsigned int timeInStride,
+                     HANDLE_SBR_CONFIG_DATA h_con,
+@@ -670,7 +671,7 @@ extractSbrEnvelope (float *timeInPtr,
+   if (hPsEnc && hSynthesisQmfBank) {
+ 
+      
+-    EncodePsFrame(hPsEnc,
++    EncodePsFrame(fftctx, hPsEnc,
+                   h_envChan[0]->sbrExtractEnvelope.iBuffer,
+                   h_envChan[0]->sbrExtractEnvelope.rBuffer,
+                   h_envChan[1]->sbrExtractEnvelope.iBuffer,
+diff -Nupr src.p1/env_est.h src.p2/env_est.h
+--- src.p1/env_est.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/env_est.h	2010-10-21 13:06:37.000000000 +0300
+@@ -51,7 +51,8 @@ struct PS_ENC;
+ 
+ 
+ void
+-extractSbrEnvelope(float *timeInPtr,
++extractSbrEnvelope(FFTWFContext_t *fftctx,
++                   float *timeInPtr,
+                    float *pCoreBuffer,
+                    unsigned int timeInStride,
+                    struct SBR_CONFIG_DATA *h_con,
+diff -Nupr src.p1/hybrid.c src.p2/hybrid.c
+--- src.p1/hybrid.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/hybrid.c	2010-10-21 13:06:37.000000000 +0300
+@@ -10,7 +10,8 @@
+ 
+  /* the 3GPP instrumenting tool */
+ 
+-static void fourChannelFiltering( const float *pQmfReal,
++static void fourChannelFiltering( FFTWFContext_t *fftctx,
++                                  const float *pQmfReal,
+                                   const float *pQmfImag,
+                                   float **mHybridReal,
+                                   float **mHybridImag,
+@@ -77,7 +78,7 @@ static void fourChannelFiltering( const 
+     cum[3] = (real + imag ) * 0.70710678118655f;
+ 
+     
+-    CFFTN(cum, 4, 1);
++    CFFTN(fftctx, cum, 4, 1);
+ 
+      
+     for(n = 0; n < 4; n++) {
+@@ -90,7 +91,8 @@ static void fourChannelFiltering( const 
+   
+ }
+ 
+-static void eightChannelFiltering( const float *pQmfReal,
++static void eightChannelFiltering( FFTWFContext_t *fftctx,
++                                   const float *pQmfReal,
+                                    const float *pQmfImag,
+                                    float **mHybridReal,
+                                    float **mHybridImag)
+@@ -196,7 +198,7 @@ static void eightChannelFiltering( const
+     cum[3] = real * 0.38268343236509f + imag * 0.92387953251129f;
+ 
+     
+-    CFFTN(cum, 8, 1);
++    CFFTN(fftctx, cum, 8, 1);
+ 
+      
+     for(n = 0; n < 8; n++) {
+@@ -219,7 +221,8 @@ static void eightChannelFiltering( const
+ */
+ /**************************************************************************/
+ void
+-HybridAnalysis ( const float **mQmfReal,
++HybridAnalysis ( FFTWFContext_t *fftctx,
++                 const float **mQmfReal,
+                  const float **mQmfImag,
+                  float **mHybridReal,
+                  float **mHybridImag,
+@@ -270,7 +273,8 @@ HybridAnalysis ( const float **mQmfReal,
+ 
+       /* filtering. */
+       
+-      fourChannelFiltering( hHybrid->pWorkReal,
++      fourChannelFiltering( fftctx,
++                            hHybrid->pWorkReal,
+                             hHybrid->pWorkImag,
+                             mHybridReal,
+                             mHybridImag,
+@@ -282,7 +286,8 @@ HybridAnalysis ( const float **mQmfReal,
+ 
+       /* filtering. */
+       
+-      eightChannelFiltering( hHybrid->pWorkReal,
++      eightChannelFiltering( fftctx,
++                             hHybrid->pWorkReal,
+                              hHybrid->pWorkImag,
+                              mHybridReal,
+                              mHybridImag);
+diff -Nupr src.p1/hybrid.h src.p2/hybrid.h
+--- src.p1/hybrid.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/hybrid.h	2010-10-21 13:06:37.000000000 +0300
+@@ -31,7 +31,8 @@ typedef struct
+ typedef HYBRID *HANDLE_HYBRID;
+ 
+ void
+-HybridAnalysis ( const float **mQmfReal,
++HybridAnalysis ( FFTWFContext_t *fftctx,
++                 const float **mQmfReal,
+                  const float **mQmfImag,
+                  float **mHybridReal,
+                  float **mHybridImag,
+diff -Nupr src.p1/ps_enc.c src.p2/ps_enc.c
+--- src.p1/ps_enc.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/ps_enc.c	2010-10-21 13:06:37.000000000 +0300
+@@ -303,7 +303,8 @@ DeletePsEnc(HANDLE_PS_ENC *h_ps_e)
+ 
+ ****************************************************************************/
+ void
+-EncodePsFrame(HANDLE_PS_ENC pms,
++EncodePsFrame(FFTWFContext_t *fftctx,
++              HANDLE_PS_ENC pms,
+               float **iBufferLeft,
+               float **rBufferLeft,
+               float **iBufferRight,
+@@ -322,14 +323,16 @@ EncodePsFrame(HANDLE_PS_ENC pms,
+   
+ 
+    
+-  HybridAnalysis ( (const float**) rBufferLeft,
++  HybridAnalysis ( fftctx,
++                   (const float**) rBufferLeft,
+                    (const float**) iBufferLeft,
+                    pms->mHybridRealLeft,
+                    pms->mHybridImagLeft,
+                    pms->hHybridLeft);
+ 
+    
+-  HybridAnalysis ( (const float**) rBufferRight,
++  HybridAnalysis ( fftctx,
++                   (const float**) rBufferRight,
+                    (const float**) iBufferRight,
+                    pms->mHybridRealRight,
+                    pms->mHybridImagRight,
+diff -Nupr src.p1/ps_enc.h src.p2/ps_enc.h
+--- src.p1/ps_enc.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/ps_enc.h	2010-10-21 13:06:37.000000000 +0300
+@@ -93,7 +93,8 @@ DeletePsEnc(HANDLE_PS_ENC *h_ps_e);
+ 
+ 
+ void
+-EncodePsFrame(HANDLE_PS_ENC h_ps_e,
++EncodePsFrame(FFTWFContext_t *fftctx,
++              HANDLE_PS_ENC h_ps_e,
+               float **iBufferLeft,
+               float **rBufferLeft,
+               float **iBufferRight,
+diff -Nupr src.p1/psy_main.c src.p2/psy_main.c
+--- src.p1/psy_main.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/psy_main.c	2010-10-21 13:06:37.000000000 +0300
+@@ -230,7 +230,8 @@ int psyMainInit(PSY_KERNEL *hPsy,
+ 
+ *****************************************************************************/
+ 
+-int psyMain(int   timeInStride,
++int psyMain(FFTWFContext_t *fftctx,
++            int   timeInStride,
+             ELEMENT_INFO *elemInfo,
+             float *timeSignal, 
+             PSY_DATA  psyData[MAX_CHANNELS],
+@@ -285,7 +286,8 @@ int psyMain(int   timeInStride,
+     if(psyData[ch].blockSwitchingControl.windowSequence != SHORT_WINDOW){
+       
+        
+-      Transform_Real( psyData[ch].mdctDelayBuffer,
++      Transform_Real( fftctx,
++                      psyData[ch].mdctDelayBuffer,
+                       timeSignal+elemInfo->ChannelIndex[ch],
+                       timeInStride,
+                       psyData[ch].mdctSpectrum,
+@@ -294,7 +296,8 @@ int psyMain(int   timeInStride,
+     else {
+       
+        
+-      Transform_Real( psyData[ch].mdctDelayBuffer,
++      Transform_Real( fftctx,
++                      psyData[ch].mdctDelayBuffer,
+                       timeSignal+elemInfo->ChannelIndex[ch],
+                       timeInStride,
+                       psyData[ch].mdctSpectrum,
+diff -Nupr src.p1/psy_main.h src.p2/psy_main.h
+--- src.p1/psy_main.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/psy_main.h	2010-10-21 13:06:37.000000000 +0300
+@@ -30,7 +30,8 @@ int psyMainInit( PSY_KERNEL *hPsy,
+                  int bandwidth);
+ 
+ 
+-int psyMain(int                     nChannels, /*! total number of channels */              
++int psyMain(FFTWFContext_t *fftctx,
++            int                     nChannels, /*! total number of channels */
+             ELEMENT_INFO            *elemInfo,
+             float                   *timeSignal, /*! interleaved time signal */ 
+             PSY_DATA                 psyData[MAX_CHANNELS],
+diff -Nupr src.p1/transform.c src.p2/transform.c
+--- src.p1/transform.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/transform.c	2010-10-21 13:06:37.000000000 +0300
+@@ -111,7 +111,8 @@ static void postModulationDCT(float *x,i
+ }
+ 
+ 
+-static void mdct(float *dctdata,
++static void mdct(FFTWFContext_t *fftctx,
++                 float *dctdata,
+                  const float *trigData,
+                  const float *sineWindow,
+                  int n,
+@@ -124,7 +125,7 @@ static void mdct(float *dctdata,
+   preModulationDCT(dctdata,n,sineWindow);
+ 
+    
+-  CFFTN(dctdata,n/2,-1);
++  CFFTN(fftctx, dctdata,n/2,-1);
+ 
+   assert (LD_FFT_TWIDDLE_TABLE_SIZE >= ld_n-1);
+ 
+@@ -172,7 +173,7 @@ static void shiftMdctDelayBuffer(
+   
+ }
+ 
+-int Transform_Real(float *mdctDelayBuffer,float *timeSignal,int chIncrement,float *realOut,int blockType)
++int Transform_Real(FFTWFContext_t *fftctx, float *mdctDelayBuffer,float *timeSignal,int chIncrement,float *realOut,int blockType)
+ {
+   int i,w;
+   float timeSignalSample;
+@@ -245,7 +246,7 @@ int Transform_Real(float *mdctDelayBuffe
+       }
+ 
+       
+-      mdct(dctIn, fftTwiddleTab, LongWindowSine, FRAME_LEN_LONG, 10);
++      mdct(fftctx, dctIn, fftTwiddleTab, LongWindowSine, FRAME_LEN_LONG, 10);
+ 
+     break;
+ 
+@@ -323,7 +324,7 @@ int Transform_Real(float *mdctDelayBuffe
+     }
+ 
+     
+-    mdct(dctIn, fftTwiddleTab, LongWindowSine, FRAME_LEN_LONG, 10);
++    mdct(fftctx, dctIn, fftTwiddleTab, LongWindowSine, FRAME_LEN_LONG, 10);
+ 
+     break;
+ 
+@@ -402,7 +403,7 @@ int Transform_Real(float *mdctDelayBuffe
+     }
+ 
+     
+-    mdct(dctIn, fftTwiddleTab, LongWindowSine, FRAME_LEN_LONG, 10);
++    mdct(fftctx, dctIn, fftTwiddleTab, LongWindowSine, FRAME_LEN_LONG, 10);
+ 
+     break;
+ 
+@@ -458,7 +459,7 @@ int Transform_Real(float *mdctDelayBuffe
+       }
+ 
+       
+-      mdct(dctIn, fftTwiddleTab, ShortWindowSine, FRAME_LEN_SHORT, 7);
++      mdct(fftctx, dctIn, fftTwiddleTab, ShortWindowSine, FRAME_LEN_SHORT, 7);
+     }
+ 
+     
+diff -Nupr src.p1/transform.h src.p2/transform.h
+--- src.p1/transform.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p2/transform.h	2010-10-21 13:06:37.000000000 +0300
+@@ -4,7 +4,8 @@
+ #ifndef __TRANSFORM_H__
+ #define __TRANSFORM_H__
+ 
+-int Transform_Real(float *mdctDelayBuffer,
++int Transform_Real(FFTWFContext_t *fftctx,
++                   float *mdctDelayBuffer,
+                    float *timeSignal,
+                    int chIncrement,
+                    float *realOut,

@@ -1,0 +1,85 @@
+diff -Nupr src.p3/invf_est.c src.p4/invf_est.c
+--- src.p3/invf_est.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p4/invf_est.c	2010-10-21 13:06:37.000000000 +0300
+@@ -29,11 +29,11 @@
+ 
+ 
+ 
+-static float quantStepsSbr[4]  = {1, 10, 14, 19};
+-static float quantStepsOrig[4] = {0,  3,  7, 10};
+-static float nrgBorders[4] =     {25.0f, 30.0f, 35.0f, 40.0f};
++static const float quantStepsSbr[4]  = {1, 10, 14, 19};
++static const float quantStepsOrig[4] = {0,  3,  7, 10};
++static const float nrgBorders[4] =     {25.0f, 30.0f, 35.0f, 40.0f};
+ 
+-static DETECTOR_PARAMETERS detectorParamsAAC = {
++static const DETECTOR_PARAMETERS detectorParamsAAC = {
+     quantStepsSbr,
+     quantStepsOrig,
+     nrgBorders,
+@@ -60,7 +60,7 @@ static DETECTOR_PARAMETERS detectorParam
+ static const float hysteresis = 1.0f;
+ 
+ 
+-static DETECTOR_PARAMETERS detectorParamsAACSpeech = {
++static const DETECTOR_PARAMETERS detectorParamsAACSpeech = {
+     quantStepsSbr,
+     quantStepsOrig,
+     nrgBorders,
+@@ -87,13 +87,13 @@ static DETECTOR_PARAMETERS detectorParam
+ 
+ typedef const float FIR_FILTER[5];
+ 
+-static FIR_FILTER fir_0 = { 1.0f };
+-static FIR_FILTER fir_1 = { 0.3333333f, 0.6666666f };
+-static FIR_FILTER fir_2 = { 0.125f, 0.375f, 0.5f };
+-static FIR_FILTER fir_3 = { 0.0585786f, 0.2f, 0.3414214f, 0.4f };
+-static FIR_FILTER fir_4 = { 0.0318305f, 0.1151638f, 0.2181695f, 0.3015028f, 0.3333333f };
++static const FIR_FILTER fir_0 = { 1.0f };
++static const FIR_FILTER fir_1 = { 0.3333333f, 0.6666666f };
++static const FIR_FILTER fir_2 = { 0.125f, 0.375f, 0.5f };
++static const FIR_FILTER fir_3 = { 0.0585786f, 0.2f, 0.3414214f, 0.4f };
++static const FIR_FILTER fir_4 = { 0.0318305f, 0.1151638f, 0.2181695f, 0.3015028f, 0.3333333f };
+ 
+-static FIR_FILTER *fir_table[5] = {
++static const FIR_FILTER *fir_table[5] = {
+   &fir_0,
+   &fir_1,
+   &fir_2,
+diff -Nupr src.p3/invf_est.h src.p4/invf_est.h
+--- src.p3/invf_est.h	2010-10-21 13:06:37.000000000 +0300
++++ src.p4/invf_est.h	2010-10-21 13:06:37.000000000 +0300
+@@ -8,9 +8,9 @@
+ 
+ typedef struct
+ {
+-  float *quantStepsSbr;
+-  float *quantStepsOrig;
+-  float *nrgBorders;
++  const float *quantStepsSbr;
++  const float *quantStepsOrig;
++  const float *nrgBorders;
+   int   numRegionsSbr;
+   int   numRegionsOrig;
+   int   numRegionsNrg;
+@@ -46,7 +46,7 @@ typedef struct
+   int noDetectorBands;
+   int noDetectorBandsMax;
+ 
+-  DETECTOR_PARAMETERS *detectorParams;
++  const DETECTOR_PARAMETERS *detectorParams;
+   INVF_MODE prevInvfMode[MAX_NUM_NOISE_VALUES];
+   DETECTOR_VALUES detectorValues[MAX_NUM_NOISE_VALUES];
+ 
+diff -Nupr src.p3/psy_configuration.c src.p4/psy_configuration.c
+--- src.p3/psy_configuration.c	2010-10-21 13:06:37.000000000 +0300
++++ src.p4/psy_configuration.c	2010-10-21 13:06:37.000000000 +0300
+@@ -23,7 +23,7 @@ static const float BARC_THR_QUIET[] = {1
+ 0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f, 3.0f,  5.0f, 10.0f, 20.0f, 30.0f};
+ 
+ 
+-static SFB_INFO_TAB sfbInfoTab[] ={
++static const SFB_INFO_TAB sfbInfoTab[] ={
+   {11025, sfb_11025_long_1024, sfb_11025_short_128},
+   {12000, sfb_12000_long_1024, sfb_12000_short_128},
+   {16000, sfb_16000_long_1024, sfb_16000_short_128},
