@@ -27,7 +27,6 @@
 void HandleSubmit();
 void ShowForm();
 void CookieSet();
-
 void Cookies();
 void LoadEnvironment();
 void SaveEnvironment();
@@ -124,6 +123,7 @@ void ShowForm()
 	cgiValueEscape(cgiScriptName);
 	fprintf(cgiOut, "\">\n");
 	fprintf(cgiOut, "<p>\n");
+
 	fprintf(cgiOut, "<p>Set a Cookie<p>\n");
 	fprintf(cgiOut, "<input name=\"cname\" value=\"\"> Cookie Name\n");
 	fprintf(cgiOut, "<input name=\"cvalue\" value=\"\"> Cookie Value<p>\n");

@@ -43,7 +43,6 @@
  */
 
 #include <errno.h>
-#include <curl/curl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -57,38 +56,41 @@
 #define IPADDR "127.0.0.1" /* IP address of motion server, 127.0.0.1 = localhost */
 #define PORTBASE 8080      /* If your camera 1 is on port 8081 set this to one lower = 8080 */
 #define UPPERCAMERANUMBER 12  /* Set this to your upper limit of cameras */
-#define MAXLEN 80
-#define EXTRA 5
-/* 4 for field name "data", 1 for "=" */
-#define MAXINPUT MAXLEN+EXTRA+2
-/* 1 for added line break, 1 for trailing NUL */
-#define DATAFILE "../data/data.txt"
-
 int main()
 {
-  int authorized = 0;
-  char user[30] = "init";
-  char password[30] = "init";
-  char mac[30] = "init";  
-  char *data;
-  data = getenv("QUERY_STRING");
+
+char user[30] = "init";
+char password[30] = "init";
+char *data;
+
+printf("HTTP/1.1 200 OK\n");
+printf("Content-Type: text/html\n\n");
+printf("<html>\n");
+printf("<form action='/cgi-bin/nph-mjprox' METHOD='GET'>\n");
+printf("<div><label>Username: <input name='user' size='5'></label></div>\n");
+printf("<div><label>Password: <input name='password' size='5'></label></div>\n");
+printf("<div><input type='submit' value='Login'></div>\n");
+printf("</form>\n");
+
+data = getenv("QUERY_STRING");
+if(data == NULL)
+  printf("<P>Error! Error in passing data from form to script.\n");  
+
+
+sscanf(data,"user=%s&password=%s",user,password);
+//printf(data);
+//printf("\n");
+//printf(data);
+
   char *p;
-  char tmp[30]="temp";
-  
-  printf("HTTP/1.1 200 OK\n");
-  printf("Content-Type: text/html\n\n");
-  printf("<html>\n");
-  printf("<form action='/cgi-bin/nph-mjprox' METHOD='GET'>\n");
-  printf("<div><label>Username: <input name='user' size='5'></label></div>\n");
-  printf("<div><label>Password: <input name='password' size='5'></label></div>\n");
-  printf("<div><input type='submit' value='Login'></div>\n");
-  printf("</form>\n");
+  char tmp[30]="temp";  
 
   p = strtok (data,"&");
   while (p != NULL)
   {
     strcpy (tmp,p);    
     if (strncmp(tmp, "user=", 5) == 0) { 
+      //printf(user,tmp);
       sscanf(tmp,"user=%s",user);      
     }
     if (strncmp(tmp, "password=", 9) == 0) { 
@@ -96,20 +98,21 @@ int main()
     }    
     p = strtok (NULL, "&");
   }    
-  printf("USER: "); 
-  printf("%s\n", user);
-  printf("PASSWORD: ");    
-  printf("%s\n", password);
-  printf("---");
-  printf(user); 
-  int post_data();
-  int set_user();
-  if (strncmp(password, "1234", 4) == 0) { 
-    printf("AUTHORIZED!!");
-    authorized=1;    
-  }  
-  printf("</html>\n"); 
-  if (authorized){
+    
+    printf("USER: "); 
+    printf("%s\n", user);
+    printf("PASSWORD: ");    
+    printf("%s\n", password);
+    if (strncmp(password, "1234", 4) == 0) { 
+      printf("---HITTTT----");     
+    }  
+printf("</html>\n");  
+return 0; 
+}
+
+int camera()
+{
+        int authorized = 1;
 	int sockfd;
 	int len;
 	int cameranumber;
@@ -118,8 +121,9 @@ int main()
 	char *querystr;
 	char *dummy;
 	char buffer[65536];
+
 /*	Get camera number from querystring  */
-	cameranumber=1;
+	
 	querystr = getenv("QUERY_STRING");
 	sscanf(querystr,"%d",&cameranumber);
 	if (cameranumber<1 || cameranumber>UPPERCAMERANUMBER)
@@ -149,7 +153,7 @@ int main()
 	}
 
 /*  We can now read/write via sockfd.  */
-
+        if (authorized) {
 	for(;;)
 	{
 		int n;
@@ -202,79 +206,7 @@ int main()
 			n -= nsend;
 		}
 	}
-
+	}
 	close(sockfd);
 	exit(0);
-}
-return 0;
-}
-
-//int set_user(char *user, char *password, char *mac)
-int set_user(void)
-{
-  CURL *curl;
-  CURLcode res;
-  printf("--hit--");
-  //printf(user);
- 
-  curl = curl_easy_init();
-  if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "http://pyfi.org");
-    /* example.com is redirected, so we tell libcurl to follow redirection */ 
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
- 
-    /* Perform the request, res will get the return code */ 
-    res = curl_easy_perform(curl);
-    /* Check for errors */ 
-    if(res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",
-              curl_easy_strerror(res));
- 
-    /* always cleanup */ 
-    curl_easy_cleanup(curl);
-  }
-  return 0;
-}
-
-void unencode(char *src, char *last, char *dest)
-{
- for(; src != last; src++, dest++)
-   if(*src == '+')
-     *dest = ' ';
-   else if(*src == '%') {
-     int code;
-     if(sscanf(src+1, "%2x", &code) != 1) code = '?';
-     *dest = code;
-     src +=2; }     
-   else
-     *dest = *src;
- *dest = '\n';
- *++dest = '\0';
-}
-
-int post_data(void)
-{
-  printf("--hit post_data--");
-char *lenstr;
-char input[MAXINPUT], data[MAXINPUT];
-long len;
-printf("%s%c%c\n",
-"Content-Type:text/html;charset=iso-8859-1",13,10);
-printf("<TITLE>Response</TITLE>\n");
-lenstr = getenv("CONTENT_LENGTH");
-if(lenstr == NULL || sscanf(lenstr,"%ld",&len)!=1 || len > MAXLEN)
-  printf("<P>Error in invocation - wrong FORM probably.");
-else {
-  FILE *f;
-  fgets(input, len+1, stdin);
-  unencode(input+EXTRA, input+len, data);
-  f = fopen(DATAFILE, "a");
-  if(f == NULL)
-    printf("<P>Sorry, cannot store your data.");
-  else
-    fputs(data, f);
-  fclose(f);
-  printf("<P>Thank you! Your contribution has been stored.");
-  }
-return 0;
 }

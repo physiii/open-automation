@@ -1,0 +1,19 @@
+First define the path of the webserver cgi-bin directory by editing the line Makefile
+
+bindir = /usr/local/apache2/cgi-bin 
+
+Then edit the 3 X #define in the source files.
+The source file has a detailed comment that documents everything.
+
+The fast track steps are
+
+	Edit the 3 defines in the .c files
+
+	Edit the Makefile and run
+
+    make
+    
+    make install
+
+For more information see
+http://www.lavrsen.dk/twiki/bin/view/Motion/MjpegProxyGrab

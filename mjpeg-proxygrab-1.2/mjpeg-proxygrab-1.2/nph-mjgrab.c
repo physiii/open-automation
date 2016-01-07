@@ -56,12 +56,6 @@ int main(void)
 	char chbuffer[40000] = "";
 	char *querystr;
 
-	printf("HTTP/1.1 200 OK\n");
-	printf("Content-Type: text/html\n\n");
-	printf("WORKS!");
-	printf("WORKS!");
-	printf("WORKS!");
-	printf("WORKS!");			
 /*	Get camera number from querystring  */
 
 	querystr = getenv("QUERY_STRING");
@@ -114,10 +108,8 @@ int main(void)
 	fgets(garbage1, 70, fd);
 	
 	fread(chbuffer, 1, jpglength, fd);
-	
-
+	printf("HTTP/1.1 200 OK\n");
 	printf("Content-Type: image/jpeg\n\n");
-	
 	fwrite(chbuffer, 1, jpglength, stdout);
 	fflush(stdout);
 	
