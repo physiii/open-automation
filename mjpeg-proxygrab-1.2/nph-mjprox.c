@@ -42,6 +42,9 @@
  *	gcc -Wall -O3 -o nph-mjprox nph-mjprox.c
  */
 
+#include <sys/ioctl.h>
+#include <net/if.h> 
+#include <unistd.h>
 #include <errno.h>
 #include <curl/curl.h>
 #include <stdlib.h>
@@ -63,6 +66,11 @@
 #define MAXINPUT MAXLEN+EXTRA+2
 /* 1 for added line break, 1 for trailing NUL */
 #define DATAFILE "../data/data.txt"
+
+
+int get_token();
+void unencode();
+unsigned char get_mac();
 
 int main()
 {
@@ -95,15 +103,15 @@ int main()
       sscanf(tmp,"password=%s",password);      
     }    
     p = strtok (NULL, "&");
-  }    
-  printf("USER: "); 
-  printf("%s\n", user);
-  printf("PASSWORD: ");    
-  printf("%s\n", password);
-  printf("---");
-  printf(user); 
-  int post_data();
-  int set_user();
+  }
+
+  printf("USER: %s | ",user);
+  printf("PASSWORD: %s",password);  
+  unsigned char mac_address = ' ';
+  mac_address = get_mac();
+  printf("mac: %d",mac_address);
+  //get_token();
+
   if (strncmp(password, "1234", 4) == 0) { 
     printf("AUTHORIZED!!");
     authorized=1;    
@@ -209,8 +217,43 @@ int main()
 return 0;
 }
 
+unsigned char get_mac()
+{
+    struct ifreq ifr;
+    struct ifconf ifc;
+    char buf[1024];
+    int success = 0;
+
+    int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
+    if (sock == -1) { /* handle error*/ };
+
+    ifc.ifc_len = sizeof(buf);
+    ifc.ifc_buf = buf;
+    if (ioctl(sock, SIOCGIFCONF, &ifc) == -1) { /* handle error */ }
+
+    struct ifreq* it = ifc.ifc_req;
+    const struct ifreq* const end = it + (ifc.ifc_len / sizeof(struct ifreq));
+
+    for (; it != end; ++it) {
+        strcpy(ifr.ifr_name, it->ifr_name);
+        if (ioctl(sock, SIOCGIFFLAGS, &ifr) == 0) {
+            if (! (ifr.ifr_flags & IFF_LOOPBACK)) { // don't count loopback
+                if (ioctl(sock, SIOCGIFHWADDR, &ifr) == 0) {
+                    success = 1;
+                    break;
+                }
+            }
+        }
+        else { /* handle error */ }
+    }
+
+    unsigned char mac_address[6];
+
+    if (success) memcpy(mac_address, ifr.ifr_hwaddr.sa_data, 6);
+}
+
 //int set_user(char *user, char *password, char *mac)
-int set_user(void)
+int get_token(void)
 {
   CURL *curl;
   CURLcode res;
