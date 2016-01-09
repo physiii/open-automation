@@ -1,8 +1,8 @@
 #Edit the bin dir below to the cgi-bin directory of your webserver
 bindir = /usr/lib/cgi-bin
 
-CFLAGS= -g -Wall -O3
-CFLAGS+= `pkg-config --libs --cflags libcurl`
+CFLAGS= -std=gnu99 -g -Wall -O3
+CFLAGS+= `pkg-config --libs --cflags libcurl` `mysql_config --cflags --libs`
 CC=gcc
 AR=ar
 RANLIB=ranlib

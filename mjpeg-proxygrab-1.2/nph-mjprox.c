@@ -55,6 +55,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <my_global.h>
+#include <mysql.h>
 
 /*  User defined parameters - EDIT HERE */
 #define IPADDR "127.0.0.1" /* IP address of motion server, 127.0.0.1 = localhost */
@@ -71,11 +73,22 @@
 int get_token();
 void unencode();
 void get_mac();
+int check_token(char *,char *);
+int store_token(char *,char *,char *);
+int get_local_token(char *,char *,char *,char *);
+int get_new_token(char *,char *,char *,char *);
 
 struct string {
   char *ptr;
   size_t len;
 };
+
+void finish_with_error(MYSQL *con)
+{
+  fprintf(stderr, "%s\n", mysql_error(con));
+  mysql_close(con);
+  exit(1);        
+}
 
 void init_string(struct string *s) {
   s->len = 0;
@@ -112,37 +125,47 @@ int main()
   char *p;
   char tmp[30]="temp";
   char mac_address[12] = "";
-  char token[30] = "";  
+  char local_token[200] = "";  
+  char remote_token[200] = "";    
+  get_mac(mac_address);
+  
   printf("HTTP/1.1 200 OK\n");
   printf("Content-Type: text/html\n\n");
   printf("<html>\n");
   printf("<form action='/cgi-bin/nph-mjprox' METHOD='GET'>\n");
+  printf("<div><input name='tkn' value='0' type='hidden'></div>\n");    
   printf("<div><label>Username: <input name='user' size='5'></label></div>\n");
   printf("<div><label>Password: <input name='password' size='5'></label></div>\n");
   printf("<div><input type='submit' value='Login'></div>\n");
   printf("</form>\n");
-
+  printf("</html>\n");
+  
   p = strtok (data,"&");
   while (p != NULL)
   {
     strcpy (tmp,p);    
+    if (strncmp(tmp, "tkn=", 4) == 0) { 
+      sscanf(tmp,"tkn=%s",remote_token);
+    }
     if (strncmp(tmp, "user=", 5) == 0) { 
       sscanf(tmp,"user=%s",user);      
     }
     if (strncmp(tmp, "password=", 9) == 0) { 
       sscanf(tmp,"password=%s",password);      
-    }    
+    } 
     p = strtok (NULL, "&");
   }
 
-  get_mac(mac_address);  
-  get_token(mac_address,user,password,token);  
-
-  if (strncmp(password, "1234", 4) == 0) { 
-    printf("AUTHORIZED!!");
-    authorized=1;    
-  }  
-  printf("</html>\n"); 
+  if (strncmp(remote_token, "0", 1) == 0) { 
+    if(get_new_token(mac_address,user,password,local_token)){
+      printf("<<-- stored local token: %s \n-->>",local_token);    
+      store_token(mac_address,user,local_token);
+      authorized = 1;
+    }
+  } else if (check_token(user,remote_token)){
+    authorized = 1;
+  }
+  
   if (authorized){
 	int sockfd;
 	int len;
@@ -243,7 +266,6 @@ int main()
 return 0;
 }
 
-
 void get_mac(char * mac_address)
 {
   struct ifreq s;
@@ -259,20 +281,96 @@ void get_mac(char * mac_address)
   }
 }
 
-//int set_user(char *user, char *password, char *mac)
-int get_token(char * mac_address,char * user,char * password,char * token)
+int store_token(char * mac_address,char * user,char * token)
+{
+  MYSQL *con = mysql_init(NULL);
+
+  if (con == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      exit(1);
+  }
+
+  if (mysql_real_connect(con, "localhost", "root", "password", 
+          "device", 0, NULL, 0) == NULL) 
+  {
+      finish_with_error(con);
+  }    
+
+  char query[200] = "";
+  snprintf(query,sizeof(query),"insert into video_tok values(now(),'%s','%s','%s')",user,token,mac_address);
+  printf("store_token: %s",query);
+  if (mysql_query(con, query)) {
+      finish_with_error(con);
+  }
+  mysql_close(con);
+  return 0;
+}
+
+int check_token(char * user,char * token)
+{
+  MYSQL *con = mysql_init(NULL);
+
+  if (con == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      exit(1);
+  }
+
+  if (mysql_real_connect(con, "localhost", "root", "password", 
+          "device", 0, NULL, 0) == NULL) 
+  {
+      finish_with_error(con);
+  }    
+
+  char query[200] = "";
+  char tkn[200] = "";  
+  snprintf(query,sizeof(query),"select token from video_tok where user='%s' limit 1",user);
+  if (mysql_query(con, query)) 
+  {
+      finish_with_error(con);
+  }
+  MYSQL_RES *result = mysql_store_result(con);
+
+  if (result == NULL) 
+  {
+      finish_with_error(con);
+  }
+
+  int num_fields = mysql_num_fields(result);
+
+  MYSQL_ROW row;
+  
+  while ((row = mysql_fetch_row(result))) 
+  { 
+      for(int i = 0; i < num_fields; i++) 
+      { 
+          snprintf(tkn,sizeof(tkn),row[i] ? row[i] : "NULL");
+      } 
+          printf("\n"); 
+  }
+  //printf("stored_tkn: %s | remote_token: %s",tkn,token);
+  if (strncmp(token, tkn, 128) == 0) { 
+    return 1;
+  }
+  mysql_free_result(result);
+  mysql_close(con);
+    
+  return 0;
+}
+
+int get_new_token(char * mac_address,char * user,char * password,char * token)
 {
   CURL *curl;
-  CURLcode res;
-
-  char url[100] = "http://pyfi.org/php/set_video.php?mac=";
+  CURLcode res; 
+  
+  char url[200] = "http://pyfi.org/php/set_video.php?mac=";
   strcat(url,mac_address);
   strcat(url,"&user=");
   strcat(url,user);
   strcat(url,"&pwd=");  
   strcat(url,password);  
-  printf("<<--- url: %s --->>",url);
-  
+
   curl = curl_easy_init();
   if(curl) {
     struct string s;
@@ -283,13 +381,15 @@ int get_token(char * mac_address,char * user,char * password,char * token)
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl);
     //printf("%s\n", s.ptr);
-    strcpy(token,s.ptr);
-    printf("<<--- token: %s --->>",token);    
+    strcpy(token,s.ptr); 
     free(s.ptr);
     /* always cleanup */
     curl_easy_cleanup(curl);
-  }
-  return 0;
+    if (strncmp(token, "invalid", 7) == 0) { 
+      return 0;
+    }
+  }  
+  return 1;
 }
 
 void unencode(char *src, char *last, char *dest)
@@ -306,31 +406,4 @@ void unencode(char *src, char *last, char *dest)
      *dest = *src;
  *dest = '\n';
  *++dest = '\0';
-}
-
-int post_data(void)
-{
-  printf("--hit post_data--");
-char *lenstr;
-char input[MAXINPUT], data[MAXINPUT];
-long len;
-printf("%s%c%c\n",
-"Content-Type:text/html;charset=iso-8859-1",13,10);
-printf("<TITLE>Response</TITLE>\n");
-lenstr = getenv("CONTENT_LENGTH");
-if(lenstr == NULL || sscanf(lenstr,"%ld",&len)!=1 || len > MAXLEN)
-  printf("<P>Error in invocation - wrong FORM probably.");
-else {
-  FILE *f;
-  fgets(input, len+1, stdin);
-  unencode(input+EXTRA, input+len, data);
-  f = fopen(DATAFILE, "a");
-  if(f == NULL)
-    printf("<P>Sorry, cannot store your data.");
-  else
-    fputs(data, f);
-  fclose(f);
-  printf("<P>Thank you! Your contribution has been stored.");
-  }
-return 0;
 }
