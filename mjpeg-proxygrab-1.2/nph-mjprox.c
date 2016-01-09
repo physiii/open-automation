@@ -70,19 +70,49 @@
 
 int get_token();
 void unencode();
-unsigned char get_mac();
+void get_mac();
+
+struct string {
+  char *ptr;
+  size_t len;
+};
+
+void init_string(struct string *s) {
+  s->len = 0;
+  s->ptr = malloc(s->len+1);
+  if (s->ptr == NULL) {
+    fprintf(stderr, "malloc() failed\n");
+    exit(EXIT_FAILURE);
+  }
+  s->ptr[0] = '\0';
+}
+
+size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
+{
+  size_t new_len = s->len + size*nmemb;
+  s->ptr = realloc(s->ptr, new_len+1);
+  if (s->ptr == NULL) {
+    fprintf(stderr, "realloc() failed\n");
+    exit(EXIT_FAILURE);
+  }
+  memcpy(s->ptr+s->len, ptr, size*nmemb);
+  s->ptr[new_len] = '\0';
+  s->len = new_len;
+
+  return size*nmemb;
+}
 
 int main()
 {
   int authorized = 0;
   char user[30] = "init";
   char password[30] = "init";
-  char mac[30] = "init";  
   char *data;
   data = getenv("QUERY_STRING");
   char *p;
   char tmp[30]="temp";
-  
+  char mac_address[12] = "";
+  char token[30] = "";  
   printf("HTTP/1.1 200 OK\n");
   printf("Content-Type: text/html\n\n");
   printf("<html>\n");
@@ -105,12 +135,8 @@ int main()
     p = strtok (NULL, "&");
   }
 
-  printf("USER: %s | ",user);
-  printf("PASSWORD: %s",password);  
-  unsigned char mac_address = ' ';
-  mac_address = get_mac();
-  printf("mac: %d",mac_address);
-  //get_token();
+  get_mac(mac_address);  
+  get_token(mac_address,user,password,token);  
 
   if (strncmp(password, "1234", 4) == 0) { 
     printf("AUTHORIZED!!");
@@ -217,63 +243,50 @@ int main()
 return 0;
 }
 
-unsigned char get_mac()
+
+void get_mac(char * mac_address)
 {
-    struct ifreq ifr;
-    struct ifconf ifc;
-    char buf[1024];
-    int success = 0;
-
-    int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
-    if (sock == -1) { /* handle error*/ };
-
-    ifc.ifc_len = sizeof(buf);
-    ifc.ifc_buf = buf;
-    if (ioctl(sock, SIOCGIFCONF, &ifc) == -1) { /* handle error */ }
-
-    struct ifreq* it = ifc.ifc_req;
-    const struct ifreq* const end = it + (ifc.ifc_len / sizeof(struct ifreq));
-
-    for (; it != end; ++it) {
-        strcpy(ifr.ifr_name, it->ifr_name);
-        if (ioctl(sock, SIOCGIFFLAGS, &ifr) == 0) {
-            if (! (ifr.ifr_flags & IFF_LOOPBACK)) { // don't count loopback
-                if (ioctl(sock, SIOCGIFHWADDR, &ifr) == 0) {
-                    success = 1;
-                    break;
-                }
-            }
-        }
-        else { /* handle error */ }
+  struct ifreq s;
+  int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
+  strcpy(s.ifr_name, "eth0");
+  if (0 == ioctl(fd, SIOCGIFHWADDR, &s)) {
+    int i;char temp[2];
+    for (i = 0; i < 6; ++i) {
+      sprintf(temp, "%02x", (unsigned char) s.ifr_addr.sa_data[i]);
+      strcat(mac_address,temp);
     }
-
-    unsigned char mac_address[6];
-
-    if (success) memcpy(mac_address, ifr.ifr_hwaddr.sa_data, 6);
+    //printf("mac: %s",mac_address);
+  }
 }
 
 //int set_user(char *user, char *password, char *mac)
-int get_token(void)
+int get_token(char * mac_address,char * user,char * password,char * token)
 {
   CURL *curl;
   CURLcode res;
-  printf("--hit--");
-  //printf(user);
- 
+
+  char url[100] = "http://pyfi.org/php/set_video.php?mac=";
+  strcat(url,mac_address);
+  strcat(url,"&user=");
+  strcat(url,user);
+  strcat(url,"&pwd=");  
+  strcat(url,password);  
+  printf("<<--- url: %s --->>",url);
+  
   curl = curl_easy_init();
   if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "http://pyfi.org");
-    /* example.com is redirected, so we tell libcurl to follow redirection */ 
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
- 
-    /* Perform the request, res will get the return code */ 
+    struct string s;
+    init_string(&s);
+
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl);
-    /* Check for errors */ 
-    if(res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",
-              curl_easy_strerror(res));
- 
-    /* always cleanup */ 
+    //printf("%s\n", s.ptr);
+    strcpy(token,s.ptr);
+    printf("<<--- token: %s --->>",token);    
+    free(s.ptr);
+    /* always cleanup */
     curl_easy_cleanup(curl);
   }
   return 0;
