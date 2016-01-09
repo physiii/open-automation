@@ -19,7 +19,7 @@ nodejs automation and media server
 11. sudo chown -R pi /var/lib/motion; sudo chmod -R u+rX /var/lib/motion
 12. go to http://127.0.0.1 and create master account (token for userfrosting database in the uf_configuration table)
 13. edit /etc/rc.local
-14. -- add this line: su pi -c 'node /var/www/html/node/media-server >> /var/log/media-server.log 2>&1 &'
+14. -- su pi -c 'node /var/www/html/node/media-server >> /var/log/media-server.log 2>&1 &'
 13. [still editing]
 
 
