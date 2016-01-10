@@ -163,9 +163,10 @@ int main()
       authorized = 1;
     }
   } else if (check_token(user,remote_token)){
+    printf("remote_token: %s",remote_token);
     authorized = 1;
   }
-  
+  //authorized = 0;
   if (authorized){
 	int sockfd;
 	int len;
@@ -324,7 +325,7 @@ int check_token(char * user,char * token)
   }    
 
   char query[200] = "";
-  char tkn[200] = "";  
+  char tkn[200] = "init";  
   snprintf(query,sizeof(query),"select token from video_tok where user='%s' limit 1",user);
   if (mysql_query(con, query)) 
   {
