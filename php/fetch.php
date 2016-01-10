@@ -5,9 +5,9 @@ $mac = $_POST['mac'];
 $user = $_POST['user'];
 
 $servername = "localhost";
-$username = "physiii";
-$password = "qweasdzxc";
-$dbname = "pyfi";
+$username = "root";
+$password = "password";
+$dbname = "media-server";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {

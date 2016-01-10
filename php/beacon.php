@@ -13,9 +13,9 @@ $token = $_POST['token'];
 
 $ip = $_SERVER["REMOTE_ADDR"]; 
 $servername = "localhost";
-$username = "physiii";
-$password = "qweasdzxc";
-$dbname = "pyfi";
+$username = "root";
+$password = "password";
+$dbname = "media-server";
 $rows = array();
 
 $conn = new mysqli($servername, $username, $password, $dbname);

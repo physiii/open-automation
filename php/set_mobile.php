@@ -3,9 +3,9 @@ $user = $_POST['usr'];
 $value = $_POST['val'];
 
 $servername = "localhost";
-$username = "physiii";
-$password = "qweasdzxc";
-$dbname = "pyfi";
+$username = "root";
+$password = "password";
+$dbname = "media-server";
 
 if ($user == '') {
   echo "invalid";

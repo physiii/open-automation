@@ -171,7 +171,9 @@ int main()
       store_token(mac_address,user,local_token);
       authorized = 1;
     }
-  } else if (check_token(user,remote_token)){
+  }
+  printf(remote_token);
+  if (check_token(user,remote_token)){
     printf("remote_token: %s",remote_token);
     authorized = 1;
   }
