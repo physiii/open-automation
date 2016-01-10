@@ -8,6 +8,7 @@ nodejs automation and media server
 2. -- sudo git clone https://github.com/physiii/media-server.git /var/www/html
 2. mysql -u root -p
 3. create database userfrosting;
+4. create database device;
 4. sudo a2enmod rewrite cgi
 5. sudo nano /etc/apache2/apache2.conf
 6. -- change AllowOverride All for /var/www/
