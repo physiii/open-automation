@@ -292,7 +292,7 @@ int create_tables(void)
       finish_with_error(con);
   }    
 
-  if (mysql_query(con, "create table video_tok(timestamp text, user text, token text, mac text)")) {      
+  if (mysql_query(con, "create table video_tok(timestamp text, user text, token text, mac text, port text)")) {      
     fprintf(stderr, "%s\n", mysql_error(con));
     mysql_close(con);
     return 0;
@@ -365,7 +365,7 @@ int store_token(char * mac_address,char * user,char * token)
   }    
 
   char query[200] = "";
-  snprintf(query,sizeof(query),"insert into video_tok values(now(),'%s','%s','%s')",user,token,mac_address);
+  snprintf(query,sizeof(query),"insert into video_tok values(now(),'%s','%s','%s','%s')",user,token,mac_address,"8282");
   printf("store_token: %s",query);
   if (mysql_query(con, query)) {
       finish_with_error(con);
