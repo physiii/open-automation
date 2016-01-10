@@ -70,6 +70,8 @@
 #define DATAFILE "../data/data.txt"
 
 
+int create_database();
+int create_tables();
 int get_token();
 void unencode();
 void get_mac();
@@ -138,8 +140,15 @@ int main()
   printf("<div><label>Password: <input name='password' size='5'></label></div>\n");
   printf("<div><input type='submit' value='Login'></div>\n");
   printf("</form>\n");
-  printf("</html>\n");
-  
+
+  if(create_database()){
+    printf("created device database<br>");
+  }
+  if(create_tables()){
+    printf("created tables<br>");
+  }
+
+  printf("</html>\n");  
   p = strtok (data,"&");
   while (p != NULL)
   {
@@ -267,6 +276,63 @@ int main()
 return 0;
 }
 
+int create_tables(void)
+{
+  MYSQL *con = mysql_init(NULL);
+  
+  if (con == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      return 0;
+  }  
+
+  if (mysql_real_connect(con, "localhost", "root", "password", 
+          "device", 0, NULL, 0) == NULL) 
+  {
+      finish_with_error(con);
+  }    
+
+  if (mysql_query(con, "create table video_tok(timestamp text, user text, token text, mac text)")) {      
+    fprintf(stderr, "%s\n", mysql_error(con));
+    mysql_close(con);
+    return 0;
+  }
+
+  mysql_close(con);
+
+  return 1;
+}
+
+int create_database(void)
+{
+  MYSQL *con = mysql_init(NULL);
+
+  if (con == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      return 0;
+  }
+
+  if (mysql_real_connect(con, "localhost", "root", "password", 
+          NULL, 0, NULL, 0) == NULL) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      mysql_close(con);
+      return 0;
+  }  
+
+  if (mysql_query(con, "create database device")) 
+  {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      mysql_close(con);
+      return 0;
+  }
+
+  mysql_close(con);
+  printf("create database");
+  return 1;
+}
+
 void get_mac(char * mac_address)
 {
   struct ifreq s;
@@ -364,14 +430,13 @@ int get_new_token(char * mac_address,char * user,char * password,char * token)
 {
   CURL *curl;
   CURLcode res; 
-  
+    
   char url[200] = "http://pyfi.org/php/set_video.php?mac=";
   strcat(url,mac_address);
   strcat(url,"&user=");
   strcat(url,user);
   strcat(url,"&pwd=");  
   strcat(url,password);  
-
   curl = curl_easy_init();
   if(curl) {
     struct string s;
@@ -382,7 +447,7 @@ int get_new_token(char * mac_address,char * user,char * password,char * token)
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl);
     //printf("%s\n", s.ptr);
-    strcpy(token,s.ptr); 
+    strcpy(token,s.ptr);   
     free(s.ptr);
     /* always cleanup */
     curl_easy_cleanup(curl);
