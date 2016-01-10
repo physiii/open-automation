@@ -437,6 +437,8 @@ int get_new_token(char * mac_address,char * user,char * password,char * token)
   strcat(url,user);
   strcat(url,"&pwd=");  
   strcat(url,password);  
+  strcat(url,"&port=");  
+  strcat(url,"8484");  
   curl = curl_easy_init();
   if(curl) {
     struct string s;
