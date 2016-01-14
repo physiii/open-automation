@@ -78,7 +78,7 @@ void get_mac();
 int check_token(char *,char *);
 int store_token(char *,char *,char *);
 int get_local_token(char *,char *,char *,char *);
-int get_new_token(char *,char *,char *,char *);
+int get_new_token(char *,char *,char *,char *,char *,char *,char *);
 
 struct string {
   char *ptr;
@@ -127,8 +127,11 @@ int main()
   char *p;
   char tmp[30]="temp";
   char mac_address[12] = "";
-  char local_token[200] = "";  
-  char remote_token[200] = "";    
+  char local_token[200] = ""; 
+  char remote_token[200] = "start";
+  char server[200] = "";
+  char device_name[200] = "";
+  char device_port[200] = "";  
   get_mac(mac_address);
   
   printf("HTTP/1.1 200 OK\n");
@@ -138,17 +141,21 @@ int main()
   printf("<div><input name='tkn' value='0' type='hidden'></div>\n");    
   printf("<div><label>Username: <input name='user' size='5'></label></div>\n");
   printf("<div><label>Password: <input name='password' size='5'></label></div>\n");
+  printf("<div><label>Device Name: <input name='device_name' size='5'></label></div>\n");  
+  printf("<div><label>Server: <input name='server' size='5'></label></div>\n");
   printf("<div><input type='submit' value='Login'></div>\n");
   printf("</form>\n");
 
   if(create_database()){
     printf("created device database<br>");
   }
+  
   if(create_tables()){
     printf("created tables<br>");
   }
 
-  printf("</html>\n");  
+  printf("</html>\n");
+  
   p = strtok (data,"&");
   while (p != NULL)
   {
@@ -162,120 +169,122 @@ int main()
     if (strncmp(tmp, "password=", 9) == 0) { 
       sscanf(tmp,"password=%s",password);      
     } 
+    if (strncmp(tmp, "device_name=", 12) == 0) { 
+      sscanf(tmp,"device_name=%s",device_name);      
+    }
+    if (strncmp(tmp, "device_port=", 5) == 0) { 
+      sscanf(tmp,"device_port=%s",device_port);      
+    }
+    if (strncmp(tmp, "server=", 7) == 0) { 
+      sscanf(tmp,"server=%s",server);      
+    }    
     p = strtok (NULL, "&");
   }
 
   if (strncmp(remote_token, "0", 1) == 0) { 
-    if(get_new_token(mac_address,user,password,local_token)){
-      printf("<<-- stored local token: %s \n-->>",local_token);    
+    if(get_new_token(mac_address,user,password,local_token,device_name,device_port,server)){
       store_token(mac_address,user,local_token);
+      printf("<<-- stored local token: %s \n-->>",local_token);          
       authorized = 1;
     }
   }
-  printf(remote_token);
+  printf("remote_token: %s",remote_token);
   if (check_token(user,remote_token)){
     printf("remote_token: %s",remote_token);
     authorized = 1;
   }
   //authorized = 0;
   if (authorized){
-	int sockfd;
-	int len;
-	int cameranumber;
-	struct sockaddr_in address;
-	int result;
-	char *querystr;
-	char *dummy;
-	char buffer[65536];
-/*	Get camera number from querystring  */
-	cameranumber=1;
-	querystr = getenv("QUERY_STRING");
-	sscanf(querystr,"%d",&cameranumber);
-	if (cameranumber<1 || cameranumber>UPPERCAMERANUMBER)
-	{
-		exit(0);
-	}
+    int sockfd;
+    int len;
+    int cameranumber;
+    struct sockaddr_in address;
+    int result;
+    char *querystr;
+    char *dummy;
+    char buffer[65536];
+    /*Get camera number from querystring  */
+    cameranumber=1;
+    querystr = getenv("QUERY_STRING");
+    sscanf(querystr,"%d",&cameranumber);
+    if (cameranumber<1 || cameranumber>UPPERCAMERANUMBER)
+    {
+      exit(0);
+    }
 
-/*  Create a socket for the client.  */
+    /*  Create a socket for the client.  */
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    /*  Name the socket, as agreed with the server.  */
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = inet_addr(IPADDR);
+    address.sin_port = htons(PORTBASE + cameranumber);
+    len = sizeof(address);
 
-/*  Name the socket, as agreed with the server.  */
+    /*  Now connect our socket to the server's socket.  */
+    result = connect(sockfd, (struct sockaddr *)&address, len);
 
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = inet_addr(IPADDR);
-	address.sin_port = htons(PORTBASE + cameranumber);
-	len = sizeof(address);
+    if(result == -1)
+    {
+      perror("oops: Cannot connect to Motion");
+      exit(1);
+    }
 
-/*  Now connect our socket to the server's socket.  */
+    /*  We can now read/write via sockfd.  */
+    for(;;)
+    {
+      int n;
+      dummy = buffer;
+      /* read as much as is possible for a read
+      * if less is available: don't worry, read will return
+      * what is available
+      */
+      n = read(sockfd, buffer, 65536);
 
-	result = connect(sockfd, (struct sockaddr *)&address, len);
+      /* read failed? */
+      if (n == -1)
+      {
+        /* read was interrupted? then just do it
+        * again
+        */
+        if (errno == EINTR)
+          continue;
+          
+        exit(1);
+      }
+      /* n=0 means socket is closed */
+      if (n == 0)
+        break;
+      /* send received buffer to stdout descriptor
+      * again: as much as possible so that you have
+      * not so much buffers
+      */
+    while(n > 0)
+    {
+    int nsend;
 
-	if(result == -1)
-	{
-		perror("oops: Cannot connect to Motion");
-		exit(1);
-	}
+        /* send some */
+      nsend = write(1, dummy, n);
+      if (nsend == -1)
+      {
+        if (errno == EINTR)
+          continue;
+        exit(1);
+      }
 
-/*  We can now read/write via sockfd.  */
+      /* strange: stdout is close?! */
+      else if (nsend == 0)
+        exit(1);
 
-	for(;;)
-	{
-		int n;
-		dummy = buffer;
-
-		/* read as much as is possible for a read
-		* if less is available: don't worry, read will return
-		* what is available
-		*/
-		n = read(sockfd, buffer, 65536);
-
-		/* read failed? */
-		if (n == -1)
-		{
-			/* read was interrupted? then just do it
-			* again
-			*/
-			if (errno == EINTR)
-				continue;
-
-			exit(1);
-		}
-		/* n=0 means socket is closed */
-		if (n == 0)
-			break;
-
-		/* send received buffer to stdout descriptor
-		* again: as much as possible so that you have
-		* not so much buffers
-		*/
-		while(n > 0)
-		{
-			int nsend;
-			/* send some */
-			nsend = write(1, dummy, n);
-
-			if (nsend == -1)
-			{
-				if (errno == EINTR)
-					continue;
-
-				exit(1);
-			}
-			/* strange: stdout is close?! */
-			else if (nsend == 0)
-				exit(1);
-
-			/* keep track of what was send */
-			dummy += nsend;
-			n -= nsend;
-		}
-	}
-
-	close(sockfd);
-	exit(0);
-}
-return 0;
+      /* keep track of what was send */
+      dummy += nsend;
+      n -= nsend;
+      }
+    }
+    close(sockfd);
+    exit(0);
+  }
+  return 0;
 }
 
 int create_tables(void)
@@ -378,6 +387,7 @@ int store_token(char * mac_address,char * user,char * token)
 
 int check_token(char * user,char * token)
 {
+ 
   MYSQL *con = mysql_init(NULL);
 
   if (con == NULL) 
@@ -418,29 +428,34 @@ int check_token(char * user,char * token)
       } 
           printf("\n"); 
   }
+
   //printf("stored_tkn: %s | remote_token: %s",tkn,token);
   if (strncmp(token, tkn, 128) == 0) { 
     return 1;
   }
   mysql_free_result(result);
   mysql_close(con);
-    
   return 0;
 }
 
-int get_new_token(char * mac_address,char * user,char * password,char * token)
+int get_new_token(char * mac_address,char * user,char * password,char * token,char * device_name,char * device_port,char * server)
 {
   CURL *curl;
   CURLcode res; 
     
-  char url[200] = "http://pyfi.org/php/set_video.php?mac=";
+  char url[200] = "http://";
+  strcat(url,server);
+  strcat(url,"/php/set_video.php?mac=");
   strcat(url,mac_address);
   strcat(url,"&user=");
   strcat(url,user);
   strcat(url,"&pwd=");  
   strcat(url,password);  
   strcat(url,"&port=");  
-  strcat(url,"8484");  
+  strcat(url,device_port);
+  strcat(url,"&device_name=");  
+  strcat(url,device_name);
+  printf("<<-- url: %s \n-->><br><br>",url);
   curl = curl_easy_init();
   if(curl) {
     struct string s;
@@ -455,7 +470,10 @@ int get_new_token(char * mac_address,char * user,char * password,char * token)
     free(s.ptr);
     /* always cleanup */
     curl_easy_cleanup(curl);
-    if (strncmp(token, "invalid", 7) == 0) { 
+    int len = strlen(token);
+    
+    if (len != 128) {
+      printf("invalid username or password");
       return 0;
     }
   }  
