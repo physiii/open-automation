@@ -4,8 +4,6 @@ nodejs automation and media server
 ##installation
 
 1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev pkg-config
-2. clone repository into web directory
-2. -- sudo git clone https://github.com/physiii/media-server.git /var/www/html
 2. mysql -u root -p
 3. create database userfrosting;
 4. create database device;
@@ -18,8 +16,10 @@ nodejs automation and media server
 9. sudo nano /etc/motion/motion.conf
 10. -- change to stream_localhost off
 11. sudo chown -R pi /var/lib/motion; sudo chmod -R u+rX /var/lib/motion
+2. clone repository into web directory
+2. -- sudo git clone https://github.com/physiii/media-server.git /var/www/html
 12. go to http://127.0.0.1 and create master account (token for userfrosting database in the uf_configuration table)
-13. edit /etc/rc.local
+13. sudo nano /etc/rc.local
 14. -- su pi -c 'node /var/www/html/node/media-server >> /var/log/media-server.log 2>&1 &'
 13. [still editing]
 
