@@ -3,7 +3,7 @@ nodejs automation and media server
 
 ##installation
 
-1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev pkg-config
+1. sudo apt-get install nodejs apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev pkg-config tmux
 2. mysql -u root -p
 3. create database userfrosting;
 4. create database device;
