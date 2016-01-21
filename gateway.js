@@ -7,7 +7,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3030;
 var php = require("node-php"); 
 
 var exec = require('child_process').exec;
