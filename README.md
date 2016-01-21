@@ -4,8 +4,7 @@ nodejs automation and media server
 
 ##installation
 1. sudo apt-get install nodejs mysql-server php5 php5-mysql
-2. clone repository into web directory
-2. -- git clone https://github.com/physiii/home-gateway.git ~/home-gateway
+2. git clone https://github.com/physiii/home-gateway.git ~/home-gateway
 13. sudo nano /etc/rc.local
 14. -- su pi -c 'node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
 13. [still editing]
