@@ -8,7 +8,7 @@ nodejs automation and media server
 3. -- create database device;
 2. git clone https://github.com/physiii/home-gateway.git ~/home-gateway
 13. sudo nano /etc/rc.local
-14. -- su pi -c 'node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
+14. -- su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
 
 ##Dashboard
 ![Alt text](https://github.com/physiii/media-server/blob/master/screenshots/Screenshot%20from%202015-12-30%2012-35-47.png "Dashboard")
