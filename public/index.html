@@ -8,10 +8,11 @@
 <link href="css/style.css" rel="stylesheet">
 <link href="//code.ionicframework.com/nightly/css/ionic.css" rel="stylesheet">
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="js/app.js"></script>
-<script src="js/controllers.js"></script>
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script src="//code.ionicframework.com/nightly/js/ionic.bundle.js"></script>
+<script src="js/app.js"></script>
+<script src="js/controllers.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 
   </head>
 <body ng-app="starter">
@@ -23,7 +24,6 @@
   </div>
   <div class="card">
     <div ng-controller="post_ctrl">
-    Full Name: {{firstName + " " + lastName}}
       <div class="item item-text-wrap">
         <div class="list">
           <label class="item item-input">
@@ -32,7 +32,7 @@
           <label class="item item-input">
             <input type="text" ng-model="password" placeholder="Password">
           </label>        
-          <button class="button button-block button-dark" ng-click="set()">Link</button>
+          <button class="button button-block button-dark" ng-click="token_request()">Link</button>
           <h3>
             <a style="float:right" href="http://pyfi.org/account/register">Not a member yet? Register here.</a>
           </h3>

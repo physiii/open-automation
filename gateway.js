@@ -3,44 +3,118 @@ var fs = require('fs');
 var os = require('os');
 var express = require('express');
 var app = express();
+var program_app = express();
+var querystring = require('querystring');
+var http = require('http');
 var server = require('http').createServer(app);
+var program_server = require('http').createServer(program_app);
+var program_io = require('socket.io')(program_server);
 var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
 var port = process.env.PORT || 3030;
-var php = require("node-php"); 
-
+var program_port = process.env.PORT || 3000;
+var php = require("node-php");
+var request = require('request');
 var exec = require('child_process').exec;
-
-server.listen(port, function () {
-  console.log('Server listening at port %d', port);
-});
-
-
-// Routing
-app.use(express.static(__dirname + '/public'), php.cgi("/"));
-
+var mysql      = require('mysql');
+var EventEmitter = require("events").EventEmitter;
+var body = new EventEmitter();
 
 var d = new Date();
 var light_delay = 0; //command delay in ms
 var previous_data = 0;
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : 'password',
+  database : 'device'
+});
 
-function send_command(command){
-      console.log(command);
-      var child = exec(command,
-        function (error, stdout, stderr) {
-        if (error !== null) {
-          console.log('' + error);
+var username = "init";
+var device_name = "init";
+var mac = "init";
+var ip = "init";
+var device_port = "init";
+
+
+// Fetch the computer's mac address 
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress;
+})
+
+/// create tables if the do not exist ///
+var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
+connection.connect();
+connection.query(query, function(err, rows, fields) {
+  if (err) {
+    //console.log('table already exist');  
+  } else {
+    console.log('created gateway_tok table');
+    //store device info in database
+    
+  }
+});
+/////////////////////////////////////////
+    
+body.on('update', function () {
+  var token = body.data;
+  console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
+  
+  /*query = "insert";
+  connection.query(query, function(err, rows, fields) {
+    if (err) {
+      //console.log('table already exist');  
+    } else {
+      console.log('created gateway_table');  
+    }
+  });*/    
+});
+
+/// launch device programming gui on the program_port ///
+program_server.listen(program_port, function () {
+  console.log('program GUI on port %d', program_port);
+});
+
+program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
+program_io.on('connection', function (socket) {
+  socket.on('get_token', function (data) {
+    username = data['user'];
+    device_name = data['device_name'];
+    ip = data['ip'];
+    device_port = data['device_port']
+    var response = request.post(
+      'http://68.12.157.176:8080/pyfi.org/php/set_video.php',
+      {form: data},
+      function (error, response, data) {
+        if (!error && response.statusCode == 200) {
+          //console.log(body);
+          body.data = data;
+          body.emit('update');
         }
-      });
-}
+      }
+    );
+    
+    console.log( Date.now() + " | token received for " + data['user']);
+  });
+});
+/////////////////////////////////////////////////////
+
+server.listen(port, function () {
+  console.log('send-receive commands on port %d', port);
+});
 
 io.on('connection', function (socket) {
-
-  var addedUser = false;
+  socket.on('token', function (data) {
+    //get token from mysql database
+    //check data['token'] w database token
+    console.log('token: ' + data['token']);
+    console.log( Date.now() + " valid token");
+  });  
   socket.on('vlc_upstairs', function (data) {
     io2.emit('vlc', data);
-console.log( Date.now() + " playing vlc_upstairs...");
+    console.log( Date.now() + " playing vlc_upstairs...");
   });
   socket.on('vlc_downstairs', function (data) {
     io3.emit('vlc', data);
@@ -112,53 +186,16 @@ console.log( Date.now() + " playing vlc_dowstairs...");
        send_command("perl "+__dirname+"/huepl "+data+" 10");
        }
   });
-
-  // when the client emits 'add user', this listens and executes
-  socket.on('add user', function (username) {
-    // we store the username in the socket session for this client
-    socket.username = username;
-    // add the client's username to the global list
-    usernames[username] = username;
-    ++numUsers;
-    addedUser = true;
-    socket.emit('login', {
-      numUsers: numUsers
-    });
-    // echo globally (all clients) that a person has connected
-    socket.broadcast.emit('user joined', {
-      username: socket.username,
-      numUsers: numUsers
-    });
-  });
-
-  // when the client emits 'typing', we broadcast it to others
-  socket.on('typing', function () {
-    socket.broadcast.emit('typing', {
-      username: socket.username
-    });
-  });
-
-  // when the client emits 'stop typing', we broadcast it to others
-  socket.on('stop typing', function () {
-    socket.broadcast.emit('stop typing', {
-      username: socket.username
-    });
-  });
-
-  // when the user disconnects.. perform this
-  socket.on('disconnect', function () {
-    // remove the username from global usernames list
-    if (addedUser) {
-      delete usernames[socket.username];
-      --numUsers;
-
-      // echo globally that this client has left
-      socket.broadcast.emit('user left', {
-        username: socket.username,
-        numUsers: numUsers
-      });
-    }
-  });
 });
+
+function send_command(command){
+      console.log(command);
+      var child = exec(command,
+        function (error, stdout, stderr) {
+        if (error !== null) {
+          console.log('' + error);
+        }
+      });
+}
 
 

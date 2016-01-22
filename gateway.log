@@ -410,3 +410,78 @@ perl /home/pi/home-gateway/huepl off 9
 perl /home/pi/home-gateway/huepl off 10
 Error: Command failed: 
 Server listening at port 3030
+Server listening at port 3030
+1453357040271 upstairs volume up
+1453357040888 downstairs volume up
+1453357040894 upstairs volume up
+1453357040897 downstairs volume up
+1453357040899 upstairs volume up
+1453357040901 downstairs volume up
+1453357040903 upstairs volume up
+1453357040905 downstairs volume up
+1453357040907 upstairs volume up
+1453357040910 downstairs volume up
+1453357040914 upstairs volume down
+1453357040916 downstairs volume down
+1453357040918 upstairs volume down
+1453357040923 downstairs volume down
+1453357040925 upstairs volume down
+1453357040927 downstairs volume down
+1453357040930 upstairs volume down
+1453357040933 downstairs volume down
+Programming server listening at port 3000
+Socket server listening at port 3030
+
+/home/pi/home-gateway/gateway.js:35
+  if (err) throw err;
+                 ^
+Error: connect ECONNREFUSED
+    at errnoException (net.js:904:11)
+    at Object.afterConnect [as oncomplete] (net.js:895:19)
+    --------------------
+    at Protocol._enqueue (/home/pi/home-gateway/node_modules/mysql/lib/protocol/Protocol.js:141:48)
+    at Protocol.handshake (/home/pi/home-gateway/node_modules/mysql/lib/protocol/Protocol.js:52:41)
+    at Connection.connect (/home/pi/home-gateway/node_modules/mysql/lib/Connection.js:123:18)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:32:12)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+program GUI on port 3000
+send-receive commands on port 3030
+program GUI on port 3000
+send-receive commands on port 3030
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: listen EACCES
+    at errnoException (net.js:904:11)
+    at Server._listen2 (net.js:1023:19)
+    at listen (net.js:1064:10)
+    at Server.listen (net.js:1138:5)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:76:16)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+program GUI on port 3000
+send-receive commands on port 3030
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: listen EACCES
+    at errnoException (net.js:904:11)
+    at Server._listen2 (net.js:1023:19)
+    at listen (net.js:1064:10)
+    at Server.listen (net.js:1138:5)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:76:16)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)

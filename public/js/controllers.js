@@ -1,7 +1,11 @@
 var app = angular.module('starter', ['ionic'])
+
+.controller('tokenCtrl', function($scope, $stateParams, Chats, socket, $ionicLoading, $compile, $http) {
+
+
+})
+
 .controller('post_ctrl', function($scope,$http) {
-    $scope.firstName = "John";
-    $scope.lastName = "Doe";
 ///////////////////////////////////////////////////////////////////////////////////////////////////
   $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';  
   var param = function(obj) {
@@ -35,6 +39,13 @@ var app = angular.module('starter', ['ionic'])
     return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
   }]; 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+  var ws = io.connect('http://192.168.0.18:3000/');
+  $scope.token_request = function(command) {
+    data = {'user':$scope.user,'pwd':$scope.password,'ip':'68.12.157.176','device_port':'3030','device_name':'gateway'};
+    ws.emit('get_token', data);
+    console.log("get token for " + data['user']);
+  };
+  
   $scope.firstName = "John";
   $scope.lastName = "Doe";
   $scope.set = function() {
