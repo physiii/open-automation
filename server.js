@@ -1,159 +1,185 @@
-#!/bin/env node
-//  OpenShift sample Node application
+// Setup basic express server
+var fs = require('fs');
+var os = require('os');
 var express = require('express');
-var fs      = require('fs');
+var app = express();
+var program_app = express();
+var querystring = require('querystring');
+var http = require('http');
+var server = require('http').createServer(app);
+var program_server = require('http').createServer(program_app);
+var program_io = require('socket.io')(program_server);
+var io = require('socket.io')(server);
+var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
+var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
+var port = process.env.PORT || 3000;
+//var program_port = process.env.PORT || 3000;
+var php = require("node-php");
+var request = require('request');
+var exec = require('child_process').exec;
+var EventEmitter = require("events").EventEmitter;
+var body = new EventEmitter();
+
+var d = new Date();
+var light_delay = 0; //command delay in ms
+var previous_data = 0;
+
+var username = "init";
+var device_name = "init";
+var mac = "init";
+var ip = "init";
+var device_port = "init";
 
 
-/**
- *  Define the sample application.
- */
-var SampleApp = function() {
+// Fetch the computer's mac address 
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress;
+})
 
-    //  Scope.
-    var self = this;
-
-
-    /*  ================================================================  */
-    /*  Helper functions.                                                 */
-    /*  ================================================================  */
-
-    /**
-     *  Set up server IP address and port # using env variables/defaults.
-     */
-    self.setupVariables = function() {
-        //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-
-        if (typeof self.ipaddress === "undefined") {
-            //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-            //  allows us to run/test the app locally.
-            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
-        };
-    };
+/////////////////////////////////////////
+    
+body.on('update', function () {
+  var token = body.data;
+  console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
+  
+  /*query = "insert";
+  connection.query(query, function(err, rows, fields) {
+    if (err) {
+      //console.log('table already exist');  
+    } else {
+      console.log('created gateway_table');  
+    }
+  });*/    
+});
+app.use(express.static(__dirname + '/public'), php.cgi("/"));
 
 
-    /**
-     *  Populate the cache.
-     */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
+
+/// launch device programming gui on the program_port ///
+/*program_server.listen(program_port, function () {
+  console.log('program GUI on port %d', program_port);
+});
+
+program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
+program_io.on('connection', function (socket) {
+  socket.on('get_token', function (data) {
+    username = data['user'];
+    device_name = data['device_name'];
+    ip = data['ip'];
+    device_port = data['device_port']
+    var response = request.post(
+      'http://68.12.157.176:8080/pyfi.org/php/set_video.php',
+      {form: data},
+      function (error, response, data) {
+        if (!error && response.statusCode == 200) {
+          //console.log(body);
+          body.data = data;
+          body.emit('update');
         }
+      }
+    );
+    
+    console.log( Date.now() + " | token received for " + data['user']);
+  });
+});*/
+/////////////////////////////////////////////////////
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
+server.listen(port, function () {
+  console.log('send-receive commands on port %d', port);
+});
+
+io.on('connection', function (socket) {
+  socket.on('token', function (data) {
+    //get token from mysql database
+    //check data['token'] w database token
+    console.log('token: ' + data['token']);
+    console.log( Date.now() + " valid token");
+  });  
+  socket.on('vlc_upstairs', function (data) {
+    io2.emit('vlc', data);
+    console.log( Date.now() + " playing vlc_upstairs...");
+  });
+  socket.on('vlc_downstairs', function (data) {
+    io3.emit('vlc', data);
+console.log( Date.now() + " playing vlc_dowstairs...");
+  });
 
 
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    self.cache_get = function(key) { return self.zcache[key]; };
+  socket.on('media_upstairs', function (data) {
+    io_upstairs.emit('media', data);
+    console.log( Date.now() + " upstairs " + data);
+    
+  });
 
+  socket.on('media_downstairs', function (data) {
+    io_downstairs.emit('media', data);
+    console.log( Date.now() + " downstairs " + data);
+  });
+  
+  socket.on('peerflix_downstairs', function (data) {
+    io_downstairs.emit('peerflix', data);
+    console.log( Date.now() + " downstairs peerflix " + data);
+  });  
+  
+  socket.on('peerflix_upstairs', function (data) {
+    io_upstairs.emit('peerflix', data);
+    console.log( Date.now() + " upstairs peerflix " + data);
+  });  
 
-    /**
-     *  terminator === the termination handler
-     *  Terminate server on receipt of the specified signal.
-     *  @param {string} sig  Signal to terminate on.
-     */
-    self.terminator = function(sig){
-        if (typeof sig === "string") {
-           console.log('%s: Received %s - terminating sample app ...',
-                       Date(Date.now()), sig);
-           process.exit(1);
+  socket.on('lights', function (data) {
+      //Date.now = function() { return new Date().getTime(); }
+      console.log("<<-------- " + Date.now() + " -------->>");
+      if (data <= 254 && data >= 0){
+         if (data > 200) data = 254;
+         diff = Math.abs(data - previous_data);
+         if (diff > 20){
+           send_command("perl "+__dirname+"/huepl bri 1 " + data);
+           send_command("perl "+__dirname+"/huepl bri 2 " + data);
+           send_command("perl "+__dirname+"/huepl bri 3 " + data);
+           send_command("perl "+__dirname+"/huepl bri 4 " + data);
+           send_command("perl "+__dirname+"/huepl bri 5 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 6 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 7 " + data); 
+           send_command("perl "+__dirname+"/huepl bri 8 " + data);
+           send_command("perl "+__dirname+"/huepl bri 9 " + data); 
+           previous_data = data;
+         }
+      } else {
+      if (data != "off") {
+        send_command("perl "+__dirname+"/huepl on 1");
+        send_command("perl "+__dirname+"/huepl on 2");
+        send_command("perl "+__dirname+"/huepl on 3");
+        send_command("perl "+__dirname+"/huepl on 4");
+        send_command("perl "+__dirname+"/huepl on 5");         
+        send_command("perl "+__dirname+"/huepl on 6");
+        send_command("perl "+__dirname+"/huepl on 7");         
+        send_command("perl "+__dirname+"/huepl on 8");
+        send_command("perl "+__dirname+"/huepl on 9");         
+        send_command("perl "+__dirname+"/huepl on 10");
+       }
+       send_command("perl "+__dirname+"/huepl "+data+" 1");
+       send_command("perl "+__dirname+"/huepl "+data+" 2");
+       send_command("perl "+__dirname+"/huepl "+data+" 3");
+       send_command("perl "+__dirname+"/huepl "+data+" 4");
+       send_command("perl "+__dirname+"/huepl "+data+" 5");
+       send_command("perl "+__dirname+"/huepl "+data+" 6");
+       send_command("perl "+__dirname+"/huepl "+data+" 7");
+       send_command("perl "+__dirname+"/huepl "+data+" 8");
+       send_command("perl "+__dirname+"/huepl "+data+" 9");
+       send_command("perl "+__dirname+"/huepl "+data+" 10");
+       }
+  });
+});
+
+function send_command(command){
+      console.log(command);
+      var child = exec(command,
+        function (error, stdout, stderr) {
+        if (error !== null) {
+          console.log('' + error);
         }
-        console.log('%s: Node server stopped.', Date(Date.now()) );
-    };
+      });
+}
 
-
-    /**
-     *  Setup termination handlers (for exit and a list of signals).
-     */
-    self.setupTerminationHandlers = function(){
-        //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(); });
-
-        // Removed 'SIGPIPE' from the list - bugz 852598.
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function(element, index, array) {
-            process.on(element, function() { self.terminator(element); });
-        });
-    };
-
-
-    /*  ================================================================  */
-    /*  App server functions (main app logic here).                       */
-    /*  ================================================================  */
-
-    /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-    };
-
-
-    /**
-     *  Initialize the server (express) and create the routes and register
-     *  the handlers.
-     */
-    self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
-
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
-    };
-
-
-    /**
-     *  Initializes the sample application.
-     */
-    self.initialize = function() {
-        self.setupVariables();
-        self.populateCache();
-        self.setupTerminationHandlers();
-
-        // Create the express server and routes.
-        self.initializeServer();
-    };
-
-
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                        Date(Date.now() ), self.ipaddress, self.port);
-        });
-    };
-
-};   /*  Sample Application.  */
-
-
-
-/**
- *  main():  Main code.
- */
-var zapp = new SampleApp();
-zapp.initialize();
-zapp.start();
 
