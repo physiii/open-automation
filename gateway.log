@@ -485,3 +485,13 @@ Error: listen EACCES
     at Module.load (module.js:356:32)
     at Function.Module._load (module.js:312:12)
     at Function.Module.runMain (module.js:497:10)
+program GUI on port 3000
+send-receive commands on port 3030
+1453567529104 upstairs volume up
+1453567529110 downstairs volume up
+1453567529708 upstairs volume up
+1453567529712 downstairs volume up
+1453567530026 upstairs volume up
+1453567530049 downstairs volume up
+1453567530663 upstairs volume up
+1453567530667 downstairs volume up

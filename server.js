@@ -12,33 +12,24 @@ var program_io = require('socket.io')(program_server);
 var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
-var port = process.env.PORT || 3030;
+var port = process.env.PORT || 8080;
 //var program_port = process.env.PORT || 3000;
 var php = require("node-php");
 var request = require('request');
 var exec = require('child_process').exec;
-var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
-var gb_event = new EventEmitter();
-
 
 var d = new Date();
 var light_delay = 0; //command delay in ms
 var previous_data = 0;
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'password',
-  database : 'device'
-});
 
 var username = "init";
 var device_name = "init";
 var mac = "init";
 var ip = "init";
 var device_port = "init";
-var gb_pin = "init";
+
 
 // Fetch the computer's mac address 
 require('getmac').getMac(function(err,macAddress){
@@ -46,35 +37,6 @@ require('getmac').getMac(function(err,macAddress){
   mac = macAddress;
 })
 
-const gb_read = require('child_process').exec;
-
-function gb_timeout(){
-setTimeout(function () {
-  gb_loop();
-}, 100)
-}
-function gb_loop(){
-const child = gb_read('gpio -g read 23',
-  (error, stdout, stderr) => {
-    gb_pin = stdout;
-    console.log(gb_pin);
-});
-gb_timeout();
-}
-gb_timeout();
-
-/// create tables if the do not exist ///
-var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
-connection.connect();
-connection.query(query, function(err, rows, fields) {
-  if (err) {
-    //console.log('table already exist');  
-  } else {
-    console.log('created gateway_tok table');
-    //store device info in database
-    
-  }
-});
 /////////////////////////////////////////
     
 body.on('update', function () {
@@ -90,6 +52,7 @@ body.on('update', function () {
     }
   });*/    
 });
+app.use(express.static(__dirname + '/public'), php.cgi("/"));
 
 
 
@@ -127,12 +90,6 @@ server.listen(port, function () {
 });
 
 io.on('connection', function (socket) {
-
-  socket.on('thermostat', function (data) {
-    io_upstairs.emit('media', data);
-    console.log( Date.now() + " upstairs " + data);
-  });
-
   socket.on('token', function (data) {
     //get token from mysql database
     //check data['token'] w database token
@@ -152,6 +109,7 @@ console.log( Date.now() + " playing vlc_dowstairs...");
   socket.on('media_upstairs', function (data) {
     io_upstairs.emit('media', data);
     console.log( Date.now() + " upstairs " + data);
+    
   });
 
   socket.on('media_downstairs', function (data) {
