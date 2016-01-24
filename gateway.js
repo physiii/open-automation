@@ -20,6 +20,8 @@ var exec = require('child_process').exec;
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
+var gb_event = new EventEmitter();
+
 
 var d = new Date();
 var light_delay = 0; //command delay in ms
@@ -36,13 +38,30 @@ var device_name = "init";
 var mac = "init";
 var ip = "init";
 var device_port = "init";
-
+var gb_pin = "init";
 
 // Fetch the computer's mac address 
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress;
 })
+
+const gb_read = require('child_process').exec;
+
+function gb_timeout(){
+setTimeout(function () {
+  gb_loop();
+}, 100)
+}
+function gb_loop(){
+const child = gb_read('gpio -g read 23',
+  (error, stdout, stderr) => {
+    gb_pin = stdout;
+    console.log(gb_pin);
+});
+gb_timeout();
+}
+gb_timeout();
 
 /// create tables if the do not exist ///
 var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
