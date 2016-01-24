@@ -12,7 +12,7 @@ var program_io = require('socket.io')(program_server);
 var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3030;
 //var program_port = process.env.PORT || 3000;
 var php = require("node-php");
 var request = require('request');
@@ -108,6 +108,12 @@ server.listen(port, function () {
 });
 
 io.on('connection', function (socket) {
+
+  socket.on('thermostat', function (data) {
+    io_upstairs.emit('media', data);
+    console.log( Date.now() + " upstairs " + data);
+  });
+
   socket.on('token', function (data) {
     //get token from mysql database
     //check data['token'] w database token
@@ -127,7 +133,6 @@ console.log( Date.now() + " playing vlc_dowstairs...");
   socket.on('media_upstairs', function (data) {
     io_upstairs.emit('media', data);
     console.log( Date.now() + " upstairs " + data);
-    
   });
 
   socket.on('media_downstairs', function (data) {
