@@ -20,6 +20,8 @@ var exec = require('child_process').exec;
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
+var gb_event = new EventEmitter();
+const gb_read = require('child_process').exec;
 
 var d = new Date();
 var light_delay = 0; //command delay in ms
@@ -36,7 +38,8 @@ var device_name = "init";
 var mac = "init";
 var ip = "init";
 var device_port = "init";
-
+var count = 0;
+var text_timeout = 0;
 
 // Fetch the computer's mac address 
 require('getmac').getMac(function(err,macAddress){
@@ -109,6 +112,42 @@ server.listen(port, function () {
 
 io.on('connection', function (socket) {
 
+function gb_timeout(){
+  setTimeout(function () {
+    gb_loop();
+  }, 100)
+}
+var previous_gb_value = "";
+var temp = 0;
+function gb_loop(){
+  const child = gb_read('gpio -g read 23',
+    (error, stdout, stderr) => {
+      gb_value = stdout;
+      if (previous_gb_value != gb_value){
+        temp = Date.now();
+        count = count + 1;
+        console.log("window sensor triggered " + count);
+        io.emit('gpio_pin',count);
+       setTimeout(function () {
+         count = 0;
+       }, 10000);
+      }
+      if (count > 20){
+        if (text_timeout == 0){
+          console.log("sending text alert!");
+          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");     
+          text_timeout = 1; 
+          setTimeout(function () {
+            text_timeout = 0;
+          }, 60000); 
+         count = 0;
+        }
+      }
+      previous_gb_value = gb_value;
+  });
+  gb_timeout();
+}
+  gb_timeout();
   socket.on('thermostat', function (data) {
     io_upstairs.emit('media', data);
     console.log( Date.now() + " upstairs " + data);
@@ -204,5 +243,6 @@ function send_command(command){
         }
       });
 }
+
 
 

@@ -499,3 +499,778 @@ send-receive commands on port 3030
 1453680429167 upstairs mute
 1453680429208 upstairs mute
 1453680429209 upstairs mute
+send-receive commands on port 3030
+send-receive commands on port 3030
+<<-------- 1453688401506 -------->>
+perl /var/www/html/node/huepl off 1
+perl /var/www/html/node/huepl off 2
+perl /var/www/html/node/huepl off 3
+perl /var/www/html/node/huepl off 4
+perl /var/www/html/node/huepl off 5
+perl /var/www/html/node/huepl off 6
+perl /var/www/html/node/huepl off 7
+perl /var/www/html/node/huepl off 8
+perl /var/www/html/node/huepl off 9
+perl /var/www/html/node/huepl off 10
+1453688413862 upstairs volume down
+1453688413868 downstairs volume down
+1453688414642 upstairs volume down
+1453688414651 downstairs volume down
+1453688414837 upstairs volume down
+1453688414840 downstairs volume down
+1453688415564 upstairs volume up
+1453688415568 downstairs volume up
+1453688415773 upstairs volume up
+1453688415786 downstairs volume up
+1453688415959 upstairs volume up
+1453688415971 downstairs volume up
+1453688416578 upstairs volume up
+1453688416585 downstairs volume up
+1453688416756 upstairs volume up
+1453688416764 downstairs volume up
+1453688417326 upstairs volume down
+1453688417335 downstairs volume down
+send-receive commands on port 3030
+send-receive commands on port 3030
+window sensor triggered, sending alert!
+send-receive commands on port 3030
+window sensor triggered, sending alert!
+1453688799634 upstairs mute
+1453688799685 downstairs mute
+1453688799687 upstairs mute
+1453688799687 downstairs mute
+window sensor triggered, sending alert!
+send-receive commands on port 3030
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453697555252 upstairs volume up
+1453697555287 downstairs volume up
+1453697555288 upstairs volume up
+1453697555289 downstairs volume up
+1453697555290 upstairs volume down
+1453697555290 downstairs volume down
+1453697555291 upstairs volume up
+1453697555292 downstairs volume up
+<<-------- 1453697586384 -------->>
+perl /var/www/html/node/huepl off 1
+perl /var/www/html/node/huepl off 2
+perl /var/www/html/node/huepl off 3
+perl /var/www/html/node/huepl off 4
+perl /var/www/html/node/huepl off 5
+perl /var/www/html/node/huepl off 6
+perl /var/www/html/node/huepl off 7
+perl /var/www/html/node/huepl off 8
+perl /var/www/html/node/huepl off 9
+perl /var/www/html/node/huepl off 10
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl off 10
+
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+<<-------- 1453704650849 -------->>
+perl /var/www/html/node/huepl on 1
+perl /var/www/html/node/huepl on 2
+perl /var/www/html/node/huepl on 3
+perl /var/www/html/node/huepl on 4
+perl /var/www/html/node/huepl on 5
+perl /var/www/html/node/huepl on 6
+perl /var/www/html/node/huepl on 7
+perl /var/www/html/node/huepl on 8
+perl /var/www/html/node/huepl on 9
+perl /var/www/html/node/huepl on 10
+perl /var/www/html/node/huepl warm 1
+perl /var/www/html/node/huepl warm 2
+perl /var/www/html/node/huepl warm 3
+perl /var/www/html/node/huepl warm 4
+perl /var/www/html/node/huepl warm 5
+perl /var/www/html/node/huepl warm 6
+perl /var/www/html/node/huepl warm 7
+perl /var/www/html/node/huepl warm 8
+perl /var/www/html/node/huepl warm 9
+perl /var/www/html/node/huepl warm 10
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl warm 10
+
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl warm 4
+
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl on 10
+
+<<-------- 1453705164021 -------->>
+perl /var/www/html/node/huepl off 1
+perl /var/www/html/node/huepl off 2
+perl /var/www/html/node/huepl off 3
+perl /var/www/html/node/huepl off 4
+perl /var/www/html/node/huepl off 5
+perl /var/www/html/node/huepl off 6
+perl /var/www/html/node/huepl off 7
+perl /var/www/html/node/huepl off 8
+perl /var/www/html/node/huepl off 9
+perl /var/www/html/node/huepl off 10
+window sensor triggered, sending alert!
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl off 10
+
+window sensor triggered, sending alert!
+send-receive commands on port 3030
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731669367 upstairs mute
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731670762 downstairs mute
+1453731670763 upstairs volume down
+1453731670765 downstairs volume down
+1453731670765 upstairs volume down
+1453731670766 downstairs volume down
+1453731670767 upstairs volume down
+1453731670768 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731671447 upstairs volume down
+1453731671448 downstairs volume down
+1453731671449 upstairs volume up
+1453731671453 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731672152 upstairs volume up
+1453731672153 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731672881 upstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731687998 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731692674 upstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731702778 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731706973 upstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731713786 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731721472 upstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731730442 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731737512 upstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731741179 upstairs volume down
+1453731741272 downstairs volume up
+1453731741273 upstairs volume down
+1453731741274 downstairs volume down
+1453731741274 upstairs mute
+1453731741275 downstairs mute
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731745175 downstairs mute
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731749190 downstairs mute
+1453731749191 downstairs volume down
+1453731749192 downstairs volume up
+1453731749192 downstairs mute
+1453731749193 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731753538 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731767524 upstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731782576 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731806643 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731814233 downstairs volume down
+1453731814233 downstairs mute
+1453731814236 downstairs volume up
+1453731814237 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731822578 upstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731831430 downstairs volume up
+1453731831431 upstairs volume up
+1453731831447 downstairs volume up
+1453731831448 upstairs volume up
+1453731831449 downstairs volume up
+1453731831449 upstairs volume up
+1453731831450 downstairs volume up
+1453731831450 upstairs volume up
+1453731831451 downstairs volume up
+1453731831451 upstairs volume up
+1453731831452 downstairs volume up
+1453731831452 upstairs volume up
+1453731831453 downstairs volume up
+1453731831453 upstairs volume up
+1453731831454 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731849549 upstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453731858560 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+send-receive commands on port 3030
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732061358 upstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732061777 downstairs volume down
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732286679 upstairs mute
+1453732288598 downstairs mute
+1453732291442 upstairs mute
+1453732292387 downstairs mute
+1453732293278 upstairs volume up
+1453732294172 downstairs volume up
+1453732299472 upstairs mute
+1453732300346 downstairs mute
+1453732303606 upstairs volume up
+1453732304499 downstairs volume up
+1453732307798 upstairs volume down
+1453732308681 downstairs volume down
+1453732309637 upstairs volume up
+1453732310980 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732313234 upstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732317461 downstairs volume up
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732358160 upstairs mute
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732367456 downstairs mute
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+window sensor triggered, sending alert!
+1453732377634 upstairs mute
+1453732387918 downstairs mute
+1453732397653 upstairs volume up
+1453732407200 downstairs volume up
+window sensor triggered, sending alert!
+1453732416721 upstairs volume up
+1453732416726 downstairs volume up
+1453732419890 downstairs volume up
+1453732419891 downstairs volume down
+1453732419892 downstairs volume down
+1453732419894 downstairs mute
+1453732423020 downstairs mute
+1453732426295 downstairs volume up
+1453732429776 downstairs mute
+1453732433195 downstairs mute
+1453732433196 downstairs mute
+1453732433197 downstairs mute
+1453732436599 upstairs volume up
+window sensor triggered, sending alert!
+1453732454161 upstairs volume up
+1453732457386 upstairs volume up
+1453732457387 upstairs volume down
+1453732457388 upstairs volume down
+1453732457389 downstairs mute
+1453732457389 downstairs volume up
+1453732463962 upstairs volume up
