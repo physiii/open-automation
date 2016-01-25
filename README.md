@@ -20,6 +20,7 @@ nodejs automation and media server
 12. sudo nano /etc/motion/motion.conf
 13. -- change to stream_localhost off
 14. sudo chmod -R 777 /var/lib/motion
+15. -- sudo cp camera/nph-mjprox /usr/lib/cgi-bin
 
 #installation
 1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
