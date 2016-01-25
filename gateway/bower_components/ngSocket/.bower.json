@@ -1,0 +1,41 @@
+{
+  "name": "ngSocket",
+  "version": "0.2.1",
+  "homepage": "https://github.com/angular/ngSocket",
+  "authors": [
+    "Jeff Cross <middlefloor@gmail.com>"
+  ],
+  "description": "An AngularJS service for interacting with WebSockets.",
+  "main": "dist/ngSocket.js",
+  "keywords": [
+    "angular",
+    "javascript",
+    "websockets"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "src/",
+    "**/.*",
+    "bower_components/",
+    "node_modules/",
+    "package.json",
+    "test",
+    "karma.conf.js",
+    "README.md",
+    "test-*",
+    "dist.sh"
+  ],
+  "devDependencies": {
+    "angular-mocks": "~1.2.10"
+  },
+  "_release": "0.2.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.1",
+    "commit": "eddb9f03272f6a110c3cc3e7cef154f88858d391"
+  },
+  "_source": "git://github.com/angular/ngSocket.git",
+  "_target": "~0.2.1",
+  "_originalSource": "ngSocket",
+  "_direct": true
+}

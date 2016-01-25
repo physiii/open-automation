@@ -1,0 +1,501 @@
+
+node.js:815
+    var cwd = process.cwd();
+                      ^
+Error: ENOENT, no such file or directory
+    at Function.startup.resolveArgv0 (node.js:815:23)
+    at startup (node.js:58:13)
+    at node.js:906:3
+
+node.js:815
+    var cwd = process.cwd();
+                      ^
+Error: ENOENT, no such file or directory
+    at Function.startup.resolveArgv0 (node.js:815:23)
+    at startup (node.js:58:13)
+    at node.js:906:3
+Server listening at port 3030
+1453339752172 upstairs volume down
+1453339752838 upstairs volume up
+1453339753624 upstairs volume up
+1453339755206 upstairs volume up
+1453339755696 upstairs volume up
+1453339756311 upstairs volume up
+1453339756896 upstairs volume up
+1453339757208 upstairs volume up
+1453339757971 upstairs volume up
+1453339758138 upstairs volume up
+1453339758300 upstairs volume up
+1453339758860 upstairs volume down
+1453339759048 upstairs volume down
+1453339759196 upstairs volume down
+1453339759382 upstairs volume down
+1453339759552 upstairs volume down
+1453339760451 downstairs volume up
+1453339760639 downstairs volume up
+1453339761113 downstairs volume down
+1453339761304 downstairs volume down
+1453339761510 downstairs volume down
+<<-------- 1453339765780 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl blue 1
+perl /home/pi/home-gateway/huepl blue 2
+perl /home/pi/home-gateway/huepl blue 3
+perl /home/pi/home-gateway/huepl blue 4
+perl /home/pi/home-gateway/huepl blue 5
+perl /home/pi/home-gateway/huepl blue 6
+perl /home/pi/home-gateway/huepl blue 7
+perl /home/pi/home-gateway/huepl blue 8
+perl /home/pi/home-gateway/huepl blue 9
+perl /home/pi/home-gateway/huepl blue 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+<<-------- 1453339768171 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl green 1
+perl /home/pi/home-gateway/huepl green 2
+perl /home/pi/home-gateway/huepl green 3
+perl /home/pi/home-gateway/huepl green 4
+perl /home/pi/home-gateway/huepl green 5
+perl /home/pi/home-gateway/huepl green 6
+perl /home/pi/home-gateway/huepl green 7
+perl /home/pi/home-gateway/huepl green 8
+perl /home/pi/home-gateway/huepl green 9
+perl /home/pi/home-gateway/huepl green 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+<<-------- 1453339771149 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl blue 1
+perl /home/pi/home-gateway/huepl blue 2
+perl /home/pi/home-gateway/huepl blue 3
+perl /home/pi/home-gateway/huepl blue 4
+perl /home/pi/home-gateway/huepl blue 5
+perl /home/pi/home-gateway/huepl blue 6
+perl /home/pi/home-gateway/huepl blue 7
+perl /home/pi/home-gateway/huepl blue 8
+perl /home/pi/home-gateway/huepl blue 9
+perl /home/pi/home-gateway/huepl blue 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+Server listening at port 3030
+<<-------- 1453339832295 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl warm 1
+perl /home/pi/home-gateway/huepl warm 2
+perl /home/pi/home-gateway/huepl warm 3
+perl /home/pi/home-gateway/huepl warm 4
+perl /home/pi/home-gateway/huepl warm 5
+perl /home/pi/home-gateway/huepl warm 6
+perl /home/pi/home-gateway/huepl warm 7
+perl /home/pi/home-gateway/huepl warm 8
+perl /home/pi/home-gateway/huepl warm 9
+perl /home/pi/home-gateway/huepl warm 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+<<-------- 1453341173501 -------->>
+perl /home/pi/home-gateway/huepl bri 1 121
+perl /home/pi/home-gateway/huepl bri 2 121
+perl /home/pi/home-gateway/huepl bri 3 121
+perl /home/pi/home-gateway/huepl bri 4 121
+perl /home/pi/home-gateway/huepl bri 5 121
+perl /home/pi/home-gateway/huepl bri 6 121
+perl /home/pi/home-gateway/huepl bri 7 121
+perl /home/pi/home-gateway/huepl bri 8 121
+perl /home/pi/home-gateway/huepl bri 9 121
+<<-------- 1453341173748 -------->>
+<<-------- 1453341173751 -------->>
+<<-------- 1453341173764 -------->>
+<<-------- 1453341173767 -------->>
+<<-------- 1453341173787 -------->>
+<<-------- 1453341173792 -------->>
+<<-------- 1453341173805 -------->>
+<<-------- 1453341173819 -------->>
+<<-------- 1453341173836 -------->>
+<<-------- 1453341173853 -------->>
+perl /home/pi/home-gateway/huepl bri 1 143
+perl /home/pi/home-gateway/huepl bri 2 143
+perl /home/pi/home-gateway/huepl bri 3 143
+perl /home/pi/home-gateway/huepl bri 4 143
+perl /home/pi/home-gateway/huepl bri 5 143
+perl /home/pi/home-gateway/huepl bri 6 143
+perl /home/pi/home-gateway/huepl bri 7 143
+perl /home/pi/home-gateway/huepl bri 8 143
+perl /home/pi/home-gateway/huepl bri 9 143
+<<-------- 1453341174165 -------->>
+<<-------- 1453341174167 -------->>
+<<-------- 1453341174169 -------->>
+<<-------- 1453341174177 -------->>
+<<-------- 1453341174186 -------->>
+<<-------- 1453341174229 -------->>
+<<-------- 1453341174232 -------->>
+<<-------- 1453341174237 -------->>
+<<-------- 1453341174277 -------->>
+<<-------- 1453341174283 -------->>
+<<-------- 1453341174289 -------->>
+<<-------- 1453341174342 -------->>
+<<-------- 1453341174386 -------->>
+perl /home/pi/home-gateway/huepl bri 1 165
+perl /home/pi/home-gateway/huepl bri 2 165
+perl /home/pi/home-gateway/huepl bri 3 165
+perl /home/pi/home-gateway/huepl bri 4 165
+perl /home/pi/home-gateway/huepl bri 5 165
+perl /home/pi/home-gateway/huepl bri 6 165
+perl /home/pi/home-gateway/huepl bri 7 165
+perl /home/pi/home-gateway/huepl bri 8 165
+perl /home/pi/home-gateway/huepl bri 9 165
+<<-------- 1453341180112 -------->>
+<<-------- 1453341180223 -------->>
+<<-------- 1453341180225 -------->>
+<<-------- 1453341180229 -------->>
+<<-------- 1453341180245 -------->>
+<<-------- 1453341180263 -------->>
+<<-------- 1453341180279 -------->>
+perl /home/pi/home-gateway/huepl bri 1 142
+perl /home/pi/home-gateway/huepl bri 2 142
+perl /home/pi/home-gateway/huepl bri 3 142
+perl /home/pi/home-gateway/huepl bri 4 142
+perl /home/pi/home-gateway/huepl bri 5 142
+perl /home/pi/home-gateway/huepl bri 6 142
+perl /home/pi/home-gateway/huepl bri 7 142
+perl /home/pi/home-gateway/huepl bri 8 142
+perl /home/pi/home-gateway/huepl bri 9 142
+<<-------- 1453341180554 -------->>
+<<-------- 1453341180560 -------->>
+<<-------- 1453341180562 -------->>
+<<-------- 1453341180564 -------->>
+<<-------- 1453341180583 -------->>
+<<-------- 1453341180586 -------->>
+<<-------- 1453341180588 -------->>
+<<-------- 1453341180590 -------->>
+<<-------- 1453341180592 -------->>
+<<-------- 1453341180594 -------->>
+<<-------- 1453341180613 -------->>
+<<-------- 1453341180617 -------->>
+<<-------- 1453341180619 -------->>
+<<-------- 1453341180716 -------->>
+perl /home/pi/home-gateway/huepl bri 1 121
+perl /home/pi/home-gateway/huepl bri 2 121
+perl /home/pi/home-gateway/huepl bri 3 121
+perl /home/pi/home-gateway/huepl bri 4 121
+perl /home/pi/home-gateway/huepl bri 5 121
+perl /home/pi/home-gateway/huepl bri 6 121
+perl /home/pi/home-gateway/huepl bri 7 121
+perl /home/pi/home-gateway/huepl bri 8 121
+perl /home/pi/home-gateway/huepl bri 9 121
+<<-------- 1453341187343 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl orange 1
+perl /home/pi/home-gateway/huepl orange 2
+perl /home/pi/home-gateway/huepl orange 3
+perl /home/pi/home-gateway/huepl orange 4
+perl /home/pi/home-gateway/huepl orange 5
+perl /home/pi/home-gateway/huepl orange 6
+perl /home/pi/home-gateway/huepl orange 7
+perl /home/pi/home-gateway/huepl orange 8
+perl /home/pi/home-gateway/huepl orange 9
+perl /home/pi/home-gateway/huepl orange 10
+<<-------- 1453341188104 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl magenta 1
+perl /home/pi/home-gateway/huepl magenta 2
+perl /home/pi/home-gateway/huepl magenta 3
+perl /home/pi/home-gateway/huepl magenta 4
+perl /home/pi/home-gateway/huepl magenta 5
+perl /home/pi/home-gateway/huepl magenta 6
+perl /home/pi/home-gateway/huepl magenta 7
+perl /home/pi/home-gateway/huepl magenta 8
+perl /home/pi/home-gateway/huepl magenta 9
+perl /home/pi/home-gateway/huepl magenta 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+<<-------- 1453341195533 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl purple 1
+perl /home/pi/home-gateway/huepl purple 2
+perl /home/pi/home-gateway/huepl purple 3
+perl /home/pi/home-gateway/huepl purple 4
+perl /home/pi/home-gateway/huepl purple 5
+perl /home/pi/home-gateway/huepl purple 6
+perl /home/pi/home-gateway/huepl purple 7
+perl /home/pi/home-gateway/huepl purple 8
+perl /home/pi/home-gateway/huepl purple 9
+perl /home/pi/home-gateway/huepl purple 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+<<-------- 1453341250077 -------->>
+perl /home/pi/home-gateway/huepl on 1
+perl /home/pi/home-gateway/huepl on 2
+perl /home/pi/home-gateway/huepl on 3
+perl /home/pi/home-gateway/huepl on 4
+perl /home/pi/home-gateway/huepl on 5
+perl /home/pi/home-gateway/huepl on 6
+perl /home/pi/home-gateway/huepl on 7
+perl /home/pi/home-gateway/huepl on 8
+perl /home/pi/home-gateway/huepl on 9
+perl /home/pi/home-gateway/huepl on 10
+perl /home/pi/home-gateway/huepl warm 1
+perl /home/pi/home-gateway/huepl warm 2
+perl /home/pi/home-gateway/huepl warm 3
+perl /home/pi/home-gateway/huepl warm 4
+perl /home/pi/home-gateway/huepl warm 5
+perl /home/pi/home-gateway/huepl warm 6
+perl /home/pi/home-gateway/huepl warm 7
+perl /home/pi/home-gateway/huepl warm 8
+perl /home/pi/home-gateway/huepl warm 9
+perl /home/pi/home-gateway/huepl warm 10
+Error: Command failed: 
+Error: Command failed: 
+Error: Command failed: 
+1453342548618 downstairs mute
+1453342549465 downstairs volume up
+1453342869299 downstairs volume down
+1453342869873 downstairs volume down
+1453342870785 downstairs mute
+1453342871917 downstairs volume up
+1453342872702 downstairs volume up
+1453342873202 downstairs volume up
+1453342873405 downstairs volume up
+1453342874042 downstairs volume up
+1453342874229 downstairs volume up
+1453342874394 downstairs volume up
+1453342875403 downstairs volume down
+1453342875890 downstairs volume down
+1453342878409 downstairs volume down
+1453342969297 downstairs mute
+1453342970061 downstairs volume down
+1453342970567 downstairs volume up
+1453342971138 downstairs volume down
+1453342971384 downstairs volume down
+1453343240310 downstairs mute
+1453344459638 downstairs volume up
+1453344460346 downstairs volume down
+1453344460773 downstairs volume down
+1453344461830 downstairs volume down
+1453344578510 downstairs volume down
+1453344579266 downstairs volume up
+1453344580578 downstairs mute
+1453344582418 downstairs volume down
+1453344583523 downstairs volume up
+1453344584948 downstairs volume up
+1453344586007 downstairs volume down
+1453344587129 downstairs volume up
+1453344593607 downstairs volume down
+1453344597991 downstairs volume up
+1453345003124 downstairs mute
+1453345004406 downstairs volume down
+Server listening at port 3030
+1453346935356 downstairs mute
+1453346936361 upstairs volume down
+1453346936455 downstairs volume down
+1453346936456 upstairs mute
+1453346936456 downstairs mute
+1453346993611 downstairs volume down
+1453346993983 downstairs volume down
+1453346994153 downstairs volume down
+1453346994417 downstairs volume down
+1453346995484 downstairs volume up
+1453346995694 downstairs volume up
+1453347034737 downstairs mute
+1453347035164 downstairs volume up
+1453347082723 downstairs volume down
+1453351042584 upstairs volume up
+1453351042659 downstairs volume up
+1453351043029 upstairs volume up
+1453351043034 downstairs volume up
+1453351043111 upstairs volume up
+1453351043126 downstairs volume up
+1453351044095 upstairs volume down
+1453351044101 downstairs volume down
+1453351044322 upstairs volume down
+1453351044327 downstairs volume down
+1453351045269 upstairs volume up
+1453351045276 downstairs volume up
+1453351045525 upstairs volume up
+1453351045530 downstairs volume up
+1453351045943 upstairs volume up
+1453351045949 downstairs volume up
+1453351046347 upstairs volume up
+1453351046352 downstairs volume up
+1453351047108 upstairs volume down
+1453351047114 downstairs volume down
+1453351047321 upstairs volume down
+1453351047327 downstairs volume down
+1453351047769 upstairs volume down
+1453351047775 downstairs volume down
+1453351047966 upstairs volume down
+1453351047972 downstairs volume down
+<<-------- 1453351050031 -------->>
+perl /home/pi/home-gateway/huepl off 1
+perl /home/pi/home-gateway/huepl off 2
+perl /home/pi/home-gateway/huepl off 3
+perl /home/pi/home-gateway/huepl off 4
+perl /home/pi/home-gateway/huepl off 5
+perl /home/pi/home-gateway/huepl off 6
+perl /home/pi/home-gateway/huepl off 7
+perl /home/pi/home-gateway/huepl off 8
+perl /home/pi/home-gateway/huepl off 9
+perl /home/pi/home-gateway/huepl off 10
+Error: Command failed: 
+Server listening at port 3030
+Server listening at port 3030
+1453357040271 upstairs volume up
+1453357040888 downstairs volume up
+1453357040894 upstairs volume up
+1453357040897 downstairs volume up
+1453357040899 upstairs volume up
+1453357040901 downstairs volume up
+1453357040903 upstairs volume up
+1453357040905 downstairs volume up
+1453357040907 upstairs volume up
+1453357040910 downstairs volume up
+1453357040914 upstairs volume down
+1453357040916 downstairs volume down
+1453357040918 upstairs volume down
+1453357040923 downstairs volume down
+1453357040925 upstairs volume down
+1453357040927 downstairs volume down
+1453357040930 upstairs volume down
+1453357040933 downstairs volume down
+Programming server listening at port 3000
+Socket server listening at port 3030
+
+/home/pi/home-gateway/gateway.js:35
+  if (err) throw err;
+                 ^
+Error: connect ECONNREFUSED
+    at errnoException (net.js:904:11)
+    at Object.afterConnect [as oncomplete] (net.js:895:19)
+    --------------------
+    at Protocol._enqueue (/home/pi/home-gateway/node_modules/mysql/lib/protocol/Protocol.js:141:48)
+    at Protocol.handshake (/home/pi/home-gateway/node_modules/mysql/lib/protocol/Protocol.js:52:41)
+    at Connection.connect (/home/pi/home-gateway/node_modules/mysql/lib/Connection.js:123:18)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:32:12)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+program GUI on port 3000
+send-receive commands on port 3030
+program GUI on port 3000
+send-receive commands on port 3030
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: listen EACCES
+    at errnoException (net.js:904:11)
+    at Server._listen2 (net.js:1023:19)
+    at listen (net.js:1064:10)
+    at Server.listen (net.js:1138:5)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:76:16)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+program GUI on port 3000
+send-receive commands on port 3030
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: listen EACCES
+    at errnoException (net.js:904:11)
+    at Server._listen2 (net.js:1023:19)
+    at listen (net.js:1064:10)
+    at Server.listen (net.js:1138:5)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:76:16)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+program GUI on port 3000
+send-receive commands on port 3030
+1453567529104 upstairs volume up
+1453567529110 downstairs volume up
+1453567529708 upstairs volume up
+1453567529712 downstairs volume up
+1453567530026 upstairs volume up
+1453567530049 downstairs volume up
+1453567530663 upstairs volume up
+1453567530667 downstairs volume up
+send-receive commands on port 3030
+1453680429167 upstairs mute
+1453680429208 upstairs mute
+1453680429209 upstairs mute
