@@ -1,9 +1,10 @@
 # home-gateway
+nodejs automation and media server
 
 =======
-##installation
+#installation
 
-###gateway
+##gateway
 1. sudo apt-get install nodejs mysql-server php5 php5-mysql motion
 2. mysql -u root -p
 3. -- create database device;
@@ -12,7 +13,7 @@
 13. sudo nano /etc/rc.local
 14. -- su pi -c 'sudo node /var/www/node/gateway >> /var/www/node/gateway.log 2>&1 &'
 
-###camera
+##camera
 1. do steps for gateway then
 10. sudo nano /etc/default/motion
 11. -- change to start_motion_daemon=yes
