@@ -135,7 +135,7 @@ function gb_loop(){
       if (count > 20){
         if (text_timeout == 0){
           console.log("sending text alert!");
-          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");     
+          send_command("curl -d number=\"4055555555\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");     
           text_timeout = 1; 
           setTimeout(function () {
             text_timeout = 0;
