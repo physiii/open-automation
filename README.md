@@ -1,5 +1,5 @@
-# camera-streamer
-HTTP video streamer with token system for authentication
+# home-gateway
+
 =======
 ##installation
 
