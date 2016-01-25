@@ -1,0 +1,27 @@
+#Edit the bin dir below to the cgi-bin directory of your webserver
+bindir = /usr/lib/cgi-bin
+
+CC  = gcc
+
+CFLAGS = -Wall -O3
+CC_LDFLAGS = 
+INSTALL = install
+
+####### Build rules
+
+all: nph-mjprox nph-mjgrab
+
+nph-mjprox : nph-mjprox.c
+	$(CC) $(CFLAGS) nph-mjprox.c -o nph-mjprox $(CC_LDFLAGS)
+
+nph-mjgrab : nph-mjgrab.c
+	$(CC) $(CFLAGS) nph-mjgrab.c -o nph-mjgrab $(CC_LDFLAGS)
+
+clean:
+	rm nph-mjgrab nph-mjprox
+
+install :
+	mkdir -p $(bindir)
+	$(INSTALL) nph-mjgrab $(bindir)
+	$(INSTALL) nph-mjprox $(bindir)
+
