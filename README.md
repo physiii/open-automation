@@ -11,7 +11,7 @@ Home automation and media server controlling a plethora of devices like cameras,
 15. clone repository into web directory
 16. -- sudo git clone https://github.com/physiii/home-gateway.git /var/www/html
 13. sudo nano /etc/rc.local
-14. -- su pi -c 'sudo node /var/www/node/gateway >> /var/www/node/gateway.log 2>&1 &'
+14. -- su pi -c 'sudo node /var/www/html/node/gateway >> /var/www/html/node/gateway.log 2>&1 &'
 
 ##camera (optional)
 1. do steps for gateway then
