@@ -1,6 +1,3 @@
-
-
-<<<<<<< HEAD
 # camera-streamer
 HTTP video streamer with token system for authentication
 =======
@@ -22,7 +19,6 @@ HTTP video streamer with token system for authentication
 12. sudo nano /etc/motion/motion.conf
 13. -- change to stream_localhost off
 14. sudo chmod -R 777 /var/lib/motion
->>>>>>> 1dd2fe4674260eaaf1d70e9f8d6d33b545cf73bb
 
 #installation
 1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
