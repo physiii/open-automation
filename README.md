@@ -13,7 +13,7 @@ nodejs automation and media server
 13. sudo nano /etc/rc.local
 14. -- su pi -c 'sudo node /var/www/node/gateway >> /var/www/node/gateway.log 2>&1 &'
 
-##camera
+##camera (optional)
 1. do steps for gateway then
 10. sudo nano /etc/default/motion
 11. -- change to start_motion_daemon=yes
