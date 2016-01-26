@@ -15,6 +15,7 @@ Home automation and media server controlling a plethora of devices like cameras,
 
 ##camera (optional)
 1. do steps for gateway then
+2. sudo a2enmod cgi;
 10. sudo nano /etc/default/motion
 11. -- change to start_motion_daemon=yes
 12. sudo nano /etc/motion/motion.conf
