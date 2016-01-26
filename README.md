@@ -1,5 +1,5 @@
 # home-gateway
-Home automation and media server controlling a plethora of devices like cameras, lights, thermostats, media, glass break, and sends alerts via text message.
+Home automation and media server for controlling devices like cameras, lights, thermostats, media, glass break, and sends alerts via text message.
 
 =======
 #installation
