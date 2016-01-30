@@ -52,7 +52,7 @@
         <button ng-click="edit_device_name('show')" style="float:right" class="ion-edit"></button>        
       </li>
       <li style="display:none" class="item" id="input_device_name">
-        <input style="width:100%" type="text" placeholder="enter device name ({{ device_name }})">
+        <input ng-model="new_device_name" style="width:100%" type="text" placeholder="enter device name ({{ device_name }})">
         <button ng-click="edit_device_name()" class="button-block">set</button>
       </li>
       <li class="item" id="li_device_port">
@@ -60,7 +60,7 @@
         <button ng-click="edit_device_port('show')" style="float:right" class="ion-edit"></button>        
       </li>
       <li style="display:none" class="item" id="input_device_port">
-        <input style="width:100%" type="text" placeholder="enter port number ({{ device_port }})">
+        <input ng-model="new_device_port" style="width:100%" type="text" placeholder="enter port number ({{ device_port }})">
         <button ng-click="edit_device_port()" class="button-block">set</button>
       </li>    
       <li class="item">
@@ -76,7 +76,7 @@
   </div>
   <div class="card">
       <li class="item">
-        <button class="button button-block button-dark">Update</button>
+        <button class="button button-block button-dark">Software Update</button>
         <button style="float:right" class="button button-small button-assertive">Reboot</button>
       </li>
   </div>  
@@ -88,7 +88,7 @@
   </div>
     <div id="{{ x.mac }}_div" class="card">
       <div style="margin:auto">    
-        <img style="border:2px solid #444;border-radius:0px 0px 3px 3px;" src="http://192.168.0.18:8081/"></img>
+        <img style="border:2px solid #444;border-radius:0px 0px 3px 3px;" src="http://192.168.0.7:8081"></img>    
       </div>
     </div>
   </div>

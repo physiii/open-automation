@@ -1,6 +1,6 @@
 var app = angular.module('starter', ['ionic'])
 
-.controller('device_info', function($scope,$scope,$http) {
+.controller('device_info', function($rootScope,$scope,$http) {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';  
   var param = function(obj) {
@@ -52,21 +52,33 @@ var app = angular.module('starter', ['ionic'])
   
   $scope.edit_device_name = function(command) {
     if (command == "show"){
+      $scope.new_device_name = "";
       document.getElementById("li_device_name").style.display = "none";
       document.getElementById("input_device_name").style.display = "block";
     } else {
+      console.log($scope.new_device_name);
+      $scope.device_name = $scope.new_device_name;
       document.getElementById("li_device_name").style.display = "block";
-      document.getElementById("input_device_name").style.display = "none";    
+      document.getElementById("input_device_name").style.display = "none";
+      $.post( "php/update_device_info.php",{device_name:$scope.new_device_name}).success(function(data){
+        console.log("device name updated: " + data);
+      });            
     }
   }
   
   $scope.edit_device_port = function(command) {
     if (command == "show"){
+      $scope.new_device_port = "";
       document.getElementById("li_device_port").style.display = "none";
       document.getElementById("input_device_port").style.display = "block";
     } else {
+      console.log($scope.new_device_port);
+      $scope.device_name = $scope.new_device_port;      
       document.getElementById("li_device_port").style.display = "block";
-      document.getElementById("input_device_port").style.display = "none";    
+      document.getElementById("input_device_port").style.display = "none";
+      $.post( "php/update_device_info.php",{device_port:$scope.new_device_port}).success(function(data){
+        console.log("device port updated: " + data);     
+      });        
     }
   }  
 
@@ -77,12 +89,6 @@ var app = angular.module('starter', ['ionic'])
     $scope.public_ip = data[0].public_ip;   
     $scope.device_port = data[0].device_port;
     $scope.device_name = data[0].device_name;    
-  });
-
-  $.post( "php/device_info.php",{mac:mac, user:user, pwd:password, port:device_port, device_name:device_name}).success(function(data){ 
-
-    console.log("server said " + data['mac']);
-    console.log("server said " + data);    
   });
 })
 
@@ -135,9 +141,8 @@ var app = angular.module('starter', ['ionic'])
     });
     
     var store_device = function (){
-      console.log("storing token: " + token);
-      $.post( "php/set_device.php",{mac:mac, user:user, pwd:password, port:device_port, device_name:device_name}).success(function(data){
-        console.log("token stored!!! " + data);
+      $.post( "php/set_token.php",{user:user,token:token}).success(function(data){
+        console.log("token stored");
       });    
     }
   };

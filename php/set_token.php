@@ -1,6 +1,6 @@
 <?php
-$device_name = $_POST['device_name'];
-$device_port = $_POST['port'];
+$user = $_POST['user'];
+$token = $_POST['token'];
 
 $servername = "localhost";
 $username = "root";
@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "update device_info set device_name='".$device_name."', device_port='".$device_port."' where id='0'";
+$sql = "insert into tokens values(now(),'".$user."','".$token."')";
 
 $result = $conn->query($sql); 
 $conn->close();

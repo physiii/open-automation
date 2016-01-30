@@ -18,7 +18,7 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "create table device_info (timestamp text, user text, mac text, local_ip text, public_ip text, device_port text, device_name text)";
+$sql = "create table device_info (id text, timestamp text, user text, mac text, local_ip text, public_ip text, device_port text, device_name text)";
 $result = $conn->query($sql); 
 
 $sql = "select * from device_info limit 1;";

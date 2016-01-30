@@ -1274,3 +1274,353 @@ window sensor triggered, sending alert!
 1453732457389 downstairs mute
 1453732457389 downstairs volume up
 1453732463962 upstairs volume up
+send-receive commands on port 3030
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+1453769884434 upstairs volume up
+1453769884484 downstairs volume up
+1453769885307 upstairs volume down
+1453769885313 downstairs volume down
+1453769885801 upstairs mute
+1453769885883 downstairs mute
+1453769886510 upstairs volume up
+1453769886639 downstairs volume up
+1453769887022 upstairs volume up
+1453769887072 downstairs volume up
+1453769888482 upstairs volume down
+1453769897657 downstairs volume down
+1453769901547 upstairs mute
+1453769901551 downstairs mute
+1453769902225 upstairs volume up
+1453769902229 downstairs volume up
+window sensor triggered 1
+window sensor triggered 2
+1453770894461 upstairs volume up
+1453770894466 downstairs volume up
+1453770894949 upstairs volume up
+1453770894958 downstairs volume up
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+1453772924124 upstairs mute
+1453772924354 downstairs mute
+window sensor triggered 1
+window sensor triggered 2
+1453773180581 upstairs volume up
+1453773181187 downstairs volume up
+1453773181554 upstairs volume down
+1453773182296 downstairs volume down
+1453773182519 upstairs volume down
+1453773182522 downstairs volume down
+1453773184425 upstairs volume up
+1453773185067 downstairs volume up
+1453773196529 upstairs volume up
+1453773196533 downstairs volume up
+1453773197321 upstairs volume up
+1453773197788 downstairs volume up
+1453773198262 upstairs volume up
+1453773198744 downstairs volume up
+1453773199285 upstairs volume up
+1453773199800 downstairs volume up
+1453773200300 upstairs volume up
+1453773200646 downstairs volume up
+1453773200984 upstairs volume up
+1453773201462 downstairs volume up
+1453773201938 upstairs volume up
+1453773202280 downstairs volume up
+1453773202592 upstairs volume up
+1453773203062 downstairs volume up
+1453773203255 upstairs volume up
+1453773203258 downstairs volume up
+1453773203261 upstairs volume up
+1453773203264 downstairs volume up
+1453773203618 upstairs volume up
+1453773203630 downstairs volume up
+1453773206982 upstairs volume down
+1453773207320 downstairs volume down
+1453773207658 upstairs volume down
+1453773208151 downstairs volume down
+window sensor triggered 1
+window sensor triggered 2
+<<-------- 1453773231884 -------->>
+perl /var/www/html/node/huepl on 1
+perl /var/www/html/node/huepl on 2
+perl /var/www/html/node/huepl on 3
+perl /var/www/html/node/huepl on 4
+perl /var/www/html/node/huepl on 5
+perl /var/www/html/node/huepl on 6
+perl /var/www/html/node/huepl on 7
+perl /var/www/html/node/huepl on 8
+perl /var/www/html/node/huepl on 9
+perl /var/www/html/node/huepl on 10
+perl /var/www/html/node/huepl blue 1
+perl /var/www/html/node/huepl blue 2
+perl /var/www/html/node/huepl blue 3
+perl /var/www/html/node/huepl blue 4
+perl /var/www/html/node/huepl blue 5
+perl /var/www/html/node/huepl blue 6
+perl /var/www/html/node/huepl blue 7
+perl /var/www/html/node/huepl blue 8
+perl /var/www/html/node/huepl blue 9
+perl /var/www/html/node/huepl blue 10
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl blue 10
+
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl blue 4
+
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl on 10
+
+window sensor triggered 1
+1453774337460 upstairs mute
+1453774338074 downstairs mute
+1453774353717 upstairs volume up
+1453774354370 downstairs volume up
+1453774355765 upstairs volume down
+1453774356374 downstairs volume down
+window sensor triggered 1
+window sensor triggered 2
+1453774491810 upstairs volume down
+1453774492409 downstairs volume down
+1453774496127 upstairs volume down
+1453774496976 downstairs volume down
+1453774498345 upstairs volume down
+1453774499505 downstairs volume down
+1453774512834 upstairs volume up
+1453774513563 downstairs volume up
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+1453774966077 upstairs play
+1453774967100 downstairs play
+1453774973982 upstairs mute
+1453774975006 downstairs mute
+1453774978474 upstairs volume down
+1453774979600 downstairs volume down
+1453774982201 upstairs volume up
+1453774983084 downstairs volume up
+window sensor triggered 1
+1453774997003 upstairs play
+1453775019986 upstairs mute
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 11
+window sensor triggered 12
+window sensor triggered 13
+window sensor triggered 14
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 11
+window sensor triggered 12
+window sensor triggered 1
+window sensor triggered 2
+<<-------- 1453780785358 -------->>
+perl /var/www/html/node/huepl off 1
+perl /var/www/html/node/huepl off 2
+perl /var/www/html/node/huepl off 3
+perl /var/www/html/node/huepl off 4
+perl /var/www/html/node/huepl off 5
+perl /var/www/html/node/huepl off 6
+perl /var/www/html/node/huepl off 7
+perl /var/www/html/node/huepl off 8
+perl /var/www/html/node/huepl off 9
+perl /var/www/html/node/huepl off 10
+Error: Command failed: /bin/sh -c perl /var/www/html/node/huepl off 10
+
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+1453822182235 downstairs mute
+window sensor triggered 3
+1453822183597 downstairs mute
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+1453830682459 upstairs mute
+window sensor triggered 1
+window sensor triggered 2
+1453830684152 downstairs mute
+1453830684154 upstairs volume up
+1453830684155 downstairs volume up
+1453830684156 upstairs volume up
+1453830684156 downstairs volume up
+1453830685874 upstairs volume up
+1453830687549 downstairs volume up
+1453830687551 upstairs volume down
+1453830687571 downstairs volume down
+1453830689270 upstairs volume up
+1453830690910 downstairs volume up
+1453830699457 upstairs mute
+window sensor triggered 1
+1453830701270 upstairs mute
+1453830712308 upstairs mute
+window sensor triggered 1
+1453830714170 upstairs mute
+1453830721456 upstairs mute
+1453830725354 downstairs volume down
+window sensor triggered 1
+1453830770112 downstairs mute
+1453830773781 downstairs mute
+1453830777447 downstairs volume up
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 11
+window sensor triggered 12
+window sensor triggered 13
+window sensor triggered 14
+window sensor triggered 15
+window sensor triggered 16
+window sensor triggered 17
+window sensor triggered 18
+window sensor triggered 19
+window sensor triggered 20
+window sensor triggered 21
+sending text alert!
+curl -d number="4058168685" -d "message=ALERT:living room window sensor triggered" http://textbelt.com/text
+1453830916629 downstairs mute
+window sensor triggered 1
+1453830920877 downstairs mute
+1453830923115 downstairs mute
+1453830940327 downstairs mute
+1453830946774 downstairs volume up
+1453830983916 downstairs mute
+send-receive commands on port 3030
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 11
+window sensor triggered 12
+window sensor triggered 13
+window sensor triggered 14
+window sensor triggered 15
+window sensor triggered 16
+window sensor triggered 17
+window sensor triggered 18
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 11
+window sensor triggered 12
+window sensor triggered 13
+window sensor triggered 14
+window sensor triggered 15
+window sensor triggered 16
+window sensor triggered 17
+window sensor triggered 18
+window sensor triggered 19
+window sensor triggered 20
+window sensor triggered 21
+sending text alert!
+curl -d number="4058168685" -d "message=ALERT:living room window sensor triggered" http://textbelt.com/text
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 1
+window sensor triggered 2
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+window sensor triggered 7
+window sensor triggered 8
+window sensor triggered 9
+window sensor triggered 10
+window sensor triggered 11
+window sensor triggered 12
+window sensor triggered 13
+window sensor triggered 14
+window sensor triggered 15
+window sensor triggered 16
+window sensor triggered 17
+window sensor triggered 18

@@ -26,6 +26,8 @@ const gb_read = require('child_process').exec;
 var d = new Date();
 var light_delay = 0; //command delay in ms
 var previous_data = 0;
+var desired_temp = 70;
+var current_therm_state = "";
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -111,7 +113,7 @@ server.listen(port, function () {
 });
 
 io.on('connection', function (socket) {
-
+get_therm_state();
 function gb_timeout(){
   setTimeout(function () {
     gb_loop();
@@ -123,7 +125,7 @@ function gb_loop(){
   const child = gb_read('gpio -g read 23',
     (error, stdout, stderr) => {
       gb_value = stdout;
-      if (previous_gb_value != gb_value){
+      if (previous_gb_value != gb_value && text_timeout == 0){
         temp = Date.now();
         count = count + 1;
         console.log("window sensor triggered " + count);
@@ -132,10 +134,10 @@ function gb_loop(){
          count = 0;
        }, 10000);
       }
-      if (count > 20){
+      if (count >= 10){
         if (text_timeout == 0){
           console.log("sending text alert!");
-          send_command("curl -d number=\"4055555555\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");     
+          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");     
           text_timeout = 1; 
           setTimeout(function () {
             text_timeout = 0;
@@ -148,9 +150,25 @@ function gb_loop(){
   gb_timeout();
 }
   gb_timeout();
+
   socket.on('thermostat', function (data) {
-    io_upstairs.emit('media', data);
-    console.log( Date.now() + " upstairs " + data);
+    var state = JSON.parse(current_therm_state);
+    console.log("finding temperature " + state.temp);
+    if (data == "temp_up"){
+      desired_temp = desired_temp + 2;   
+    } 
+    if (data == "temp_down"){
+      desired_temp = desired_temp - 2;     
+    }
+    if (state.temp > desired_temp){
+      mode = "t_cool";
+    } else {
+      mode = "t_heat";
+    }
+    send_command("curl -d '{\"tmode\":1,\""+mode+"\":"+desired_temp+",\"hold\":1}' http://192.168.0.27/tstat");
+    io.emit('thermostat', {"temp":desired_temp});
+    console.log( Date.now() + " thermostat " + data);
+    console.log("new temp: " + desired_temp);
   });
 
   socket.on('token', function (data) {
@@ -234,14 +252,27 @@ console.log( Date.now() + " playing vlc_dowstairs...");
   });
 });
 
+function get_therm_state(){
+  command = "curl http://192.168.0.27/tstat";
+  console.log(command);
+  var child = exec(command,
+  function (error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    current_therm_state = stdout;
+    if (error !== null) {
+      console.log('' + error);
+    }
+  });
+}
+
 function send_command(command){
-      console.log(command);
-      var child = exec(command,
-        function (error, stdout, stderr) {
-        if (error !== null) {
-          console.log('' + error);
-        }
-      });
+  console.log(command);
+  var child = exec(command,
+  function (error, stdout, stderr) {
+    if (error !== null) {
+      console.log('' + error);
+    }
+  });
 }
 
 
