@@ -25,9 +25,7 @@ Home automation and media server for controlling devices like cameras, lights, t
 16. 
 
 ##initial connections
-![Alt text](/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20initial.jpg?raw=true "system overview")
-https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20initial.jpg
+![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20initial.jpg?raw=true "system overview")
 
 ##steady-state connections
-![Alt text](/blob/master/screenshots/system%20overview%20-%20steady%20state.jpg?raw=true "system overview")
-https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20steady%20state.jpg
+![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20steady%20state.jpg?raw=true "system overview")
