@@ -12,6 +12,7 @@ var program_io = require('socket.io')(program_server);
 var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
+var io_relay = require('socket.io-client')('wss://peaceful-coast-12080.herokuapp.com');
 var port = process.env.PORT || 3030;
 //var program_port = process.env.PORT || 3000;
 var php = require("node-php");
@@ -112,6 +113,15 @@ server.listen(port, function () {
   console.log('send-receive commands on port %d', port);
 });
 
+function ping(){
+  setTimeout(function () {
+    io_relay.emit('ping', "some data");
+    console.log( Date.now() + " sending ping ");
+    ping();
+  }, 1000)
+}
+ping();
+
 io.on('connection', function (socket) {
 get_therm_state();
 function gb_timeout(){
@@ -119,6 +129,7 @@ function gb_timeout(){
     gb_loop();
   }, 100)
 }
+
 var previous_gb_value = "";
 var temp = 0;
 function gb_loop(){
@@ -137,7 +148,7 @@ function gb_loop(){
       if (count >= 10){
         if (text_timeout == 0){
           console.log("sending text alert!");
-          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");     
+          //send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");
           text_timeout = 1; 
           setTimeout(function () {
             text_timeout = 0;
@@ -177,15 +188,6 @@ function gb_loop(){
     console.log('token: ' + data['token']);
     console.log( Date.now() + " valid token");
   });  
-  socket.on('vlc_upstairs', function (data) {
-    io2.emit('vlc', data);
-    console.log( Date.now() + " playing vlc_upstairs...");
-  });
-  socket.on('vlc_downstairs', function (data) {
-    io3.emit('vlc', data);
-console.log( Date.now() + " playing vlc_dowstairs...");
-  });
-
 
   socket.on('media_upstairs', function (data) {
     io_upstairs.emit('media', data);
@@ -217,7 +219,7 @@ console.log( Date.now() + " playing vlc_dowstairs...");
            send_command("perl "+__dirname+"/huepl bri 1 " + data);
            send_command("perl "+__dirname+"/huepl bri 2 " + data);
            send_command("perl "+__dirname+"/huepl bri 3 " + data);
-           send_command("perl "+__dirname+"/huepl bri 4 " + data);
+           //send_command("perl "+__dirname+"/huepl bri 4 " + data);
            send_command("perl "+__dirname+"/huepl bri 5 " + data); 
            send_command("perl "+__dirname+"/huepl bri 6 " + data); 
            send_command("perl "+__dirname+"/huepl bri 7 " + data); 
@@ -230,24 +232,24 @@ console.log( Date.now() + " playing vlc_dowstairs...");
         send_command("perl "+__dirname+"/huepl on 1");
         send_command("perl "+__dirname+"/huepl on 2");
         send_command("perl "+__dirname+"/huepl on 3");
-        send_command("perl "+__dirname+"/huepl on 4");
+        //send_command("perl "+__dirname+"/huepl on 4");
         send_command("perl "+__dirname+"/huepl on 5");         
         send_command("perl "+__dirname+"/huepl on 6");
         send_command("perl "+__dirname+"/huepl on 7");         
         send_command("perl "+__dirname+"/huepl on 8");
         send_command("perl "+__dirname+"/huepl on 9");         
-        send_command("perl "+__dirname+"/huepl on 10");
+        //send_command("perl "+__dirname+"/huepl on 10");
        }
        send_command("perl "+__dirname+"/huepl "+data+" 1");
        send_command("perl "+__dirname+"/huepl "+data+" 2");
        send_command("perl "+__dirname+"/huepl "+data+" 3");
-       send_command("perl "+__dirname+"/huepl "+data+" 4");
+       //send_command("perl "+__dirname+"/huepl "+data+" 4");
        send_command("perl "+__dirname+"/huepl "+data+" 5");
        send_command("perl "+__dirname+"/huepl "+data+" 6");
        send_command("perl "+__dirname+"/huepl "+data+" 7");
        send_command("perl "+__dirname+"/huepl "+data+" 8");
        send_command("perl "+__dirname+"/huepl "+data+" 9");
-       send_command("perl "+__dirname+"/huepl "+data+" 10");
+       //send_command("perl "+__dirname+"/huepl "+data+" 10");
        }
   });
 });
