@@ -122,14 +122,11 @@ function ping(){
 }
 ping();
 
-io.on('connection', function (socket) {
-get_therm_state();
 function gb_timeout(){
   setTimeout(function () {
     gb_loop();
   }, 100)
 }
-
 var previous_gb_value = "";
 var temp = 0;
 function gb_loop(){
@@ -141,14 +138,14 @@ function gb_loop(){
         count = count + 1;
         console.log("window sensor triggered " + count);
         io.emit('gpio_pin',count);
-       setTimeout(function () {
-         count = 0;
-       }, 10000);
+        setTimeout(function () {
+          count = 0;
+        }, 10000);
       }
       if (count >= 10){
         if (text_timeout == 0){
           console.log("sending text alert!");
-          //send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");
+          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");
           text_timeout = 1; 
           setTimeout(function () {
             text_timeout = 0;
@@ -160,7 +157,10 @@ function gb_loop(){
   });
   gb_timeout();
 }
-  gb_timeout();
+gb_timeout();
+  
+io.on('connection', function (socket) {
+get_therm_state();
 
   socket.on('thermostat', function (data) {
     var state = JSON.parse(current_therm_state);
