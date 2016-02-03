@@ -110,13 +110,13 @@ server.listen(port, function () {
 function ping(){
   setTimeout(function () {
     io_relay.emit('ping', "some data");
-    io_relay.emit('authentication', {username: "John", password: "secret"});    
     console.log( Date.now() + " sending ping ");
     ping();
   }, 1000)
 }
 ping();
 
+io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 io_relay.on('authenticated', function() {
   console.log('!!! authenticated !!!');
 });
