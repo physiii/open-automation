@@ -13,18 +13,21 @@ var program_io = require('socket.io')(program_server);
 var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
-var io_relay = require('socket.io-client')('wss://peaceful-coast-12080.herokuapp.com');
+var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
 var port = process.env.PORT || 3030;
 var program_port = process.env.PORT || 3000;
 var php = require("node-php");
 var request = require('request');
 var exec = require('child_process').exec;
 var mysql      = require('mysql');
+const gb_read = require('child_process').exec;
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
 var gb_event = new EventEmitter();
-const gb_read = require('child_process').exec;
-
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress;
+})
 var d = new Date();
 var light_delay = 0; //command delay in ms
 var previous_data = 0;
@@ -36,7 +39,6 @@ var connection = mysql.createConnection({
   password : 'password',
   database : 'device'
 });
-
 var username = "init";
 var device_name = "init";
 var mac = "init";
@@ -45,13 +47,7 @@ var device_port = "init";
 var count = 0;
 var text_timeout = 0;
 
-// Fetch the computer's mac address 
-require('getmac').getMac(function(err,macAddress){
-  if (err)  throw err
-  mac = macAddress;
-})
-
-/// create tables if the do not exist ///
+/// create table if it does not exist ///
 var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
 connection.connect();
 connection.query(query, function(err, rows, fields) {
@@ -64,7 +60,7 @@ connection.query(query, function(err, rows, fields) {
   }
 });
 /////////////////////////////////////////
-    
+
 body.on('update', function () {
   var token = body.data;
   console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
@@ -76,10 +72,8 @@ body.on('update', function () {
     } else {
       console.log('created gateway_table');  
     }
-  });*/    
+  });*/ 
 });
-
-
 
 /// launch device programming gui on the program_port ///
 program_server.listen(program_port, function () {
@@ -94,7 +88,7 @@ program_io.on('connection', function (socket) {
     ip = data['ip'];
     device_port = data['device_port']
     var response = request.post(
-      'http://68.12.157.176:8080/pyfi.org/php/set_video.php',
+      'http://68.12.157.176:8080/pyfi.org/php/set_gateway.php',
       {form: data},
       function (error, response, data) {
         if (!error && response.statusCode == 200) {
@@ -104,7 +98,6 @@ program_io.on('connection', function (socket) {
         }
       }
     );
-    
     console.log( Date.now() + " | token received for " + data['user']);
   });
 });
@@ -117,52 +110,19 @@ server.listen(port, function () {
 function ping(){
   setTimeout(function () {
     io_relay.emit('ping', "some data");
+    io_relay.emit('authentication', {username: "John", password: "secret"});    
     console.log( Date.now() + " sending ping ");
     ping();
   }, 1000)
 }
 ping();
 
-function gb_timeout(){
-  setTimeout(function () {
-    gb_loop();
-  }, 100)
-}
-var previous_gb_value = "";
-var temp = 0;
-function gb_loop(){
-  const child = gb_read('gpio -g read 23',
-    (error, stdout, stderr) => {
-      gb_value = stdout;
-      if (previous_gb_value != gb_value && text_timeout == 0){
-        temp = Date.now();
-        count = count + 1;
-        console.log("window sensor triggered " + count);
-        io.emit('gpio_pin',count);
-        setTimeout(function () {
-          count = 0;
-        }, 10000);
-      }
-      if (count >= 10){
-        if (text_timeout == 0){
-          console.log("sending text alert!");
-          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");
-          text_timeout = 1; 
-          setTimeout(function () {
-            text_timeout = 0;
-          }, 60000); 
-         count = 0;
-        }
-      }
-      previous_gb_value = gb_value;
-  });
-  gb_timeout();
-}
-gb_timeout();
-  
-io.on('connection', function (socket) {
-get_therm_state();
+io_relay.on('authenticated', function() {
+  console.log('!!! authenticated !!!');
+});
 
+get_therm_state();
+io.on('connection', function (socket) {
   socket.on('thermostat', function (data) {
     var state = JSON.parse(current_therm_state);
     console.log("finding temperature " + state.temp);
@@ -278,5 +238,39 @@ function send_command(command){
   });
 }
 
-
-
+function gb_timeout(){
+  setTimeout(function () {
+    gb_loop();
+  }, 100)
+}
+var previous_gb_value = "";
+var temp = 0;
+function gb_loop(){
+  const child = gb_read('gpio -g read 23',
+    (error, stdout, stderr) => {
+      gb_value = stdout;
+      if (previous_gb_value != gb_value && text_timeout == 0){
+        temp = Date.now();
+        count = count + 1;
+        console.log("window sensor triggered " + count);
+        io.emit('gpio_pin',count);
+        setTimeout(function () {
+          count = 0;
+        }, 10000);
+      }
+      if (count >= 10){
+        if (text_timeout == 0){
+          console.log("sending text alert!");
+          send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");
+          text_timeout = 1; 
+          setTimeout(function () {
+            text_timeout = 0;
+          }, 60000); 
+         count = 0;
+        }
+      }
+      previous_gb_value = gb_value;
+  });
+  gb_timeout();
+}
+gb_timeout();
