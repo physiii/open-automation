@@ -111,12 +111,10 @@ var temp_time = Date.now();
 function ping(){
   ping_time = Date.now();
   console.log('sending ping...');
-  io_relay.emit('ping', "some data");
+  io_relay.emit('ping');
 }
-ping();
-
-io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 var auth_time = Date.now();
+io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 io_relay.on('authenticated', function() {
   auth_time = Date.now() - auth_time;
   console.log('!!! authenticated in ' + auth_time + 'ms !!!');
