@@ -15,7 +15,7 @@ var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
 var io_relay = require('socket.io-client')('wss://peaceful-coast-12080.herokuapp.com');
 var port = process.env.PORT || 3030;
-//var program_port = process.env.PORT || 3000;
+var program_port = process.env.PORT || 3000;
 var php = require("node-php");
 var request = require('request');
 var exec = require('child_process').exec;
@@ -82,8 +82,8 @@ body.on('update', function () {
 
 
 /// launch device programming gui on the program_port ///
-/*program_server.listen(program_port, function () {
-  console.log('program GUI on port %d', program_port);
+program_server.listen(program_port, function () {
+  console.log('access GUI on port %d', program_port);
 });
 
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
@@ -107,7 +107,7 @@ program_io.on('connection', function (socket) {
     
     console.log( Date.now() + " | token received for " + data['user']);
   });
-});*/
+});
 /////////////////////////////////////////////////////
 
 server.listen(port, function () {
