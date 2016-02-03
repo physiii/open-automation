@@ -107,26 +107,30 @@ server.listen(port, function () {
   console.log('send-receive commands on port %d', port);
 });
 
+var temp_time = Date.now();
 function ping(){
-  setTimeout(function () {
-    io_relay.emit('ping', "some data");
-    console.log( Date.now() + " sending ping ");
-    ping();
-  }, 1000)
+  ping_time = Date.now();
+  console.log('sending ping...');
+  io_relay.emit('ping', "some data");
 }
 ping();
 
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
+var auth_time = Date.now();
 io_relay.on('authenticated', function() {
-  console.log('!!! authenticated !!!');
+  auth_time = Date.now() - auth_time;
+  console.log('!!! authenticated in ' + auth_time + 'ms !!!');
   io_relay.on('token', function (data) {
     //get token from mysql database
     //check data['token'] w database token
     console.log('token: ' + data['token']);
     console.log( Date.now() + " valid token");
-  }); 
+  });
+  ping();
   io_relay.on('pong', function (data) {
-    console.log( Date.now() + " pong: " + data);
+    ping_time = Date.now() - ping_time;
+    console.log( Date.now() + " pong in " + ping_time + 'ms');
+    ping();
   });      
 });
 
