@@ -119,6 +119,15 @@ ping();
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 io_relay.on('authenticated', function() {
   console.log('!!! authenticated !!!');
+  io_relay.on('token', function (data) {
+    //get token from mysql database
+    //check data['token'] w database token
+    console.log('token: ' + data['token']);
+    console.log( Date.now() + " valid token");
+  }); 
+  io_relay.on('pong', function (data) {
+    console.log( Date.now() + " pong: " + data);
+  });      
 });
 
 get_therm_state();
