@@ -129,7 +129,7 @@ io_relay.on('authenticated', function() {
   ping();
   io_relay.on('pong', function (data) {
     ping_time = Date.now() - ping_time;
-    console.log( Date.now() + " pong in " + ping_time + 'ms');
+    console.log("pong in " + ping_time + "ms");
     ping();
   });      
 });
