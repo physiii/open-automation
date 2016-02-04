@@ -14,6 +14,7 @@ var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
 var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
+//var io_relay = require('socket.io-client')('http://68.12.157.176:3000');
 var port = process.env.PORT || 3030;
 var program_port = process.env.PORT || 3000;
 var php = require("node-php");
@@ -107,14 +108,19 @@ server.listen(port, function () {
   console.log('send-receive commands on port %d', port);
 });
 
-var temp_time = Date.now();
+var ping_time = Date.now();
 function ping(){
   ping_time = Date.now();
   console.log('sending ping...');
-  io_relay.emit('ping');
+  io_relay.emit('png_test');
 }
-var auth_time = Date.now();
+io_relay.on('png_test', function (data) {
+  ping_time = Date.now() - ping_time;
+  console.log("replied in " + ping_time + "ms");
+});
+
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
+var auth_time = Date.now();
 io_relay.on('authenticated', function() {
   auth_time = Date.now() - auth_time;
   console.log('!!! authenticated in ' + auth_time + 'ms !!!');
@@ -123,17 +129,12 @@ io_relay.on('authenticated', function() {
     //check data['token'] w database token
     console.log('token: ' + data['token']);
     console.log( Date.now() + " valid token");
-  });
-  ping();
-  io_relay.on('pong', function (data) {
-    ping_time = Date.now() - ping_time;
-    console.log("pong in " + ping_time + "ms");
-    ping();
-  });      
+  });   
 });
 
 get_therm_state();
 io.on('connection', function (socket) {
+  ping();
   socket.on('thermostat', function (data) {
     var state = JSON.parse(current_therm_state);
     console.log("finding temperature " + state.temp);
