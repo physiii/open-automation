@@ -1887,3 +1887,55 @@ stdout: {"temp":72.50,"tmode":2,"fmode":0,"override":1,"hold":1,"t_cool":69.00,"
 !!! authenticated !!!
 1454522374620 sending ping 
 !!! authenticated !!!
+curl http://192.168.0.27/tstat
+access GUI on port 3000
+send-receive commands on port 3030
+sending ping...
+sending ping...
+window sensor triggered 1
+sending ping...
+sending ping...
+!!! authenticated in 757ms !!!
+sending ping...
+sending ping...
+replied in 9ms
+replied in 1454593423293ms
+replied in 10ms
+replied in 1454593423294ms
+sending ping...
+sending ping...
+sending ping...
+sending ping...
+replied in 14ms
+replied in 1454593423462ms
+replied in 80ms
+replied in 1454593423549ms
+replied in 101ms
+replied in 1454593423552ms
+token | testtok
+media | testcommand
+stdout: {"temp":69.50,"tmode":1,"fmode":0,"override":0,"hold":0,"t_heat":62.00,"tstate":0,"fstate":0,"time":{"day":6,"hour":8,"minute":25},"t_type_post":0}
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand

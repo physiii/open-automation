@@ -14,7 +14,7 @@ var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
 var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
-//var io_relay = require('socket.io-client')('http://68.12.157.176:3000');
+var io_relay = require('socket.io-client')('http://68.12.157.176:3000');
 var port = process.env.PORT || 3030;
 var program_port = process.env.PORT || 3000;
 var php = require("node-php");
@@ -118,7 +118,10 @@ io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
   console.log("replied in " + ping_time + "ms");
 });
-
+io_relay.on('media', function (data) {
+  console.log("token | " + data.token);
+  console.log("media | " + data.cmd);
+});
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 var auth_time = Date.now();
 io_relay.on('authenticated', function() {
@@ -154,32 +157,25 @@ io.on('connection', function (socket) {
     console.log( Date.now() + " thermostat " + data);
     console.log("new temp: " + desired_temp);
   });
-
-  socket.on('token', function (data) {
-    //get token from mysql database
-    //check data['token'] w database token
-    console.log('token: ' + data['token']);
-    console.log( Date.now() + " valid token");
-  });  
-
+  
   socket.on('media_upstairs', function (data) {
     io_upstairs.emit('media', data);
-    console.log( Date.now() + " upstairs " + data);
+    console.log("upstairs | " + data);
   });
 
   socket.on('media_downstairs', function (data) {
     io_downstairs.emit('media', data);
-    console.log( Date.now() + " downstairs " + data);
+    console.log("downstairs | " + data);
   });
   
   socket.on('peerflix_downstairs', function (data) {
     io_downstairs.emit('peerflix', data);
-    console.log( Date.now() + " downstairs peerflix " + data);
+    console.log("downstairs peerflix | " + data);
   });  
   
   socket.on('peerflix_upstairs', function (data) {
     io_upstairs.emit('peerflix', data);
-    console.log( Date.now() + " upstairs peerflix " + data);
+    console.log("upstairs peerflix | " + data);
   });  
 
   socket.on('lights', function (data) {
