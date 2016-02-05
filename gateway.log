@@ -1939,3 +1939,12 @@ token | testtok
 media | testcommand
 token | testtok
 media | testcommand
+curl http://192.168.0.27/tstat
+access GUI on port 3000
+send-receive commands on port 3030
+stdout: 
+Error: Command failed: /bin/sh -c curl http://192.168.0.27/tstat
+curl: (7) Couldn't connect to server
+
+window sensor triggered 1
+sending ping...

@@ -106,10 +106,6 @@ program_io.on('connection', function (socket) {
 });
 /////////////////////////////////////////////////////
 
-server.listen(port, function () {
-  console.log('send-receive commands on port %d', port);
-});
-
 var ping_time = Date.now();
 function ping(){
   ping_time = Date.now();
@@ -139,6 +135,12 @@ io_relay.on('authenticated', function() {
     console.log( Date.now() + " valid token");
   });   
 });
+
+
+server.listen(port, function () {
+  console.log('send-receive commands on port %d', port);
+});
+
 
 get_therm_state();
 io.on('connection', function (socket) {
@@ -227,6 +229,7 @@ io.on('connection', function (socket) {
        }
   });
 });
+
 
 function get_therm_state(){
   command = "curl http://192.168.0.27/tstat";
