@@ -25,6 +25,8 @@ const gb_read = require('child_process').exec;
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
 var gb_event = new EventEmitter();
+var token = "init";
+
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress;
@@ -63,9 +65,9 @@ connection.query(query, function(err, rows, fields) {
 /////////////////////////////////////////
 
 body.on('update', function () {
-  var token = body.data;
+  token = body.data;
   console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
-  
+  io_relay.emit('token',{token:token}); 
   /*query = "insert";
   connection.query(query, function(err, rows, fields) {
     if (err) {
@@ -93,7 +95,7 @@ program_io.on('connection', function (socket) {
       {form: data},
       function (error, response, data) {
         if (!error && response.statusCode == 200) {
-          //console.log(body);
+          //console.log(body);       
           body.data = data;
           body.emit('update');
         }
@@ -114,14 +116,17 @@ function ping(){
   console.log('sending ping...');
   io_relay.emit('png_test');
 }
+
 io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
   console.log("replied in " + ping_time + "ms");
 });
+
 io_relay.on('media', function (data) {
   console.log("token | " + data.token);
   console.log("media | " + data.cmd);
 });
+
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 var auth_time = Date.now();
 io_relay.on('authenticated', function() {
