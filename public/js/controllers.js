@@ -39,7 +39,7 @@ var app = angular.module('starter', ['ionic'])
     return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
   }]; 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-  var ws = io.connect('http://192.168.0.18:3000/');
+  var ws = io.connect();
   $scope.token_request = function(command) {
     data = {'user':$scope.user,'pwd':$scope.password,'ip':'68.12.157.176','device_port':'3030','device_name':'gateway'};
     ws.emit('get_token', data);
