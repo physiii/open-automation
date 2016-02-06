@@ -3,6 +3,8 @@ Home automation and media server for controlling devices like cameras, lights, t
 
 =======
 #installation
+##install node 4.x
+wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && make install
 
 ##gateway
 1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
