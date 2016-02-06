@@ -41,7 +41,8 @@ var app = angular.module('starter', ['ionic'])
 ///////////////////////////////////////////////////////////////////////////////////////////////////
   var ws = io.connect();
   $scope.token_request = function(command) {
-    data = {'user':$scope.user,'pwd':$scope.password,'ip':'68.12.157.176','device_port':'3030','device_name':'gateway'};
+    //data = {'user':$scope.user,'pwd':$scope.password,'ip':'68.12.157.176','device_port':'3030','device_name':'gateway'};
+    data = {'user':$scope.user,'pwd':$scope.password,'device_name':'gateway'};    
     ws.emit('get_token', data);
     console.log("get token for " + data['user']);
   };

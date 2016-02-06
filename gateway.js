@@ -14,7 +14,7 @@ var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
 var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
-//var io_relay = require('socket.io-client')('http://68.12.157.176:3000');
+var io_relay = require('socket.io-client')('http://68.12.157.176:3000');
 var port = process.env.PORT || 3030;
 var program_port = process.env.PORT || 3000;
 var php = require("node-php");
@@ -27,6 +27,7 @@ var body = new EventEmitter();
 var gb_event = new EventEmitter();
 var token = "init";
 
+
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress;
@@ -36,6 +37,13 @@ var light_delay = 0; //command delay in ms
 var previous_data = 0;
 var desired_temp = 70;
 var current_therm_state = "";
+var pool  = mysql.createPool({
+  connectionLimit : 10,
+  host     : 'localhost',
+  user     : 'root',
+  password : 'password',
+  database : 'device'
+});
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -51,31 +59,67 @@ var count = 0;
 var text_timeout = 0;
 
 /// create table if it does not exist ///
-var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
-connection.connect();
-connection.query(query, function(err, rows, fields) {
-  if (err) {
-    //console.log('table already exist');  
-  } else {
-    console.log('created gateway_tok table');
-    //store device info in database
-    
-  }
+pool.getConnection(function(err, connection) {
+  var query = "create table tokens (id text, timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
+  connection.query( query, function(err, rows) {
+    connection.release();
+    if (err) { //triggered if table exists
+      pool.getConnection(function(err, connection) {
+        var query = 'SELECT * FROM tokens';
+        connection.query( query, function(err, rows) {
+        token = rows[0].token;
+        console.log('found token: ' + token);
+        io_relay.emit('token',{token:token}); 
+        connection.release();
+      });
+    });
+    } else {
+      pool.getConnection(function(err, connection) {
+        var query = "insert into tokens values('0', now(),'user','token','"+mac+"','ip','port','devicename')";
+        connection.query( query, function(err, rows) {
+          if (err) {
+            console.log('error inserting token');  
+          } else {
+            console.log('created token table');
+          }
+          connection.release();
+        });
+      });
+    }
+  });
 });
+/*pool.connect();
+pool.query(query, function(err, rows, fields) {
+  if (err) {
+    console.log('error creating tokens');  
+  } else {
+    var query = "insert into tokens values(now(),'user','token','mac','ip','port','devicename')";
+
+    console.log('created tokens table');
+    pool.connect();
+    pool.query(query, function(err, rows, fields) {
+      if (err) {
+        console.log('error');
+      }    
+      console.log('inserted values into token');
+    });
+  }
+});*/
 /////////////////////////////////////////
 
 body.on('update', function () {
   token = body.data;
   console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
   io_relay.emit('token',{token:token}); 
-  /*query = "insert";
-  connection.query(query, function(err, rows, fields) {
-    if (err) {
-      //console.log('table already exist');  
-    } else {
-      console.log('created gateway_table');  
-    }
-  });*/ 
+  
+pool.getConnection(function(err, connection) {
+  var query = "update tokens set token='"+token+"' where id=0";
+  connection.query( query, function(err, rows) {
+    console.log("set token: " + token);
+    connection.release();
+  });
+});
+
 });
 
 /// launch device programming gui on the program_port ///
@@ -86,21 +130,23 @@ program_server.listen(program_port, function () {
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
   socket.on('get_token', function (data) {
-    username = data['user'];
+    user = data['user'];
+    password = data['pwd'];    
     device_name = data['device_name'];
     ip = data['ip'];
-    device_port = data['device_port']
+    device_port = data['device_port'];
+    post_data = {user:user, pwd:password, mac:mac};
     var response = request.post(
-      'http://68.12.157.176:8080/pyfi.org/php/set_gateway.php',
-      {form: data},
+      'http://68.12.157.176:8080/pyfi.org/php/set_token.php',
+      {form: post_data},
       function (error, response, data) {
         if (!error && response.statusCode == 200) {
-          //console.log(body);       
           body.data = data;
           body.emit('update');
         }
       }
     );
+    
     console.log( Date.now() + " | token received for " + data['user']);
   });
 });
@@ -136,11 +182,9 @@ io_relay.on('authenticated', function() {
   });   
 });
 
-
 server.listen(port, function () {
   console.log('send-receive commands on port %d', port);
 });
-
 
 get_therm_state();
 io.on('connection', function (socket) {
