@@ -26,6 +26,7 @@ var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
 var gb_event = new EventEmitter();
 var token = "init";
+var ip_address = "";
 
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
@@ -89,7 +90,6 @@ Object.keys(ifaces).forEach(function (ifname) {
     ++alias;
   });
 });
-
 
 /// create table if it does not exist ///
 /*
