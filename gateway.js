@@ -62,6 +62,7 @@ device_info = JSON.parse(device_info);
 for(var i = 0; i < device_info.length; i++) {
     mac = device_info[i].mac;
     token = device_info[i].token;
+    io_relay.emit('token',{token:token});    
     console.log(mac + " | " + token);
 }
 /// create table if it does not exist ///
@@ -138,6 +139,8 @@ pool.getConnection(function(err, connection) {
 program_server.listen(program_port, function () {
   console.log('access GUI on port %d', program_port);
 });
+
+
 
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
