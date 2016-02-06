@@ -220,7 +220,7 @@ io.on('connection', function (socket) {
     } else {
       mode = "t_heat";
     }
-    send_command("curl -d '{\"tmode\":1,\""+mode+"\":"+desired_temp+",\"hold\":1}' http://192.168.0.27/tstat");
+    send_command("curl -d '{\"tmode\":1,\""+mode+"\":"+desired_temp+",\"hold\":1}' http://192.168.0.27/tstat"); //////tsettttt
     io.emit('thermostat', {"temp":desired_temp});
     console.log( Date.now() + " thermostat " + data);
     console.log("new temp: " + desired_temp);
