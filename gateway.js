@@ -27,7 +27,6 @@ var body = new EventEmitter();
 var gb_event = new EventEmitter();
 var token = "init";
 
-
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress;
@@ -58,7 +57,15 @@ var device_port = "init";
 var count = 0;
 var text_timeout = 0;
 
+var device_info = require("./device_info.json");
+device_info = JSON.parse(device_info);
+for(var i = 0; i < device_info.length; i++) {
+    mac = device_info[i].mac;
+    token = device_info[i].token;
+    console.log(mac + " | " + token);
+}
 /// create table if it does not exist ///
+/*
 pool.getConnection(function(err, connection) {
   var query = "create table tokens (id text, timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
   connection.query( query, function(err, rows) {
@@ -88,6 +95,7 @@ pool.getConnection(function(err, connection) {
     }
   });
 });
+*/
 /*pool.connect();
 pool.query(query, function(err, rows, fields) {
   if (err) {
@@ -107,11 +115,15 @@ pool.query(query, function(err, rows, fields) {
 });*/
 /////////////////////////////////////////
 
+/*
 body.on('update', function () {
   token = body.data;
-  console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
-  io_relay.emit('token',{token:token}); 
-  
+  console.log('user '+user+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
+  io_relay.emit('token',{token:token});
+  function callback(){
+    console.log('callback for device_info.json');
+  }
+  fs.writeFile( "device_info.json", JSON.stringify( token ), "utf8", callback );  
 pool.getConnection(function(err, connection) {
   var query = "update tokens set token='"+token+"' where id=0";
   connection.query( query, function(err, rows) {
@@ -121,7 +133,7 @@ pool.getConnection(function(err, connection) {
 });
 
 });
-
+*/
 /// launch device programming gui on the program_port ///
 program_server.listen(program_port, function () {
   console.log('access GUI on port %d', program_port);
@@ -132,9 +144,7 @@ program_io.on('connection', function (socket) {
   socket.on('get_token', function (data) {
     user = data['user'];
     password = data['pwd'];    
-    device_name = data['device_name'];
-    ip = data['ip'];
-    device_port = data['device_port'];
+
     post_data = {user:user, pwd:password, mac:mac};
     var response = request.post(
       'http://68.12.157.176:8080/pyfi.org/php/set_token.php',
@@ -142,12 +152,19 @@ program_io.on('connection', function (socket) {
       function (error, response, data) {
         if (!error && response.statusCode == 200) {
           body.data = data;
-          body.emit('update');
+  
+  console.log('set_token.php says: ' + data);
+  io_relay.emit('token',{token:token});
+  fs.writeFile( "device_info.json", JSON.stringify( body.data ), "utf8", callback );
+  function callback(){
+    console.log('callback for device_info.json');
+  }            
+          //body.emit('update');
         }
       }
     );
     
-    console.log( Date.now() + " | token received for " + data['user']);
+    console.log( "token received for " + data['user']);
   });
 });
 /////////////////////////////////////////////////////
