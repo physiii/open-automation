@@ -1624,3 +1624,355 @@ window sensor triggered 15
 window sensor triggered 16
 window sensor triggered 17
 window sensor triggered 18
+send-receive commands on port 3030
+1454444237209 sending ping 
+1454444238213 sending ping 
+1454444239216 sending ping 
+1454444240217 sending ping 
+1454444241218 sending ping 
+1454444242221 sending ping 
+1454444243223 sending ping 
+1454444244224 sending ping 
+1454444245225 sending ping 
+1454445182338 sending ping 
+1454445183339 sending ping 
+1454445184342 sending ping 
+1454445185348 sending ping 
+1454445186350 sending ping 
+1454445187354 sending ping 
+1454445188357 sending ping 
+1454445189358 sending ping 
+1454445190361 sending ping 
+1454445191363 sending ping 
+1454445192366 sending ping 
+1454445193370 sending ping 
+1454445194373 sending ping 
+1454445195376 sending ping 
+1454445196379 sending ping 
+1454445197382 sending ping 
+1454445198385 sending ping 
+1454445199388 sending ping 
+1454445200391 sending ping 
+1454445201395 sending ping 
+1454445202396 sending ping 
+1454445203399 sending ping 
+1454445204402 sending ping 
+1454445205405 sending ping 
+1454445206408 sending ping 
+1454445207410 sending ping 
+1454445208411 sending ping 
+1454445209415 sending ping 
+1454445210418 sending ping 
+1454445211427 sending ping 
+1454445212430 sending ping 
+1454445213433 sending ping 
+1454445214433 sending ping 
+1454445215436 sending ping 
+1454445216440 sending ping 
+1454445217443 sending ping 
+1454445218445 sending ping 
+1454445219448 sending ping 
+1454445220451 sending ping 
+1454445221454 sending ping 
+1454445222457 sending ping 
+1454445223462 sending ping 
+1454445224465 sending ping 
+1454445225468 sending ping 
+1454445226470 sending ping 
+1454445227471 sending ping 
+1454445228474 sending ping 
+1454445229476 sending ping 
+1454445230479 sending ping 
+1454445231481 sending ping 
+1454445232482 sending ping 
+1454445233489 sending ping 
+curl http://192.168.0.27/tstat
+access GUI on port 3000
+send-receive commands on port 3030
+window sensor triggered 1
+1454519837249 sending ping 
+!!! authenticated !!!
+1454519838305 sending ping 
+stdout: {"temp":72.50,"tmode":2,"fmode":0,"override":1,"hold":1,"t_cool":69.00,"tstate":2,"fstate":1,"time":{"day":5,"hour":12,"minute":39},"t_type_post":0}
+!!! authenticated !!!
+1454519839310 sending ping 
+!!! authenticated !!!
+1454519840315 sending ping 
+!!! authenticated !!!
+1454519841319 sending ping 
+!!! authenticated !!!
+1454519842323 sending ping 
+!!! authenticated !!!
+1454519843326 sending ping 
+!!! authenticated !!!
+1454522283823 sending ping 
+!!! authenticated !!!
+1454522284828 sending ping 
+!!! authenticated !!!
+1454522285832 sending ping 
+!!! authenticated !!!
+1454522286837 sending ping 
+!!! authenticated !!!
+1454522287840 sending ping 
+!!! authenticated !!!
+1454522288852 sending ping 
+!!! authenticated !!!
+1454522289858 sending ping 
+!!! authenticated !!!
+1454522290870 sending ping 
+!!! authenticated !!!
+1454522291879 sending ping 
+!!! authenticated !!!
+1454522292885 sending ping 
+!!! authenticated !!!
+1454522293922 sending ping 
+!!! authenticated !!!
+1454522294929 sending ping 
+!!! authenticated !!!
+1454522295934 sending ping 
+!!! authenticated !!!
+1454522296938 sending ping 
+!!! authenticated !!!
+1454522297944 sending ping 
+!!! authenticated !!!
+1454522298949 sending ping 
+!!! authenticated !!!
+1454522299963 sending ping 
+!!! authenticated !!!
+1454522300978 sending ping 
+!!! authenticated !!!
+1454522301984 sending ping 
+!!! authenticated !!!
+1454522302993 sending ping 
+!!! authenticated !!!
+1454522304007 sending ping 
+!!! authenticated !!!
+1454522305013 sending ping 
+!!! authenticated !!!
+1454522306020 sending ping 
+!!! authenticated !!!
+1454522307029 sending ping 
+!!! authenticated !!!
+1454522308033 sending ping 
+!!! authenticated !!!
+1454522309051 sending ping 
+!!! authenticated !!!
+1454522310069 sending ping 
+!!! authenticated !!!
+1454522311075 sending ping 
+!!! authenticated !!!
+1454522312087 sending ping 
+!!! authenticated !!!
+1454522313093 sending ping 
+!!! authenticated !!!
+1454522314098 sending ping 
+!!! authenticated !!!
+1454522315108 sending ping 
+!!! authenticated !!!
+1454522316117 sending ping 
+!!! authenticated !!!
+1454522317129 sending ping 
+!!! authenticated !!!
+1454522318142 sending ping 
+!!! authenticated !!!
+1454522319154 sending ping 
+!!! authenticated !!!
+1454522320165 sending ping 
+!!! authenticated !!!
+1454522321172 sending ping 
+!!! authenticated !!!
+1454522322179 sending ping 
+!!! authenticated !!!
+1454522323194 sending ping 
+!!! authenticated !!!
+1454522324199 sending ping 
+!!! authenticated !!!
+1454522325264 sending ping 
+!!! authenticated !!!
+1454522326282 sending ping 
+!!! authenticated !!!
+1454522327291 sending ping 
+!!! authenticated !!!
+1454522328294 sending ping 
+!!! authenticated !!!
+1454522329298 sending ping 
+!!! authenticated !!!
+1454522330301 sending ping 
+!!! authenticated !!!
+1454522331304 sending ping 
+!!! authenticated !!!
+1454522332309 sending ping 
+!!! authenticated !!!
+1454522333315 sending ping 
+!!! authenticated !!!
+1454522334321 sending ping 
+!!! authenticated !!!
+1454522335327 sending ping 
+!!! authenticated !!!
+1454522336333 sending ping 
+!!! authenticated !!!
+1454522337339 sending ping 
+!!! authenticated !!!
+1454522338347 sending ping 
+!!! authenticated !!!
+1454522339354 sending ping 
+!!! authenticated !!!
+1454522340361 sending ping 
+!!! authenticated !!!
+1454522341388 sending ping 
+!!! authenticated !!!
+1454522342393 sending ping 
+!!! authenticated !!!
+1454522343412 sending ping 
+!!! authenticated !!!
+1454522344419 sending ping 
+!!! authenticated !!!
+1454522345423 sending ping 
+!!! authenticated !!!
+1454522346427 sending ping 
+!!! authenticated !!!
+1454522347430 sending ping 
+!!! authenticated !!!
+1454522348434 sending ping 
+!!! authenticated !!!
+1454522349441 sending ping 
+!!! authenticated !!!
+1454522350447 sending ping 
+!!! authenticated !!!
+1454522351455 sending ping 
+!!! authenticated !!!
+1454522352460 sending ping 
+!!! authenticated !!!
+1454522353464 sending ping 
+!!! authenticated !!!
+1454522354469 sending ping 
+!!! authenticated !!!
+1454522355493 sending ping 
+!!! authenticated !!!
+1454522356509 sending ping 
+!!! authenticated !!!
+1454522357513 sending ping 
+!!! authenticated !!!
+1454522358519 sending ping 
+!!! authenticated !!!
+1454522359525 sending ping 
+!!! authenticated !!!
+1454522360529 sending ping 
+!!! authenticated !!!
+1454522361533 sending ping 
+!!! authenticated !!!
+1454522362537 sending ping 
+!!! authenticated !!!
+1454522363541 sending ping 
+!!! authenticated !!!
+1454522364545 sending ping 
+!!! authenticated !!!
+1454522365550 sending ping 
+!!! authenticated !!!
+1454522366556 sending ping 
+!!! authenticated !!!
+1454522367561 sending ping 
+!!! authenticated !!!
+1454522368566 sending ping 
+!!! authenticated !!!
+1454522369571 sending ping 
+!!! authenticated !!!
+1454522370579 sending ping 
+!!! authenticated !!!
+1454522371587 sending ping 
+!!! authenticated !!!
+1454522372602 sending ping 
+!!! authenticated !!!
+1454522373616 sending ping 
+!!! authenticated !!!
+1454522374620 sending ping 
+!!! authenticated !!!
+curl http://192.168.0.27/tstat
+access GUI on port 3000
+send-receive commands on port 3030
+sending ping...
+sending ping...
+window sensor triggered 1
+sending ping...
+sending ping...
+!!! authenticated in 757ms !!!
+sending ping...
+sending ping...
+replied in 9ms
+replied in 1454593423293ms
+replied in 10ms
+replied in 1454593423294ms
+sending ping...
+sending ping...
+sending ping...
+sending ping...
+replied in 14ms
+replied in 1454593423462ms
+replied in 80ms
+replied in 1454593423549ms
+replied in 101ms
+replied in 1454593423552ms
+token | testtok
+media | testcommand
+stdout: {"temp":69.50,"tmode":1,"fmode":0,"override":0,"hold":0,"t_heat":62.00,"tstate":0,"fstate":0,"time":{"day":6,"hour":8,"minute":25},"t_type_post":0}
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+token | testtok
+media | testcommand
+curl http://192.168.0.27/tstat
+access GUI on port 3000
+send-receive commands on port 3030
+stdout: 
+Error: Command failed: /bin/sh -c curl http://192.168.0.27/tstat
+curl: (7) Couldn't connect to server
+
+window sensor triggered 1
+sending ping...
+curl http://192.168.0.27/tstat
+access GUI on port 3000
+send-receive commands on port 3030
+window sensor triggered 1
+!!! authenticated in 621ms !!!
+stdout: {"temp":71.00,"tmode":1,"fmode":0,"override":1,"hold":0,"t_heat":71.00,"tstate":0,"fstate":0,"time":{"day":0,"hour":10,"minute":59},"t_type_post":0}
+sending ping...
+replied in 109ms
+sending ping...
+sending ping...
+replied in 7ms
+replied in 1454689143357ms
+sending ping...
+sending ping...
+replied in 6ms
+sending ping...
+replied in 8ms
+sending ping...
+sending ping...
+replied in 3ms
+sending ping...
+replied in 4ms
+sending ping...
+replied in 9ms
+replied in 1454689143599ms
+sending ping...
+replied in 18ms
+replied in 1454689143624ms
