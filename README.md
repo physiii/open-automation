@@ -13,7 +13,7 @@ wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.
 15. clone repository into web directory
 16. -- sudo git clone https://github.com/physiii/home-gateway.git
 13. sudo nano /etc/rc.local
-14. -- su pi -c 'sudo node /var/www/html/node/gateway >> /var/www/html/node/gateway.log 2>&1 &'
+14. -- su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
 
 ##camera (optional)
 1. do steps for gateway then
