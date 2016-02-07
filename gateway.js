@@ -58,15 +58,25 @@ var device_port = "init";
 var count = 0;
 var text_timeout = 0;
 
-var device_info = require("./device_info.json");
-device_info = JSON.parse(device_info);
-for(var i = 0; i < device_info.length; i++) {
-    mac = device_info[i].mac;
-    token = device_info[i].token;
-    io_relay.emit('token',{token:token});    
-    console.log(mac + " | " + token);
-}
+fs.stat('./device_info.json', function(err, stat) {
+    if(err == null) {
+      console.log('found device_info.json');
+      var device_info = require("./device_info.json");
+      device_info = JSON.parse(device_info);
+      for(var i = 0; i < device_info.length; i++) {
+        mac = device_info[i].mac;
+        token = device_info[i].token;
+        io_relay.emit('token',{token:token});    
+        console.log(mac + " | " + token);
+      }
 
+
+    } else if(err.code == 'ENOENT') {
+        fs.writeFile('log.txt', 'Some log\n');
+    } else {
+        console.log('Some other error: ', err.code);
+    }
+});
 
 var os = require('os');
 var ifaces = os.networkInterfaces();
@@ -148,7 +158,7 @@ body.on('update', function () {
   console.log('user '+user+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
   io_relay.emit('token',{token:token});
   function callback(){
-    console.log('callback for device_info.json');
+    console.log('made device_info.json');
   }
   fs.writeFile( "device_info.json", JSON.stringify( token ), "utf8", callback );  
 pool.getConnection(function(err, connection) {
