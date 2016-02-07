@@ -3,13 +3,13 @@ Home automation and media server for controlling devices like cameras, lights, t
 
 =======
 #installation
-##install node 4.x
-
+##install node 4.x from source
+ wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
+ 
 ##gateway
-1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
-2. -- sudo git clone https://github.com/physiii/home-gateway.git
-3. sudo nano /etc/rc.local
-4. -- su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
+1. git clone https://github.com/physiii/home-gateway.git
+2. sudo nano /etc/rc.local
+3. su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
 
 ##camera (optional)
 1. 1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
