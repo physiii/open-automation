@@ -11,7 +11,7 @@ wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.
 2. mysql -u root -p
 3. -- create database device;
 15. clone repository into web directory
-16. -- sudo git clone https://github.com/physiii/home-gateway.git /var/www/html
+16. -- sudo git clone https://github.com/physiii/home-gateway.git
 13. sudo nano /etc/rc.local
 14. -- su pi -c 'sudo node /var/www/html/node/gateway >> /var/www/html/node/gateway.log 2>&1 &'
 
