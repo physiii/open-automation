@@ -54,8 +54,6 @@ body.on('update', function () {
 });
 app.use(express.static(__dirname + '/public'), php.cgi("/"));
 
-
-
 /// launch device programming gui on the program_port ///
 /*program_server.listen(program_port, function () {
   console.log('program GUI on port %d', program_port);
