@@ -23,7 +23,7 @@ var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
 var gb_event = new EventEmitter();
 const gb_read = require('child_process').exec;
-
+var token = "init";
 var d = new Date();
 var light_delay = 0; //command delay in ms
 var previous_data = 0;
@@ -75,9 +75,9 @@ fs.stat('./device_info.json', function(err, stat) {
     var device_info = require("./device_info.json");
     device_info = JSON.parse(device_info);
     for(var i = 0; i < device_info.length; i++) {
-      mac = device_info[i].mac;
+      mac = device_info[i].mac.replace(/:/g,'');
       token = device_info[i].token;
-      io_relay.emit('token',{token:token});    
+      io_relay.emit('get_token',{ mac:mac });    
       console.log(mac + " | " + token);
     }
   } else if(err.code == 'ENOENT') {
@@ -89,7 +89,7 @@ fs.stat('./device_info.json', function(err, stat) {
 
 
 // ----------------------------  web interface  ----------------------------- //
-var program_port = process.env.PORT || 3000;
+var program_port = 3000;
 program_server.listen(program_port, function () {
   console.log('Access GUI on port %d', program_port);
 });
@@ -104,19 +104,16 @@ program_io.on('connection', function (socket) {
       {form: post_data},
       function (error, response, data) {
         if (!error && response.statusCode == 200) {
-          body.data = data;
-  
-  console.log('set_token.php says: ' + data);
-  io_relay.emit('token',{token:token});
-  fs.writeFile( "device_info.json", JSON.stringify( body.data ), "utf8", callback );
-  function callback(){
-    console.log('callback for device_info.json');
-  }            
+          console.log('set_token.php says: ' + data.token);
+          //io_relay.emit('token',{token:"blah"});
+          fs.writeFile( "device_info.json", JSON.stringify( data ), "utf8", callback );
+          function callback(){
+            console.log('callback for device_info.json');
+          }
+          //body.data = data;          
           //body.emit('update');
         }
-      }
-    );
-    
+      });
     console.log( "token received for " + data['user']);
   });
 });
@@ -129,7 +126,7 @@ function ping(){
 }
 
 // --------------  websocket server for devices  ----------------- //
-var ws_port = process.env.PORT || 4000;
+var ws_port = 4040;
 var WebSocketServer = require('ws').Server
   , wss = new WebSocketServer({ port: ws_port });
 console.log('websockets on port %d', ws_port);
@@ -151,6 +148,12 @@ wss.on('connection', function connection(ws) {
 // ------------------  relayed socket.io messages  ------------------- //
 //var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
 var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
+
+io_relay.on('token', function (data) {
+  token = data.token;
+  console.log("setting token " + token);
+});
+
 io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
   console.log("replied in " + ping_time + "ms");
