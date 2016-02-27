@@ -17,6 +17,7 @@ var port = process.env.PORT || 3030;
 //var program_port = process.env.PORT || 3000;
 var php = require("node-php");
 var request = require('request');
+var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
@@ -38,7 +39,6 @@ var connection = mysql.createConnection({
 
 var username = "init";
 var device_name = "init";
-var mac = "init";
 var ip = "init";
 var device_port = "init";
 var count = 0;
@@ -64,9 +64,10 @@ Object.keys(ifaces).forEach(function (ifname) {
   });
 });
 
+var mac = "init";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
-  mac = macAddress;
+  mac = macAddress.replace(/:/g,'');
 });
 
 fs.stat('./device_info.json', function(err, stat) {
@@ -75,7 +76,7 @@ fs.stat('./device_info.json', function(err, stat) {
     var device_info = require("./device_info.json");
     device_info = JSON.parse(device_info);
     for(var i = 0; i < device_info.length; i++) {
-      mac = device_info[i].mac.replace(/:/g,'');
+      mac = device_info[i].mac;
       token = device_info[i].token;
       io_relay.emit('get_token',{ mac:mac });    
       console.log(mac + " | " + token);
@@ -151,7 +152,7 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
-  console.log("setting token " + token);
+  console.log("token set " + token);
 });
 
 io_relay.on('png_test', function (data) {
@@ -160,8 +161,19 @@ io_relay.on('png_test', function (data) {
 });
 
 io_relay.on('media', function (data) {
-  console.log("token | " + data.token);
-  console.log("media | " + data.cmd);
+  var command = data.cmd;
+  if ( command === "volume_down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
+  if ( command === "volume_up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
+  if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }
+  if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
+  if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
+  //for volume slider use: xodotool amixer -c 0 sset Master,0 80%
+  
+  console.log("media | " + command);
+});
+
+io_relay.on('gateway', function (data) {
+  console.log(mac + " | " + data.command);
 });
 
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
