@@ -44,7 +44,7 @@ var device_port = "init";
 var count = 0;
 var text_timeout = 0
 var platform = process.platform;
-console.log("This platform is " + platform);
+//console.log("This platform is " + platform);
 //---------------------- get device info -------------------//
 var ifaces = os.networkInterfaces();
 Object.keys(ifaces).forEach(function (ifname) {
@@ -68,7 +68,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 var mac = "init";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
-  mac = macAddress.replace(/:/g,'');
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
   io_relay.emit('get_token',{ mac:mac });
 });
@@ -176,7 +176,7 @@ io_relay.on('media', function (data) {
     }
     if (command == "mute"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
     if (command == "play"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
-  }
+  } else
   if ( platform === "linux" ) {  
     if ( command === "volume_down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
     if ( command === "volume_up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
