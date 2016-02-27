@@ -75,6 +75,7 @@ if (process.platform.indexOf('linux') === 0) {
         cols = lines[i].replace(/ [ ]*/g, ' ').split(' ');
         if ((cols.length > 3) && (cols[0].length !== 0) && (cols[3].length !== 0)) {
           cb(null, { ip: cols[0], mac: cols[3], iface: cols[5] });
+          console.log(cols[0]);
         }
       }
 

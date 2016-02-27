@@ -42,8 +42,9 @@ var device_name = "init";
 var ip = "init";
 var device_port = "init";
 var count = 0;
-var text_timeout = 0;
-
+var text_timeout = 0
+var platform = process.platform;
+console.log("This platform is " + platform);
 //---------------------- get device info -------------------//
 var ifaces = os.networkInterfaces();
 Object.keys(ifaces).forEach(function (ifname) {
@@ -162,13 +163,31 @@ io_relay.on('png_test', function (data) {
 
 io_relay.on('media', function (data) {
   var command = data.cmd;
-  if ( command === "volume_down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
-  if ( command === "volume_up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
-  if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }
-  if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
-  if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
+  if ( platform === "win32" ) {
+    console.log("changing media for windows");
+    if (command == "volume_down"){
+      spawn('nircmd.exe', ['mutesysvolume', '0']);        
+      spawn('nircmd.exe', ['changesysvolume', '-5000']);
+    }
+    if (command == "volume_up"){  
+      spawn('nircmd.exe', ['mutesysvolume', '0']);
+      spawn('nircmd.exe', ['changesysvolume', '+5000']);
+    }
+    if (command == "mute"){  
+      spawn('nircmd.exe', ['mutesysvolume', '1']);
+    }
+    if (command == "play"){  
+      spawn('nircmd.exe', ['mutesysvolume', '1']);
+    }
+  } else {
+    if ( command === "volume_down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
+    if ( command === "volume_up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
+    if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }
+    if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
+    if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
   //for volume slider use: xodotool amixer -c 0 sset Master,0 80%
-  
+  }
+
   console.log("media | " + command);
 });
 
