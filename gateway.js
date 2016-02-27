@@ -69,9 +69,11 @@ var mac = "init";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'');
+  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
+  io_relay.emit('get_token',{ mac:mac });
 });
 
-fs.stat('./device_info.json', function(err, stat) {
+/*fs.stat('./device_info.json', function(err, stat) {
   if(err == null) {
     console.log('found device_info.json');
     var device_info = require("./device_info.json");
@@ -87,7 +89,7 @@ fs.stat('./device_info.json', function(err, stat) {
   } else {
     console.log('Some other error: ', err.code);
   }
-});
+});*/
 
 
 // ----------------------------  web interface  ----------------------------- //
@@ -164,7 +166,6 @@ io_relay.on('png_test', function (data) {
 io_relay.on('media', function (data) {
   var command = data.cmd;
   if ( platform === "win32" ) {
-    console.log("changing media for windows");
     if (command == "volume_down"){
       spawn('nircmd.exe', ['mutesysvolume', '0']);        
       spawn('nircmd.exe', ['changesysvolume', '-5000']);
@@ -173,19 +174,18 @@ io_relay.on('media', function (data) {
       spawn('nircmd.exe', ['mutesysvolume', '0']);
       spawn('nircmd.exe', ['changesysvolume', '+5000']);
     }
-    if (command == "mute"){  
-      spawn('nircmd.exe', ['mutesysvolume', '1']);
-    }
-    if (command == "play"){  
-      spawn('nircmd.exe', ['mutesysvolume', '1']);
-    }
-  } else {
+    if (command == "mute"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
+    if (command == "play"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
+  }
+  if ( platform === "linux" ) {  
     if ( command === "volume_down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
     if ( command === "volume_up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
     if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }
     if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
     if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
-  //for volume slider use: xodotool amixer -c 0 sset Master,0 80%
+    //for volume slider use: xodotool amixer -c 0 sset Master,0 80%
+  } else {
+    console.log("platform not supported " + platform);
   }
 
   console.log("media | " + command);
