@@ -48,12 +48,7 @@ var platform = process.platform;
 
 //---------------------- get device info -------------------//
 var mac = "init";
-require('getmac').getMac(function(err,macAddress){
-  if (err)  throw err
-  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ mac:mac });
-});
+
 
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
@@ -76,7 +71,6 @@ Object.keys(ifaces).forEach(function (ifname) {
   });
 });
 
-<<<<<<< HEAD
 //---------------------- camera proxy -------------------//
 var camera_port = 3031;
 var httpProxy = require('http-proxy');
@@ -92,15 +86,12 @@ http.createServer(function(req, res) {
   }
 }).listen(camera_port, function () {
   console.log('To use camera, forward port '+camera_port+' to '+local_ip+' in your routers settings');
-=======
-var mac = "init";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
->>>>>>> 60b1d4967dae81ab6d12697c1d11e5bafb6fb244
 });
-
+});
 /*fs.stat('./device_info.json', function(err, stat) {
   if(err == null) {
     console.log('found device_info.json');
@@ -184,15 +175,12 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
-<<<<<<< HEAD
   //console.log("token set " + token);
-=======
   fs.writeFile( "session.dat", data.token, "utf8", callback );  
   function callback(){
     console.log('callback for session.dat');
   }  
   console.log("token set " + token);
->>>>>>> 60b1d4967dae81ab6d12697c1d11e5bafb6fb244
 });
 
 io_relay.on('png_test', function (data) {
