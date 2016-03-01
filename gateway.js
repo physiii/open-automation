@@ -70,7 +70,7 @@ require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ mac:mac });
+  io_relay.emit('get_token',{ mac:mac });  
 });
 
 /*fs.stat('./device_info.json', function(err, stat) {
@@ -96,7 +96,8 @@ require('getmac').getMac(function(err,macAddress){
 var program_port = 3000;
 program_server.listen(program_port, function () {
   console.log('Access GUI on port %d', program_port);
-});
+});     
+      
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
   socket.on('get_token', function (data) {
@@ -110,7 +111,7 @@ program_io.on('connection', function (socket) {
         if (!error && response.statusCode == 200) {
           console.log('set_token.php says: ' + data.token);
           //io_relay.emit('token',{token:"blah"});
-          fs.writeFile( "device_info.json", JSON.stringify( data ), "utf8", callback );
+          fs.writeFile( "device_info.json", data.token, "utf8", callback );
           function callback(){
             console.log('callback for device_info.json');
           }
@@ -155,6 +156,10 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
+  fs.writeFile( "session.dat", data.token, "utf8", callback );  
+  function callback(){
+    console.log('callback for session.dat');
+  }  
   console.log("token set " + token);
 });
 
