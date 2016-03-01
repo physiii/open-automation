@@ -45,7 +45,17 @@ var count = 0;
 var text_timeout = 0
 var platform = process.platform;
 //console.log("This platform is " + platform);
+
 //---------------------- get device info -------------------//
+var mac = "init";
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
+  io_relay.emit('get_token',{ mac:mac });
+});
+
+var local_ip = "init";
 var ifaces = os.networkInterfaces();
 Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
@@ -56,21 +66,31 @@ Object.keys(ifaces).forEach(function (ifname) {
     }
     if (alias >= 1) {
       // this single interface has multiple ipv4 addresses
-      console.log(ifname + ':' + alias, iface.address);
+      //console.log(ifname + ':' + alias, iface.address);
     } else {
       // this interface has only one ipv4 adress
-      console.log(ifname, iface.address);
+      //console.log(ifname, iface.address);
     }
+    local_ip = iface.address;
     ++alias;
   });
 });
 
-var mac = "init";
-require('getmac').getMac(function(err,macAddress){
-  if (err)  throw err
-  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ mac:mac });
+//---------------------- camera proxy -------------------//
+var camera_port = 3031;
+var httpProxy = require('http-proxy');
+var proxy = httpProxy.createProxyServer({target:'http://localhost:8081'});
+http.createServer(function(req, res) {
+  console.log("req.url is " + req.url);
+  session_id = "/session/" + token;
+  console.log("session id is " + session_id);
+  if (req.url === session_id) {
+    proxy.web(req, res, { target: 'http://localhost:8081' });
+  } else {
+    console.log("denied");
+  }
+}).listen(camera_port, function () {
+  console.log('To use camera, forward port '+camera_port+' to '+local_ip+' in your routers settings');
 });
 
 /*fs.stat('./device_info.json', function(err, stat) {
@@ -133,7 +153,7 @@ function ping(){
 var ws_port = 4040;
 var WebSocketServer = require('ws').Server
   , wss = new WebSocketServer({ port: ws_port });
-console.log('websockets on port %d', ws_port);
+//console.log('websockets on port %d', ws_port);
 wss.on('connection', function connection(ws) {
   try {
     ws.send('Hello from server!');  
@@ -155,7 +175,7 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
-  console.log("token set " + token);
+  //console.log("token set " + token);
 });
 
 io_relay.on('png_test', function (data) {
@@ -222,7 +242,7 @@ connection.query(query, function(err, rows, fields) {
 });
 
 server.listen(port, function () {
-  console.log('send-receive commands on port %d', port);
+  //console.log('send-receive commands on port %d', port);
 });
 
 io.on('connection', function (socket) {
