@@ -1976,3 +1976,49 @@ replied in 1454689143599ms
 sending ping...
 replied in 18ms
 replied in 1454689143624ms
+eth0 192.168.0.18
+websockets on port 4040
+Access GUI on port 3000
+send-receive commands on port 3030
+Enter device ID (b827eb862f92) at http://dev.pyfi.org
+curl http://192.168.0.27/tstat
+created gateway_tok table
+curl http://192.168.0.27/tstat
+curl http://192.168.0.27/tstat
+curl http://192.168.0.27/tstat
+window sensor triggered 1
+window sensor triggered 2
+curl http://192.168.0.27/tstat
+curl http://192.168.0.27/tstat
+window sensor triggered 3
+window sensor triggered 4
+window sensor triggered 5
+window sensor triggered 6
+token set f4781b0af99d5b969c20163d441bf31bce3c31b03f0ad1403801fe5f8116e63f2ed9943c288948f853cc4b548331bc44ece10ebfc8630682b0c806a736ad3b48
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":58},"t_type_post":0}
+curl http://192.168.0.27/tstat
+window sensor triggered 7
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":58},"t_type_post":0}
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":59},"t_type_post":0}
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":59},"t_type_post":0}
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":59},"t_type_post":0}
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":59},"t_type_post":0}
+stdout: {"temp":74.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":11,"minute":59},"t_type_post":0}
+curl http://192.168.0.27/tstat
+window sensor triggered 1
+stdout: {"temp":77.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":13,"minute":54},"t_type_post":0}
+curl http://192.168.0.27/tstat
+window sensor triggered 1
+stdout: {"temp":77.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":13,"minute":56},"t_type_post":0}
+curl http://192.168.0.27/tstat
+window sensor triggered 1
+stdout: {"temp":77.00,"tmode":2,"fmode":2,"override":0,"hold":0,"t_cool":85.00,"tstate":0,"fstate":1,"time":{"day":2,"hour":13,"minute":57},"t_type_post":0}
+eth0 192.168.0.18
+websockets on port 4040
+Access GUI on port 3000
+send-receive commands on port 3030
+Enter device ID (b827eb862f92) at http://dev.pyfi.org
+token set f4781b0af99d5b969c20163d441bf31bce3c31b03f0ad1403801fe5f8116e63f2ed9943c288948f853cc4b548331bc44ece10ebfc8630682b0c806a736ad3b48
+curl http://192.168.0.27/tstat
+window sensor triggered 1
+stdout: {"temp":70.00,"tmode":2,"fmode":2,"override":1,"hold":1,"t_cool":69.00,"tstate":2,"fstate":1,"time":{"day":4,"hour":11,"minute":14},"t_type_post":0}
