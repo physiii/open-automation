@@ -48,7 +48,12 @@ var platform = process.platform;
 
 //---------------------- get device info -------------------//
 var mac = "init";
-
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
+  io_relay.emit('get_token',{ mac:mac });
+});
 
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
@@ -86,6 +91,7 @@ http.createServer(function(req, res) {
   }
 }).listen(camera_port, function () {
   console.log('To use camera, forward port '+camera_port+' to '+local_ip+' in your routers settings');
+var mac = "init";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
