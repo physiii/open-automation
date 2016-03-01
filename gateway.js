@@ -70,7 +70,6 @@ require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ mac:mac });  
 });
 
 /*fs.stat('./device_info.json', function(err, stat) {
