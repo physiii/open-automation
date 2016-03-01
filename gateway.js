@@ -76,6 +76,7 @@ Object.keys(ifaces).forEach(function (ifname) {
   });
 });
 
+<<<<<<< HEAD
 //---------------------- camera proxy -------------------//
 var camera_port = 3031;
 var httpProxy = require('http-proxy');
@@ -91,6 +92,13 @@ http.createServer(function(req, res) {
   }
 }).listen(camera_port, function () {
   console.log('To use camera, forward port '+camera_port+' to '+local_ip+' in your routers settings');
+=======
+var mac = "init";
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
+>>>>>>> 60b1d4967dae81ab6d12697c1d11e5bafb6fb244
 });
 
 /*fs.stat('./device_info.json', function(err, stat) {
@@ -116,7 +124,8 @@ http.createServer(function(req, res) {
 var program_port = 3000;
 program_server.listen(program_port, function () {
   console.log('Access GUI on port %d', program_port);
-});
+});     
+      
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
   socket.on('get_token', function (data) {
@@ -130,7 +139,7 @@ program_io.on('connection', function (socket) {
         if (!error && response.statusCode == 200) {
           console.log('set_token.php says: ' + data.token);
           //io_relay.emit('token',{token:"blah"});
-          fs.writeFile( "device_info.json", JSON.stringify( data ), "utf8", callback );
+          fs.writeFile( "device_info.json", data.token, "utf8", callback );
           function callback(){
             console.log('callback for device_info.json');
           }
@@ -175,7 +184,15 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
+<<<<<<< HEAD
   //console.log("token set " + token);
+=======
+  fs.writeFile( "session.dat", data.token, "utf8", callback );  
+  function callback(){
+    console.log('callback for session.dat');
+  }  
+  console.log("token set " + token);
+>>>>>>> 60b1d4967dae81ab6d12697c1d11e5bafb6fb244
 });
 
 io_relay.on('png_test', function (data) {
