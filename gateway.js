@@ -82,8 +82,13 @@ require('getmac').getMac(function(err,macAddress){
 var camera_port = 3031;
 var httpProxy = require('http-proxy');
 var proxy = httpProxy.createProxyServer({target:'http://localhost:8081'});
+var cloud_proxy = httpProxy.createProxyServer({target:'http://localhost/owncloud/index.php/apps/files/'});
 http.createServer(function(req, res) {
   session_id = "/session/" + token;
+  cloud_id = "/cloud/" + token;
+  if (req.url === cloud_id) {
+    cloud_proxy.web(req, res, { target: 'http://localhost/owncloud/index.php/apps/files/' });
+  } else
   if (req.url === session_id) {
     proxy.web(req, res, { target: 'http://localhost:8081' });
   } else {
