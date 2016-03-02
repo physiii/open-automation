@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The ownCloud Web Interface &mdash; ownCloud 8.2 User Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="index.html" />
+    <link rel="next" title="Files &amp; Synchronization" href="files/index.html" />
+    <link rel="prev" title="What’s New for Users in ownCloud 8.2" href="whats_new.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="contents.html">ownCloud 8.2 User Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">ownCloud 8.2 User Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new.html">What&#8217;s New for Users in ownCloud 8.2</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">The ownCloud Web Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#navigating-the-main-user-interface">Navigating the Main User Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="files/index.html">Files &amp; Synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pim/index.html">Contacts &amp; Calendar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documents.html">Collaborative Document Editing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookmarks.html">Using the Bookmarks App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userpreferences.html">Setting Your Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_storage/index.html">External Storage</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="the-owncloud-web-interface">
+<h1>The ownCloud Web Interface<a class="headerlink" href="#the-owncloud-web-interface" title="Permalink to this headline">¶</a></h1>
+<p>You can connect to your ownCloud server using any Web browser; just point it to
+your ownCloud server and enter your username and password.</p>
+<blockquote>
+<div><div class="figure">
+<img alt="ownCloud login screen." src="_images/oc_connect.png" />
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some apps like <tt class="docutils literal"><span class="pre">files_external</span></tt> or <tt class="docutils literal"><span class="pre">encryption</span></tt> will disable
+the <strong>Stay logged in</strong> checkbox.</p>
+</div>
+<div class="section" id="navigating-the-main-user-interface">
+<h2>Navigating the Main User Interface<a class="headerlink" href="#navigating-the-main-user-interface" title="Permalink to this headline">¶</a></h2>
+<p>By default, the ownCloud Web interface opens to your Files page. You can add,
+remove, and share files, and make changes based on the access privileges set by
+you (if you are administering the server) or by your server administrator.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/files_page1.png"><img alt="The main Files view." src="_images/files_page1.png" style="width: 754.5px; height: 386.25px;" /></a>
+</div>
+<p>The ownCloud user interface contains the following fields and functions:</p>
+<ul class="simple">
+<li><strong>Apps Selection Menu</strong>: Located in the upper left corner, click the arrow to
+open a dropdown menu to navigate to your various available apps.</li>
+<li><strong>Apps Information</strong> field: Located in the left sidebar, this provides
+filters and tasks associated with your selected app.  For example, when you
+are using the Files apps you have a special set of filters for quickly
+finding your files, such as files that have been shared with you, and files
+that you have shared with others. You&#8217;ll see different items for other apps.</li>
+<li><strong>Application View</strong>: The main central field in the ownCloud user interface.
+This field displays the contents or user features of your selected app.</li>
+<li><strong>Navigation Bar</strong>: Located over the main viewing window (the Application
+View), this bar provides a type of breadcrumbs navigation that enables you to
+migrate to higher levels of the folder hierarchy up to the root level (home).</li>
+<li><strong>New</strong> button: Located in the Navigation Bar, the <tt class="docutils literal"><span class="pre">New</span></tt> button
+enables you to create new files, new folders, or upload files.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can also drag and drop files from your file manager into the
+ownCloud Files Application View to upload them to ownCloud. Currently,
+the only Web browsers that support drag-and-drop folders are Chrome and
+Chromium.</p>
+</div>
+<ul>
+<li><p class="first"><strong>Search</strong> field: Click on the magnifier in the upper right hand corner of
+to search for files.</p>
+</li>
+<li><p class="first"><strong>Gallery</strong> button. This looks like four little squares, and takes you
+directly to your image gallery.</p>
+</li>
+<li><p class="first"><strong>Personal Settings</strong> menu: Click on your ownCloud username, located to the
+right of the Search field, to open your Personal Settings dropdown menu. Your
+Personal page provides the following settings and features:</p>
+<ul class="simple">
+<li>Links to download desktop and mobile apps</li>
+<li>Re-run the First Run Wizard</li>
+<li>Server usage and space availability</li>
+<li>Password management</li>
+<li>Name, email, and profile picture settings</li>
+<li>Group memberships</li>
+<li>Interface language settings</li>
+<li>Manage notifications</li>
+<li>Federated Cloud ID</li>
+<li>Social media sharing buttons</li>
+<li>SSL certificate manager</li>
+<li>ownCloud Version information</li>
+</ul>
+<p>See <a class="reference internal" href="userpreferences.html"><em>Setting Your Preferences</em></a> section to learn more about these settings.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

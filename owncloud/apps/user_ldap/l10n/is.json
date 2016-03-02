@@ -1,0 +1,11 @@
+{ "translations": {
+    "Users" : "Notendur",
+    "Groups" : "Hópar",
+    "Test Configuration" : "Prúfa uppsetningu",
+    "Help" : "Hjálp",
+    "Host" : "Netþjónn",
+    "Password" : "Lykilorð",
+    "Continue" : "Halda áfram",
+    "Advanced" : "Ítarlegt"
+},"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
+}

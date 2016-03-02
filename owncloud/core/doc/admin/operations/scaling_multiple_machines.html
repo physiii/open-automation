@@ -1,0 +1,267 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scaling Across Multiple Machines &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Operations" href="index.html" />
+    <link rel="next" title="Theming ownCloud" href="theming.html" />
+    <link rel="prev" title="Considerations on Monitoring" href="considerations_on_monitoring.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Operations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="considerations_on_monitoring.html">Considerations on Monitoring</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Scaling Across Multiple Machines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#application-layer">Application Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-layer">Database Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#storage-layer">Storage Layer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="theming.html">Theming ownCloud</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="scaling-across-multiple-machines">
+<h1>Scaling Across Multiple Machines<a class="headerlink" href="#scaling-across-multiple-machines" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>This document will cover the reference architecture for the ownCloud Scale Out
+model for a single datacenter implementation.  The document will focus on the
+three main elements of an ownCloud deployment:</p>
+<ul class="simple">
+<li>Application layer</li>
+<li>Database Layer</li>
+<li>Storage Layer</li>
+</ul>
+<p>At each layer the goal is to provide the ability to scale, and providing a high
+availability while maintaining the needed level of performance.</p>
+<div class="section" id="application-layer">
+<h2>Application Layer<a class="headerlink" href="#application-layer" title="Permalink to this headline">¶</a></h2>
+<p>For the application layer of this reference architecture we used Oracle
+Enterprise Linux as the front end servers to host the ownCloud code.  In this
+instance we made <tt class="docutils literal"><span class="pre">httpd</span></tt> a permissive domain, allowing it to operate within the
+SELinux environment.  In this example we also used the standard directory
+structure placing the ownCloud code in the Apache root directory. The
+following components were installed on each application server:</p>
+<ul class="simple">
+<li>Apache</li>
+<li>PHP 5.4.x</li>
+<li>PHP-GD</li>
+<li>PHP-XML</li>
+<li>PHP-MYSQL</li>
+<li>PHP-CURL</li>
+</ul>
+<p>Also required is <a class="reference external" href="https://software.opensuse.org/download.html?project=isv%3AownCloud%3Acommunity%3A8.1&amp;package=php5-libsmbclient">php5-libsmbclient</a>.</p>
+<p>It is also worth mentioning that the appropriate exceptions where made in the
+firewall to allow the ownCloud traffic (for the purpose of testing we
+enable both encrypted SSL via port 443 and unencrypted via port 80).</p>
+<p>The next step was to generate and import the needed SSL certificates following
+the standard process in the OEL documentation.</p>
+<p>The next step is to create a scalable environment at the application layer,
+which introduces the load balancer.  Because the application servers here are
+stateless, simply taking the configuration above and replicating (once
+configured with storage and database connections) and placing behind a load
+balancer will provide a scalable and highly available environment.
+For this purpose we chose HAProxy and configured it for HTTPS traffic following
+the documentation found here <a class="reference external" href="http://haproxy.1wt.eu/#doc1.5">http://haproxy.1wt.eu/#doc1.5</a></p>
+<p>It is worth noting that this particular load balancer is not required, and the use of
+any commercial load balancer (i.e. F5) will work here.  It is also worth noting
+that the HAProxy servers were setup with a heartbeat and IP Shift to failover
+the IP address should one fail.</p>
+<img alt="../_images/scaling-1.png" src="../_images/scaling-1.png" style="width: 3.4937in; height: 4.5134in;" />
+</div>
+<div class="section" id="database-layer">
+<h2>Database Layer<a class="headerlink" href="#database-layer" title="Permalink to this headline">¶</a></h2>
+<p>For the purposes of this example, we have chosen a MySQL cluster using the NDB
+Storage engine.  The cluster was configured based on the documentation found
+here <a class="reference external" href="http://dev.mysql.com/doc/refman/5.1/en/mysql-cluster.html">http://dev.mysql.com/doc/refman/5.1/en/mysql-cluster.html</a> with a sample
+looking like this:</p>
+<img alt="../_images/scaling-2.png" src="../_images/scaling-2.png" style="width: 6in; height: 3.0673in;" />
+<p>Taking a closer look at the database architecture, we have created redundant
+MySQL NDB Management nodes for redundancy and we have configured 3 NDB
+SQL/Storage nodes across which we are able to spread the database traffic.  All
+of the clients (ownCloud Application Servers) will connect to the database via
+the My SQL Proxy. It is worth noting that MySQL proxy is still in beta and that using
+another load balancing method like HAProxy or F5 is supported, in that you will
+be distributing traffic among the various SQL/Storage nodes. Here, we simply
+swap out the MySQL Proxy for a properly configured HAProxy giving us the
+following:</p>
+<img alt="../_images/scaling-3.png" src="../_images/scaling-3.png" style="width: 6in; height: 0.7311in;" />
+<p>In this example we have also added a second HAProxy server with Heartbeat to prevent any single point of failure.
+We have also implemented NIC bonding to load balance the traffic across multiple physical NICs.</p>
+</div>
+<div class="section" id="storage-layer">
+<h2>Storage Layer<a class="headerlink" href="#storage-layer" title="Permalink to this headline">¶</a></h2>
+<p>Storage was deployed using the Red Hat Storage server with the GlusterFS
+(pre-configured as part of the Red Hat Storage Server offering).</p>
+<p>The Red Hat Storage Servers where configured based on documentation found here
+<a class="reference external" href="https://access.redhat.com/site/documentation/en-US/Red_Hat_Storage/2.0/html/Administration_Guide/Admin_Guide_Part_1.html">https://access.redhat.com/site/documentation/en-US/Red_Hat_Storage/2.0/html/Administration_Guide/Admin_Guide_Part_1.html</a></p>
+<p>For the purposes of scale and high availability we configured a distributed
+replicated volume with IP Failover.  The storage was configured on a separate
+subnet with bonded NICs at the application server level.  We have chosen to
+address the storage using NFS, and for high availability we have chosen to
+implement IP Failover of the storage as documented here
+<a class="reference external" href="https://access.redhat.com/site/documentation/en-US/Red_Hat_Storage/2.0/html/Administration_Guide/ch09s04.html">https://access.redhat.com/site/documentation/en-US/Red_Hat_Storage/2.0/html/Administration_Guide/ch09s04.html</a></p>
+<img alt="../_images/scaling-4.png" src="../_images/scaling-4.png" style="width: 3.8693in; height: 3.6272in;" />
+<p>We chose to deploy the storage in this fashion to address both HA and
+extensibility of the storage, along with managing performance by simply adding
+additional bricks to the storage volume, back-ended by additional physical
+disk.</p>
+<p>It is worth noting that several options are available for storage configuration
+(such as striped replicated volumes).  A discussion around the type of IO
+performance required and the needed HA configuration needs to take place to
+understand the best possible option here.</p>
+<p>If we add up the parts, we have the following:</p>
+<ul class="simple">
+<li>An application layer that supports dynamic expansion through the addition of additional servers and provides HA behind a load balancer</li>
+<li>A database layer that can also be scaled through the addition of additional SQL/Storage nodes and will provide HA behind a load balancer</li>
+<li>A storage layer that can dynamically expand to meet storage needs, will scale based on backend hardware, and provides HA via IP Failover</li>
+</ul>
+<img alt="../_images/scaling-5.png" src="../_images/scaling-5.png" style="width: 4.4937in; height: 5.2134in;" />
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

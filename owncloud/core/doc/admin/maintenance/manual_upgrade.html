@@ -1,0 +1,284 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Manual ownCloud Upgrade &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Maintenance" href="index.html" />
+    <link rel="next" title="Upgrading ownCloud with the Updater App" href="update.html" />
+    <link rel="prev" title="Upgrade ownCloud From Packages" href="package_upgrade.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Maintenance</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="enable_maintenance.html">Maintenance Mode Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backup.html">Backing up ownCloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="upgrade.html">How to Upgrade Your ownCloud Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="package_upgrade.html">Upgrade ownCloud From Packages</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Manual ownCloud Upgrade</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverse-upgrade">Reverse Upgrade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Upgrading ownCloud with the Updater App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restore.html">Restoring ownCloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrating.html">Migrating to a Different Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="manual-owncloud-upgrade">
+<h1>Manual ownCloud Upgrade<a class="headerlink" href="#manual-owncloud-upgrade" title="Permalink to this headline">¶</a></h1>
+<p>Always start by making a fresh backup &amp; disabling all 3rd party apps.</p>
+<p>Put your server in maintenance mode. This prevents new logins, locks the
+sessions of logged-in users, and displays a status screen so users know what is
+happening. There are two ways to do this, and the preferred method is to use the
+<a class="reference internal" href="../configuration_server/occ_command.html"><em>occ command</em></a>, which you must run as
+your HTTP user. This example is for Ubuntu Linux:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ maintenance:mode --on</pre>
+</div>
+<p>The other way is by entering your <tt class="docutils literal"><span class="pre">config.php</span></tt> file and changing
+<tt class="docutils literal"><span class="pre">'maintenance'</span> <span class="pre">=&gt;</span> <span class="pre">false,</span></tt> to <tt class="docutils literal"><span class="pre">'maintenance'</span> <span class="pre">=&gt;</span> <span class="pre">true,</span></tt>.</p>
+<ol class="arabic simple">
+<li>Back up your existing ownCloud Server database, data directory, and
+<tt class="docutils literal"><span class="pre">config.php</span></tt> file. (See <a class="reference internal" href="backup.html"><em>Backing up ownCloud</em></a>.)</li>
+<li>Download and unpack the latest ownCloud Server release (Archive file) from
+<a class="reference external" href="https://owncloud.org/install/">owncloud.org/install/</a> into an empty directory outside
+of your current installation. For example, if your current ownCloud is
+installed in <tt class="docutils literal"><span class="pre">/var/www/owncloud/</span></tt> you could create a new directory called
+<tt class="docutils literal"><span class="pre">/var/www/owncloud2/</span></tt></li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Enterprise users must download their new ownCloud archives from
+their accounts on <a class="reference external" href="https://customer.owncloud.com/owncloud/">https://customer.owncloud.com/owncloud/</a></p>
+</div>
+<ol class="arabic" start="3">
+<li><p class="first">Stop your Web server.</p>
+</li>
+<li><p class="first">Rename or move your current ownCloud directory (named <tt class="docutils literal"><span class="pre">owncloud/</span></tt> if
+installed using defaults) to another location.</p>
+</li>
+<li><p class="first">Unpack your new tarball:</p>
+<div class="highlight-python"><pre>tar xjf owncloud-latest.tar.bz2</pre>
+</div>
+</li>
+<li><p class="first">This creates a new <tt class="docutils literal"><span class="pre">owncloud/</span></tt> directory populated with your new server
+files. Copy this directory and its contents to the original location of your
+old server, for example <tt class="docutils literal"><span class="pre">/var/www/</span></tt>, so that once again you have
+<tt class="docutils literal"><span class="pre">/var/www/owncloud</span></tt> .</p>
+</li>
+<li><p class="first">Copy and paste the <tt class="docutils literal"><span class="pre">config.php</span></tt> file from your old version of
+ownCloud to your new ownCloud version.</p>
+</li>
+<li><p class="first">If you keep your <tt class="docutils literal"><span class="pre">data/</span></tt> directory in your <tt class="docutils literal"><span class="pre">owncloud/</span></tt> directory, copy
+it from your old version of ownCloud to the <tt class="docutils literal"><span class="pre">owncloud/</span></tt> directory of
+your new ownCloud version. If you keep it outside of <tt class="docutils literal"><span class="pre">owncloud/</span></tt> then
+you don&#8217;t have to do anything with it, because its location is configured in
+your original <tt class="docutils literal"><span class="pre">config.php</span></tt>, and none of the upgrade steps touch it.</p>
+</li>
+<li><p class="first">If you are using 3rd party applications, look in your new <tt class="docutils literal"><span class="pre">owncloud/apps/</span></tt>
+directory to see if they are there. If not, copy them from your old <tt class="docutils literal"><span class="pre">apps/</span></tt>
+directory to your new one. Make sure the directory permissions of your third
+party application directories are the same as for the other ones.</p>
+</li>
+<li><p class="first">Restart your Web server.</p>
+</li>
+<li><p class="first">Now launch the upgrade from the command  line using <tt class="docutils literal"><span class="pre">occ</span></tt>, like this
+example on CentOS Linux:</p>
+<div class="highlight-python"><pre>sudo -u apache php occ upgrade</pre>
+</div>
+</li>
+<li><p class="first">The upgrade operation takes a few minutes to a few hours, depending on the
+size of your installation. When it is finished you will see a success
+message, or an error message that will tell where it went wrong.</p>
+</li>
+</ol>
+<p>Assuming your upgrade succeeded, disable the maintenance mode:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ maintenance:mode --off</pre>
+</div>
+<p>Login and take a look at the bottom of your Admin page to
+verify the version number. Check your other settings to make sure they&#8217;re
+correct. Go to the Apps page and review the core apps to make sure the right
+ones are enabled. Re-enable your third-party apps. Then apply strong
+permissions to your ownCloud directories (<a class="reference internal" href="../installation/installation_wizard.html#strong-perms-label"><em>Setting Strong Directory Permissions</em></a>).</p>
+<div class="section" id="reverse-upgrade">
+<h2>Reverse Upgrade<a class="headerlink" href="#reverse-upgrade" title="Permalink to this headline">¶</a></h2>
+<p>If you need to reverse your upgrade, see <a class="reference internal" href="restore.html"><em>Restoring ownCloud</em></a>.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>When upgrading ownCloud and you are running MySQL or MariaDB with binary
+logging
+enabled, your upgrade may fail with these errors in your MySQL/MariaDB log:</p>
+<div class="highlight-python"><pre>An unhandled exception has been thrown:
+exception 'PDOException' with message 'SQLSTATE[HY000]: General error: 1665
+Cannot execute statement: impossible to write to binary log since
+BINLOG_FORMAT = STATEMENT and at least one table uses a storage engine limited
+to row-based logging. InnoDB is limited to row-logging when transaction
+isolation level is READ COMMITTED or READ UNCOMMITTED.'</pre>
+</div>
+<p>Please refer to <a class="reference internal" href="../configuration_database/linux_database_configuration.html#db-binlog-label"><em>MySQL / MariaDB with Binary Logging Enabled</em></a> on how to correctly configure your
+environment.</p>
+<p>Occasionally, <em>files do not show up after a upgrade</em>. A rescan of the files can
+help:</p>
+<div class="highlight-python"><pre>sudo -u www-data php console.php files:scan --all</pre>
+</div>
+<p>See <a class="reference external" href="http://owncloud.org/support">the owncloud.org support page</a> for further
+resources for both home and enterprise users.</p>
+<p>Sometimes, ownCloud can get <em>stuck in a upgrade</em>. This is usually due to the
+process taking too long and encountering a PHP time-out. Stop the upgrade
+process this way:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ maintenance:mode --off</pre>
+</div>
+<p>Then start the manual process:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ upgrade</pre>
+</div>
+<p>If this does not work properly, try the repair function:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ maintenance:repair</pre>
+</div>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

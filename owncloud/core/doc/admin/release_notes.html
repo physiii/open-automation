@@ -1,0 +1,537 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ownCloud 8.2 Release Notes &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="index.html" />
+    <link rel="next" title="What’s New for Admins in ownCloud 8.2" href="whats_new_admin.html" />
+    <link rel="prev" title="ownCloud 8.2 Server Administration Manual Introduction" href="index.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">ownCloud 8.2 Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-8-2">Changes in 8.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-8-1">Changes in 8.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enterprise-8-1-only">Enterprise 8.1 Only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#owncloud-8-0">ownCloud 8.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manual-ldap-port-configuration">Manual LDAP Port Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-preview-icon-on-text-files">No Preview Icon on Text Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remote-federated-cloud-share-cannot-be-reshared-with-local-users">Remote Federated Cloud Share Cannot be Reshared With Local Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manually-migrate-encryption-keys-after-upgrade">Manually Migrate Encryption Keys after Upgrade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows-server-not-supported">Windows Server Not Supported</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#php-5-3-support-dropped">PHP 5.3 Support Dropped</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disable-apache-multiviews">Disable Apache Multiviews</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#owncloud-does-not-follow-symlinks">ownCloud Does Not Follow Symlinks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-commas-in-group-names">No Commas in Group Names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hebrew-file-names-too-large-on-windows">Hebrew File Names Too Large on Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#google-drive-large-files-fail-with-500-error">Google Drive Large Files Fail with 500 Error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#encrypting-large-numbers-of-files">Encrypting Large Numbers of Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#enterprise-8-0-only">Enterprise 8.0 Only</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sharepoint-drive-ssl-not-verified">Sharepoint Drive SSL Not Verified</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-federated-cloud-sharing-with-shibboleth">No Federated Cloud Sharing with Shibboleth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#direct-uploads-to-swift-do-not-appear-in-owncloud">Direct Uploads to SWIFT do not Appear in ownCloud</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swift-objectstore-incompatible-with-encryption-app">SWIFT Objectstore Incompatible with Encryption App</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app-store-is-back">App Store is Back</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#owncloud-7-release-notes">ownCloud 7 Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Manual LDAP Port Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ldap-search-performance-improved">LDAP Search Performance Improved</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#protecting-owncloud-on-iis-from-data-loss">Protecting ownCloud on IIS from Data Loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#antivirus-app-modes">Antivirus App Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enable-only-for-specific-groups-fails">&#8220;Enable Only for Specific Groups&#8221; Fails</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changes-to-file-previews">Changes to File Previews</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gb-limit-on-sftp-transfers">4GB Limit on SFTP Transfers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#not-enough-space-available-on-file-upload">&#8220;Not Enough Space Available&#8221; on File Upload</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-more-expiration-date-on-local-shares">No More Expiration Date On Local Shares</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zero-quota-not-read-only">Zero Quota Not Read-Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#enterprise-7-only">Enterprise 7 Only</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">No Federated Cloud Sharing with Shibboleth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows-network-drive">Windows Network Drive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sharepoint-drive-ssl">Sharepoint Drive SSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shibboleth-and-webdav-incompatible">Shibboleth and WebDAV Incompatible</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-sqlite">No SQLite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-app-store">No App Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ldap-home-connector-linux-only">LDAP Home Connector Linux Only</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="owncloud-version-release-notes">
+<h1>ownCloud 8.2 Release Notes<a class="headerlink" href="#owncloud-version-release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-8-2">
+<h2>Changes in 8.2<a class="headerlink" href="#changes-in-8-2" title="Permalink to this headline">¶</a></h2>
+<p>Home folder rule is enforced in the user_ldap application in new ownCloud installations; see <a class="reference internal" href="configuration_user/user_auth_ldap.html"><em>User Authentication with LDAP</em></a>. This affects ownCloud 8.0.10, 8.1.5 and 8.2.0 and up.</p>
+<p>New location for Linux package repositories; ownCloud admins must manually
+change to the new repos. See <a class="reference internal" href="maintenance/upgrade.html"><em>How to Upgrade Your ownCloud Server</em></a></p>
+<p>PHP 5.6.11+ breaks the LDAP wizard with a &#8216;Could not connect to LDAP&#8217; error. See <a class="reference external" href="https://github.com/owncloud/core/issues/20020">https://github.com/owncloud/core/issues/20020</a>.</p>
+<p><tt class="docutils literal"><span class="pre">filesystem_check_changes</span></tt> in <tt class="docutils literal"><span class="pre">config.php</span></tt> is set to 0 by default. This
+prevents unnecessary update checks and improves performance. If you are using
+external storage mounts such as NFS on a remote storage server, set this to 1
+so that ownCloud will detect remote file changes.</p>
+<p>XSendFile support has been removed, so there is no longer support for <a class="reference external" href="https://doc.owncloud.org/server/8.1/admin_manual/configuration_files/serving_static_files_configuration.html">serving
+static files</a> from your ownCloud server.</p>
+<p>LDAP issue: 8.2 uses the <tt class="docutils literal"><span class="pre">memberof</span></tt> attribute by default. If this is not
+activated on your LDAP server your user groups will not be detected, and you
+will see this message in your ownCloud log: <tt class="docutils literal"><span class="pre">Error</span> <span class="pre">PHP</span> <span class="pre">Array</span> <span class="pre">to</span> <span class="pre">string</span>
+<span class="pre">conversion</span> <span class="pre">at</span> <span class="pre">/var/www/html/owncloud/lib/private/template/functions.php#36</span></tt>.
+Fix this by disabling the <tt class="docutils literal"><span class="pre">memberof</span></tt> attribute on your ownCloud server with
+the <tt class="docutils literal"><span class="pre">occ</span></tt> command, like this example on Ubuntu Linux:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ ldap:set-config "s01" useMemberOfToDetectMembership 0</pre>
+</div>
+<p>Run <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">-u</span> <span class="pre">www-data</span> <span class="pre">php</span> <span class="pre">occ</span> <span class="pre">ldap:show-config</span></tt> to find the correct <tt class="docutils literal"><span class="pre">sNN</span></tt>
+value; if there is not one then use empty quotes, <tt class="docutils literal"><span class="pre">&quot;&quot;</span></tt>. (See
+<a class="reference internal" href="configuration_server/occ_command.html"><em>Using the occ Command</em></a>.)</p>
+<p>Users of the Linux Package need to update their repository setup as described
+in this <a class="reference external" href="https://owncloud.org/blog/upgrading-to-owncloud-server-8-2/">blogpost</a>.</p>
+<p>The log format for failed logins to the <tt class="docutils literal"><span class="pre">owncloud.log</span></tt> has a slight syntax change.
+If a tool relies on logging failed logins please revise its rule. For <tt class="docutils literal"><span class="pre">fail2ban</span></tt>
+you will find an updated rule at the <a class="reference external" href="https://forum.owncloud.org/viewtopic.php?f=8&amp;t=28678">forums</a>.</p>
+</div>
+<div class="section" id="changes-in-8-1">
+<h2>Changes in 8.1<a class="headerlink" href="#changes-in-8-1" title="Permalink to this headline">¶</a></h2>
+<p>Use APCu only if available in version 4.0.6 and higher. If you install an older version, you will see a <tt class="docutils literal"><span class="pre">APCu</span> <span class="pre">below</span> <span class="pre">version</span> <span class="pre">4.0.6</span> <span class="pre">is</span> <span class="pre">installed,</span> <span class="pre">for</span> <span class="pre">stability</span> <span class="pre">and</span> <span class="pre">performance</span> <span class="pre">reasons</span> <span class="pre">we</span> <span class="pre">recommend</span> <span class="pre">to</span> <span class="pre">update</span> <span class="pre">to</span> <span class="pre">a</span> <span class="pre">newer</span> <span class="pre">APCu</span> <span class="pre">version</span></tt> warning on your ownCloud admin page.</p>
+<p>SMB external storage now based on <tt class="docutils literal"><span class="pre">php5-libsmbclient</span></tt>, which must be downloaded
+from the ownCloud software repositories (<a class="reference external" href="https://software.opensuse.org/download.html?project=isv%3AownCloud%3Acommunity%3A8.1&amp;package=php5-libsmbclient">installation instructions</a>).</p>
+<p>&#8220;Download from link&#8221; feature has been removed.</p>
+<p>The <tt class="docutils literal"><span class="pre">.htaccess</span></tt> and <tt class="docutils literal"><span class="pre">index.html</span></tt> files in the <tt class="docutils literal"><span class="pre">data/</span></tt> directory are now
+updated after every update. If you make any modifications to these files they
+will be lost after updates.</p>
+<p>The SabreDAV browser at <tt class="docutils literal"><span class="pre">/remote.php/webdav</span></tt> has been removed.</p>
+<p>Using ownCloud without a <tt class="docutils literal"><span class="pre">trusted_domain</span></tt> configuration will not work anymore.</p>
+<p>The logging format for failed logins has changed and considers now the proxy
+configuration in <tt class="docutils literal"><span class="pre">config.php</span></tt>.</p>
+<p>A default set of security and privacy HTTP headers have been added to the
+ownCloud <tt class="docutils literal"><span class="pre">.htaccess</span></tt> file, and ownCloud administrators may now customize which
+headers are sent.</p>
+<p>More strict SSL certificate checking improves security but can result in
+&#8220;cURL error 60: SSL certificate problem: unable to get local issuer certificate&#8221;
+errors with certain broken PHP versions. Please verify your SSL setup, update your
+PHP or contact your vendor if you receive these errors.</p>
+<p>The persistent file-based cache (e.g. used by LDAP integration) has been dropped and
+replaced with a memory-only cache, which must be explicitly configured. See
+<a class="reference internal" href="configuration_user/user_auth_ldap.html"><em>User Authentication with LDAP</em></a>. Memory cache configuration for the
+ownCloud server is no longer automatic, requiring installation of
+your desired cache backend and configuration in
+<tt class="docutils literal"><span class="pre">config.php</span></tt> (see <a class="reference internal" href="configuration_server/caching_configuration.html"><em>Configuring Memory Caching</em></a>.)</p>
+<p>The OC_User_HTTP backend has been removed. Administrators are encouraged to use
+the <tt class="docutils literal"><span class="pre">user_webdavauth</span></tt> application instead.</p>
+<p>ownCloud ships now with its own root certificate bundle derived from Mozilla&#8217;s
+root certificates file. The system root certificate bundle will not be used
+anymore for most requests.</p>
+<p>When you upgrade from ownCloud 8.0, with encryption enabled, to 8.1, you must
+enable the new encryption backend and migrate your encryption keys. See
+<a class="reference internal" href="configuration_files/encryption_configuration.html"><em>Encryption Configuration</em></a></p>
+<p>Encryption can no longer be disabled in ownCloud 8.1. It is planned to re-add
+this feature to the command line client for a future release.</p>
+<p>It is not recommended to upgrade encryption-enabled systems from ownCloud Server 8.0
+to version 8.1.0 as there is a chance the migration will break. We recommend
+migrating to the first bugfix release, ownCloud Server 8.1.1.</p>
+<p>Due to various technical issues, by default desktop sync clients older than
+1.7 are not allowed to connect and sync with the ownCloud server. This is
+configurable via the <tt class="docutils literal"><span class="pre">minimum.supported.desktop.version</span></tt> switch in
+<tt class="docutils literal"><span class="pre">config.php</span></tt>.</p>
+<p>Previews are now generated at a maximum size of 2048 x 2048 pixels. This is configurable
+via the <tt class="docutils literal"><span class="pre">preview_max_x</span></tt> and <tt class="docutils literal"><span class="pre">preview_max_y</span></tt> switches in <tt class="docutils literal"><span class="pre">config.php</span></tt>.</p>
+<p>The ownCloud 8 server is not supported on any version of Windows.</p>
+<p>The 8.1.0 release has a minor bug which makes app updates fail at first try. Reload the
+apps page and try again, and the update will succeed.</p>
+<p>The <tt class="docutils literal"><span class="pre">forcessl</span></tt> option within the <tt class="docutils literal"><span class="pre">config.php</span></tt> and the <tt class="docutils literal"><span class="pre">Enforce</span> <span class="pre">SSL</span></tt> option
+within the Admin-Backend was removed. This now needs to be configured like
+described in <a class="reference internal" href="configuration_server/harden_server.html#use-https-label"><em>Use HTTPS</em></a>.</p>
+<p>WebDAV file locking was removed in oC 8.1 which causes Finder on Mac OS X to mount WebDAV read-only.</p>
+</div>
+<div class="section" id="enterprise-8-1-only">
+<h2>Enterprise 8.1 Only<a class="headerlink" href="#enterprise-8-1-only" title="Permalink to this headline">¶</a></h2>
+<p>The SharePoint Drive app does not verify the SSL certificate of the SharePoint
+server or the ownCloud server, as it is expected that both devices are in the
+same trusted environment.</p>
+</div>
+<div class="section" id="owncloud-8-0">
+<h2>ownCloud 8.0<a class="headerlink" href="#owncloud-8-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="manual-ldap-port-configuration">
+<h3>Manual LDAP Port Configuration<a class="headerlink" href="#manual-ldap-port-configuration" title="Permalink to this headline">¶</a></h3>
+<p>When you are configuring the LDAP user and group backend application, ownCloud
+may not auto-detect the LDAP server&#8217;s port number, so you will need to enter it
+manually.</p>
+</div>
+<div class="section" id="no-preview-icon-on-text-files">
+<h3>No Preview Icon on Text Files<a class="headerlink" href="#no-preview-icon-on-text-files" title="Permalink to this headline">¶</a></h3>
+<p>There is no preview icon displayed for text files when the file contains fewer than six characters.</p>
+</div>
+<div class="section" id="remote-federated-cloud-share-cannot-be-reshared-with-local-users">
+<h3>Remote Federated Cloud Share Cannot be Reshared With Local Users<a class="headerlink" href="#remote-federated-cloud-share-cannot-be-reshared-with-local-users" title="Permalink to this headline">¶</a></h3>
+<p>When you mount a Federated Cloud share from a remote ownCloud server, you cannot re-share it with your local ownCloud users. (See <a class="reference internal" href="configuration_files/federated_cloud_sharing_configuration.html"><em>Configuring Federated Cloud Sharing</em></a> to learn more about federated cloud sharing)</p>
+</div>
+<div class="section" id="manually-migrate-encryption-keys-after-upgrade">
+<h3>Manually Migrate Encryption Keys after Upgrade<a class="headerlink" href="#manually-migrate-encryption-keys-after-upgrade" title="Permalink to this headline">¶</a></h3>
+<p>If you are using the Encryption app and upgrading from older versions of
+ownCloud to ownCloud 8.0, you must manually migrate your encryption keys with
+the <em>occ</em> command after the upgrade is complete, like this example for CentOS:
+<em>sudo -u apache php occ encryption:migrate</em> You must run <em>occ</em> as your HTTP
+user. See <a class="reference internal" href="configuration_server/occ_command.html"><em>Using the occ Command</em></a> to learn more about <em>occ</em></p>
+</div>
+<div class="section" id="windows-server-not-supported">
+<h3>Windows Server Not Supported<a class="headerlink" href="#windows-server-not-supported" title="Permalink to this headline">¶</a></h3>
+<p>Windows Server is not supported in ownCloud 8.</p>
+</div>
+<div class="section" id="php-5-3-support-dropped">
+<h3>PHP 5.3 Support Dropped<a class="headerlink" href="#php-5-3-support-dropped" title="Permalink to this headline">¶</a></h3>
+<p>PHP 5.3 is not supported in ownCloud 8, and PHP 5.4 or better is required.</p>
+</div>
+<div class="section" id="disable-apache-multiviews">
+<h3>Disable Apache Multiviews<a class="headerlink" href="#disable-apache-multiviews" title="Permalink to this headline">¶</a></h3>
+<p>If Multiviews are enabled in your Apache configuration, this may cause problems
+with content negotiation, so disable Multiviews by removing it from your Apache
+configuration. Look for lines like this:</p>
+<div class="highlight-python"><pre>&lt;Directory /var/www/owncloud&gt;
+Options Indexes FollowSymLinks Multiviews</pre>
+</div>
+<p>Delete <tt class="docutils literal"><span class="pre">Multiviews</span></tt> and restart Apache.</p>
+</div>
+<div class="section" id="owncloud-does-not-follow-symlinks">
+<h3>ownCloud Does Not Follow Symlinks<a class="headerlink" href="#owncloud-does-not-follow-symlinks" title="Permalink to this headline">¶</a></h3>
+<p>ownCloud&#8217;s file scanner does not follow symlinks, which could lead to
+infinite loops. To avoid this do not use soft or hard links in your ownCloud
+data directory.</p>
+</div>
+<div class="section" id="no-commas-in-group-names">
+<h3>No Commas in Group Names<a class="headerlink" href="#no-commas-in-group-names" title="Permalink to this headline">¶</a></h3>
+<p>Creating an ownCloud group with a comma in the group name causes ownCloud to
+treat the group as two groups.</p>
+</div>
+<div class="section" id="hebrew-file-names-too-large-on-windows">
+<h3>Hebrew File Names Too Large on Windows<a class="headerlink" href="#hebrew-file-names-too-large-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>On Windows servers Hebrew file names grow to five times their original size
+after being translated to Unicode.</p>
+</div>
+<div class="section" id="google-drive-large-files-fail-with-500-error">
+<h3>Google Drive Large Files Fail with 500 Error<a class="headerlink" href="#google-drive-large-files-fail-with-500-error" title="Permalink to this headline">¶</a></h3>
+<p>Google Drive tries to download the entire file into memory, then write it to a
+temp file, and then stream it to the client, so very large file downloads from
+Google Drive may fail with a 500 internal server error.</p>
+</div>
+<div class="section" id="encrypting-large-numbers-of-files">
+<h3>Encrypting Large Numbers of Files<a class="headerlink" href="#encrypting-large-numbers-of-files" title="Permalink to this headline">¶</a></h3>
+<p>When you activate the Encryption app on a running server that has large numbers
+of files, it is possible that you will experience timeouts. It is best to
+activate encryption at installation, before accumulating large numbers of files
+on your ownCloud server.</p>
+</div>
+</div>
+<div class="section" id="enterprise-8-0-only">
+<h2>Enterprise 8.0 Only<a class="headerlink" href="#enterprise-8-0-only" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sharepoint-drive-ssl-not-verified">
+<h3>Sharepoint Drive SSL Not Verified<a class="headerlink" href="#sharepoint-drive-ssl-not-verified" title="Permalink to this headline">¶</a></h3>
+<p>The SharePoint Drive app does not verify the SSL certificate of the SharePoint
+server or the ownCloud server, as it is expected that both devices are in the
+same trusted environment.</p>
+</div>
+<div class="section" id="no-federated-cloud-sharing-with-shibboleth">
+<h3>No Federated Cloud Sharing with Shibboleth<a class="headerlink" href="#no-federated-cloud-sharing-with-shibboleth" title="Permalink to this headline">¶</a></h3>
+<p>Federated Cloud Sharing (formerly Server-to-Server file sharing)does not work
+with Shibboleth .</p>
+</div>
+<div class="section" id="direct-uploads-to-swift-do-not-appear-in-owncloud">
+<h3>Direct Uploads to SWIFT do not Appear in ownCloud<a class="headerlink" href="#direct-uploads-to-swift-do-not-appear-in-owncloud" title="Permalink to this headline">¶</a></h3>
+<p>When files are uploaded directly to a SWIFT share mounted as external storage
+in ownCloud, the files do not appear in ownCloud. However, files uploaded to
+the SWIFT mount through ownCloud are listed correctly in both locations.</p>
+</div>
+<div class="section" id="swift-objectstore-incompatible-with-encryption-app">
+<h3>SWIFT Objectstore Incompatible with Encryption App<a class="headerlink" href="#swift-objectstore-incompatible-with-encryption-app" title="Permalink to this headline">¶</a></h3>
+<p>The current SWIFT implementation is incompatible with any app that uses direct
+file I/O and circumvents the ownCloud virtual filesystem. Using the Encryption
+app on a SWIFT object store incurs twice as many HTTP requests and increases
+latency significantly.</p>
+</div>
+<div class="section" id="app-store-is-back">
+<h3>App Store is Back<a class="headerlink" href="#app-store-is-back" title="Permalink to this headline">¶</a></h3>
+<p>The ownCloud App Store has been re-enabled in oC 8. Note that third-party apps
+are not supported.</p>
+</div>
+</div>
+<div class="section" id="owncloud-7-release-notes">
+<h2>ownCloud 7 Release Notes<a class="headerlink" href="#owncloud-7-release-notes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Manual LDAP Port Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>When you are configuring the LDAP user and group backend application, ownCloud
+may not auto-detect the LDAP server&#8217;s port number, so you will need to enter it
+manually.</p>
+</div>
+<div class="section" id="ldap-search-performance-improved">
+<h3>LDAP Search Performance Improved<a class="headerlink" href="#ldap-search-performance-improved" title="Permalink to this headline">¶</a></h3>
+<p>Prior to 7.0.4, LDAP searches were substring-based and would match search
+attributes if the substring occurred anywhere in the attribute value. Rather,
+searches are performed on beginning attributes. With 7.0.4, searches will match
+at the beginning of the attribute value only. This provides better performance
+and a better user experience.</p>
+<p>Substring searches can still be performed by prepending the search term with
+&#8220;*&#8221;.For example, a search for <tt class="docutils literal"><span class="pre">te</span></tt> will find Terri, but not Nate:</p>
+<div class="highlight-python"><pre>occ ldap:search "te"</pre>
+</div>
+<p>If you want to broaden the search to include
+Nate, then search for <tt class="docutils literal"><span class="pre">*te</span></tt>:</p>
+<div class="highlight-python"><pre>occ ldap:search "*te"</pre>
+</div>
+<p>Refine searches by adjusting your search attributes in the <tt class="docutils literal"><span class="pre">User</span> <span class="pre">Search</span>
+<span class="pre">Attributes</span></tt> form in your LDAP configuration on the Admin page. For example, if
+your search attributes are <tt class="docutils literal"><span class="pre">givenName</span></tt> and <tt class="docutils literal"><span class="pre">sn</span></tt> you can find users by first
+name + last name very quickly. For example, you&#8217;ll find Terri Hanson by
+searching for <tt class="docutils literal"><span class="pre">te</span> <span class="pre">ha</span></tt>. Trailing whitespaces are ignored.</p>
+</div>
+<div class="section" id="protecting-owncloud-on-iis-from-data-loss">
+<h3>Protecting ownCloud on IIS from Data Loss<a class="headerlink" href="#protecting-owncloud-on-iis-from-data-loss" title="Permalink to this headline">¶</a></h3>
+<p>Under certain circumstances, running your ownCloud server on IIS could be at
+risk of data loss. To prevent this, follow these steps.</p>
+<p>In your ownCloud server configuration file, <tt class="docutils literal"><span class="pre">owncloud\config\config.php</span></tt>, set
+<tt class="docutils literal"><span class="pre">config_is_read_only</span></tt> to true.</p>
+<p>Set the <tt class="docutils literal"><span class="pre">config.php</span></tt> file to read-only.</p>
+<p>When you make server updates <tt class="docutils literal"><span class="pre">config.php</span></tt> must be made writeable. When your
+updates are completed re-set it to read-only.</p>
+</div>
+<div class="section" id="antivirus-app-modes">
+<h3>Antivirus App Modes<a class="headerlink" href="#antivirus-app-modes" title="Permalink to this headline">¶</a></h3>
+<p>The Antivirus App offers three modes for running the ClamAV anti-virus scanner:
+as a daemon on the ownCloud server, a daemon on a remote server, or an
+executable mode that calls <tt class="docutils literal"><span class="pre">clamscan</span></tt> on the local server. We recommend using
+one of the daemon modes, as they are the most reliable.</p>
+</div>
+<div class="section" id="enable-only-for-specific-groups-fails">
+<h3>&#8220;Enable Only for Specific Groups&#8221; Fails<a class="headerlink" href="#enable-only-for-specific-groups-fails" title="Permalink to this headline">¶</a></h3>
+<p>Some ownCloud applications have the option to be enabled only for certain
+groups. However, when you select specific groups they do not get access to the
+app.</p>
+</div>
+<div class="section" id="changes-to-file-previews">
+<h3>Changes to File Previews<a class="headerlink" href="#changes-to-file-previews" title="Permalink to this headline">¶</a></h3>
+<p>For security and performance reasons, file previews are available only for
+image files, covers of MP3 files, and text files, and have been disabled for
+all other filetypes. Files without previews are represented by generic icons
+according to their file types.</p>
+</div>
+<div class="section" id="gb-limit-on-sftp-transfers">
+<h3>4GB Limit on SFTP Transfers<a class="headerlink" href="#gb-limit-on-sftp-transfers" title="Permalink to this headline">¶</a></h3>
+<p>Because of limitations in <tt class="docutils literal"><span class="pre">phpseclib</span></tt>, you cannot upload files larger than
+4GB over SFTP.</p>
+</div>
+<div class="section" id="not-enough-space-available-on-file-upload">
+<h3>&#8220;Not Enough Space Available&#8221; on File Upload<a class="headerlink" href="#not-enough-space-available-on-file-upload" title="Permalink to this headline">¶</a></h3>
+<p>Setting user quotas to <tt class="docutils literal"><span class="pre">unlimited</span></tt> on an ownCloud installation that has
+unreliable free disk space reporting&#8211; for example, on a shared hosting
+provider&#8211; may cause file uploads to fail with a &#8220;Not Enough Space Available&#8221;
+error. A workaround is to set file quotas for all users instead of
+<tt class="docutils literal"><span class="pre">unlimited</span></tt>.</p>
+</div>
+<div class="section" id="no-more-expiration-date-on-local-shares">
+<h3>No More Expiration Date On Local Shares<a class="headerlink" href="#no-more-expiration-date-on-local-shares" title="Permalink to this headline">¶</a></h3>
+<p>In older versions of ownCloud, you could set an expiration date on both local
+and public shares. Now you can set an expiration date only on public shares,
+and
+local shares do not expire when public shares expire.</p>
+</div>
+<div class="section" id="zero-quota-not-read-only">
+<h3>Zero Quota Not Read-Only<a class="headerlink" href="#zero-quota-not-read-only" title="Permalink to this headline">¶</a></h3>
+<p>Setting a user&#8217;s storage quota should be the equivalent of read-only, however,
+users can
+still create empty files.</p>
+</div>
+</div>
+<div class="section" id="enterprise-7-only">
+<h2>Enterprise 7 Only<a class="headerlink" href="#enterprise-7-only" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>No Federated Cloud Sharing with Shibboleth<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Federated Cloud Sharing (formerly Server-to-Server file sharing) does not work
+with Shibboleth .</p>
+</div>
+<div class="section" id="windows-network-drive">
+<h3>Windows Network Drive<a class="headerlink" href="#windows-network-drive" title="Permalink to this headline">¶</a></h3>
+<p>Windows Network Drive runs only on Linux servers because it requires the Samba
+client, which is included in all Linux distributions.</p>
+<p><tt class="docutils literal"><span class="pre">php5-libsmbclient</span></tt> is also required, and there may be issues with older
+versions of <tt class="docutils literal"><span class="pre">libsmbclient</span></tt>; see Using External Storage &gt; Installing and
+Configuring the Windows Network Drive App in the Enterprise Admin manual for
+more information.</p>
+<p>By default CentOS has activated SELinux, and the <tt class="docutils literal"><span class="pre">httpd</span></tt> process can not make
+outgoing network connections. This will cause problems with curl, ldap and samba
+libraries. Again, see Using External Storage &gt; Installing and Configuring the
+Windows Network Drive App in the Enterprise Admin manual for instructions.</p>
+</div>
+<div class="section" id="sharepoint-drive-ssl">
+<h3>Sharepoint Drive SSL<a class="headerlink" href="#sharepoint-drive-ssl" title="Permalink to this headline">¶</a></h3>
+<p>The SharePoint Drive app does not verify the SSL certificate of the SharePoint
+server or the ownCloud server, as it is expected that both devices are in the
+same trusted environment.</p>
+</div>
+<div class="section" id="shibboleth-and-webdav-incompatible">
+<h3>Shibboleth and WebDAV Incompatible<a class="headerlink" href="#shibboleth-and-webdav-incompatible" title="Permalink to this headline">¶</a></h3>
+<p>Shibboleth and standard WebDAV are incompatible, and cannot be used together in
+ownCloud. If Shibboleth is enabled, the ownCloud client uses an extended WebDAV
+protocol</p>
+</div>
+<div class="section" id="no-sqlite">
+<h3>No SQLite<a class="headerlink" href="#no-sqlite" title="Permalink to this headline">¶</a></h3>
+<p>SQLite is no longer an installation option for ownCloud Enterprise Edition, as
+it not suitable for multiple-user installations or managing large numbers of
+files.</p>
+</div>
+<div class="section" id="no-app-store">
+<h3>No App Store<a class="headerlink" href="#no-app-store" title="Permalink to this headline">¶</a></h3>
+<p>The App Store is disabled for the Enterprise Edition.</p>
+</div>
+<div class="section" id="ldap-home-connector-linux-only">
+<h3>LDAP Home Connector Linux Only<a class="headerlink" href="#ldap-home-connector-linux-only" title="Permalink to this headline">¶</a></h3>
+<p>The LDAP Home Connector application requires Linux (with MySQL, MariaDB,
+or PostgreSQL) to operate correctly.</p>
+</div>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

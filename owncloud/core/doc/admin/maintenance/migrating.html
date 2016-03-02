@@ -1,0 +1,229 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Migrating to a Different Server &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Maintenance" href="index.html" />
+    <link rel="next" title="Operations" href="../operations/index.html" />
+    <link rel="prev" title="Restoring ownCloud" href="restore.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Maintenance</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="enable_maintenance.html">Maintenance Mode Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backup.html">Backing up ownCloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="upgrade.html">How to Upgrade Your ownCloud Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="package_upgrade.html">Upgrade ownCloud From Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manual_upgrade.html">Manual ownCloud Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Upgrading ownCloud with the Updater App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restore.html">Restoring ownCloud</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Migrating to a Different Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="migrating-to-a-different-server">
+<h1>Migrating to a Different Server<a class="headerlink" href="#migrating-to-a-different-server" title="Permalink to this headline">¶</a></h1>
+<p>If the need arises ownCloud can be migrated to a different server. A typical
+use case would be a hardware change or a migration from the virtual Appliance
+to a physical server. All migrations have to be performed with ownCloud
+offline and no accesses being made. Online migration is supported by
+ownCloud only when implementing industry standard clustering and HA solutions
+before ownCloud is installed for the first time.</p>
+<p>To start let us be specific about the use case. A configured ownCloud
+instance runs reliably on one machine. For some reason (e.g. more powerful
+machine is available but a move to a clustered environment not yet needed)
+the instance needs to be moved to a new machine. Depending on the size of
+the ownCloud instance the migration might take several hours. As a
+prerequisite it is assumed that the end users reach the ownCloud instance
+via a virtual hostname (a <tt class="docutils literal"><span class="pre">CNAME</span></tt> record in DNS) which can be pointed at
+the new location. It is also assumed that the authentication method
+(e.g. LDAP) remains the same after the migration.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>At NO TIME any changes to the <strong>ORIGINAL</strong> system are required
+<strong>EXCEPT</strong> putting ownCloud into maintenance mode.</p>
+<p class="last">This ensures, should anything unforseen happen you can go
+back to your existing installation and provide your users
+with a running ownCloud while debugging the problem.</p>
+</div>
+<ol class="arabic simple">
+<li>Set up the new machine with the desired OS, install and configure the
+web server as well as PHP for ownCloud (e.g. permissions or file upload size
+limits) and make sure the PHP version matches ownCloud supported
+configuration and all relevant PHP extensions are installed. Also set up
+the database and make sure it is an ownCloud supported configuration. If
+your original machine was installed recently just copying that base
+configuration is a safe best practice.</li>
+<li>On the original machine then stop ownCloud. First activate the
+maintenance mode. After waiting for 6-7 minutes for all sync clients to
+register the server as in maintenance mode stop the application and/or
+web server that serves ownCloud.</li>
+<li>Create a dump from the database and copy it to the new machine. There
+import it in the database (See <a class="reference internal" href="backup.html"><em>Backing up ownCloud</em></a> and <a class="reference internal" href="restore.html"><em>Restoring ownCloud</em></a>).</li>
+<li>Copy all files from your ownCloud instance, the ownCloud program files, the
+data files, the log files and the configuration files, to the new
+machine (See <a class="reference internal" href="backup.html"><em>Backing up ownCloud</em></a> and <a class="reference internal" href="restore.html"><em>Restoring ownCloud</em></a>). The data files should keep
+their original timestamp (can be done by using <tt class="docutils literal"><span class="pre">rsync</span></tt> with <tt class="docutils literal"><span class="pre">-t</span></tt> option)
+otherwise the clients will re-download all the files after the migration.
+Depending on the original installation method and the OS the files are
+located in different locations. On the new system make sure to pick the
+appropriate locations. If you change any paths, make sure to adopt the paths
+in the ownCloud config.php file. Note: This step might take several hours,
+depending on your installation.</li>
+<li>While still having ownCloud in maintenance mode (confirm!) and <strong>BEFORE</strong>
+changing the <tt class="docutils literal"><span class="pre">CNAME</span></tt> record in the DNS start up the database, web server /
+application server on the new machine and point your web browser to the
+migrated ownCloud instance. Confirm that you see the maintenance mode
+notice, that a logfile entry is written by both the web server and
+ownCloud and that no error messages occur. Then take ownCloud out of
+maintenance mode and repeat. Log in as admin and confirm normal function
+of ownCloud.</li>
+<li>Change the <tt class="docutils literal"><span class="pre">CNAME</span></tt> entry in the DNS to point your users to the new
+location.</li>
+</ol>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,246 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>File Sharing and Management &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="next" title="File Sharing" href="file_sharing_configuration.html" />
+    <link rel="prev" title="User Provisioning API" href="../configuration_user/user_provisioning_api.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">File Sharing and Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_sharing_configuration.html">File Sharing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated_cloud_sharing_configuration.html">Configuring Federated Cloud Sharing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html">Uploading big files &gt; 512MB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaborative_documents_configuration.html">Configuring the Collaborative Documents App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_files_configuration.html">Providing Default Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html">Configuring External Storage (GUI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html">Configuring External Storage (Configuration File)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html">External Storage Authentication mechanisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html">Encryption Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="files_locking_transactional.html">Transactional File Locking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="previews_configuration.html">Previews Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="file-sharing-and-management">
+<h1>File Sharing and Management<a class="headerlink" href="#file-sharing-and-management" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_sharing_configuration.html">File Sharing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_sharing_configuration.html#creating-persistent-file-shares">Creating Persistent File Shares</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="federated_cloud_sharing_configuration.html">Configuring Federated Cloud Sharing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="federated_cloud_sharing_configuration.html#sharing-with-owncloud-7">Sharing With ownCloud 7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated_cloud_sharing_configuration.html#creating-a-direct-share-link">Creating a Direct Share Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated_cloud_sharing_configuration.html#creating-federated-cloud-shares-via-public-link-share">Creating Federated Cloud Shares via Public Link Share</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated_cloud_sharing_configuration.html#configuration-tips">Configuration Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="big_file_upload_configuration.html">Uploading big files &gt; 512MB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html#system-configuration">System Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html#configuring-your-webserver">Configuring Your Webserver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html#configuring-php">Configuring PHP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html#configuring-owncloud">Configuring ownCloud</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="collaborative_documents_configuration.html">Configuring the Collaborative Documents App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="collaborative_documents_configuration.html#enabling-the-documents-app">Enabling the Documents App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaborative_documents_configuration.html#enabling-and-testing-ms-word-support">Enabling and testing MS Word support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="default_files_configuration.html">Providing Default Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_storage_configuration_gui.html">Configuring External Storage (GUI)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#enabling-external-storage-support">Enabling External Storage Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#storage-configuration">Storage Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#user-and-group-permissions">User and Group Permissions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#mount-options">Mount Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#using-self-signed-certificates">Using Self-Signed Certificates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#available-storage-backends">Available storage backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#allow-users-to-mount-external-storage">Allow Users to Mount External Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#adding-files-to-external-storages">Adding Files to External Storages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html#configuration-file">Configuration File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="external_storage_configuration.html">Configuring External Storage (Configuration File)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#using-self-signed-certificates">Using self-signed certificates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#adding-files-to-external-storages">Adding files to external storages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#priorities">Priorities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#configuring-temporary-disk-space-needs">Configuring Temporary Disk Space Needs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#backends">Backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html#external-storage-password-management">External Storage Password Management</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="external_storage/auth_mechanisms.html">External Storage Authentication mechanisms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html#special-mechanisms">Special Mechanisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html#password-based-mechanisms">Password-based Mechanisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html#public-key-mechanisms">Public-key Mechanisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html#oauth">OAuth</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="encryption_configuration.html">Encryption Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#before-enabling-encryption">Before Enabling Encryption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#enabling-encryption">Enabling Encryption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#sharing-encrypted-files">Sharing Encrypted Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#encrypting-external-mountpoints">Encrypting External Mountpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#enabling-users-file-recovery-keys">Enabling Users File Recovery Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#occ-encryption-commands">occ Encryption Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#files-not-encrypted">Files Not Encrypted</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html#ldap-and-other-external-user-back-ends">LDAP and Other External User Back-ends</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="files_locking_transactional.html">Transactional File Locking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="previews_configuration.html">Previews Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="previews_configuration.html#parameters">Parameters</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

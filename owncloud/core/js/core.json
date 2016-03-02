@@ -1,0 +1,44 @@
+{
+	"vendor": [
+		"jquery/jquery.min.js",
+		"jquery-migrate/jquery-migrate.min.js",
+		"jquery-ui/ui/jquery-ui.custom.js",
+		"underscore/underscore.js",
+		"moment/min/moment-with-locales.js",
+		"handlebars/handlebars.js",
+		"blueimp-md5/js/md5.js",
+		"bootstrap/js/tooltip.js",
+		"backbone/backbone.js"
+	],
+	"libraries": [
+		"jquery-showpassword.js",
+		"jquery.avatar.js",
+		"placeholder.js"
+	],
+	"modules": [
+		"compatibility.js",
+		"jquery.ocdialog.js",
+		"oc-dialogs.js",
+		"js.js",
+		"oc-backbone.js",
+		"l10n.js",
+		"apps.js",
+		"share.js",
+		"shareconfigmodel.js",
+		"shareitemmodel.js",
+		"sharedialogview.js",
+		"sharedialogexpirationview.js",
+		"sharedialoglinkshareview.js",
+		"sharedialogresharerinfoview.js",
+		"sharedialogshareelistview.js",
+		"octemplate.js",
+		"eventsource.js",
+		"config.js",
+		"multiselect.js",
+		"oc-requesttoken.js",
+		"setupchecks.js",
+		"../search/js/search.js",
+		"mimetype.js",
+		"mimetypelist.js"
+	]
+}

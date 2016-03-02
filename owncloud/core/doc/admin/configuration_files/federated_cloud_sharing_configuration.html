@@ -1,0 +1,302 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuring Federated Cloud Sharing &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="File Sharing and Management" href="index.html" />
+    <link rel="next" title="Uploading big files &gt; 512MB" href="big_file_upload_configuration.html" />
+    <link rel="prev" title="File Sharing" href="file_sharing_configuration.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">File Sharing and Management</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="file_sharing_configuration.html">File Sharing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Configuring Federated Cloud Sharing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sharing-with-owncloud-7">Sharing With ownCloud 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-direct-share-link">Creating a Direct Share Link</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-federated-cloud-shares-via-public-link-share">Creating Federated Cloud Shares via Public Link Share</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-tips">Configuration Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html">Uploading big files &gt; 512MB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaborative_documents_configuration.html">Configuring the Collaborative Documents App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_files_configuration.html">Providing Default Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html">Configuring External Storage (GUI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html">Configuring External Storage (Configuration File)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html">External Storage Authentication mechanisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html">Encryption Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="files_locking_transactional.html">Transactional File Locking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="previews_configuration.html">Previews Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="configuring-federated-cloud-sharing">
+<h1>Configuring Federated Cloud Sharing<a class="headerlink" href="#configuring-federated-cloud-sharing" title="Permalink to this headline">¶</a></h1>
+<p>In ownCloud 7 this was called Server-to-Server sharing. Now it is called
+Federated Cloud sharing. With just a few clicks you can easily and securely link
+file shares between ownCloud servers, in effect creating a cloud of ownClouds.
+You can automatically send an email notification when you create the share,
+share directly with users on other ownCloud servers, add password protection,
+allow users to upload files, and set an expiration date.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently, Federated shares cannot be re-shared, and the only
+permissions option when you create the share is <strong>Can edit</strong>.</p>
+</div>
+<div class="section" id="sharing-with-owncloud-7">
+<h2>Sharing With ownCloud 7<a class="headerlink" href="#sharing-with-owncloud-7" title="Permalink to this headline">¶</a></h2>
+<p>Direct share links (<a class="reference internal" href="#label-direct-share-link"><em>Creating a Direct Share Link</em></a>) are not supported in
+ownCloud 7, so you must create Federated Cloud shares with public links
+(<a class="reference internal" href="#label-public-link-share"><em>Creating Federated Cloud Shares via Public Link Share</em></a>).</p>
+</div>
+<div class="section" id="creating-a-direct-share-link">
+<span id="label-direct-share-link"></span><h2>Creating a Direct Share Link<a class="headerlink" href="#creating-a-direct-share-link" title="Permalink to this headline">¶</a></h2>
+<p>Follow these steps to create a new Federated Cloud share:</p>
+<ol class="arabic simple">
+<li>Go to your ownCloud Admin page and scroll to the Federated Cloud Sharing
+section of the Sharing section.</li>
+</ol>
+<div class="figure">
+<img alt="../_images/federated-sharing.png" src="../_images/federated-sharing.png" />
+</div>
+<p>2. Check <tt class="docutils literal"><span class="pre">Allow</span> <span class="pre">other</span> <span class="pre">users</span> <span class="pre">on</span> <span class="pre">this</span> <span class="pre">server</span> <span class="pre">to</span> <span class="pre">send</span> <span class="pre">shares</span> <span class="pre">to</span> <span class="pre">other</span>
+<span class="pre">servers</span></tt> and <tt class="docutils literal"><span class="pre">Allow</span> <span class="pre">users</span> <span class="pre">on</span> <span class="pre">this</span> <span class="pre">server</span> <span class="pre">to</span> <span class="pre">receive</span> <span class="pre">shares</span> <span class="pre">from</span> <span class="pre">other</span>
+<span class="pre">servers.</span></tt> Leaving the checkboxes blank disables Federated Cloud sharing.</p>
+<p>3. In the Sharing section, check <tt class="docutils literal"><span class="pre">Allow</span> <span class="pre">users</span> <span class="pre">to</span> <span class="pre">share</span> <span class="pre">via</span> <span class="pre">link</span></tt> and <tt class="docutils literal"><span class="pre">Allow</span>
+<span class="pre">users</span> <span class="pre">to</span> <span class="pre">send</span> <span class="pre">mail</span> <span class="pre">notification</span> <span class="pre">for</span> <span class="pre">shared</span> <span class="pre">files</span></tt>.</p>
+<p>4. Now you and your users can go to your Files pages to create a new federated
+cloud share. Click the Share icon on the file or directory you want to share to
+expose your first sharing option.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-1.png" src="../_images/create_public_share-1.png" />
+</div>
+<p>This dialog allows you to create local shares with users and groups on your
+local ownCloud server, and also to create federated cloud shares with users on
+remote ownCloud servers by typing a link to the remote server in the form of
+<tt class="docutils literal"><span class="pre">&lt;user&gt;&#64;&lt;link-to-owncloud&gt;</span></tt>. In this screenshot the remote ownCloud server is
+on the local network, so the URL form is <tt class="docutils literal"><span class="pre">user&#64;hostname/owncloud</span></tt>, or
+<tt class="docutils literal"><span class="pre">layla&#64;remote-server/owncloud</span></tt> in the example. The URL you type is echoed by
+the form, and labeled as <tt class="docutils literal"><span class="pre">(remote)</span></tt>.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-2.png" src="../_images/create_public_share-2.png" />
+</div>
+<p>Press the return key, and then wait for the link to be established. You&#8217;ll see a
+status message while it is working.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-3.png" src="../_images/create_public_share-3.png" />
+</div>
+<p>When the remote server has been successully contacted you&#8217;ll see a confirmation.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-4.png" src="../_images/create_public_share-4.png" />
+</div>
+<p>The link is created when your remote user confirms the share by clicking the
+<strong>Add remote share</strong> button.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-7.png" src="../_images/create_public_share-7.png" />
+</div>
+<p>You can return to the share dialog any time to see a list of everyone you have
+shared with, and federated cloud shares are labeled as <tt class="docutils literal"><span class="pre">(remote)</span></tt>.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-5.png" src="../_images/create_public_share-5.png" />
+</div>
+<p>Click the trash can icon to disconnect the share.</p>
+</div>
+<div class="section" id="creating-federated-cloud-shares-via-public-link-share">
+<span id="label-public-link-share"></span><h2>Creating Federated Cloud Shares via Public Link Share<a class="headerlink" href="#creating-federated-cloud-shares-via-public-link-share" title="Permalink to this headline">¶</a></h2>
+<p>Check the <tt class="docutils literal"><span class="pre">Share</span> <span class="pre">Link</span></tt> checkbox to expose more sharing options (which are
+described more fully in <a class="reference internal" href="file_sharing_configuration.html"><em>File Sharing</em></a>). You may create a
+federated cloud share by allowing ownCloud to create a public link for you, and
+then email it to the person you want to create the share with.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-6.png" src="../_images/create_public_share-6.png" />
+</div>
+<p>You may optionally set a password and expiration date on it. When your recipient
+receives your email they must click the link, or copy it to a Web
+browser. They will see a page displaying a thumbnail of the file, with a button
+to <strong>Add to your ownCloud</strong>.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-8.png" src="../_images/create_public_share-8.png" />
+</div>
+<p>Your recipient should click the <strong>Add to your ownCloud</strong> button. On the next
+screen your recipient needs to enter the URL to their ownCloud
+server, and then press the return key.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-9.png" src="../_images/create_public_share-9.png" />
+</div>
+<p>Your recipient has to take one more step, and that is to confirm creating the
+federated cloud share link by clicking the <strong>Add remote share</strong> button.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-10.png" src="../_images/create_public_share-10.png" />
+</div>
+<p>Un-check the <tt class="docutils literal"><span class="pre">Share</span> <span class="pre">Link</span></tt> checkbox to disable any federated cloud share
+created this way.</p>
+</div>
+<div class="section" id="configuration-tips">
+<h2>Configuration Tips<a class="headerlink" href="#configuration-tips" title="Permalink to this headline">¶</a></h2>
+<p>The Sharing section on your Admin page allows you to control how your users
+manage federated cloud shares:</p>
+<ul class="simple">
+<li>Check <tt class="docutils literal"><span class="pre">Enforce</span> <span class="pre">password</span> <span class="pre">protection</span></tt> to require passwords on link shares.</li>
+<li>Check <tt class="docutils literal"><span class="pre">Set</span> <span class="pre">default</span> <span class="pre">expiration</span> <span class="pre">date</span></tt> to require an expiration date on link
+shares.</li>
+<li>Check <tt class="docutils literal"><span class="pre">Allow</span> <span class="pre">public</span> <span class="pre">uploads</span></tt> to allow two-way file sharing.</li>
+</ul>
+<p>Your Apache Web server must have <tt class="docutils literal"><span class="pre">mod_rewrite</span></tt> enabled, and you must have
+<tt class="docutils literal"><span class="pre">trusted_domains</span></tt> correctly configured in <tt class="docutils literal"><span class="pre">config.php</span></tt> to allow external
+connections (see <a class="reference internal" href="../installation/installation_wizard.html"><em>Installation Wizard</em></a>). Consider also
+enabling SSL to encrypt all traffic between your servers .</p>
+<p>Your ownCloud server creates the share link from the URL that you used to log
+into the server, so make sure that you log into your server using a URL that is
+accessible to your users. For example, if you log in via its LAN IP address,
+such as <tt class="docutils literal"><span class="pre">http://192.168.10.50</span></tt>, then your share URL will be something like
+<tt class="docutils literal"><span class="pre">http://192.168.10.50/owncloud/index.php/s/jWfCfTVztGlWTJe</span></tt>, which is not
+accessible outside of your LAN. This also applies to using the server name; for
+access outside of your LAN you need to use a fully-qualified domain name such as
+<tt class="docutils literal"><span class="pre">http://myserver.example.com</span></tt>, rather than <tt class="docutils literal"><span class="pre">http://myserver</span></tt>.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

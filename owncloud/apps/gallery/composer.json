@@ -1,0 +1,45 @@
+{
+  "name": "owncloud/gallery",
+  "type": "project",
+  "description": "Media gallery for ownCloud which includes previews for all media types supported by your ownCloud installation.",
+  "license": "AGPL-3.0",
+  "homepage": "https://github.com/owncloud/gallery",
+  "authors": [
+    {
+      "name": "Olivier Paroz",
+      "email": "owncloud@interfasys.ch",
+      "role": "Developer",
+      "homepage": "http://www.interfasys.ch"
+    },
+    {
+      "name": "Robin Appelman",
+      "email": "icewind@owncloud.com",
+      "role": "Developer",
+      "homepage": "https://github.com/icewind1991"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/owncloud/gallery/issues",
+    "wiki": "https://github.com/owncloud/gallery/wiki",
+    "source": "https://github.com/owncloud/gallery"
+  },
+  "require": {
+    "symfony/yaml": "~2.6"
+  },
+  "require-dev": {
+    "codeception/codeception": "2.1.*",
+    "codeception/phpbuiltinserver": "*",
+    "codeception/c3": "2.*",
+    "phpdocumentor/phpdocumentor": "^2.8",
+    "jakub-onderka/php-parallel-lint": "0.*",
+    "jakub-onderka/php-console-highlighter": "0.*"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "Codeception\\c3\\Installer::copyC3ToRoot"
+    ],
+    "post-update-cmd": [
+      "Codeception\\c3\\Installer::copyC3ToRoot"
+    ]
+  }
+}

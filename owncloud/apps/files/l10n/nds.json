@@ -1,0 +1,8 @@
+{ "translations": {
+    "Files" : "Dateien",
+    "Delete" : "Löschen",
+    "Name" : "Name",
+    "Settings" : "Einstellungen",
+    "WebDAV" : "WebDAV"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

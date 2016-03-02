@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<info>
+	<id>notifications</id>
+	<name>Notifications</name>
+	<description>An app that notifies the user about important events of other apps.</description>
+
+	<licence>AGPL</licence>
+	<author>Joas Schilling</author>
+	<version>0.1.0</version>
+
+	<!-- FIXME -->
+	<types>
+		<filesystem/>
+	</types>
+
+	<default_enable/>
+
+	<dependencies>
+		<owncloud min-version="8.2" />
+		<owncloud max-version="8.3" />
+	</dependencies>
+</info>

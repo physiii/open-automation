@@ -1,0 +1,348 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nginx Configuration &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Installation" href="index.html" />
+    <link rel="next" title="Univention Corporate Server" href="ucs_installation.html" />
+    <link rel="prev" title="SELinux Configuration" href="selinux_configuration.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linux_installation.html">Preferred Linux Installation Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation_wizard.html">Installation Wizard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line_installation.html">Installing ownCloud From the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apps_management_installation.html">Installing and Managing Apps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source_installation.html">Manual Installation on Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appliance_installation.html">ownCloud Community Appliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="php_54_installation.html">Installing PHP 5.4 on RHEL 6 and CentOS 6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="php_55_installation.html">Installing PHP 5.5 on RHEL 7 and CentOS 7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selinux_configuration.html">SELinux Configuration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Nginx Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#suppressing-log-messages">Suppressing Log Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#javascript-js-or-css-css-files-not-served-properly">JavaScript (.js) or CSS (.css) files not served properly</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ucs_installation.html">Univention Corporate Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hiawatha_configuration.html">Hiawatha Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaws_configuration.html">Yaws Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_installation.html">Mac OS X</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="nginx-configuration">
+<span id="nginx-configuration-example"></span><h1>Nginx Configuration<a class="headerlink" href="#nginx-configuration" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>You need to insert the following code into <strong>your nginx config file.</strong></li>
+<li>The config assumes that ownCloud is installed in /var/www/owncloud and
+that it is accessed via http(s)://cloud.example.com.</li>
+<li>Adjust <strong>server_name</strong>, <strong>root</strong>, <strong>ssl_certificate</strong> and
+<strong>ssl_certificate_key</strong> to suit your needs.</li>
+<li>Make sure your SSL certificates are readable by the server (see <a class="reference external" href="http://wiki.nginx.org/HttpSslModule">Nginx HTTP
+SSL Module documentation</a>).</li>
+<li><tt class="docutils literal"><span class="pre">add_header</span></tt> statements are only taken from the current level and are not cascaded
+from or to a different level. All necessary <tt class="docutils literal"><span class="pre">add_header</span></tt> statements must be defined
+in each level needed. For better readability is is possible to move <em>common</em> add
+header statements into a separate file and include that file wherever necessary.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following example assumes that your ownCloud is installed in
+your webroot. If you&#8217;re using a subfolder you need to adjust the configuration
+accordingly.</p>
+</div>
+<div class="highlight-python"><pre>upstream php-handler {
+  server 127.0.0.1:9000;
+  #server unix:/var/run/php5-fpm.sock;
+}
+
+server {
+  listen 80;
+  server_name cloud.example.com;
+  # enforce https
+  return 301 https://$server_name$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name cloud.example.com;
+
+  ssl_certificate /etc/ssl/nginx/cloud.example.com.crt;
+  ssl_certificate_key /etc/ssl/nginx/cloud.example.com.key;
+
+  # Add headers to serve security related headers
+  add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
+  add_header X-Content-Type-Options nosniff;
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block";
+  add_header X-Robots-Tag none;
+
+  # Path to the root of your installation
+  root /var/www/owncloud/;
+  # set max upload size
+  client_max_body_size 10G;
+  fastcgi_buffers 64 4K;
+
+  # Disable gzip to avoid the removal of the ETag header
+  gzip off;
+
+  # Uncomment if your server is build with the ngx_pagespeed module
+  # This module is currently not supported.
+  #pagespeed off;
+
+  index index.php;
+  error_page 403 /core/templates/403.php;
+  error_page 404 /core/templates/404.php;
+
+  rewrite ^/.well-known/carddav /remote.php/carddav/ permanent;
+  rewrite ^/.well-known/caldav /remote.php/caldav/ permanent;
+
+  # The following 2 rules are only needed for the user_webfinger app.
+  # Uncomment it if you're planning to use this app.
+  #rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  #rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+
+  location ~ ^/(build|tests|config|lib|3rdparty|templates|data)/ {
+    deny all;
+  }
+
+  location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
+    deny all;
+  }
+
+  location / {
+
+    rewrite ^/remote/(.*) /remote.php last;
+
+    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
+
+    try_files $uri $uri/ /index.php;
+  }
+
+  location ~ \.php(?:$|/) {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PATH_INFO $fastcgi_path_info;
+    fastcgi_param HTTPS on;
+    fastcgi_param modHeadersAvailable true; #Avoid sending the security headers twice
+    fastcgi_pass php-handler;
+    fastcgi_intercept_errors on;
+  }
+
+  # Adding the cache control header for js and css files
+  # Make sure it is BELOW the location ~ \.php(?:$|/) { block
+  location ~* \.(?:css|js)$ {
+    add_header Cache-Control "public, max-age=7200";
+    # Add headers to serve security related headers
+    add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Robots-Tag none;
+    # Optional: Don't log access to assets
+    access_log off;
+  }
+
+  # Optional: Don't log access to other assets
+  location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|swf)$ {
+    access_log off;
+  }
+}</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can use ownCloud over plain http, but we strongly encourage you to
+use SSL/TLS to encrypt all of your server traffic, and to protect
+user&#8217;s logins and data in transit.</p>
+</div>
+<ul class="simple">
+<li>Remove the server block containing the redirect</li>
+<li>Change <strong>listen 443 ssl</strong> to <strong>listen 80;</strong></li>
+<li>Remove <strong>ssl_certificate</strong> and <strong>ssl_certificate_key</strong>.</li>
+<li>Remove <strong>fastcgi_params HTTPS on;</strong></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are using php-fpm please read <a class="reference internal" href="source_installation.html#php-fpm-tips-label"><em>php-fpm Configuration Notes</em></a></p>
+</div>
+<div class="section" id="suppressing-log-messages">
+<h2>Suppressing Log Messages<a class="headerlink" href="#suppressing-log-messages" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;re seeing meaningless messages in your logfile, for example <a class="reference external" href="https://forum.owncloud.org/viewtopic.php?f=17&amp;t=20217">client
+denied by server configuration: /var/www/data/htaccesstest.txt</a>, add this section to
+your Nginx configuration to suppress them:</p>
+<div class="highlight-python"><pre>location = /data/htaccesstest.txt {
+  allow all;
+  log_not_found off;
+  access_log off;
+}</pre>
+</div>
+</div>
+<div class="section" id="javascript-js-or-css-css-files-not-served-properly">
+<h2>JavaScript (.js) or CSS (.css) files not served properly<a class="headerlink" href="#javascript-js-or-css-css-files-not-served-properly" title="Permalink to this headline">¶</a></h2>
+<p>A common issue with custom nginx configs is that JavaScript (.js)
+or CSS (.css) files are not served properly leading to a 404 (File not found)
+error on those files and a broken webinterface.</p>
+<p>This could be caused by the:</p>
+<div class="highlight-python"><pre>location ~* \.(?:css|js)$ {</pre>
+</div>
+<p>block shown above not located <strong>below</strong> the:</p>
+<div class="highlight-python"><pre>location ~ \.php(?:$|/) {</pre>
+</div>
+<p>block. Other custom configurations like caching JavaScript (.js)
+or CSS (.css) files via gzip could also cause such issues.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

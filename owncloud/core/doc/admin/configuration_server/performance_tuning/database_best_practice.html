@@ -1,0 +1,250 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Database Best Practice &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../../index.html" />
+    <link rel="up" title="Server Tuning &amp; Performance Tips" href="index.html" />
+    <link rel="next" title="Webserver Tips" href="webserver_tips.html" />
+    <link rel="prev" title="ownCloud Server Tuning" href="oc_server_tuning.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">ownCloud Server Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../security_setup_warnings.html">Warnings on Admin Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../occ_command.html">Using the occ Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../activity_configuration.html">Configuring the Activity App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../antivirus_configuration.html">Configuring the ClamAV Antivirus Scanner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../caching_configuration.html">Configuring Memory Caching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background_jobs_configuration.html">Defining Background Jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config_sample_php_parameters.html">Config.php Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../email_configuration.html">Email Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../external_sites.html">Linking External Sites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_client_repos.html">Custom Client Download Repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../knowledgebase_configuration.html">Knowledge Base Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../language_configuration.html">Language Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logging_configuration.html">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../harden_server.html">Hardening and Security Guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reverse_proxy_configuration.html">Reverse Proxy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../search_configuration.html">Enabling Full-Text Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thirdparty_php_configuration.html">Using Third Party PHP Components</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Server Tuning &amp; Performance Tips</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="oc_server_tuning.html">ownCloud Server Tuning</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="">Database Best Practice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webserver_tips.html">Webserver Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ssl_encryption_app.html">SSL / Encryption App</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../js_css_asset_management_configuration.html">JavaScript and CSS Asset Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../automatic_configuration.html">Automatic Configuration Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="database-best-practice">
+<h1>Database Best Practice<a class="headerlink" href="#database-best-practice" title="Permalink to this headline">¶</a></h1>
+<p>Currently ownCloud supports the following relational database management
+systems:</p>
+<ul class="simple">
+<li>MySQL</li>
+<li>MariaDB</li>
+<li>PostgreSQL</li>
+<li>SQLite</li>
+<li>Oracle</li>
+</ul>
+<p>SQLite is not supported in the Enterprise edition, and is not recommended
+except for systems with very light workloads, and for testing ownCloud.</p>
+<p>We are using the <a class="reference external" href="http://www.doctrine-project.org/projects/dbal.html">doctrine database abstraction layer</a> and schema evolution
+with a <a class="reference external" href="https://raw2.github.com/pear/MDB2_Schema/master/docs/xml_schema_documentation.html">MDB2 Schema</a> based table description in XML.</p>
+<div class="section" id="using-mariadb-mysql-instead-of-sqlite">
+<h2>Using MariaDB/MySQL instead of SQLite<a class="headerlink" href="#using-mariadb-mysql-instead-of-sqlite" title="Permalink to this headline">¶</a></h2>
+<p>MySQL or MariaDB are preferred because of the <a class="reference external" href="http://www.sqlite.org/whentouse.html">performance limitations of
+SQLite with highly concurrent applications</a>, like ownCloud.</p>
+<p>On large instances you could consider <a class="reference external" href="https://github.com/major/MySQLTuner-perl/">running MySQLTuner</a> to optimize the database.</p>
+<p>See the section <a class="reference internal" href="../../configuration_database/linux_database_configuration.html"><em>Database Configuration</em></a>
+for how to configure ownCloud for MySQL or MariaDB. If your installation is
+already
+running on
+SQLite then it is possible to convert to MySQL or MariaDB using the steps
+provided in <a class="reference internal" href="../../configuration_database/db_conversion.html"><em>Converting Database Type</em></a>.</p>
+</div>
+<div class="section" id="improve-slow-performance-with-mysql-on-windows">
+<h2>Improve slow performance with MySQL on Windows<a class="headerlink" href="#improve-slow-performance-with-mysql-on-windows" title="Permalink to this headline">¶</a></h2>
+<p>On Windows hosts running MySQL on the same system changing the parameter
+<tt class="docutils literal"><span class="pre">dbhost</span></tt> in your <tt class="docutils literal"><span class="pre">config/config.php</span></tt>
+from <tt class="docutils literal"><span class="pre">localhost</span></tt> to <tt class="docutils literal"><span class="pre">127.0.0.1</span></tt> could improve the page loading time.</p>
+<p>See also <a class="reference external" href="http://forum.owncloud.org/viewtopic.php?f=17&amp;t=7559">this forum thread</a>.</p>
+<div class="section" id="other-performance-improvements">
+<h3>Other performance improvements<a class="headerlink" href="#other-performance-improvements" title="Permalink to this headline">¶</a></h3>
+<p>MySQL: compare <a class="reference external" href="https://tools.percona.com/wizard">https://tools.percona.com/wizard</a> to your current settings
+MariaDB: <a class="reference external" href="https://mariadb.com/kb/en/optimization-and-tuning/">https://mariadb.com/kb/en/optimization-and-tuning/</a></p>
+</div>
+</div>
+<div class="section" id="postgresql">
+<h2>Postgresql<a class="headerlink" href="#postgresql" title="Permalink to this headline">¶</a></h2>
+<p>Alternative to MariaDB/MySQL. Used in production by a few core developers.</p>
+<p>Requires at least Postgresql 9.0</p>
+<div class="section" id="id1">
+<h3>Other performance improvements<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="http://wiki.postgresql.org/wiki/Performance_Optimization">http://wiki.postgresql.org/wiki/Performance_Optimization</a></p>
+</div>
+</div>
+<div class="section" id="oracle-database">
+<h2>Oracle Database<a class="headerlink" href="#oracle-database" title="Permalink to this headline">¶</a></h2>
+<p>Usage scenario: Existing enterprise installations. Only core apps are supported
+and tested. Not recommended because it involves compiling the oci8</p>
+<div class="section" id="id2">
+<h3>Other performance improvements<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://de.slideshare.net/cjorcl/best-practices-php-and-the-oracle-database">http://de.slideshare.net/cjorcl/best-practices-php-and-the-oracle-database</a> and
+ask your DBA.</p>
+</div>
+<div class="section" id="problems">
+<h3>Problems<a class="headerlink" href="#problems" title="Permalink to this headline">¶</a></h3>
+<p>When ORA-56600 occurs (Oracle Bug 8467564) set this php.ini setting:
+<cite>oci8.statement_cache_size=1000</cite>, see <a class="reference external" href="https://community.oracle.com/message/3468020#3468020">oracle forum discussion</a></p>
+</div>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

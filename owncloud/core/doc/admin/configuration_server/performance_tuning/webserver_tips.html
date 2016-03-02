@@ -1,0 +1,509 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Webserver Tips &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../../index.html" />
+    <link rel="up" title="Server Tuning &amp; Performance Tips" href="index.html" />
+    <link rel="next" title="SSL / Encryption App" href="ssl_encryption_app.html" />
+    <link rel="prev" title="Database Best Practice" href="database_best_practice.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">ownCloud Server Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../security_setup_warnings.html">Warnings on Admin Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../occ_command.html">Using the occ Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../activity_configuration.html">Configuring the Activity App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../antivirus_configuration.html">Configuring the ClamAV Antivirus Scanner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../caching_configuration.html">Configuring Memory Caching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background_jobs_configuration.html">Defining Background Jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config_sample_php_parameters.html">Config.php Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../email_configuration.html">Email Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../external_sites.html">Linking External Sites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_client_repos.html">Custom Client Download Repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../knowledgebase_configuration.html">Knowledge Base Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../language_configuration.html">Language Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logging_configuration.html">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../harden_server.html">Hardening and Security Guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reverse_proxy_configuration.html">Reverse Proxy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../search_configuration.html">Enabling Full-Text Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thirdparty_php_configuration.html">Using Third Party PHP Components</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Server Tuning &amp; Performance Tips</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="oc_server_tuning.html">ownCloud Server Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database_best_practice.html">Database Best Practice</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="">Webserver Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ssl_encryption_app.html">SSL / Encryption App</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../js_css_asset_management_configuration.html">JavaScript and CSS Asset Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../automatic_configuration.html">Automatic Configuration Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="webserver-tips">
+<h1>Webserver Tips<a class="headerlink" href="#webserver-tips" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="php-safe-mode">
+<h2>PHP safe mode<a class="headerlink" href="#php-safe-mode" title="Permalink to this headline">¶</a></h2>
+<p>PHP safe mode has to be turned off. It is deprecated and has been removed in
+newer PHP versions. Verify its status with <a class="reference internal" href="../../issues/index.html#label-phpinfo"><em>PHP Version and Information</em></a>, and look for
+<tt class="docutils literal"><span class="pre">safe_mode</span>
+<span class="pre">on/off</span></tt>. If it is on, then add this line to <tt class="docutils literal"><span class="pre">php.ini</span></tt> to turn it off:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">safe_mode</span> <span class="o">=</span> <span class="n">Off</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raise-max-file-uploads-of-php">
+<h2>Raise max_file_uploads of PHP<a class="headerlink" href="#raise-max-file-uploads-of-php" title="Permalink to this headline">¶</a></h2>
+<p>The PHP setting <tt class="docutils literal"><span class="pre">max_file_uploads</span></tt> within the <tt class="docutils literal"><span class="pre">php.ini</span></tt> defaults to <tt class="docutils literal"><span class="pre">20</span></tt>
+on most environments which allows that number of simultaneous uploads.
+Currently the ownCloud sync client is doing <tt class="docutils literal"><span class="pre">3</span></tt> parallel uploads which means
+that at least <tt class="docutils literal"><span class="pre">6</span></tt> clients can upload files simultaneously. Depending on your
+server usage it is recommended to raise this number to a higher value.</p>
+</div>
+<div class="section" id="enable-the-spdy-http-v2-protocol">
+<h2>Enable the SPDY / http_v2 protocol<a class="headerlink" href="#enable-the-spdy-http-v2-protocol" title="Permalink to this headline">¶</a></h2>
+<p>Your webserver can be configured to use the SPDY / http_v2 protocol which could
+improve
+the overall performance of ownCloud. Please have a look at the documentation of
+your webservers module for more information:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://code.google.com/p/mod-spdy/">Apache mod-spdy</a></li>
+<li><a class="reference external" href="http://nginx.org/en/docs/http/ngx_http_spdy_module.html">nginx (&lt;1.9.5) ngx_http_spdy_module</a></li>
+<li><a class="reference external" href="http://nginx.org/en/docs/http/ngx_http_v2_module.html">nginx (+1.9.5) ngx_http_http2_module</a></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you want to enable SPDY for Apache please note the <a class="reference external" href="https://code.google.com/p/mod-spdy/wiki/KnownIssues">Known Issues</a>
+of this module to avoid problems after enabling it.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you want to use http_v2 for nginx you have to check two things:</p>
+<p>1.) be aware that this module is not built in by default due to a dependency
+to the openssl version used on your system. It will be enabled with the
+<tt class="docutils literal"><span class="pre">--with-http_v2_module</span></tt> configuration parameter during compilation. The
+dependency should be checked automatically. You can check the presence of
+http_v2
+with <tt class="docutils literal"><span class="pre">nginx</span> <span class="pre">-V</span> <span class="pre">2&gt;&amp;1</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">http_v2</span> <span class="pre">-o</span></tt>. An example how to compile nginx can
+be found in section &#8220;Configure Nginx with the <tt class="docutils literal"><span class="pre">nginx-cache-purge</span></tt> module&#8221;
+below.</p>
+<p class="last">2.) When you have used SPDY before, the nginx config has to be changed from
+<tt class="docutils literal"><span class="pre">listen</span> <span class="pre">443</span> <span class="pre">ssl</span> <span class="pre">spdy;</span></tt> to <tt class="docutils literal"><span class="pre">listen</span> <span class="pre">443</span> <span class="pre">ssl</span> <span class="pre">http2;</span></tt></p>
+</div>
+</div>
+<div class="section" id="apache-tuning">
+<h2>Apache Tuning<a class="headerlink" href="#apache-tuning" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="maximum-number-of-apache-processes">
+<h3>Maximum number of Apache processes<a class="headerlink" href="#maximum-number-of-apache-processes" title="Permalink to this headline">¶</a></h3>
+<p>An Apache process uses around 12MB of RAM. Apache should be configured so that
+the maximum number of HTTPD processes times 12MB is lower than the amount of
+RAM. Otherwise the system begins to swap and the performance goes down.</p>
+</div>
+<div class="section" id="keepalive-should-be-configured-with-sensible-defaults">
+<h3>KeepAlive should be configured with sensible defaults<a class="headerlink" href="#keepalive-should-be-configured-with-sensible-defaults" title="Permalink to this headline">¶</a></h3>
+<p>The KeepAlive directive enables persistent HTTP connections, allowing multiple
+requests to be sent over the same TCP connection. This reduces latency by as
+much as 50%. Especially in combination with the periodic checks of the sync
+client the following settings are recommended:</p>
+<div class="highlight-apache"><div class="highlight"><pre><span class="nb">KeepAlive</span> <span class="k">On</span>
+<span class="nb">KeepAliveTimeout</span> <span class="m">100</span>
+<span class="nb">MaxKeepAliveRequests</span> <span class="m">200</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mod-gzip">
+<h3>mod_gzip<a class="headerlink" href="#mod-gzip" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">mod_gzip</span></tt> should be used because it speeds up the transfer of data and
+helps to free server memory, and HTTP connections are closed faster.</p>
+</div>
+<div class="section" id="mpm">
+<h3>MPM<a class="headerlink" href="#mpm" title="Permalink to this headline">¶</a></h3>
+<p>Apache prefork has to be used. Don’t use threaded <tt class="docutils literal"><span class="pre">mpm</span></tt> with <tt class="docutils literal"><span class="pre">mod_php</span></tt>
+because PHP is currently not thread safe.</p>
+</div>
+<div class="section" id="hostname-lookups">
+<h3>Hostname Lookups<a class="headerlink" href="#hostname-lookups" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># cat /etc/httpd/conf/httpd.conf</span>
+...
+HostnameLookups off
+</pre></div>
+</div>
+</div>
+<div class="section" id="log-files">
+<h3>Log files<a class="headerlink" href="#log-files" title="Permalink to this headline">¶</a></h3>
+<p>Log files should be switched off for maximum performance.</p>
+<p>Comment out the <tt class="docutils literal"><span class="pre">CustomLog</span></tt> directive. Keep <tt class="docutils literal"><span class="pre">ErrorLog</span></tt> to be able to track
+down errors.</p>
+</div>
+</div>
+<div class="section" id="nginx-caching-owncloud-gallery-thumbnails">
+<h2>Nginx: caching ownCloud gallery thumbnails<a class="headerlink" href="#nginx-caching-owncloud-gallery-thumbnails" title="Permalink to this headline">¶</a></h2>
+<p>One of the optimizations for ownCloud when using Nginx as the webserver is to
+combine FastCGI caching with &#8220;Cache Purge&#8221;, a <a class="reference external" href="http://wiki.nginx.org/3rdPartyModules">3rdparty Nginx module</a>  that adds the ability to purge
+content from <cite>FastCGI</cite>, <cite>proxy</cite>, <cite>SCGI</cite> and <cite>uWSGI</cite> caches. This mechanism
+speeds up thumbnail presentation as it shifts requests to Nginx and minimizes
+php invocations which otherwise would take place for every thumbnail presented
+every
+time.</p>
+<p>The following procedure is based on an Ubuntu 14.04 system. You may need to
+adapt it according your OS type and release.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unlike Apache, Nginx does not dynamically load modules. All modules needed
+must be compiled into Nginx. This is one of the reasons for Nginx´s
+performance. It is expected to have an already running Nginx installation
+with a working configuration set up as described in the ownCloud
+documentation.</p>
+</div>
+<div class="section" id="nginx-module-check">
+<h3>Nginx module check<a class="headerlink" href="#nginx-module-check" title="Permalink to this headline">¶</a></h3>
+<p>As a first step, it is necessary to check if your Nginx installation has the
+<tt class="docutils literal"><span class="pre">nginx</span> <span class="pre">cache</span> <span class="pre">purge</span></tt> module compiled in:</p>
+<div class="highlight-python"><pre>nginx -V 2&gt;&amp;1 | grep ngx_cache_purge -o</pre>
+</div>
+<p>If your output contains <tt class="docutils literal"><span class="pre">ngx_cache_purge</span></tt>, you can continue with the
+configuration, otherwise you need to manually compile Nginx with the module
+needed.</p>
+</div>
+<div class="section" id="compile-nginx-with-the-nginx-cache-purge-module">
+<h3>Compile Nginx with the <tt class="docutils literal"><span class="pre">nginx-cache-purge</span></tt> module<a class="headerlink" href="#compile-nginx-with-the-nginx-cache-purge-module" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li><strong>Preparation:</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /opt
+wget http://nginx.org/keys/nginx_signing.key
+sudo apt-key add nginx_signing.key
+sudo vi /etc/apt/sources.list.d/nginx.list
+</pre></div>
+</div>
+<p>Add the following lines (if different, replace <tt class="docutils literal"><span class="pre">{trusty}</span></tt> by your
+distribution</p>
+<p>name):</p>
+<div class="highlight-python"><pre>deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+deb -src http://nginx.org/packages/mainline/ubuntu/ trusty nginx</pre>
+</div>
+<p>Then run <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">update</span></tt></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you&#8217;re not overly cautious and wish to install the latest and
+greatest Nginx packages and features, you may have to install Nginx from its
+mainline repository. From the Nginx homepage: &#8220;In general, you should
+deploy Nginx from its mainline branch at all times.&#8221; If you would like to
+use standard Nginx from the latest mainline branch but without compiling in
+any additional modules, just run <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">nginx</span></tt>.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><strong>Download the Nginx source from the ppa repository</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /opt
+sudo apt-get build-dep nginx
+sudo apt-get <span class="nb">source </span>nginx
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><strong>Download module(s) to be compiled in and configure compiler arguments</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre>ls -la
+</pre></div>
+</div>
+<p>Please replace <tt class="docutils literal"><span class="pre">{release}</span></tt> with the release downloaded:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">nginx</span><span class="o">-</span><span class="p">{</span><span class="n">release</span><span class="p">}</span><span class="o">/</span><span class="n">debian</span>
+</pre></div>
+</div>
+<p>If folder &#8220;modules&#8221; is not present, do:</p>
+<div class="highlight-bash"><div class="highlight"><pre>sudo mkdir modules
+<span class="nb">cd </span>modules
+sudo git clone https://github.com/FRiCKLE/ngx_cache_purge.git
+sudo vi /opt/nginx-<span class="o">{</span>release<span class="o">}</span>/debian/rules
+</pre></div>
+</div>
+<p>If not present, add the following line at the top under:</p>
+<div class="highlight-python"><pre>#export DH_VERBOSE=1:
+MODULESDIR = $(CURDIR)/debian/modules</pre>
+</div>
+<p>And at the end of every <tt class="docutils literal"><span class="pre">configure</span></tt> command add:</p>
+<div class="highlight-python"><pre>--add-module=$(MODULESDIR)/ngx_cache_purge</pre>
+</div>
+<p>Don&#8217;t forget to escape preceeding lines with a backslash <tt class="docutils literal"><span class="pre">\</span></tt>.
+The parameters may now look like:</p>
+<div class="highlight-python"><pre>--with-cc-opt="$(CFLAGS)" \
+--with-ld-opt="$(LDFLAGS)" \
+--with-ipv6 \
+--add-module=$(MODULESDIR)/ngx_cache_purge</pre>
+</div>
+<ol class="arabic simple" start="4">
+<li><strong>Compile and install Nginx</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /opt/nginx-<span class="o">{</span>release<span class="o">}</span>
+sudo dpkg-buildpackage -uc -b
+ls -la /opt
+sudo dpkg --install /opt/nginx_<span class="o">{</span>release<span class="o">}</span>~<span class="o">{</span>distribution<span class="o">}</span>_amd64.deb
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><strong>Check if the compilation and installation of the ngx_cache_purge module
+was successful</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre>nginx -V 2&gt;&amp;1 | grep ngx_cache_purge -o
+</pre></div>
+</div>
+<p>It should now show: <tt class="docutils literal"><span class="pre">ngx_cache_purge</span></tt></p>
+<p>Show Nginx version including all features compiled and installed:</p>
+<div class="highlight-python"><pre>nginx -V 2&gt;&amp;1 | sed s/" --"/"\n\t--"/g</pre>
+</div>
+<ol class="arabic simple" start="6">
+<li><strong>Mark Nginx to be blocked from further updates via apt-get</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre>sudo dpkg --get-selections | grep nginx
+</pre></div>
+</div>
+<p>For every nginx component listed run <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-mark</span> <span class="pre">hold</span> <span class="pre">&lt;component&gt;</span></tt></p>
+<ol class="arabic simple" start="7">
+<li><strong>Regular checks for nginx updates</strong></li>
+</ol>
+<p>Do a regular visit on the <a class="reference external" href="http://nginx.org">Nginx news page</a> and proceed
+in case of updates with items 2 to 5.</p>
+</div>
+<div class="section" id="configure-nginx-with-the-nginx-cache-purge-module">
+<h3>Configure Nginx with the <tt class="docutils literal"><span class="pre">nginx-cache-purge</span></tt> module<a class="headerlink" href="#configure-nginx-with-the-nginx-cache-purge-module" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li><strong>Preparation</strong>
+Create a directory where Nginx will save the cached thumbnails. Use any
+path that fits to your environment. Replace <tt class="docutils literal"><span class="pre">{path}</span></tt> in this example with
+your path created:</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre>sudo mkdir -p /usr/local/tmp/cache
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><strong>Configuration</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre>sudo vi /etc/nginx/sites-enabled/<span class="o">{</span>your-ownCloud-nginx-config-file<span class="o">}</span>
+</pre></div>
+</div>
+<p>Add at the <em>beginning</em>, but <em>outside</em> the <tt class="docutils literal"><span class="pre">server{}</span></tt> block:</p>
+<div class="highlight-python"><pre># cache_purge
+fastcgi_cache_path {path} levels=1:2 keys_zone=OWNCLOUD:100m inactive=60m;
+map $request_uri $skip_cache {
+     default 1;
+     ~*/thumbnail.php 0;
+     ~*/apps/galleryplus/ 0;
+     ~*/apps/gallery/ 0;
+}</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Please adopt or delete any regex line in the <tt class="docutils literal"><span class="pre">map</span></tt> block according
+your needs and the ownCloud version used.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>As an alternative to mapping, you can use as many <tt class="docutils literal"><span class="pre">if</span></tt> statements
+in your server block as necessary:</p>
+<div class="last highlight-python"><pre>set $skip_cache 1;
+if ($request_uri ~* "thumbnail.php")      { set $skip_cache 0; }
+if ($request_uri ~* "/apps/galleryplus/") { set $skip_cache 0; }
+if ($request_uri ~* "/apps/gallery/")     { set $skip_cache 0; }</pre>
+</div>
+</div>
+<p>Add <em>inside</em> the <tt class="docutils literal"><span class="pre">server{}</span></tt> block, as an example of a configuration:</p>
+<div class="highlight-python"><pre># cache_purge (with $http_cookies we have unique keys for the user)
+fastcgi_cache_key $http_cookie$request_method$host$request_uri;
+fastcgi_cache_use_stale error timeout invalid_header http_500;
+fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+
+location ~ \.php(?:$/) {
+      fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+      include fastcgi_params;
+      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+      fastcgi_param PATH_INFO $fastcgi_path_info;
+      fastcgi_param HTTPS on;
+      fastcgi_pass php-handler;
+
+      # cache_purge
+      fastcgi_cache_bypass $skip_cache;
+      fastcgi_no_cache $skip_cache;
+      fastcgi_cache OWNCLOUD;
+      fastcgi_cache_valid  60m;
+      fastcgi_cache_methods GET HEAD;
+      }</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Note regarding the <tt class="docutils literal"><span class="pre">fastcgi_pass</span></tt> parameter:
+Use whatever fits your configuration. In the example above, an <tt class="docutils literal"><span class="pre">upstream</span></tt>
+was defined in an Nginx global configuration file.
+This may look like:</p>
+<div class="last highlight-python"><pre>upstream php-handler {
+    server unix:/var/run/php5-fpm.sock;
+    # or
+    # server 127.0.0.1:9000;
+  }</pre>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><strong>Test the configuration</strong></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre>sudo nginx -s reload
+</pre></div>
+</div>
+<ul class="simple">
+<li>Open your browser and clear your cache.</li>
+<li>Logon to your ownCloud instance, open the gallery app, move thru your
+folders and watch while the thumbnails are generated for the first time.</li>
+<li>You may also watch with eg. <tt class="docutils literal"><span class="pre">htop</span></tt> your system load while the
+thumbnails are processed.</li>
+<li>Go to another app or logout and relogon.</li>
+<li>Open the gallery app again and browse to the folders you accessed before.
+Your thumbnails should appear more or less immediately.</li>
+<li><tt class="docutils literal"><span class="pre">htop</span></tt> will not show up additional load while processing, compared to
+the high load before.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,213 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Connecting to SharePoint &mdash; ownCloud 8.2 User Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="External Storage" href="index.html" />
+    <link rel="prev" title="Configuring External Storage" href="external_storage.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 User Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 User Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">What&#8217;s New for Users in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../webinterface.html">The ownCloud Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../files/index.html">Files &amp; Synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pim/index.html">Contacts &amp; Calendar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documents.html">Collaborative Document Editing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bookmarks.html">Using the Bookmarks App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userpreferences.html">Setting Your Preferences</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">External Storage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="external_storage.html">Configuring External Storage</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Connecting to SharePoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-sharepoint-folders">Accessing SharePoint Folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#personal-page">Personal Page</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="connecting-to-sharepoint">
+<h1>Connecting to SharePoint<a class="headerlink" href="#connecting-to-sharepoint" title="Permalink to this headline">¶</a></h1>
+<p>Native SharePoint support has been added to ownCloud Enterprise Subscription as
+a secondary storage location for SharePoint 2007, 2010 and 2013. To the user,
+these appear as normal ownCloud mounts, with bi-directional updates in any
+ownCloud client: desktop, mobile, or Web. There is one difference, and that is
+ownCloud sharing is intentionally disabled for SharePoint mountpoints in order
+to preserve SharePoint access controls, and to ensure that content is properly
+accessed as per SharePoint rules.</p>
+<p>Your ownCloud admin may optionally allow users to mount their own SharePoint
+libraries.</p>
+<div class="section" id="accessing-sharepoint-folders">
+<h2>Accessing SharePoint Folders<a class="headerlink" href="#accessing-sharepoint-folders" title="Permalink to this headline">¶</a></h2>
+<p>When you first log in to ownCloud, the Web interface shows a gray bar behind all
+SharePoint folders. The gray bar disappears when the mountpoint is verified by
+the server. If you see a red error bar, you&#8217;ll see either an hourglass that
+indicates a connection error, or a key to indicate that authentication is
+required.</p>
+<p>Your ownCloud admin has the option to configure SharePoint credentials so that
+you are authenticated automatically, or you may be required to enter your
+credentials. If you have to enter your credentials, click the red bar and you&#8217;ll
+get a login window. You should only have to do this once, as ownCloud will store
+your credentials.</p>
+<p>If your SharePoint login ever changes, go to your Personal page to update it in
+the <tt class="docutils literal"><span class="pre">Sharepoint</span> <span class="pre">Personal</span> <span class="pre">Configuration</span></tt> section.</p>
+</div>
+<div class="section" id="personal-page">
+<h2>Personal Page<a class="headerlink" href="#personal-page" title="Permalink to this headline">¶</a></h2>
+<p>You can manage your SharePoint connections in the <tt class="docutils literal"><span class="pre">Sharepoint</span> <span class="pre">Personal</span>
+<span class="pre">Configuration</span></tt> section of your ownCloud Personal page. You&#8217;ll see two sections:
+the <tt class="docutils literal"><span class="pre">Admin</span> <span class="pre">added</span> <span class="pre">mount</span> <span class="pre">points</span></tt> section lists SharePoint mounts controlled by
+your ownCloud admin. If users have permissions to mount their own SharePoint
+libraries you&#8217;ll also see a <tt class="docutils literal"><span class="pre">Personal</span> <span class="pre">mount</span> <span class="pre">points</span></tt> section.</p>
+<p>There are two types of authentication available to you. If you have multiple
+SharePoint libraries that use the same authentication, enter your credentials
+in <tt class="docutils literal"><span class="pre">Sharepoint</span> <span class="pre">Personal</span> <span class="pre">Configuration</span></tt>. Then follow these steps to add your
+libraries:</p>
+<ul class="simple">
+<li>Enter the name of your local mountpoint in the <tt class="docutils literal"><span class="pre">Local</span> <span class="pre">Folder</span> <span class="pre">Name</span></tt> column.
+This can be an existing folder, or automatically create a new one.</li>
+<li>Enter your SharePoint server URL.</li>
+<li>Click the little refresh icon to the left of the <tt class="docutils literal"><span class="pre">Document</span> <span class="pre">Library</span></tt> field.
+If your credentials and URL are correct you&#8217;ll get a dropdown list of SharePoint
+libraries to choose from.</li>
+<li>Select the document library you want to mount.</li>
+<li>Select &#8220;Use user credentials&#8221;.</li>
+<li>Click the <tt class="docutils literal"><span class="pre">Save</span></tt> button, and you&#8217;re done</li>
+</ul>
+<div class="figure">
+<img alt="../_images/sharepoint-drive-config-user.png" src="../_images/sharepoint-drive-config-user.png" />
+</div>
+<p>You may elect to use different authentication credentials for some of your
+SharePoint libraries. For these, you must first select <tt class="docutils literal"><span class="pre">use</span> <span class="pre">custom</span>
+<span class="pre">credentials</span></tt>, and then fill in the mountpoint and SharePoint site URL. Then
+ownCloud can authenticate you, and you can click the refresh icon to see your
+libraries. Then select the library you want to mount and click the <tt class="docutils literal"><span class="pre">Save</span></tt>
+button.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

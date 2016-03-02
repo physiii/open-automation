@@ -1,0 +1,303 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Upgrade ownCloud From Packages &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Maintenance" href="index.html" />
+    <link rel="next" title="Manual ownCloud Upgrade" href="manual_upgrade.html" />
+    <link rel="prev" title="How to Upgrade Your ownCloud Server" href="upgrade.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Maintenance</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="enable_maintenance.html">Maintenance Mode Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backup.html">Backing up ownCloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="upgrade.html">How to Upgrade Your ownCloud Server</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Upgrade ownCloud From Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#upgrade-quickstart">Upgrade Quickstart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upgrading-with-your-linux-package-manager">Upgrading With Your Linux Package Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upgrade-wizard">Upgrade Wizard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#occ-upgrade">occ Upgrade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-strong-permissions">Setting Strong Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="manual_upgrade.html">Manual ownCloud Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Upgrading ownCloud with the Updater App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restore.html">Restoring ownCloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrating.html">Migrating to a Different Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="upgrade-owncloud-from-packages">
+<h1>Upgrade ownCloud From Packages<a class="headerlink" href="#upgrade-owncloud-from-packages" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with ownCloud 8.2 the Linux package repositories have
+changed, and <strong>you must configure your system to use these new
+repositories</strong> to install or upgrade ownCloud 8.2+. The new repositories are
+at our <a class="reference external" href="https://download.owncloud.org/download/repositories/stable/owncloud/">Open Build Service</a>.</p>
+</div>
+<div class="section" id="upgrade-quickstart">
+<h2>Upgrade Quickstart<a class="headerlink" href="#upgrade-quickstart" title="Permalink to this headline">¶</a></h2>
+<p>The core upgrade notifier tells you when a new ownCloud release is available.
+If you click on it, it takes you to <a class="reference internal" href="upgrade.html"><em>How to Upgrade Your ownCloud Server</em></a>.</p>
+<div class="figure">
+<img alt="The upgrade notifier, a yellow banner at the top of the ownCloud Web interface." src="../_images/upgrade-notifier.png" />
+</div>
+<p>The best method for keeping ownCloud current on Linux servers is by configuring
+your system to use ownCloud&#8217;s <a class="reference external" href="https://download.owncloud.org/download/repositories/stable/owncloud/">Open Build Service</a> repository. Then stay
+current by using your Linux package manager to install fresh ownCloud packages.
+After installing upgraded packages you must run a few more steps to complete the
+upgrade. These are the basic steps to upgrading ownCloud:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../installation/apps_management_installation.html"><em>Disable</em></a> all third-party
+apps.</li>
+<li>Make a <a class="reference internal" href="backup.html"><em>fresh backup</em></a>.</li>
+<li>Install new packages from the ownCloud <a class="reference external" href="https://download.owncloud.org/download/repositories/stable/owncloud/">Open Build Service</a>.</li>
+<li>Take your ownCloud server out of <a class="reference internal" href="enable_maintenance.html"><em>maintenance mode</em></a>.</li>
+<li>Run the <a class="reference internal" href="#upgrade-wizard-label"><em>upgrade wizard</em></a> or
+<tt class="docutils literal"><span class="pre">occ</span> <span class="pre">upgrade</span></tt> (optionally disabling the <a class="reference internal" href="#migration-test-label"><em>migration test</em></a>).</li>
+<li><a class="reference internal" href="../installation/installation_wizard.html#strong-perms-label"><em>apply strong permissions</em></a> to your
+ownCloud directories.</li>
+<li>Re-enable third-party apps.</li>
+</ul>
+</div>
+<div class="section" id="upgrading-with-your-linux-package-manager">
+<h2>Upgrading With Your Linux Package Manager<a class="headerlink" href="#upgrading-with-your-linux-package-manager" title="Permalink to this headline">¶</a></h2>
+<p>Upgrading ownCloud from our <a class="reference external" href="https://download.owncloud.org/download/repositories/stable/owncloud/">Open Build Service</a> repository is just like any
+normal Linux upgrade. For example, on Debian or Ubuntu Linux this is the
+standard system upgrade command:</p>
+<div class="highlight-python"><pre>apt-get update &amp;&amp; apt-get upgrade</pre>
+</div>
+<p>Or you can upgrade just ownCloud with this command:</p>
+<div class="highlight-python"><pre>apt-get update &amp;&amp; apt-get install owncloud</pre>
+</div>
+<p>On Fedora, CentOS, and Red Hat Linux use <tt class="docutils literal"><span class="pre">yum</span></tt> to see all available updates:</p>
+<div class="highlight-python"><pre>yum check-update</pre>
+</div>
+<p>You can apply all available updates with this command:</p>
+<div class="highlight-python"><pre>yum update</pre>
+</div>
+<p>Or update only ownCloud:</p>
+<div class="highlight-python"><pre>yum update owncloud</pre>
+</div>
+<p>Your Linux package manager only downloads the current ownCloud packages. Then
+your ownCloud server is immediately put into maintenance mode. You may not see
+this until you refresh your ownCloud page.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="../_images/upgrade-1.png"><img alt="ownCloud status screen informing users that it is in maintenance mode." src="../_images/upgrade-1.png" style="width: 308.25px; height: 346.5px;" /></a>
+<p class="caption"><em>Click to enlarge</em></p>
+</div>
+<p>To complete the upgrade take your server out of maintenance mode. You can do
+this by changing <tt class="docutils literal"><span class="pre">'maintenance'</span> <span class="pre">=&gt;</span> <span class="pre">true,</span></tt> to <tt class="docutils literal"><span class="pre">'maintenance'</span> <span class="pre">=&gt;</span> <span class="pre">false,</span></tt> in
+<tt class="docutils literal"><span class="pre">config.php</span></tt>, or use the <a class="reference internal" href="../configuration_server/occ_command.html"><em>occ command</em></a>, like this example on Ubuntu:</p>
+<div class="highlight-python"><pre>sudo -u www-data php occ maintenance:mode --off</pre>
+</div>
+<p>You must run <tt class="docutils literal"><span class="pre">occ</span></tt> as your HTTP user.</p>
+</div>
+<div class="section" id="upgrade-wizard">
+<span id="upgrade-wizard-label"></span><h2>Upgrade Wizard<a class="headerlink" href="#upgrade-wizard" title="Permalink to this headline">¶</a></h2>
+<p>The final step is to run the upgrade wizard to perform the final steps of
+updating your apps and database. Refresh your ownCloud page and you will see a
+screen with some warnings about backups and a <strong>Start Update</strong> button.
+(Alternatively, you may use <tt class="docutils literal"><span class="pre">occ</span> <span class="pre">upgrade</span></tt>, which is covered in the next
+section.) Click the <strong>Start Update</strong> button:</p>
+<div class="figure">
+<a class="reference internal image-reference" href="../_images/upgrade-2.png"><img alt="ownCloud upgrade wizard screen." src="../_images/upgrade-2.png" style="width: 252.75px; height: 273.0px;" /></a>
+<p class="caption"><em>Click to enlarge</em></p>
+</div>
+<p>The wizard will put ownCloud back into maintenance mode, display a
+status screen while the upgrade is running, and when it is completed take it
+out of maintenance mode and return you to your ownCloud session.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="../_images/upgrade-3.png"><img alt="Upgrade wizard status screen." src="../_images/upgrade-3.png" style="width: 270.75px; height: 364.5px;" /></a>
+<p class="caption"><em>Click to enlarge</em></p>
+</div>
+</div>
+<div class="section" id="occ-upgrade">
+<h2>occ Upgrade<a class="headerlink" href="#occ-upgrade" title="Permalink to this headline">¶</a></h2>
+<p>If you have shell access it is better to <strong>not</strong> click the <strong>Start Update</strong>
+button, but rather to use <tt class="docutils literal"><span class="pre">occ</span> <span class="pre">upgrade</span></tt>. <tt class="docutils literal"><span class="pre">occ</span> <span class="pre">upgrade</span></tt> is more reliable,
+especially on installations with large datasets and large numbers of users
+because it avoids the risk of PHP timeouts. This example is for CentOS:</p>
+<div class="highlight-python"><pre>sudo -u apache php occ upgrade
+ ownCloud or one of the apps require upgrade - only a limited number of
+ commands are available
+ Set log level to debug - current level: 'Warning'
+ Turned on maintenance mode
+ Checking whether the database schema can be updated (this can take a long
+ time depending on the database size)
+ Checked database schema update
+ Checking updates of apps
+ Checked database schema update for apps
+ Updating database schema
+ Updated database
+ Update successful
+ Turned off maintenance mode
+ Reset log level to 'Warning'</pre>
+</div>
+<p>Remember, you must run <tt class="docutils literal"><span class="pre">occ</span></tt> as your HTTP user. When it is completed refresh
+your ownCloud Web page to return to your previous session.</p>
+<div class="section" id="migration-test">
+<span id="migration-test-label"></span><h3>Migration Test<a class="headerlink" href="#migration-test" title="Permalink to this headline">¶</a></h3>
+<p>ownCloud starts your upgrade by first running a simulation: it copies all
+database tables to a temporary directory, and then performs the upgrade on
+them to ensure that the upgrade will complete correctly. This can delay large
+installations by several hours, so you can omit this step with the
+<tt class="docutils literal"><span class="pre">--skip-migration-test</span></tt> option, like this example on CentOS:</p>
+<div class="highlight-python"><pre>$ sudo -u apache php occ upgrade --skip-migration-test</pre>
+</div>
+</div>
+</div>
+<div class="section" id="setting-strong-permissions">
+<h2>Setting Strong Permissions<a class="headerlink" href="#setting-strong-permissions" title="Permalink to this headline">¶</a></h2>
+<p>After upgrading, verify that your ownCloud directory permissions are set
+according to <a class="reference internal" href="../installation/installation_wizard.html#strong-perms-label"><em>Setting Strong Directory Permissions</em></a>.</p>
+<p>If the upgrade fails, then you must try a manual upgrade.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

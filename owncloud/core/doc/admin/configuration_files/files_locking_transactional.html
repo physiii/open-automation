@@ -1,0 +1,240 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Transactional File Locking &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="File Sharing and Management" href="index.html" />
+    <link rel="next" title="Previews Configuration" href="previews_configuration.html" />
+    <link rel="prev" title="Encryption Configuration" href="encryption_configuration.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">File Sharing and Management</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="file_sharing_configuration.html">File Sharing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated_cloud_sharing_configuration.html">Configuring Federated Cloud Sharing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="big_file_upload_configuration.html">Uploading big files &gt; 512MB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaborative_documents_configuration.html">Configuring the Collaborative Documents App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_files_configuration.html">Providing Default Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration_gui.html">Configuring External Storage (GUI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage_configuration.html">Configuring External Storage (Configuration File)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_storage/auth_mechanisms.html">External Storage Authentication mechanisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption_configuration.html">Encryption Configuration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Transactional File Locking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="previews_configuration.html">Previews Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="transactional-file-locking">
+<h1>Transactional File Locking<a class="headerlink" href="#transactional-file-locking" title="Permalink to this headline">¶</a></h1>
+<p>ownCloud&#8217;s Transactional File Locking mechanism locks files to avoid
+file corruption during normal operation. It performs these functions:</p>
+<ul class="simple">
+<li>Operates at a higher level than the filesystem, so you don&#8217;t need to use a
+filesystem that supports locking</li>
+<li>Locks parent directories so they cannot be renamed during any activity on
+files inside the directories</li>
+<li>Releases locks after file transactions are interrupted, for
+example when a sync client loses the connection during an upload</li>
+<li>Manages locking and releasing locks correctly on shared files during changes
+from multiple users</li>
+<li>Manages locks correctly on external storage mounts</li>
+<li>Manages encrypted files correctly</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Transactional file locking is in core, and replaces the old File
+Locking app. The File Locking app has been removed from ownCloud in version
+8.2.1. If your ownCloud server still has the File Locking app, you must
+visit your Apps page to verify that it is disabled; the File Locking app and
+Transactional File Locking cannot both operate at the same time.</p>
+</div>
+<p>When you see the warning on your ownCloud admin page &#8220;Transactional file locking
+is using the database as locking backend, for best performance it&#8217;s advised to
+configure a memcache for locking&#8221;, you are not required to use a memcache. File
+locking is enabled by default, using the database locking backend. This
+places a significant load on your database. Using <tt class="docutils literal"><span class="pre">memcache.locking</span></tt> relieves
+the database load and improves performance. Admins of ownCloud servers with
+heavy workloads should install a memcache. (See
+<a class="reference internal" href="../configuration_server/caching_configuration.html"><em>Configuring Memory Caching</em></a>.)</p>
+<p>To use a memcache with Transactional File Locking, you must install the Redis
+server and corresponding PHP module. After installing Redis you must enter a
+configuration in your <tt class="docutils literal"><span class="pre">config.php</span></tt> file like this example:</p>
+<div class="highlight-python"><pre>'filelocking.enabled' =&gt; 'true',
+'memcache.locking' =&gt; '\OC\Memcache\Redis',
+'redis' =&gt; array(
+     'host' =&gt; 'localhost',
+     'port' =&gt; 6379,
+     'timeout' =&gt; 0.0,
+     'password' =&gt; '', // Optional, if not defined no password will be used.
+      ),</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For enhanced security it is recommended to configure Redis to require
+a password. See <a class="reference external" href="http://redis.io/topics/security">http://redis.io/topics/security</a> for more information.</p>
+</div>
+<p>If you want to configure Redis to listen on an Unix socket (which is
+recommended if Redis is running on the same system as ownCloud) use this example
+<tt class="docutils literal"><span class="pre">config.php</span></tt> configuration:</p>
+<div class="highlight-python"><pre>'filelocking.enabled' =&gt; 'true',
+'memcache.locking' =&gt; '\OC\Memcache\Redis',
+'redis' =&gt; array(
+     'host' =&gt; '/var/run/redis/redis.sock',
+     'port' =&gt; 0,
+     'timeout' =&gt; 0.0,
+      ),</pre>
+</div>
+<p>See <tt class="docutils literal"><span class="pre">config.sample.php</span></tt> to see configuration examples for Redis, and for all
+supported memcaches.</p>
+<p>If you are on Ubuntu you can follow <a class="reference external" href="https://www.techandme.se/how-to-configure-redis-cache-in-ubuntu-14-04-with-owncloud/">this guide</a> for a complete installation from scratch.</p>
+<p>Learn more about Reds at <a class="reference external" href="http://redis.io/">Redis</a>. Memcached, the popular
+distributed memory caching system, is not suitable for the new file locking
+because it is not designed to store locks, and data can disappear from the cache
+at any time. Redis is a key-value store, and it guarantees that cached objects
+are available for as long as they are needed.</p>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

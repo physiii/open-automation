@@ -1,0 +1,241 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ownCloud Community Appliance &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Installation" href="index.html" />
+    <link rel="next" title="Installing PHP 5.4 on RHEL 6 and CentOS 6" href="php_54_installation.html" />
+    <link rel="prev" title="Manual Installation on Linux" href="source_installation.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linux_installation.html">Preferred Linux Installation Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation_wizard.html">Installation Wizard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line_installation.html">Installing ownCloud From the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apps_management_installation.html">Installing and Managing Apps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source_installation.html">Manual Installation on Linux</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">ownCloud Community Appliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instructions-for-virtualbox-and-ova">Instructions for VirtualBox and OVA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#software-appliances">Software Appliances</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="php_54_installation.html">Installing PHP 5.4 on RHEL 6 and CentOS 6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="php_55_installation.html">Installing PHP 5.5 on RHEL 7 and CentOS 7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selinux_configuration.html">SELinux Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nginx_configuration.html">Nginx Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucs_installation.html">Univention Corporate Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hiawatha_configuration.html">Hiawatha Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaws_configuration.html">Yaws Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_installation.html">Mac OS X</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="owncloud-community-appliance">
+<h1>ownCloud Community Appliance<a class="headerlink" href="#owncloud-community-appliance" title="Permalink to this headline">¶</a></h1>
+<p>ownCloud has a publicly developed community appliance <a class="reference external" href="https://github.com/ownCloud/vm">on GitHub</a>. Download the
+latest release from the Appliances tab on the <a class="reference external" href="https://owncloud.org/install/#instructions-server">ownCloud server installation
+page</a>. The easiest way to get the VM up and running is by using <a class="reference external" href="https://www.virtualbox.org">VirtualBox</a>
+and downloading the OVA image from the installation page.</p>
+<div class="section" id="instructions-for-virtualbox-and-ova">
+<h2>Instructions for VirtualBox and OVA<a class="headerlink" href="#instructions-for-virtualbox-and-ova" title="Permalink to this headline">¶</a></h2>
+<p>Follow these steps to get the appliance working:</p>
+<ol class="arabic simple">
+<li>Download the Virtual Machine image zip file and unpack it.</li>
+<li>Start VirtualBox and click on <em>File ...</em> &gt; <em>Import Appliance</em> and import
+your new ownCloud image.</li>
+<li>Click the green Start arrow. After a minute you should see the console
+greeting message.</li>
+</ol>
+<div class="figure">
+<img alt="screenshot of Ubuntu console login for newly-created virtual machine" src="../_images/community-vm-console.png" />
+</div>
+<ol class="arabic simple" start="4">
+<li>Note the username and password here. It is a random password that we generate
+for you on first boot. If you log in at the console, you&#8217;ll  be prompted to
+change the password. This is optional.</li>
+<li>With your Web browser try <tt class="docutils literal"><span class="pre">http://localhost:8888</span></tt> or
+<tt class="docutils literal"><span class="pre">http://localhost:80</span></tt> or the address printed on the console. One of them
+should work. If not, please review and adjust the network setup of
+Virtualbox to bridged mode.</li>
+<li>You should see a Web page with login credentials (if you haven&#8217;t changed
+them already) and a list of URLs to try to reach the ownCloud web
+service.  Which one works, again depends on the network setup of your
+hypervisor.</li>
+</ol>
+<div class="figure">
+<a class="reference internal image-reference" href="../_images/community-vm-splash.png"><img alt="screenshot of new virtual machine Web GUI with login credentials" src="../_images/community-vm-splash.png" style="width: 734.0px; height: 600.0px;" /></a>
+<p class="caption"><em>Click to enlarge</em></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should write down your admin password, and make sure the login
+credentials are no longer displayed. Click the <em>[Hide Credentials]</em> button.
+When using the ownCloud Proxy app, this Web page may be publicly visible.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Inside the VM, ownCloud runs with a default disk size of 40 GB and its
+own MySQL database. The ownCloud admin user is also a valid account on the
+Ubuntu system that runs inside the VM. You can administer the VM via SSH.</p>
+</div>
+<p><strong>For VMware</strong></p>
+<p>You can follow most of the steps above, however, after opening the VMX file, you will have to configure <tt class="docutils literal"><span class="pre">Bridged</span> <span class="pre">Network</span></tt> as <em>Network Adapter</em></p>
+</div>
+<div class="section" id="software-appliances">
+<h2>Software Appliances<a class="headerlink" href="#software-appliances" title="Permalink to this headline">¶</a></h2>
+<p>There are a number of unofficial pre-made virtual machine-based appliances:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://susestudio.com/a/TadMax/owncloud-in-a-box">SUSE Studio, ownCloud on openSuSE</a>, which runs directly from an USB stick.</li>
+<li><a class="reference external" href="https://wiki.amahi.org/index.php/OwnCloud">Amahi home server</a></li>
+<li><a class="reference external" href="https://www.en0ch.se/pre-configured-owncloud-installaton/">ownCloud VM on Ubuntu 14.04 with MySQL and Apache</a>, fully configured
+environment.</li>
+</ul>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

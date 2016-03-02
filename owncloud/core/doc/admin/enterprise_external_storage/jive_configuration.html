@@ -1,0 +1,572 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Jive Integration &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="External Storage (ES only)" href="index.html" />
+    <link rel="next" title="LDAP Home Connector" href="ldap_home_connector_configuration.html" />
+    <link rel="prev" title="External Storage (ES only)" href="index.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">External Storage (ES only)</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Jive Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-the-jive-app">Configuring the Jive app</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ldap_home_connector_configuration.html">LDAP Home Connector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3_swift_as_primary_object_store_configuration.html">Configuring S3 and OpenStack Swift Objects as Primary Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint-integration_configuration.html">Configuring SharePoint Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windows-network-drive_configuration.html">Installing and Configuring the Windows Network Drive App</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="jive-integration">
+<h1>Jive Integration<a class="headerlink" href="#jive-integration" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>The Jive application allows Jive users to access files stored in Jive
+from a mobile device, tablet, or desktop client. Users have complete access
+through ownCloud Enterprise Subscription to upload, edit or download their files.</p>
+<p>Jive can be configured as a data storage location for ownCloud, which means
+files saved in Jive appear in folders within ownCloud. Jive remains the system
+of record while ownCloud acts as a proxy, providing end-to-end file access for
+users at their desks and on the go.</p>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>The Jive application is installed under the owncloud/apps directory on the server and enabled via the ownCloud
+admin screen. This app is only available for ownCloud EE v6 or higher. Go to the ownCloud admin screen section
+“Jive backend parameters” to configure the app to match your Jive server system parameters.</p>
+<img alt="../_images/jive_config.png" src="../_images/jive_config.png" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="69%" />
+<col width="18%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Parameter</td>
+<td>Description</td>
+<td>Values</td>
+</tr>
+<tr class="row-even"><td>Https</td>
+<td>Verify the https server certificate. Certificate must be installed on the system.</td>
+<td>Checkbox – enabled/disable</td>
+</tr>
+<tr class="row-odd"><td>Authentication</td>
+<td>Chose the Authentication mechanism to use against Jive</td>
+<td>basic OR oAuth</td>
+</tr>
+<tr class="row-even"><td>Jive api url</td>
+<td>URL string pointing to the Jive API</td>
+<td>Example: <a class="reference external" href="https://mycompany.jiveon.com/api/core/v3/">https://mycompany.jiveon.com/api/core/v3/</a></td>
+</tr>
+<tr class="row-odd"><td>Jive FS mount point</td>
+<td>Folder where the Jive File share will be mounted</td>
+<td>String value up to 10 characters max</td>
+</tr>
+<tr class="row-even"><td>Jive category filter</td>
+<td>List of categories that files have to be shown</td>
+<td>Jive categories list, or blank</td>
+</tr>
+<tr class="row-odd"><td>Jive category separator</td>
+<td>Separator for Jive catagories list</td>
+<td>Comma by default or any single character</td>
+</tr>
+<tr class="row-even"><td>Jive tag filter</td>
+<td>Tag to use for private stuff in jive</td>
+<td>Jive tag or blank</td>
+</tr>
+<tr class="row-odd"><td>Jive forbidden extensions</td>
+<td><p class="first">List of forbidden extensions</p>
+<p class="last">These will not be allowed for upload or download with Jive.</p>
+</td>
+<td>Examples include: .exe,.zip</td>
+</tr>
+<tr class="row-even"><td>Jive forbidden extensions separator</td>
+<td>Use this character to separate the list of extensions</td>
+<td>Comma by default or any single character</td>
+</tr>
+<tr class="row-odd"><td>Jive maximum upload filesize</td>
+<td>Maximum file size allowed in MB. This includes upload and downloads.</td>
+<td>Numeric value</td>
+</tr>
+<tr class="row-even"><td>Jive private folder</td>
+<td>Folder name for private stuff in Jive</td>
+<td>String value up to 250 characters max</td>
+</tr>
+<tr class="row-odd"><td>Activate large file sharing for Jive</td>
+<td>Enable the large file sharing subsystem. This allows storage of files that are too large for Jive to be stored on the ownCloud server and available via the ownCloud web, mobile and desktop interfaces.</td>
+<td>Checkbox – enable/disable</td>
+</tr>
+<tr class="row-even"><td>Jive large file sharing FS mount point</td>
+<td>Folder where the Jive large sharing File Share will be mounted</td>
+<td>String value up to 10 characters max</td>
+</tr>
+<tr class="row-odd"><td>Show groups of which you are a member</td>
+<td>If this is not checked, the plugin will show all available groups for you matching the filter, even groups that you are not a member</td>
+<td>Enable/disable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
+<p>The ownCloud Jive plugin can be used in various ways to extend the access to the Jive content across multiple devices.</p>
+<div class="section" id="web-client-use-cases">
+<h3>Web Client Use Cases<a class="headerlink" href="#web-client-use-cases" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/jive_2.png" src="../_images/jive_2.png" style="width: 3.2398in; height: 2.9898in;" />
+<ul class="simple">
+<li>Create a folder in the “Jive File Share” Web Client folder to create a new Jive Group.<ul>
+<li>Verify the Group is created in Jive.</li>
+</ul>
+</li>
+<li>Create a new Group in Jive and upload a file to that Group.<ul>
+<li>Check the Web Client and download the file.</li>
+<li>Verify that file is the same as the uploaded file.</li>
+</ul>
+</li>
+<li>Upload a file in the “Too Big For” Jive folder, and create the link in a Jive document.<ul>
+<li>Verify that file link is in Jive.</li>
+<li>Download the file via the link, and verify it is the same as the uploaded file.</li>
+</ul>
+</li>
+<li>Upload a file to the private “My Jive” Web Client folder.<ul>
+<li>Check your Jive content and make sure the file has been uploaded.</li>
+<li>Download the file and verify it is the same as the uploaded file.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="mobile-client-use-cases-ios-and-android">
+<h3>Mobile Client Use Cases (iOs and Android)<a class="headerlink" href="#mobile-client-use-cases-ios-and-android" title="Permalink to this headline">¶</a></h3>
+<p>Create a new folder in the Mobile Client to create a new Jive Group.</p>
+<p>Upload a file in the Web Client folder, and see that file in the corresponding Jive Group.</p>
+</div>
+<div class="section" id="desktop-client-use-cases">
+<h3>Desktop Client Use Cases<a class="headerlink" href="#desktop-client-use-cases" title="Permalink to this headline">¶</a></h3>
+<p>Create a folder in the Desktop Client to create a new Jive Group.</p>
+<p>Upload a file in the Desktop Client folder, and see that file in the corresponding Jive Group.</p>
+<p>The ownCloud folder structure hierarchy matches the Jive Groups the user can access. Sub folders under the Jive Group
+folders that are created on the desktop will not sync to ownCloud or Jive because they will not match the Jive “Group”
+view. If a sub folder is created under the Jive Group desktop folder, the desktop client will display an error that
+this operation is not allowed. For example; if the folder structure is “JiveFileShare/GroupA”, any sub folder under
+GroupA will not be synced to ownCloud or Jive.</p>
+</div>
+</div>
+<div class="section" id="configuring-the-jive-app">
+<h2>Configuring the Jive app<a class="headerlink" href="#configuring-the-jive-app" title="Permalink to this headline">¶</a></h2>
+<p>This section explains how each configuration parameter changes the behavior of the app.</p>
+<div class="section" id="verify-https-certificate">
+<h3>Verify https certificate<a class="headerlink" href="#verify-https-certificate" title="Permalink to this headline">¶</a></h3>
+<p>If your Jive server is under https, it must provide a https certificate when a client connects to it. Curl (the client
+that ownCloud is using to connect to Jive) usually verify that certificate, but to do that you must somehow supply
+a CA cert so curl can verify against.</p>
+<p>This feature is usually turn off to make the Jive app easier to use, because in this case curl won&#8217;t verify the
+certificate, so you don&#8217;t need to have installed the CA cert. However, turning this off could be a security issue:
+you could be connecting to a fake Jive server without notice.</p>
+<p>If you want to turn on this feature, you must get the CA cert of the server (check “
+<a class="reference external" href="http://curl.haxx.se/docs/sslcerts.html">http://curl.haxx.se/docs/sslcerts.html</a>
+” for more information about how you can get the file you need)
+and install it in your ownCloud server.</p>
+<p>In order to know where you should install the CA cert, you can run</p>
+<p>curl -v
+<a class="reference external" href="https://yourserver.com/">https://yourserver.com/</a></p>
+<p>You should look the output for a line with the CA path:</p>
+<blockquote>
+<div><ul class="simple">
+<li>successfully set certificate verify locations:</li>
+<li>CAfile: none</li>
+<li>CApath: /etc/ssl/certs</li>
+</ul>
+</div></blockquote>
+<p>That&#8217;s the place where you should install the CA cert.</p>
+<p>Once you have installed the CA cert, you should run again the same curl:</p>
+<p>curl -v
+<a class="reference external" href="https://yourserver.com/">https://yourserver.com/</a></p>
+<p>And look for:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Server certificate:</li>
+<li>subject: <strong>*****</strong></li>
+<li>start date: <strong>*******</strong></li>
+<li>expire date: <strong>*****</strong></li>
+<li>subjectAltName: <strong>*******</strong></li>
+<li>issuer: <strong>******</strong></li>
+<li>SSL certificate verify ok.</li>
+</ul>
+</div></blockquote>
+<p>If the SSL is verified correctly (“SSL certificate verify ok.”), you just need to activate the checkbox.</p>
+<p>Curl usually comes installed with some CA certs by default, so all the previous steps might not be needed. Just check
+that curl can connect to your Jive server, and if so, activate this feature.</p>
+</div>
+<div class="section" id="authentication-mechanism-to-use-against-jive">
+<h3>Authentication mechanism to use against Jive<a class="headerlink" href="#authentication-mechanism-to-use-against-jive" title="Permalink to this headline">¶</a></h3>
+<p>To be able to access to Jive, the ownCloud plugin needs to use some kind of authentication. At this time, the plugin
+supports basic and oAuth authentication.</p>
+<div class="section" id="basic-authentication">
+<h4>Basic authentication<a class="headerlink" href="#basic-authentication" title="Permalink to this headline">¶</a></h4>
+<p>In order to use basic authentication, you should take into account the following things:</p>
+<ul class="simple">
+<li>The credentials used to access to ownCloud must match the ones used to connect to Jive. This means that if you
+access to ownCloud with a user “PeterP” and password “PeterPassword”, the same user must exist in Jive with the same
+password. Otherwise, the user won&#8217;t be able to access to Jive.</li>
+<li>If the credentials (typically the password) changes in one side, it must change in the other. You&#8217;ll need to this manually.</li>
+</ul>
+<p>The usage of basic authentication isn&#8217;t recommended due to the following reasons:</p>
+<ul class="simple">
+<li>We need to store the password and be able to recover it. Although the password is stored encrypted, this is
+not strictly secure.</li>
+<li>Passwords are sent to the server in almost plain text. In fact it&#8217;s a base64 encoded string of user and password,
+but that&#8217;s all the security the authentication provides.</li>
+</ul>
+<p>If you plan to use basic authentication, at least make sure you connect through HTTPS protocol and inside a local LAN if possible.</p>
+</div>
+<div class="section" id="oauth-authentication">
+<h4>oAuth authentication<a class="headerlink" href="#oauth-authentication" title="Permalink to this headline">¶</a></h4>
+<p>First of all, make sure Jive is prepared to support this authentication.</p>
+<p>The usage of this authentication method solves the issue of having the same credentials in both ownCloud and Jive
+server. This means that the ownCloud user “PeterP” with password “PeterPassword” can access to the contents of the Jive
+user “John” with password “John007”. It&#8217;s also possible that another ownCloud user “AliceK” access to the contents of
+the Jive user “John” too at the same time.</p>
+<p>Keep in mind that this isn&#8217;t insecure: any ownCloud user that wants to access to John&#8217;s Jive content (following
+this little example) MUST know his Jive password.</p>
+<p>If this authentication method is set, we don&#8217;t store passwords BUT we still need to store some other things. These things are stored in plain text.</p>
+<p>These are the steps to make it work (if your Jive server support this authentication):</p>
+<ol class="arabic simple">
+<li>Activate the oAuth authentication in the ownCloud admin settings (just the admin can do this)</li>
+<li>Go to the ownCloud web interface, in the files app. A popup will appear.</li>
+<li>Click on the link that appear in the popup</li>
+<li>You&#8217;ll get redirected to a Jive page asking for your Jive credentials. If this is not the case, it&#8217;s recommended
+to clean the browser cache and start again (to point 2) because you might be accessing to Jive with another user.</li>
+<li>After entering your Jive credentials, you get redirected a page with an activation code. If you entered the
+wrong credentials, you might not get redirected to that page. If this is the case click
+in the link again in the ownCloud popup (point 3) which will redirect you to the activation code page.</li>
+<li>Copy the activation code into the ownCloud popup,
+and click in the “send code” button. If there is no error, you&#8217;re done.</li>
+</ol>
+<p>WARNING:</p>
+<p>Not all the oAuth flows are covered by the plugin. The expiration of the access token is handled automatically by
+the plugin, so it will request a new access token if needed. HOWEVER, the expiration of the refresh token isn&#8217;t
+covered, so the plugin will likely stop working for that user (we won&#8217;t be able to get more access tokens)</p>
+<p>[Ask for info to know how to solve this issue?]</p>
+<p>It&#8217;s very important that the user access to ownCloud through the web interface first, so the user goes through
+the oAuth flow for the first time (as described with the steps above) to get an access token. Otherwise, the
+plugin won&#8217;t get an access token and the user won&#8217;t be able to get the files from Jive.</p>
+</div>
+</div>
+<div class="section" id="jive-api-url">
+<h3>Jive API URL<a class="headerlink" href="#jive-api-url" title="Permalink to this headline">¶</a></h3>
+<p>You&#8217;ll need to enter the full URL of the Jive API. This includes the protocol (HTTP or HTTPS) and the port (if any).</p>
+<p>An example of API URL could be: “
+<a class="reference external" href="https://myjiveserver.com/api/core/v3/">https://myjiveserver.com/api/core/v3/</a>
+”</p>
+<p>Notice the following things:</p>
+<ul class="simple">
+<li>You must specify a protocol that is understandable by curl. Under normal circumstances, the protocol is limited to HTTP or HTTPS.</li>
+<li>If your server is under a port different than the 80, you&#8217;ll need to specify it. Take “
+<a class="reference external" href="https://jserver.prv:9999/api/core/v3/">https://jserver.prv:9999/api/core/v3/</a>
+” as an example</li>
+<li>If your server isn&#8217;t under the root URL, you can also specify the correct path: “
+<a class="reference external" href="https://myserver.prv:8888/path/to/jive/api/core/v3/">https://myserver.prv:8888/path/to/jive/api/core/v3/</a>
+”</li>
+<li>The API URL should end with “/api/core/v3/” (be careful with the slash at the end)</li>
+</ul>
+</div>
+<div class="section" id="filters">
+<h3>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h3>
+<p>The Jive plugin comes with a set of filters that the admin can set to filter the content the users can access
+through ownCloud. The drawback of using filters is that there isn&#8217;t any performance gain because the filtering
+is mainly done in the ownCloud side, and even can degrade performance in some cases. We&#8217;ll explain the filters
+one by one, and tell you what consequences have each one.</p>
+<div class="section" id="category-filter-and-separator">
+<h4>Category filter and separator<a class="headerlink" href="#category-filter-and-separator" title="Permalink to this headline">¶</a></h4>
+<p>You can filter files using one or several categories. This filter applies only to groups and files
+inside those groups.
+Your private files won&#8217;t be affected by this filter.</p>
+<p>In order to set this filter, you can provide a list of categories, all in one line. In order to separate the
+different categories, you must use the separator set in the “category separator” text box.</p>
+<blockquote>
+<div><p>Jive category filter : syncWithMe,sync,syncMe</p>
+<p>Jive category separator : ,</p>
+</div></blockquote>
+<p>You can also achieve the same behavior with:</p>
+<blockquote>
+<div><p>Jive category filter : syncWithMe#sync#syncMe</p>
+<p>Jive category separator : #</p>
+</div></blockquote>
+<p>The plugin will show all groups which have ALL those categories set. If there is a group with any of the
+categories missing, that group won&#8217;t be shown. Anyway, you should only need to set one category.</p>
+<p>It&#8217;s important to notice that, although you can set only one category or leave the text box empty, the
+category separator MUST always be set. In fact, you shouldn&#8217;t need to change the default value of the category separator.</p>
+<p>Files shown inside those groups will be also affected by this filter. This means that all the files
+shown inside those groups must have all the categories too.</p>
+<p>Files uploaded through ownCloud to those groups will have all the categories set in Jive automatically.
+If you want to add more categories to those files, you&#8217;ll need to do it manually through Jive.</p>
+<p>The usage of the category filter can degrade the performance a lot.
+We need to make extra calls to Jive to get the categories for each group, one extra call per group returned by Jive in the first place.
+There is also the limitation of not having more than 25 categories set per group.
+Use this filter with extreme caution.</p>
+<p>You can “disable” this filter just by setting the category filter empty. This will prevent the extra call from
+being made, and will show all available groups.</p>
+</div>
+<div class="section" id="tag-filter">
+<h4>Tag filter<a class="headerlink" href="#tag-filter" title="Permalink to this headline">¶</a></h4>
+<p>This filter works only for private files. Files inside groups won&#8217;t be affected by this filter.</p>
+<p>You can only set one tag for the files that will be shown in ownCloud. Make sure you set one of the tags from Jive
+as they&#8217;re shown there. It&#8217;s highly recommended to use only lowercase letters to set the tag to prevent possible
+issues when the tag is set in Jive.</p>
+<p>The usage of this filter won&#8217;t alter significantly the performance</p>
+<p>It&#8217;s important to notice that the filter will be applied to all users. Users won&#8217;t be able to set their own tag to sync their own files.</p>
+<p>This filter can also be “disabled” by setting the filter empty.</p>
+</div>
+<div class="section" id="forbidden-extensions-filter-and-separator">
+<h4>Forbidden extensions filter and separator<a class="headerlink" href="#forbidden-extensions-filter-and-separator" title="Permalink to this headline">¶</a></h4>
+<p>This filter is set the same way as the category filter: you provide a list of extensions that are separated
+by the char set in the separator text box.</p>
+<blockquote>
+<div><p>Jive forbidden extensions: .exe,.zip,.tar.gz</p>
+<p>Jive forbidden extensions separator : ,</p>
+</div></blockquote>
+<p>You can also achieve the same behavior with:</p>
+<blockquote>
+<div><p>Jive forbidden extensions: .exe#.zip#.tar.gz</p>
+<p>Jive forbidden extensions separator: #</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>Keep in mind that the filter is performed against the end of the filename, that&#8217;s why the “.” is important. If</dt>
+<dd>you set “exe” as a forbidden extension, a file named “texe” or “f1.lexe” will be affected by this filter.</dd>
+</dl>
+<p>You must also take into account that, by using only the filename, we avoid to download the file, so the
+performance isn&#8217;t significantly degraded.
+On the other hand, we cannot verify that a “.png” file is what it claims to be.</p>
+<p>This filter works for any file, and for uploads and downloads through ownCloud. This means that you won&#8217;t be able to
+upload a file with any of those extensions from onwCloud and the Jive files which have those extensions won&#8217;t
+be shown (and consequently they won&#8217;t be downloaded). Of course, you can still upload the files from Jive
+(if Jive allows it) and have them there.</p>
+</div>
+<div class="section" id="maximum-upload-file-size">
+<h4>Maximum upload file size<a class="headerlink" href="#maximum-upload-file-size" title="Permalink to this headline">¶</a></h4>
+<p>This filter allows you to limit the size of the files that will go through ownCloud. All files uploads and
+downloads will be affected by this filter. You won&#8217;t be able to upload files bigger than the file size limit
+and the Jive files bigger than the limit won&#8217;t be shown in ownCloud (and consequently they won&#8217;t be downloaded)</p>
+<p>Under normal circumstances, you want to match the limit with the one Jive has.
+This way you can notify errors regarding the file size faster because the files won&#8217;t reach the Jive server, and
+at the same time you allow the users to upload up to the maximum limit that Jive allows.
+(Note: we can&#8217;t know this limit from ownCloud, so we can&#8217;t provide a sensitive default value, plus the value can
+change among Jive instances. You might need to adjust the value manually).</p>
+<p>You can also set the limit to a lower value than what it&#8217;s in Jive, so only small files will be delivered from ownCloud.</p>
+</div>
+<div class="section" id="show-groups-of-which-you-are-member">
+<h4>Show groups of which you are member<a class="headerlink" href="#show-groups-of-which-you-are-member" title="Permalink to this headline">¶</a></h4>
+<p>Under normal circumstances, you can see all available groups in Jive, including open, member-only and private
+groups, only secrets groups are outside. Even if you&#8217;re not a member of those groups, you can still see their contents.</p>
+<p>For small Jive installations (less than 100 available groups per user) this is usually enough, and it has an
+acceptable performance. However, for larger installations, with more than 500 groups available per user, the
+performance is degraded a lot.</p>
+<p>For these larger installations, this checkbox comes in handy.</p>
+<p>Again, under normal circumstances, it&#8217;s common that a user is member of just a few groups (let&#8217;s say less than 25)
+even if there are thousand of groups available that the user can see. It usually makes sense to show the contents
+of only those 25 groups, not every group available.</p>
+<p>By activating this checkbox, the user will see only those 25 groups instead of
+all available groups.
+This will increase the performance a lot, specially for larger installations, as long as each user isn&#8217;t member
+of too many groups. Anyway, if there are user who are member of too many groups, the performance will still be degraded.</p>
+</div>
+</div>
+<div class="section" id="fs-mount-points">
+<h3>FS mount points<a class="headerlink" href="#fs-mount-points" title="Permalink to this headline">¶</a></h3>
+<p>This Jive plugin mounts one (or two) virtual filesystems on the normal one in a transparent way.</p>
+<p>From a user point of view, these virtual filesystems appear as new folders inside the root one.</p>
+<p>From the settings page, you can change the mount points names. The folders will change accordingly.</p>
+<div class="section" id="jive-fs-mount-point">
+<h4>Jive FS mount point<a class="headerlink" href="#jive-fs-mount-point" title="Permalink to this headline">¶</a></h4>
+<p>The name of the folder that will hold the Jive virtual FS. The name shouldn&#8217;t collide with any existing name in the root folder to prevent possible issues.
+The virtual FS will be mounted inside the root folder of the ownCloud FS.</p>
+<p>As said, the contents of the folder will be the groups that the user can access through ownCloud (recheck the “filters” section).</p>
+</div>
+<div class="section" id="jive-private-folder">
+<h4>Jive private folder<a class="headerlink" href="#jive-private-folder" title="Permalink to this headline">¶</a></h4>
+<p>The folder where your private Jive files will be stored. The name of the folder will be the same for all users, although the contents will likely differ.</p>
+<p>This private folder will be inside
+the Jive mount point, as if it were another group.</p>
+<p>Files inside this folder will be only visible to you, but they will be stored in Jive. They won&#8217;t be visible neither for ownCloud users nor Jive users.</p>
+<p>In order to prevent collisions with other groups, the folder name might be changed automatically by adding “(private)” to the end of the folder name
+if it&#8217;s needed
+.</p>
+</div>
+<div class="section" id="large-file-sharing-subsystem">
+<h4>Large file sharing subsystem<a class="headerlink" href="#large-file-sharing-subsystem" title="Permalink to this headline">¶</a></h4>
+<p>The large file sharing allow you to share files over the Jive limits (typically size limits). You can enable
+or disable this subsystem by checking or un-checking the checkbox, and provide the corresponding mount point.
+Use a non-existent folder name to prevent issues.</p>
+<p>Files inside that folder will be stored inside the ownCloud server. However those files can be shared by link to Jive.</p>
+<p>The process is like the following:</p>
+<ol class="arabic simple">
+<li>Upload a file (or folder) inside the large file sharing folder (by default named as “Too Big For”)</li>
+<li>Once the file is uploaded, click in the “share” action, and then click in the “Share link” checkbox</li>
+<li>By default the share link will expire after 1 week. You can change the value and / or protect the link by password</li>
+<li>Click the “Submit to Jive” button (the name can be changed depending on the actual Jive folder name)</li>
+<li>A new browser tab should appear with the Jive draft ready to be edited (you might need to enter your
+Jive credentials first). The draft will have some predefined text, but you can edit it to your needs.
+Once you publish the document, it&#8217;s done.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="notifications">
+<h3>Notifications<a class="headerlink" href="#notifications" title="Permalink to this headline">¶</a></h3>
+<p>This Jive plugin runs a connectivity check between ownCloud and Jive whenever the web page is loaded. This
+check allows you to know some potential issues between the ownCloud – Jive connection.</p>
+<p>When a potential issue is detected, a notification will be shown, so you&#8217;ll know what&#8217;s happening.</p>
+<p>You can control the time the notification is shown in the “notification time for the connectivity check”
+configuration. The time is in seconds.</p>
+</div>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

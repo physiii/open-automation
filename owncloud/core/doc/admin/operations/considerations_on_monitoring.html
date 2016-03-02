@@ -1,0 +1,239 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Considerations on Monitoring &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Operations" href="index.html" />
+    <link rel="next" title="Scaling Across Multiple Machines" href="scaling_multiple_machines.html" />
+    <link rel="prev" title="Operations" href="index.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Operations</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Considerations on Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#owncloud-deployment-architecture">ownCloud Deployment Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-important-components-of-owncloud">The Important Components of ownCloud</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scaling_multiple_machines.html">Scaling Across Multiple Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theming.html">Theming ownCloud</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="considerations-on-monitoring">
+<h1>Considerations on Monitoring<a class="headerlink" href="#considerations-on-monitoring" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Large scale ownCloud deployments are typically installed as load balanced
+n-tier web applications.  Successfully managing such an installation requires
+active monitoring of the application and supporting infrastructure components.
+The purpose of this section is to outline the components of ownCloud that need
+to be monitored, and provide guidance on what to look for in ownCloud in an
+enterprise installation.</p>
+<div class="section" id="owncloud-deployment-architecture">
+<h2>ownCloud Deployment Architecture<a class="headerlink" href="#owncloud-deployment-architecture" title="Permalink to this headline">¶</a></h2>
+<p>Before discussing how to monitor ownCloud, it is important to understand the architecture of a
+typical ownCloud deployment. These monitoring best practices are developed based on the use of load
+balanced web servers, a clustered database running a distributed database storage engine, such as
+MySQL NDB, and a clustered filesystem, such as Red Hat Storage.</p>
+<p>It is assumed that specific enterprise tools (monitoring, log management, etc) to monitor
+operations are available, and that ownCloud is simply a new target for these tools.</p>
+</div>
+<div class="section" id="the-important-components-of-owncloud">
+<h2>The Important Components of ownCloud<a class="headerlink" href="#the-important-components-of-owncloud" title="Permalink to this headline">¶</a></h2>
+<p>ownCloud is a PHP application that depends on a filesystem for file storage, and a database for storing
+user and file meta data, as well as some application specific information.
+While the loss of an app server or a node in the database or storage clusters should not bring the
+system down, knowing that this happened and resolving it is essential to keeping the service running
+efficiently. Therefore it is important to monitor the ownCloud servers, the Load Balancer, the Storage
+Cluster and the Database. This documentation starts with the ownCloud application and works out from
+there through the layers of infrastructure.</p>
+<div class="section" id="status-php">
+<h3>Status.php<a class="headerlink" href="#status-php" title="Permalink to this headline">¶</a></h3>
+<p>ownCloud provides a very simple mechanism for determining if an application server is up and functioning –
+call the status.php file on each ownCloud server. This file can be found in the root ownCloud directory on
+the server, which by default is /owncloud/status.php. If the server is functioning normally, the response
+looks something like this:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span><span class="nt">&quot;installed&quot;</span><span class="p">:</span><span class="s2">&quot;true&quot;</span><span class="p">,</span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="s2">&quot;6.0.0.16&quot;</span><span class="p">,</span><span class="nt">&quot;versionstring&quot;</span><span class="p">:</span><span class="s2">&quot;6.0.1&quot;</span><span class="p">,</span><span class="nt">&quot;edition&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>We recommend monitoring this file on each ownCloud application server to provide a basic check that the
+server is operating properly.</p>
+</div>
+<div class="section" id="owncloud-log">
+<h3>ownCloud.log<a class="headerlink" href="#owncloud-log" title="Permalink to this headline">¶</a></h3>
+<p>ownCloud also provides a built in logging function. If the ownCloud Enterprise Edition logging applications
+are enabled, this file will track user logins and shared file activity. If these logging applications are
+not enabled, this log file still tracks basic ownCloud health. Given the potential for this file to get
+quite large, the log file should be rotated on a daily basis, and given the importance of the error information
+in the log file, this should be integrated with an enterprise log manager.</p>
+<p>Logfile entries that start with the keyword “Error” should be logged and reported to ownCloud support.</p>
+<div class="section" id="apache">
+<h4>Apache<a class="headerlink" href="#apache" title="Permalink to this headline">¶</a></h4>
+<p>The apache error and access log should also be monitored. Significant spontaneous changes of the number
+of requests per second should also be monitored and looked into.</p>
+</div>
+<div class="section" id="database-server">
+<h4>Database server<a class="headerlink" href="#database-server" title="Permalink to this headline">¶</a></h4>
+<p>The load and general health of the database server or cluster has to be monitored also.
+All mysql vendors provide tools to monitor this.</p>
+</div>
+</div>
+<div class="section" id="clustered-filesystem">
+<h3>Clustered Filesystem<a class="headerlink" href="#clustered-filesystem" title="Permalink to this headline">¶</a></h3>
+<p>The available space of the filesystem should be monitored to prevent a full ownCloud. This functionality is
+provided by the operating-system and/or the cluster filesystem vendor.</p>
+</div>
+<div class="section" id="load-balancer">
+<h3>Load Balancer<a class="headerlink" href="#load-balancer" title="Permalink to this headline">¶</a></h3>
+<p>The load balancer is monitoring the health of the application servers and is distributing the traffic in
+the optimal way. The application-servers should also be monitored to detect long lasting OS or
+hardware problems. Monitoring solutions like Nagios provide built in functionality to do this.</p>
+</div>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

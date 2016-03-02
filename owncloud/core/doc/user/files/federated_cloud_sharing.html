@@ -1,0 +1,228 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using Federated Cloud Sharing &mdash; ownCloud 8.2 User Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Files &amp; Synchronization" href="index.html" />
+    <link rel="next" title="Making Anonymous Uploads (ES Only)" href="file_drop.html" />
+    <link rel="prev" title="Encrypting Your ownCloud Files" href="encrypting_files.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 User Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 User Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">What&#8217;s New for Users in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../webinterface.html">The ownCloud Web Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Files &amp; Synchronization</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="access_webgui.html">Accessing your Files Using the ownCloud Web Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_webdav.html">Accessing ownCloud Files Using WebDAV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deleted_file_management.html">Managing Deleted Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="desktop_mobile_sync.html">Desktop and Mobile Synchronization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encrypting_files.html">Encrypting Your ownCloud Files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Using Federated Cloud Sharing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-new-federated-cloud-share">Creating a New Federated Cloud Share</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-new-federated-cloud-share-via-email">Creating a New Federated Cloud Share via Email</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop.html">Making Anonymous Uploads (ES Only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="large_file_upload.html">Large File Uploads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quota.html">Storage Quota</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version_control.html">Version Control</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pim/index.html">Contacts &amp; Calendar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documents.html">Collaborative Document Editing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bookmarks.html">Using the Bookmarks App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userpreferences.html">Setting Your Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../external_storage/index.html">External Storage</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="using-federated-cloud-sharing">
+<h1>Using Federated Cloud Sharing<a class="headerlink" href="#using-federated-cloud-sharing" title="Permalink to this headline">¶</a></h1>
+<p>Federated Cloud Sharing, introduced in ownCloud 7 as Server-to-Server sharing,
+allows you to mount file shares from remote ownCloud servers, in effect
+creating your own cloud of ownClouds. You can create direct share links with
+users on other ownCloud servers.</p>
+<div class="section" id="creating-a-new-federated-cloud-share">
+<h2>Creating a New Federated Cloud Share<a class="headerlink" href="#creating-a-new-federated-cloud-share" title="Permalink to this headline">¶</a></h2>
+<p>Federated Cloud Sharing is enabled on new or upgraded ownCloud installations
+by default. (See &#8220;Configuring Federated Cloud Sharing&#8221; in the ownCloud Server
+Administration Manual.) Follow these steps to create a new share:</p>
+<p>1. Go to your <tt class="docutils literal"><span class="pre">Files</span></tt> page and click the Share icon on the file or directory
+you want to share. Enter the username and URL of the remote user in this form:
+<tt class="docutils literal"><span class="pre">&lt;username&gt;&#64;&lt;oc-server-url&gt;</span></tt>. In this example, that is
+<tt class="docutils literal"><span class="pre">layla&#64;remote-server/owncloud</span></tt>. The form automatically echoes the address
+that you type and labels it as &#8220;remote&#8221;.</p>
+<div class="figure">
+<img alt="../_images/direct-share-1.png" src="../_images/direct-share-1.png" />
+</div>
+<ol class="arabic simple" start="2">
+<li>You&#8217;ll see a status indicator as ownCloud looks for the remote server.</li>
+</ol>
+<div class="figure">
+<img alt="../_images/direct-share-2.png" src="../_images/direct-share-2.png" />
+</div>
+<p>When your local ownCloud server makes a successful connection with the remote
+ownCloud server you&#8217;ll see a confirmation.</p>
+<div class="figure">
+<img alt="../_images/direct-share-3.png" src="../_images/direct-share-3.png" />
+</div>
+<p>Your recipient on the other end of the link, on the remote ownCloud server,
+will see a dialog asking them to confirm the new share. All they have to do is
+click the <strong>Add remote share</strong> button, and it&#8217;s done.</p>
+<div class="figure">
+<img alt="../_images/direct-share-4.png" src="../_images/direct-share-4.png" />
+</div>
+<p>Click the Share button anytime to see who you have shared your file with. Remove
+your linked share anytime by clicking the trash can icon. This only unlinks the
+share, and does not delete any files.</p>
+</div>
+<div class="section" id="creating-a-new-federated-cloud-share-via-email">
+<h2>Creating a New Federated Cloud Share via Email<a class="headerlink" href="#creating-a-new-federated-cloud-share-via-email" title="Permalink to this headline">¶</a></h2>
+<p>What if you do not know the username or URL? Then you can have ownCloud create
+the link for you and email it to your recipient.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-6.png" src="../_images/create_public_share-6.png" />
+</div>
+<p>When your recipient receives your email they will have to take a number of
+steps to complete the share link. First they must open the link you sent them in
+a Web browser, and then click the <strong>Add to your ownCloud</strong> button.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-8.png" src="../_images/create_public_share-8.png" />
+</div>
+<p>The <strong>Add to your ownCloud</strong> button changes to a form field, and your recipient
+needs to enter the URL of their ownCloud server in this field and press the
+return key, or click the arrow.</p>
+<div class="figure">
+<img alt="../_images/create_public_share-9.png" src="../_images/create_public_share-9.png" />
+</div>
+<p>Next, they will see a dialog asking to confirm. All they have to do is click
+the <strong>Add remote share</strong> button and they&#8217;re finished.</p>
+<p>Remove your linked share anytime by clicking the trash can icon. This only
+unlinks the share, and does not delete any files.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

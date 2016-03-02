@@ -79,7 +79,7 @@ require('getmac').getMac(function(err,macAddress){
 });
 
 //---------------------- camera proxy -------------------//
-var camera_port = 3031;
+var camera_port = 3032;
 var httpProxy = require('http-proxy');
 var proxy = httpProxy.createProxyServer({target:'http://localhost:8081'});
 http.createServer(function(req, res) {

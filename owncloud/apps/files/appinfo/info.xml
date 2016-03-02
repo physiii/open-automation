@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<info>
+	<id>files</id>
+	<name>Files</name>
+	<description>File Management</description>
+	<licence>AGPL</licence>
+	<author>Robin Appelman, Vincent Petry</author>
+	<shipped>true</shipped>
+	<standalone/>
+	<default_enable/>
+	<version>1.2.0</version>
+	<types>
+		<filesystem/>
+	</types>
+	<remote>
+		<files>appinfo/remote.php</files>
+		<webdav>appinfo/remote.php</webdav>
+	</remote>
+	<dependencies>
+		<owncloud min-version="8.2" />
+	</dependencies>
+	<documentation>
+		<user>user-files</user>
+	</documentation>
+</info>

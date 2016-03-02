@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How to Upgrade Your ownCloud Server &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="up" title="Maintenance" href="index.html" />
+    <link rel="next" title="Upgrade ownCloud From Packages" href="package_upgrade.html" />
+    <link rel="prev" title="Backing up ownCloud" href="backup.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Maintenance</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="enable_maintenance.html">Maintenance Mode Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backup.html">Backing up ownCloud</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">How to Upgrade Your ownCloud Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#update-notifier-and-updater-app-are-not-the-same">Update Notifier and Updater App Are Not the Same</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="package_upgrade.html">Upgrade ownCloud From Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manual_upgrade.html">Manual ownCloud Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Upgrading ownCloud with the Updater App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restore.html">Restoring ownCloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrating.html">Migrating to a Different Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="how-to-upgrade-your-owncloud-server">
+<h1>How to Upgrade Your ownCloud Server<a class="headerlink" href="#how-to-upgrade-your-owncloud-server" title="Permalink to this headline">¶</a></h1>
+<p>There are three ways to upgrade your ownCloud server:</p>
+<ul class="simple">
+<li>Using your <a class="reference internal" href="package_upgrade.html"><em>Linux package manager</em></a> with our official ownCloud repositories. This    is the recommended method.</li>
+<li>With the <a class="reference internal" href="update.html"><em>Updater App</em></a> (Server Edition only). Recommended for
+shared hosters, and for users who want an easy way to track different
+release channels. (It is not available and not supported on the Enterprise
+edition.)</li>
+<li><a class="reference internal" href="manual_upgrade.html"><em>Manually upgrading</em></a> with the ownCloud <tt class="docutils literal"><span class="pre">.tar</span></tt> archive
+from <a class="reference external" href="https://owncloud.org/install/">owncloud.org/install/</a>.</li>
+<li>Enterprise Subscription customers will use their Enterprise software
+repositories to maintain their ownCloud servers, rather than the Open Build
+Service. Please see <a class="reference internal" href="../enterprise_installation/linux_installation.html"><em>Installing &amp; Upgrading ownCloud Enterprise Subscription</em></a> for
+more information.</li>
+</ul>
+<p>When an update is available for your ownCloud server, you will see a
+notification at the top of your ownCloud Web interface. When you click the
+notification it brings you here, to this page.</p>
+<p><strong>It is best to keep your ownCloud server upgraded regularly</strong>, and to install all point releases and major releases without skipping any of them, as skipping releases increases the risk of errors. Major releases are 8.0, 8.1, 8.2, and 9.0. Point releases are intermediate releases for each major release. For example, 8.0.9 and 8.1.3 are point releases. <strong>Skipping major releases is not supported.</strong></p>
+<p><strong>Upgrading is disruptive</strong>. Your ownCloud server will be put into maintenance
+mode, so your users will be locked out until the upgrade is completed. Large
+installations may take several hours to complete the upgrade.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Downgrading is not supported</strong> and risks corrupting your data! If
+you want to revert to an older ownCloud version, make a new, fresh
+installation and then restore your data from backup. Before doing this,
+file a support ticket (if you have paid support) or ask for help in the
+ownCloud forums to see if your issue can be resolved without downgrading.</p>
+</div>
+<div class="section" id="update-notifier-and-updater-app-are-not-the-same">
+<h2>Update Notifier and Updater App Are Not the Same<a class="headerlink" href="#update-notifier-and-updater-app-are-not-the-same" title="Permalink to this headline">¶</a></h2>
+<p>ownCloud has two update tools: the ownCloud core update notifier, and the
+Updater app. Figure 1 shows what you see when the Updater app is enabled: both
+the core notifier and the Updater app control panel are visible on your admin
+page.</p>
+<div class="figure">
+<img alt="Both update mechanisms displayed on Admin page." src="../_images/2-updates.png" />
+<p class="caption"><em>Figure 1: The top yellow banner is the update notifier, and the Updates
+section is the Updater app.</em></p>
+</div>
+<p>The core update notifier has only one function, and that is to display a
+notification when a new ownCloud release is available. Then you decide which
+upgrade method to use. When you maintain your ownCloud server via your Linux
+package manager you should ensure that the Updater app is disabled.</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>You should always maintain <a class="reference internal" href="backup.html"><em>regular backups</em></a> and make a fresh
+backup before every upgrade.</p>
+<p>Then review third-party apps, if you have any, for compatibility with the new
+ownCloud release. Any apps that are not developed by ownCloud show a 3rd party
+designation. <strong>Install unsupported apps at your own risk</strong>. Then, before the
+upgrade, all 3rd party apps must be disabled. After the upgrade is complete you
+may re-enable them.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

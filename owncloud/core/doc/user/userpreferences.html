@@ -1,0 +1,288 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Setting Your Preferences &mdash; ownCloud 8.2 User Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="index.html" />
+    <link rel="next" title="External Storage" href="external_storage/index.html" />
+    <link rel="prev" title="Using the Bookmarks App" href="bookmarks.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="contents.html">ownCloud 8.2 User Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">ownCloud 8.2 User Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new.html">What&#8217;s New for Users in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="webinterface.html">The ownCloud Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files/index.html">Files &amp; Synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pim/index.html">Contacts &amp; Calendar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documents.html">Collaborative Document Editing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookmarks.html">Using the Bookmarks App</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Setting Your Preferences</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage-and-available-quota">Usage and available quota</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#password">Password</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#full-name">Full Name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#email">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profile-picture">Profile picture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#language">Language</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notifications">Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#limit-notifications-to-your-favorite-files">Limit notifications to your favorite files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#save-new-documents-location">Save New Documents Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version">Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="external_storage/index.html">External Storage</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="setting-your-preferences">
+<h1>Setting Your Preferences<a class="headerlink" href="#setting-your-preferences" title="Permalink to this headline">¶</a></h1>
+<p>As a user, you can manage your personal settings.</p>
+<p>To access your personal settings:</p>
+<ol class="arabic">
+<li><p class="first">Clicking on your username in the top, right corner of your ownCloud instance.</p>
+<p>The Personal Settings Menu opens.</p>
+<div class="figure">
+<img alt="screenshot of user menu at top-right of ownCloud Web GUI" src="_images/oc_personal_settings_dropdown.png" />
+</div>
+<p><strong>Personal Settings Menu</strong></p>
+</li>
+<li><p class="first">Choose <em>Personal</em> from the drop down menu.</p>
+<p>The Personal Settings Page opens in the main viewing window.</p>
+<div class="figure">
+<img alt="screenshot of user's Personal settings page" src="_images/personal_settings.png" />
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are an administrator, you can also manage users and administer
+the server by using the related links in the Personal Settings Menu.
+However, these links do not appear to a normal user.</p>
+</div>
+<p>The options listed in the Personal Settings Page depend on the applications that
+are enabled by the administrator.  However, some of the default settings for
+this page include the following:</p>
+<div class="section" id="usage-and-available-quota">
+<h2>Usage and available quota<a class="headerlink" href="#usage-and-available-quota" title="Permalink to this headline">¶</a></h2>
+<p>Appearing at the top of the page, this information provides the amount of space
+used and available for the user (in Megabytes).</p>
+<div class="figure">
+<img alt="screenshot of space used/available indicator" src="_images/usage_indicator.png" />
+</div>
+</div>
+<div class="section" id="password">
+<h2>Password<a class="headerlink" href="#password" title="Permalink to this headline">¶</a></h2>
+<p>Enables you to change your password.  To change your password, you must provide
+your current password along with your new password. When creating a new
+password, ownCloud provides a dynamic password strength indicator for your
+assistance.</p>
+<div class="figure">
+<img alt="screenshot of password management form" src="_images/password_change.png" />
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you would like the ability to recover your password through
+e-mail, specify your email address in the Email field (see below).</p>
+</div>
+</div>
+<div class="section" id="full-name">
+<h2>Full Name<a class="headerlink" href="#full-name" title="Permalink to this headline">¶</a></h2>
+<p>Enables you to specify your full name. This name appears at the top of the
+Personal Settings Menu.</p>
+<blockquote>
+<div><div class="figure">
+<img alt="screenshot of Full Name form" src="_images/full_name.png" />
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="email">
+<h2>Email<a class="headerlink" href="#email" title="Permalink to this headline">¶</a></h2>
+<p>Enables you to specify an email address for use by the ownCloud server and
+administrator in sending you notifications. For information about setting email
+notifications, see &#8220;Notifications&#8221; below.</p>
+<div class="figure">
+<img alt="screenshot of email address form" src="_images/email_address_personal_settings.png" />
+</div>
+</div>
+<div class="section" id="profile-picture">
+<h2>Profile picture<a class="headerlink" href="#profile-picture" title="Permalink to this headline">¶</a></h2>
+<p>Enables you to specify a new avatar (profile image) that identifies you on the
+ownCloud server. By default, the profile picture is the first initial of your
+username. You can choose to keep the letter designation, upload a new image
+from an external source, or select an image from any existing images in your
+ownCloud folders.</p>
+<div class="figure">
+<img alt="screenshot of profile picture management form" src="_images/profile_picture_personal_settings.png" />
+</div>
+</div>
+<div class="section" id="language">
+<h2>Language<a class="headerlink" href="#language" title="Permalink to this headline">¶</a></h2>
+<p>Enables you to change your Web interface language, if you want to override the
+browser settings.</p>
+<div class="figure">
+<img alt="screenshot of language dropdown selector" src="_images/language_personal_settings.png" />
+</div>
+</div>
+<div class="section" id="notifications">
+<h2>Notifications<a class="headerlink" href="#notifications" title="Permalink to this headline">¶</a></h2>
+<p>Enables you to specify what notifications you receive for activities on your
+ownCloud instance. You can choose to receive messages through an email
+notification or online stream notification. In addition, the Notifications
+settings enable you to exclude changes that you make yourself and obtain only
+changes made by others on your account. You can obtain email notifications
+hourly, daily, or weekly.</p>
+<div class="figure">
+<img alt="screenshot of notifications management form" src="_images/notifications_personal_settings.png" />
+</div>
+<div class="section" id="limit-notifications-to-your-favorite-files">
+<h3>Limit notifications to your favorite files<a class="headerlink" href="#limit-notifications-to-your-favorite-files" title="Permalink to this headline">¶</a></h3>
+<p>Since ownCloud 8.1 it is possible to &#8220;Limit notifications about creation and
+changes to your favorite files&#8221;. This means you will no longer receive
+notifications for all files, but only those which are marked as favorite or are
+in a folder that is marked as a favorite, using the new <a class="reference internal" href="whats_new.html#favorites-label"><em>Favorites</em></a>
+feature.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This option is only available for the notification stream at the
+moment, due to the way the email notifications are generated in ownCloud 8.1.</p>
+</div>
+</div>
+</div>
+<div class="section" id="save-new-documents-location">
+<h2>Save New Documents Location<a class="headerlink" href="#save-new-documents-location" title="Permalink to this headline">¶</a></h2>
+<p>If your ownCloud server admin has enabled the Documents app, you can specify a
+location (folder) to which newly created documents are saved.</p>
+<div class="figure">
+<img alt="screenshot of Documents form" src="_images/documents_personal_settings.png" />
+</div>
+</div>
+<div class="section" id="version">
+<h2>Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h2>
+<p>Specifies the ownCloud software version that you are using along with links to
+the ownCloud community, source code, and licensing information.</p>
+</div>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

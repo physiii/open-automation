@@ -1,0 +1,251 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Google Drive &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../../index.html" />
+    <link rel="up" title="Configuring External Storage (GUI)" href="../external_storage_configuration_gui.html" />
+    <link rel="next" title="Local" href="local.html" />
+    <link rel="prev" title="FTP/FTPS" href="ftp.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										
+<li><a href="../../contents.html">Table of Contents</a></li>
+									</ul>
+                  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_server/index.html">ownCloud Server Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_user/index.html">User Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">File Sharing and Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_mimetypes/index.html">Mimetypes Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/index.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues/index.html">Issues and Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="google-drive">
+<h1>Google Drive<a class="headerlink" href="#google-drive" title="Permalink to this headline">¶</a></h1>
+<p>ownCloud uses OAuth 2.0 to connect to Google Drive. This requires configuration
+through Google to get an app ID and app secret, as ownCloud registers itself
+as an app.</p>
+<p>All applications that access a Google API must be registered through the
+<a class="reference external" href="https://console.developers.google.com/">Google Cloud Console</a>. Follow along carefully
+because the Google interface is a bit of a maze and it&#8217;s easy to get lost.</p>
+<p>If you already have a Google account, such as Groups, Drive, or Mail, you can
+use your existing login to log into the Google Cloud Console. After logging in
+click  the <strong>Create Project</strong> button.</p>
+<div class="figure">
+<img alt="Google Drive app &quot;create project&quot; screen" src="../../_images/google-drive.png" />
+</div>
+<p>Give your project a name, and either accept the default <strong>Project ID</strong> or
+create
+your own, then click the <strong>Create</strong> button.</p>
+<div class="figure">
+<img alt="New project creation screen." src="../../_images/google-drive1.png" />
+</div>
+<p>You&#8217;ll be returned to your dashboard.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/google-drive2.png"><img alt="Project dashboard, with all project options." src="../../_images/google-drive2.png" style="width: 483.75px; height: 307.5px;" /></a>
+</div>
+<p>Google helpfully highlights your next step in blue, the <strong>Use Google APIs</strong>
+box. Make sure that your new project is selected, click on <strong>Use Google APIs</strong> ,
+and it takes you to Google&#8217;s APIs screen. There are many Google APIs; look for
+the <strong>Google Apps APIs</strong> and click <strong>Drive API.</strong></p>
+<div class="figure">
+<img alt="Drive API link." src="../../_images/google-drive3.png" />
+</div>
+<p><strong>Drive API</strong> takes you to the API Manager overview. Click the blue <strong>Enable
+API</strong> button.</p>
+<div class="figure">
+<img alt="API dashboard." src="../../_images/google-drive4.png" />
+</div>
+<p>Now you must create your credentials, so click on <strong>Go to credentials</strong>.</p>
+<div class="figure">
+<img alt="Create Client ID screen." src="../../_images/google-drive5.png" />
+</div>
+<p>For some reason Google warns us again that we need to create credentials. We
+will use 0Auth 2.0.</p>
+<div class="figure">
+<img alt="Another warning to create credentials." src="../../_images/google-drive6.png" />
+</div>
+<p>Now we have to create a consent screen. This is the information in the screen
+Google shows you when you connect your new Google app to ownCloud the first
+time. Click <strong>Configure consent screen</strong>. Then fill in the required form fields.
+Your logo must be hosted, as you cannot upload it, so enter its URL. When
+you&#8217;re finished click <strong>Save</strong>.</p>
+<div class="figure">
+<img alt="Creating the consent screen." src="../../_images/google-drive8.png" />
+</div>
+<p>The next screen that opens is <strong>Create Client ID</strong>. Check <strong>Web Application</strong>,
+then enter your app name. <strong>Authorized JavaScript Origins</strong> is your root domain,
+for example <tt class="docutils literal"><span class="pre">https://www.example.com</span></tt>, without a trailing slash. You need two
+<strong>Authorized Redirect URIs</strong>, and they must be in this form:</p>
+<div class="highlight-python"><pre>https://example.com/owncloud/index.php/settings/personal
+https://example.com/owncloud/index.php/settings/admin</pre>
+</div>
+<p>Replace <tt class="docutils literal"><span class="pre">https://example.com/owncloud/</span></tt> with your own ownCloud server URL,
+then click <strong>Create</strong>.</p>
+<div class="figure">
+<img alt="Creating client credentials." src="../../_images/google-drive9.png" />
+</div>
+<p>Now Google reveals to you your <strong>Client ID</strong> and <strong>Client Secret</strong>. Click
+<strong>OK</strong>.</p>
+<div class="figure">
+<img alt="Client ID and client secret." src="../../_images/google-drive10.png" />
+</div>
+<p>You can see these anytime in your Google console; just click on your app name
+to see complete information.</p>
+<div class="figure">
+<img alt="Client ID and client secret" src="../../_images/google-drive11.png" />
+</div>
+<p>Now you have everything you need to mount your Google Drive in ownCloud.</p>
+<p>Go to the External Storage section of your Admin page, create your new folder
+name, enter the Client ID and Client Secret, and click <strong>Grant Access</strong>. Your
+consent page appears when ownCloud makes a successful connection. Click
+<strong>Allow</strong>.</p>
+<div class="figure">
+<img alt="Google Drive consent page." src="../../_images/google-drive12.png" />
+</div>
+<p>When you see the green light confirming a successful connection
+you&#8217;re finished.</p>
+<div class="figure">
+<img alt="Google Drive mount in ownCloud." src="../../_images/google-drive13.png" />
+</div>
+<p>See <a class="reference internal" href="../external_storage_configuration_gui.html"><em>Configuring External Storage (GUI)</em></a> for additional mount
+options and information.</p>
+<p>See <a class="reference internal" href="auth_mechanisms.html"><em>External Storage Authentication mechanisms</em></a> for more information on authentication schemes.
+603026686136-qnv9ooocacrkrh1vs0cht83eprgm2sbb.apps.googleusercontent.com</p>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>

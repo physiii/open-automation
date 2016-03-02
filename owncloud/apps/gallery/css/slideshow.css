@@ -1,0 +1,208 @@
+#slideshow {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 100000;
+	display: none;
+	background-color: black;
+	background-position: center center;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#slideshow > img {
+	position: relative;
+	vertical-align: middle;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#slideshow img:hover {
+	background: black url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAMFBMVEX/AAD/AP8AAP8A//8A/wD//wB/AAB/AH8AAH8Af38AfwCCfwAAAAAZGRkzMzNMTEy64p6SAAAAF0lEQVQI12P4DwRngICBQgaIAHEoZAAASHBywR1kvCwAAAAASUVORK5CYII=) repeat;
+}
+
+#slideshow > input {
+	background-color: transparent;
+	border: 0 transparent;
+	color: transparent;
+	outline: 0;
+	box-shadow: none;
+	width: 52px;
+	height: 52px;
+	position: absolute;
+	z-index: 1100;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+#slideshow.inactive > input,
+#slideshow.inactive > .progress,
+#slideshow.inactive > .menu input,
+#slideshow.inactive > .name {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+	opacity: 0;
+	/* slow fadeout, fadein will be 300ms again*/
+	-webkit-transition: opacity 3s;
+	-moz-transition: opacity 3s;
+	-o-transition: opacity 3s;
+	transition: opacity 3s;
+}
+
+#slideshow input.icon-view-download {
+	background-image: url("../img/download.svg");
+	background-size: 26px 26px;
+	-webkit-background-size: 26px 26px;
+	background-color: #fff;
+	height: 38px;
+	width: 38px;
+}
+
+#slideshow input.icon-view-toggle-background {
+	background-image: url("../img/toggle.svg");
+	background-size: 26px 26px;
+	-webkit-background-size: 26px 26px;
+	background-color: #fff;
+	height: 38px;
+	width: 38px;
+}
+
+#slideshow > * {
+	-webkit-transition: opacity 300ms;
+	-moz-transition: opacity 300ms;
+	-o-transition: opacity 300ms;
+	transition: opacity 300ms;
+}
+
+#slideshow > input:hover,
+#slideshow > .menu input:hover,
+#slideshow.inactive > .name:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
+	filter: alpha(opacity=75);
+	opacity: .75;
+}
+
+#slideshow > .next, #slideshow > .previous {
+	top: 50%;
+	margin-top: -21px;
+}
+
+#slideshow > .next {
+	right: 0;
+}
+
+#slideshow > .previous {
+	left: 0;
+}
+
+#slideshow > .exit {
+	right: 0;
+	top: 0;
+}
+
+#slideshow > .pause, #slideshow > .play {
+	bottom: 0;
+	right: 0;
+	margin-top: -21px;
+}
+
+#slideshow > .progress {
+	z-index: 1100;
+	position: fixed;
+	bottom: 13px;
+	right: 13px;
+	background-position: 0 100%;
+	width: 32px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+	height: 0;
+	min-height: 0;
+}
+
+#slideshow > .menu {
+	position: relative;
+	z-index: 1100;
+	display: table;
+	margin: 0 auto;
+}
+
+#slideshow .menu .menuItem {
+	float: right;
+	border: 0 transparent;
+	color: transparent;
+	outline: 0;
+	box-shadow: none;
+	width: 52px;
+	height: 52px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	margin-right: 10px;
+}
+
+#slideshow > .name {
+	position: fixed;
+	bottom: 18px;
+	z-index: 1099;
+	width: 100%;
+}
+
+#slideshow > .name .title {
+	padding: 0 50px 3px;
+	text-align: center;
+	color: #fff;
+	text-shadow: 1px 1px 4px #333, 1px -1px 4px #333, -1px 1px 4px #333,-1px -1px 4px #333;
+	font-size: 18px;
+	line-height: normal;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
+	opacity: .75;
+}
+
+#slideshow > .notification {
+	margin: 0 auto;
+	max-width: 60%;
+	z-index: 8000;
+	background-color: #fc4;
+	border: 0;
+	padding: 1px 8px;
+	display: none;
+	position: relative;
+	top: 0;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
+	filter: alpha(opacity=90);
+	opacity: .9;
+}
+
+#slideshow > .bigshotContainer {
+	width: 100%;
+	height: 100%;
+}
+
+#slideshow .icon-loading-dark {
+	position: absolute !important;
+	top: 50%;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 32px;
+	height: 32px;
+}
