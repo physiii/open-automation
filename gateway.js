@@ -47,14 +47,6 @@ var platform = process.platform;
 //console.log("This platform is " + platform);
 
 //---------------------- get device info -------------------//
-var mac = "init";
-require('getmac').getMac(function(err,macAddress){
-  if (err)  throw err
-  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ mac:mac });
-});
-
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
 Object.keys(ifaces).forEach(function (ifname) {
@@ -76,14 +68,22 @@ Object.keys(ifaces).forEach(function (ifname) {
   });
 });
 
+var mac = "init";
+var device_type = "gateway/camera";
+var device_name = "Gateway";
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
+  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type, device_name:device_name });
+});
+
 //---------------------- camera proxy -------------------//
 var camera_port = 3031;
 var httpProxy = require('http-proxy');
 var proxy = httpProxy.createProxyServer({target:'http://localhost:8081'});
 http.createServer(function(req, res) {
-  console.log("req.url is " + req.url);
   session_id = "/session/" + token;
-  console.log("session id is " + session_id);
   if (req.url === session_id) {
     proxy.web(req, res, { target: 'http://localhost:8081' });
   } else {
@@ -91,33 +91,10 @@ http.createServer(function(req, res) {
   }
 }).listen(camera_port, function () {
   console.log('To use camera, forward port '+camera_port+' to '+local_ip+' in your routers settings');
-var mac = "init";
-require('getmac').getMac(function(err,macAddress){
-  if (err)  throw err
-  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
 });
-});
-/*fs.stat('./device_info.json', function(err, stat) {
-  if(err == null) {
-    console.log('found device_info.json');
-    var device_info = require("./device_info.json");
-    device_info = JSON.parse(device_info);
-    for(var i = 0; i < device_info.length; i++) {
-      mac = device_info[i].mac;
-      token = device_info[i].token;
-      io_relay.emit('get_token',{ mac:mac });    
-      console.log(mac + " | " + token);
-    }
-  } else if(err.code == 'ENOENT') {
-    fs.writeFile('log.txt', 'Some log\n');
-  } else {
-    console.log('Some other error: ', err.code);
-  }
-});*/
-
 
 // ----------------------------  web interface  ----------------------------- //
+/*
 var program_port = 3000;
 program_server.listen(program_port, function () {
   console.log('Access GUI on port %d', program_port);
@@ -147,14 +124,7 @@ program_io.on('connection', function (socket) {
     console.log( "token received for " + data['user']);
   });
 });
-
-var ping_time = Date.now();
-function ping(){
-  ping_time = Date.now();
-  console.log('sending ping...');
-  io_relay.emit('png_test');
-}
-
+*/
 // --------------  websocket server for devices  ----------------- //
 var ws_port = 4040;
 var WebSocketServer = require('ws').Server
@@ -184,9 +154,9 @@ io_relay.on('token', function (data) {
   //console.log("token set " + token);
   fs.writeFile( "session.dat", data.token, "utf8", callback );  
   function callback(){
-    console.log('callback for session.dat');
+    //console.log('callback for session.dat');
   }  
-  console.log("token set " + token);
+  //console.log("token set " + token);
 });
 
 io_relay.on('png_test', function (data) {
@@ -225,7 +195,7 @@ io_relay.on('media', function (data) {
 io_relay.on('gateway', function (data) {
   console.log(mac + " | " + data.command);
 });
-
+/*
 io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
 var auth_time = Date.now();
 io_relay.on('authenticated', function() {
@@ -238,7 +208,39 @@ io_relay.on('authenticated', function() {
     console.log( Date.now() + " valid token");
   });   
 });
+*/
+// -------------------------------------------------------- //
+var ping_time = Date.now();
+function ping(){
+  ping_time = Date.now();
+  console.log('sending ping...');
+  io_relay.emit('png_test');
+}
+function get_therm_state(){
+  command = "curl http://192.168.0.27/tstat";
+  console.log(command);
+  var child = exec(command,
+  function (error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    current_therm_state = stdout;
+    if (error !== null) {
+      console.log('' + error);
+    }
+  });
+}
 
+function send_command(command){
+  console.log(command);
+  var child = exec(command,
+  function (error, stdout, stderr) {
+    if (error !== null) {
+      console.log('' + error);
+    }
+  });
+}
+
+
+/*
 /// create tables if the do not exist ///
 var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
 connection.connect();
@@ -317,8 +319,6 @@ function gb_loop(){
   });
 
   socket.on('token', function (data) {
-    //get token from mysql database
-    //check data['token'] w database token
     console.log('token: ' + data['token']);
     console.log( Date.now() + " valid token");
   });  
@@ -387,75 +387,4 @@ function gb_loop(){
        }
   });
 });
-
-// -------------------------------------------------------- //
-
-function get_therm_state(){
-  command = "curl http://192.168.0.27/tstat";
-  console.log(command);
-  var child = exec(command,
-  function (error, stdout, stderr) {
-    console.log('stdout: ' + stdout);
-    current_therm_state = stdout;
-    if (error !== null) {
-      console.log('' + error);
-    }
-  });
-}
-
-function send_command(command){
-  console.log(command);
-  var child = exec(command,
-  function (error, stdout, stderr) {
-    if (error !== null) {
-      console.log('' + error);
-    }
-  });
-}
-
-
-/*    
-body.on('update', function () {
-  var token = body.data;
-  console.log('user '+username+' | token '+token+' | mac '+mac+' | ip '+ip+' | port '+device_port+' | device_name '+ device_name);
-  
-  query = "insert";
-  connection.query(query, function(err, rows, fields) {
-    if (err) {
-      //console.log('table already exist');  
-    } else {
-      console.log('created gateway_table');  
-    }
-  });
-});
-
-
-
-/// launch device programming gui on the program_port ///
-/*program_server.listen(program_port, function () {
-  console.log('program GUI on port %d', program_port);
-});
-
-program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
-program_io.on('connection', function (socket) {
-  socket.on('get_token', function (data) {
-    username = data['user'];
-    device_name = data['device_name'];
-    ip = data['ip'];
-    device_port = data['device_port']
-    var response = request.post(
-      'http://68.12.157.176:8080/pyfi.org/php/set_video.php',
-      {form: data},
-      function (error, response, data) {
-        if (!error && response.statusCode == 200) {
-          //console.log(body);
-          body.data = data;
-          body.emit('update');
-        }
-      }
-    );
-    
-    console.log( Date.now() + " | token received for " + data['user']);
-  });
-});*/
-
+*/
