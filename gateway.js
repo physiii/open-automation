@@ -1,4 +1,3 @@
-// Setup basic express server
 var fs = require('fs');
 var os = require('os');
 var express = require('express');
@@ -46,7 +45,7 @@ var text_timeout = 0
 var platform = process.platform;
 //console.log("This platform is " + platform);
 
-//---------------------- get device info -------------------//
+// ----------------------  get device info  ------------------- //
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
 Object.keys(ifaces).forEach(function (ifname) {
@@ -78,24 +77,100 @@ require('getmac').getMac(function(err,macAddress){
   io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type, device_name:device_name });
 });
 
-//---------------------- camera proxy -------------------//
+// ----------------------  cloud server  ------------------- //
+var koa =require('koa');
+var path = require('path');
+var tracer = require('tracer');
+var mount = require('koa-mount');
+var morgan = require('koa-morgan');
+var koaStatic = require('koa-static');
+
+// Config
+var argv = require('optimist')
+  .usage([
+    'USAGE: $0 [-p <port>] [-d <directory>]']
+  )
+  .option('port', {
+    alias: 'p',
+    'default': 9090,
+    description: 'Server Port'
+  })
+  .option('directory', {
+    alias: 'd',
+    description: 'Root Files Directory'
+  })
+  .option('version', {
+    alias: 'v',
+    description: 'Server　Version'
+  })
+  .option('help', {
+    alias: 'h',
+    description: "Display This Help Message"
+  })
+  .argv;
+
+if (argv.help) {
+  require('optimist').showHelp(console.log);
+  process.exit(0);
+}
+
+if (argv.version) {
+  console.log('FileManager', require('./package.json').version);
+  process.exit(0);
+}
+
+global.C = {
+  data: {
+    root: argv.directory || path.dirname('.')
+  },
+  logger: require('tracer').console({level: 'info'}),
+  morganFormat: ':date[iso] :remote-addr :method :url :status :res[content-length] :response-time ms'
+};
+
+// Start Server
+var Tools = require('./tools');
+
+var app = koa();
+app.proxy = true;
+app.use(Tools.handelError);
+app.use(Tools.realIp);
+app.use(morgan.middleware(C.morganFormat));
+
+var IndexRouter = require('./routes');
+//session_string = '/testing';
+app.use(mount('/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3', IndexRouter));
+app.use(koaStatic('./public/'));
+
+var startServer = function (app, port) {
+  app.listen(port);
+  C.logger.info('listening on *.' + port);
+};
+
+startServer(app, +argv.port);
+
+//---------------------- proxy servers -------------------//
 var camera_port = 3032;
 var httpProxy = require('http-proxy');
-var proxy = httpProxy.createProxyServer({target:'http://localhost:8081'});
-var cloud_proxy = httpProxy.createProxyServer({target:'http://localhost/owncloud/index.php/apps/files/'});
+//var camera_proxy = httpProxy.createProxyServer();
+var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
   session_id = "/session/" + token;
   cloud_id = "/cloud/" + token;
-  if (req.url === cloud_id) {
-    cloud_proxy.web(req, res, { target: 'http://localhost/owncloud/index.php/apps/files/' });
+  console.log(req.url.substring(1,129));
+  if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
+    //req['url'] = '';
+    proxy.web(req, res, { target:'http://localhost:9090' });
+    console.log("cloud proxied");
   } else
   if (req.url === session_id) {
-    proxy.web(req, res, { target: 'http://localhost:8081' });
+    //req['url'] = '';  
+    proxy.web(req, res, { target:'http://localhost:8081', prependPath: false });
+    console.log("camera proxied");
   } else {
     console.log("denied");
   }
 }).listen(camera_port, function () {
-  console.log('To use camera, forward port '+camera_port+' to '+local_ip+' in your routers settings');
+  console.log('To use camera and file server, forward port '+camera_port+' to '+local_ip+' in your routers settings');
 });
 
 // ----------------------------  web interface  ----------------------------- //
@@ -156,7 +231,6 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
-  //console.log("token set " + token);
   fs.writeFile( "session.dat", data.token, "utf8", callback );  
   function callback(){
     //console.log('callback for session.dat');
