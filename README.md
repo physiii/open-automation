@@ -19,7 +19,6 @@ Home automation and media server for controlling devices like cameras, lights, t
 5. sudo nano /etc/motion/motion.conf
 6. -- change to stream_localhost off
 7. sudo chmod -R 777 /var/lib/motion
-8. -- sudo cp camera/nph-mjprox /usr/lib/cgi-bin
 
 ##initial connections
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20initial.jpg?raw=true "system overview")
