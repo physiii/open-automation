@@ -4,11 +4,9 @@ Home automation and media server for controlling devices like cameras, lights, t
 =======
 #installation
 ##install node 4.x from source
- wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
- 
-##gateway
-1. git clone https://github.com/physiii/home-gateway.git
-2. sudo nano /etc/rc.local
+1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
+2. git clone https://github.com/physiii/home-gateway.git ~
+3. sudo nano /etc/rc.local
 -- su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
 
 ##camera (optional)
