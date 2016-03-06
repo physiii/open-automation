@@ -149,11 +149,8 @@ var startServer = function (app, port) {
 startServer(app, + 9090);
 
 //---------------------- proxy servers -------------------//
-<<<<<<< HEAD
 var camera_port = argv.camera_port;
-=======
-var camera_port = 3031;
->>>>>>> f7125ade73f903a5e986a2fc4a99e511029b64dd
+//var camera_port = 3031;
 var httpProxy = require('http-proxy');
 //var camera_proxy = httpProxy.createProxyServer();
 var proxy = httpProxy.createProxyServer();
