@@ -4,22 +4,18 @@ Home automation and media server for controlling devices like cameras, lights, t
 =======
 #installation
 ##install node 4.x from source
- wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
- 
-##gateway
-1. git clone https://github.com/physiii/home-gateway.git
-2. sudo nano /etc/rc.local
--- su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'
+1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
+2. git clone https://github.com/physiii/home-gateway.git ~
+3. sudo nano /etc/rc.local <br><b>su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'</b>
 
 ##camera (optional)
 1. 1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
 2. sudo a2enmod cgi;
 3. sudo nano /etc/default/motion
-4. -- change to start_motion_daemon=yes
+<br><b>start_motion_daemon=yes</b>
 5. sudo nano /etc/motion/motion.conf
-6. -- change to stream_localhost off
+<br><b>stream_localhost off</b>
 7. sudo chmod -R 777 /var/lib/motion
-8. -- sudo cp camera/nph-mjprox /usr/lib/cgi-bin
 
 ##initial connections
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview%20-%20initial.jpg?raw=true "system overview")

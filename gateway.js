@@ -138,8 +138,7 @@ app.use(Tools.realIp);
 app.use(morgan.middleware(C.morganFormat));
 
 var IndexRouter = require('./routes');
-//session_string = '/testing';
-app.use(mount('/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3', IndexRouter));
+
 app.use(koaStatic('./public/'));
 
 var startServer = function (app, port) {
@@ -150,7 +149,11 @@ var startServer = function (app, port) {
 startServer(app, + 9090);
 
 //---------------------- proxy servers -------------------//
+<<<<<<< HEAD
 var camera_port = argv.camera_port;
+=======
+var camera_port = 3031;
+>>>>>>> f7125ade73f903a5e986a2fc4a99e511029b64dd
 var httpProxy = require('http-proxy');
 //var camera_proxy = httpProxy.createProxyServer();
 var proxy = httpProxy.createProxyServer();
@@ -232,6 +235,8 @@ var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
+  session_string = '/' + token;
+  app.use(mount(session_string, IndexRouter));  
   fs.writeFile( "session.dat", data.token, "utf8", callback );  
   function callback(){
     //console.log('callback for session.dat');

@@ -2022,3 +2022,8 @@ token set f4781b0af99d5b969c20163d441bf31bce3c31b03f0ad1403801fe5f8116e63f2ed994
 curl http://192.168.0.27/tstat
 window sensor triggered 1
 stdout: {"temp":70.00,"tmode":2,"fmode":2,"override":1,"hold":1,"t_cool":69.00,"tstate":2,"fstate":1,"time":{"day":4,"hour":11,"minute":14},"t_type_post":0}
+To use camera, forward port 3032 to 192.168.0.18 in your routers settings
+Enter device ID (b827eb862f92) at http://dev.pyfi.org
+2016-03-03T17:35:07+0000 <info> gateway.js:145 (startServer) listening on *.9090
+To use camera and file server, forward port 3031 to 192.168.0.18 in your routers settings
+Enter device ID (b827eb862f92) at http://dev.pyfi.org
