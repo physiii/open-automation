@@ -90,13 +90,14 @@ var argv = require('optimist')
   .usage([
     'USAGE: $0 [-p <port>] [-d <directory>]']
   )
-  .option('port', {
+  .option('camera_port', {
     alias: 'p',
-    'default': 9090,
+    'default': 3031,
     description: 'Server Port'
   })
   .option('directory', {
     alias: 'd',
+    'default':'./files',
     description: 'Root Files Directory'
   })
   .option('version', {
@@ -146,16 +147,16 @@ var startServer = function (app, port) {
   C.logger.info('listening on *.' + port);
 };
 
-startServer(app, +argv.port);
+startServer(app, + 9090);
 
 //---------------------- proxy servers -------------------//
-var camera_port = 3032;
+var camera_port = argv.camera_port;
 var httpProxy = require('http-proxy');
 //var camera_proxy = httpProxy.createProxyServer();
 var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
   session_id = "/session/" + token;
-  cloud_id = "/cloud/" + token;
+  //cloud_id = "/cloud/" + token;
   console.log(req.url.substring(1,129));
   if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
     //req['url'] = '';
