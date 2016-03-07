@@ -2027,3 +2027,109 @@ Enter device ID (b827eb862f92) at http://dev.pyfi.org
 2016-03-03T17:35:07+0000 <info> gateway.js:145 (startServer) listening on *.9090
 To use camera and file server, forward port 3031 to 192.168.0.18 in your routers settings
 Enter device ID (b827eb862f92) at http://dev.pyfi.org
+2016-03-06T23:47:39+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-06T23:47:46.671Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 27.217 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-06T23:47:47.041Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 9.126 ms
+2016-03-06T23:47:47.058Z ::ffff:127.0.0.1 GET /js/app.js 404 9 3.909 ms
+2016-03-07T00:01:33+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:01:37.709Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 22.617 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:01:37.985Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 29.204 ms
+2016-03-07T00:01:37.991Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 23.152 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:01:38+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) /home/pi/home-gateway/files
+2016-03-07T00:01:38.246Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/api/ 200 269 3.419 ms
+2016-03-07T00:02:59+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:03:02.489Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 23.406 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:03:02.789Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 18.409 ms
+2016-03-07T00:03:02.807Z ::ffff:127.0.0.1 GET /js/app.js 404 9 5.263 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:03:06.361Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 3.441 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:03:06.532Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 1.145 ms
+2016-03-07T00:03:06.538Z ::ffff:127.0.0.1 GET /js/app.js 404 9 1.184 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:03:10.767Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 0.933 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:03:10.902Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 1.222 ms
+2016-03-07T00:03:10.908Z ::ffff:127.0.0.1 GET /js/app.js 404 9 1.031 ms
+2016-03-07T00:03:58+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:04:03.772Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 24.888 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:04:04.147Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 8.899 ms
+2016-03-07T00:04:04.165Z ::ffff:127.0.0.1 GET /js/app.js 404 9 4.029 ms
+js/angular-file.js
+cloud proxied
+2016-03-07T00:04:04.259Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 1.184 ms
+js/app.js
+cloud proxied
+2016-03-07T00:04:04.336Z ::ffff:127.0.0.1 GET /js/app.js 404 9 1.390 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:04:09.505Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 6.146 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:04:09.648Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 1.650 ms
+2016-03-07T00:04:09.655Z ::ffff:127.0.0.1 GET /js/app.js 404 9 1.018 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:04:24.808Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 1.464 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:04:25.366Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 1.750 ms
+2016-03-07T00:04:25.372Z ::ffff:127.0.0.1 GET /js/app.js 404 9 1.135 ms
+2016-03-07T00:13:57+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T00:14:04.127Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 24.519 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T00:14:04.434Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 14.449 ms
+2016-03-07T00:14:04.459Z ::ffff:127.0.0.1 GET /js/app.js 404 9 6.184 ms
