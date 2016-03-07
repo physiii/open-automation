@@ -2133,3 +2133,37 @@ js/app.js
 cloud proxied
 2016-03-07T00:14:04.434Z ::ffff:127.0.0.1 GET /js/angular-file.js 404 9 14.449 ms
 2016-03-07T00:14:04.459Z ::ffff:127.0.0.1 GET /js/app.js 404 9 6.184 ms
+2016-03-07T03:00:41+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+denied
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T03:01:05.549Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 23.108 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T03:01:08.140Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 38.918 ms
+2016-03-07T03:01:08.147Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 29.575 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T03:01:09+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-03-07T03:01:10.057Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/api/ 200 337 3.231 ms
+2016-03-07T03:02:37+0000 <info> gateway.js:146 (startServer) listening on *.9090
+To use camera and file server, forward port 3034 to 192.168.0.7 in your routers settings
+Enter device ID (b827eb91903b) at http://dev.pyfi.org
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T03:02:45.836Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/ 200 6646 23.241 ms
+js/angular-file.js
+cloud proxied
+js/app.js
+cloud proxied
+2016-03-07T03:02:46.971Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 31.534 ms
+2016-03-07T03:02:47.014Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 25.802 ms
+32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe
+cloud proxied
+2016-03-07T03:02:49+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-03-07T03:02:49.651Z ::ffff:127.0.0.1 GET /32f205c9260c9779b4fcd88de61b15c9f14352b819f71360abb5113f9addb43b4f8f22d81070fa18ba85b8953deab0f7f32ca2a4887217b326e76cab4fd5ddfe/api/ 200 337 3.312 ms
