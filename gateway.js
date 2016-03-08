@@ -12,6 +12,7 @@ var io = require('socket.io')(server);
 var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
 var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
 var io_relay = require('socket.io-client')('wss://peaceful-coast-12080.herokuapp.com');
+var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 var port = process.env.PORT || 3030;
 //var program_port = process.env.PORT || 3000;
 var php = require("node-php");
@@ -44,6 +45,142 @@ var count = 0;
 var text_timeout = 0
 var platform = process.platform;
 //console.log("This platform is " + platform);
+
+var hue = require("node-hue-api");
+var info_obj = JSON.parse(fs.readFileSync('info.json', 'utf8'));
+
+
+
+// ----------------------  find bridges  ------------------- //
+var bridge_obj = {};
+var displayBridges = function(bridge) {
+    bridge_obj = bridge[0];
+    info_obj['ip'] = bridge_obj.ipaddress;
+    fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
+    console.log("Hue Bridges Found: " + JSON.stringify(bridge));
+};
+hue.nupnpSearch().then(displayBridges).done();
+
+// ----------------------  link bridge  ------------------- //
+function link_hue_bridge(ipaddress) {
+
+var HueApi = require("node-hue-api").HueApi;
+
+console.log(ipaddress);
+var hostname = ipaddress,
+    userDescription = "Node Gateway";
+
+var displayUserResult = function(result) {
+    info_obj['ip'] = ipaddress;
+    info_obj['user'] = result;
+    info_obj['token'] = token;
+    fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
+    console.log("Created user: " + JSON.stringify(result));
+};
+
+var displayError = function(err) {
+    console.log(err);
+};
+
+var hue = new HueApi();
+
+// Using a promise
+hue.registerUser(hostname, userDescription)
+    .then(displayUserResult)
+    .fail(displayError)
+    .done();
+
+}
+link_hue_bridge(info_obj.ip);
+
+// Using a callback (with default description and auto generated username)
+/*hue.createUser(hostname, function(err, user) {
+    if (err) throw err;
+    displayUserResult(user);
+});*/
+
+// ----------------------  finding lights  ------------------- //
+var HueApi = require("node-hue-api").HueApi;
+
+var displayResult = function(result) {
+    info_obj['lights'] = result.lights;
+    fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );    
+    //console.log(JSON.stringify(result, null, 2));
+    //io_relay.emit('device_info',info_obj);
+};
+
+var host = info_obj.ip,
+    username = info_obj.user,
+    api;
+
+api = new HueApi(host, username);
+
+// Using a promise
+api.lights()
+    .then(displayResult)
+    .done();
+
+// Using a callback
+api.lights(function(err, lights) {
+    if (err) throw err;
+    displayResult(lights);
+});
+
+// --------------------  setting light state  ----------------- //
+
+function set_light(light_id,state) {
+
+var hue = require("node-hue-api"),
+    HueApi = hue.HueApi,
+    lightState = hue.lightState;
+
+var displayResult = function(result) {
+    console.log(JSON.stringify(result, null, 2));
+};
+
+var host = info_obj.ip,
+    username = info_obj.user,
+    api = new HueApi(host, username),
+    state;
+
+// Set light state to 'on' with warm white value of 500 and brightness set to 100%
+//state = lightState.create().on().white(500, 100);
+
+// --------------------------
+// Using a promise
+api.setLightState(light_id, state)
+    .then(displayResult)
+    .done();
+
+// --------------------------
+// Using a callback
+/*api.setLightState(5, state, function(err, lights) {
+    if (err) throw err;
+    displayResult(lights);
+});*/
+
+}
+
+io_relay.emit('device_info',"testtt");
+io_relay.emit('png_test');
+for (var i=0; i < info_obj.lights.length; i++) {
+  console.log("info_obj.lights | " + info_obj.lights[i].id);
+  var state = [];
+  state['on'] = true;
+  state['bri'] = 0;
+  if (info_obj.lights[i].state.hue) {
+    state['hue'] = "1000";
+  console.log("hue state " + info_obj.lights[i].state.hue);    
+  }
+  set_light(info_obj.lights[i].id,state);
+}
+/*set_light(3);
+set_light(4);
+set_light(5);
+set_light(6);
+set_light(7);
+set_light(8);
+set_light(9);*/
 
 // ----------------------  get device info  ------------------- //
 var local_ip = "init";
@@ -143,7 +280,7 @@ app.use(koaStatic('./public/'));
 
 var startServer = function (app, port) {
   app.listen(port);
-  C.logger.info('listening on *.' + port);
+  //C.logger.info('listening on *.' + port);
 };
 
 startServer(app, + 9090);
@@ -228,13 +365,15 @@ wss.on('connection', function connection(ws) {
 
 // ------------------  relayed socket.io messages  ------------------- //
 //var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
-var io_relay = require('socket.io-client')('http://68.12.157.176:5000');
 
 io_relay.on('token', function (data) {
   token = data.token;
   session_string = '/' + token;
-  app.use(mount(session_string, IndexRouter));  
-  fs.writeFile( "session.dat", data.token, "utf8", callback );  
+  app.use(mount(session_string, IndexRouter));
+  info_obj['token'] = token;
+  info_obj['mac'] = mac;
+  fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );  
+  //fs.writeFile( "session.dat", data.token, "utf8", callback );  
   function callback(){
     //console.log('callback for session.dat');
   }  
@@ -244,6 +383,11 @@ io_relay.on('token', function (data) {
 io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
   console.log("replied in " + ping_time + "ms");
+});
+
+io_relay.on('link_lights', function (data) {
+  io_relay.emit('device_info',info_obj);
+  console.log("emmitting light info");  
 });
 
 io_relay.on('media', function (data) {
