@@ -126,62 +126,6 @@ api.lights(function(err, lights) {
     displayResult(lights);
 });
 
-// --------------------  setting light state  ----------------- //
-
-function set_light(light_id,state) {
-
-var hue = require("node-hue-api"),
-    HueApi = hue.HueApi,
-    lightState = hue.lightState;
-
-var displayResult = function(result) {
-    console.log(JSON.stringify(result, null, 2));
-};
-
-var host = info_obj.ip,
-    username = info_obj.user,
-    api = new HueApi(host, username),
-    state;
-
-// Set light state to 'on' with warm white value of 500 and brightness set to 100%
-//state = lightState.create().on().white(500, 100);
-
-// --------------------------
-// Using a promise
-api.setLightState(light_id, state)
-    .then(displayResult)
-    .done();
-
-// --------------------------
-// Using a callback
-/*api.setLightState(5, state, function(err, lights) {
-    if (err) throw err;
-    displayResult(lights);
-});*/
-
-}
-
-io_relay.emit('device_info',"testtt");
-io_relay.emit('png_test');
-for (var i=0; i < info_obj.lights.length; i++) {
-  console.log("info_obj.lights | " + info_obj.lights[i].id);
-  var state = [];
-  state['on'] = true;
-  state['bri'] = 0;
-  if (info_obj.lights[i].state.hue) {
-    state['hue'] = "1000";
-  console.log("hue state " + info_obj.lights[i].state.hue);    
-  }
-  set_light(info_obj.lights[i].id,state);
-}
-/*set_light(3);
-set_light(4);
-set_light(5);
-set_light(6);
-set_light(7);
-set_light(8);
-set_light(9);*/
-
 // ----------------------  get device info  ------------------- //
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
@@ -205,13 +149,13 @@ Object.keys(ifaces).forEach(function (ifname) {
 });
 
 var mac = "init";
-var device_type = "gateway/camera";
+var device_type = "gateway";
 var device_name = "Gateway";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type, device_name:device_name });
+  io_relay.emit('get_token',{ local_ip:local_ip, mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type, device_name:device_name });
 });
 
 // ----------------------  cloud server  ------------------- //
@@ -380,14 +324,48 @@ io_relay.on('token', function (data) {
   //console.log("token set " + token);
 });
 
-io_relay.on('png_test', function (data) {
-  ping_time = Date.now() - ping_time;
-  console.log("replied in " + ping_time + "ms");
+io_relay.on('thermostat', function (data) {
+  var cmd = data.cmd;
+  therm_ip = data.ip;
+  get_therm_state(data.ip,cmd);
+  console.log("thermostat |  " + cmd);  
+});
+
+io_relay.on('lights', function (light) {
+  console.log("data.lights | " + light.id);
+  var state = [];
+  state['on'] = !light.selected;  
+  console.log(light.selected)
+  //state['bri'] = light.state.bri;
+  if (light.state.hue) {
+    state['hue'] = "1000";
+    console.log("hue state " + light.state.hue);    
+  }
+  set_light(light.id,state);
 });
 
 io_relay.on('link_lights', function (data) {
   io_relay.emit('device_info',info_obj);
-  console.log("emmitting light info");  
+  console.log("emitting light info");  
+});
+
+io_relay.emit('device_info',"testtt");
+io_relay.emit('png_test');
+for (var i=0; i < info_obj.lights.length; i++) {
+  console.log("info_obj.lights | " + info_obj.lights[i].id);
+  var state = [];
+  state['on'] = true;
+  state['bri'] = 1000;
+  if (info_obj.lights[i].state.hue) {
+    state['hue'] = "1000";
+  console.log("hue state " + info_obj.lights[i].state.hue);
+  }
+  set_light(info_obj.lights[i].id,state);
+}
+
+io_relay.on('png_test', function (data) {
+  ping_time = Date.now() - ping_time;
+  console.log("replied in " + ping_time + "ms");
 });
 
 io_relay.on('media', function (data) {
@@ -435,24 +413,81 @@ io_relay.on('authenticated', function() {
   });   
 });
 */
+
+// --------------------  setting light state  ----------------- //
+
+function set_light(light_id,state) {
+
+var hue = require("node-hue-api"),
+    HueApi = hue.HueApi,
+    lightState = hue.lightState;
+
+var displayResult = function(result) {
+    console.log("setting light state result | " + JSON.stringify(result, null, 2));
+};
+
+var host = info_obj.ip,
+    username = info_obj.user,
+    api = new HueApi(host, username),
+    state;
+
+api.setLightState(light_id, state)
+    .then(displayResult)
+    .done();
+
+}
+
 // -------------------------------------------------------- //
+
+var therm_ip = "";
+function thermostat_loop(){
+  setTimeout(function () {
+    if (therm_ip != "") {
+      get_therm_state(therm_ip,"update");    
+    }
+    thermostat_loop();
+  }, 10 * 1000)
+}
+thermostat_loop();
+
 var ping_time = Date.now();
 function ping(){
   ping_time = Date.now();
   console.log('sending ping...');
   io_relay.emit('png_test');
 }
-function get_therm_state(){
-  command = "curl http://192.168.0.27/tstat";
-  console.log(command);
-  var child = exec(command,
-  function (error, stdout, stderr) {
-    console.log('stdout: ' + stdout);
-    current_therm_state = stdout;
-    if (error !== null) {
-      console.log('' + error);
+
+function get_therm_state( ipaddress, cmd ){
+
+    post_data = {};
+    request.get(
+      'http://'+ipaddress+'/tstat',
+      function (error, response, data) {
+        if (!error && response.statusCode == 200) {
+          console.log('thermostat says: ' + data);
+
+    if (isJSON(data)) { 
+      var data_obj = {};    
+      data_obj['current_state'] = JSON.parse(data);
+      data_obj['token'] = token;
+      data_obj['mac'] = mac;
+      data_obj['ip'] = ipaddress;
+      data_obj['cmd'] = cmd;      
+      console.log("data_obj is " + JSON.stringify(data_obj));
+      if (cmd === "link") {
+        io_relay.emit('link_thermostat',data_obj);
+      }
+      if (cmd === "update") {
+        io_relay.emit('thermostat',data_obj);
+      }      
     }
-  });
+    if (error !== null) {
+      console.log('error ---> ' + error);
+    }          
+          
+        }
+      });console.log("getting thermostat state");
+
 }
 
 function send_command(command){
@@ -462,7 +497,20 @@ function send_command(command){
     if (error !== null) {
       console.log('' + error);
     }
+    if (stderr !== null) {
+      console.log("stderr!!!");
+    }
   });
+}
+
+function isJSON (json_obj) {
+  if (/^[\],:{}\s]*$/.test(json_obj.replace(/\\["\\\/bfnrtu]/g, '@').
+  replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+  replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+    return true;
+  }else{
+    return false;
+  }  
 }
 
 
