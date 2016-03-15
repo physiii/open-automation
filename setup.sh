@@ -3,8 +3,8 @@ sudo cp motion.conf /etc/motion/motion.conf
 sudo cp motion /etc/default/motion
 sudo cp rc.local /etc/rc.local
 sudo chmod -R 777 /var/lib/motion
-mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
 rm files/Audio files/Video files/Documents files/motion
+mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
 ln -s /var/lib/motion files
 ln -s ~/Audio files/
 ln -s ~/Videos files/

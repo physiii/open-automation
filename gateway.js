@@ -44,12 +44,8 @@ var device_port = "init";
 var count = 0;
 var text_timeout = 0
 var platform = process.platform;
-//console.log("This platform is " + platform);
-
 var hue = require("node-hue-api");
 var info_obj = JSON.parse(fs.readFileSync('info.json', 'utf8'));
-
-
 
 // ----------------------  find bridges  ------------------- //
 var bridge_obj = {};
@@ -92,12 +88,6 @@ hue.registerUser(hostname, userDescription)
 
 }
 link_hue_bridge(info_obj.ip);
-
-// Using a callback (with default description and auto generated username)
-/*hue.createUser(hostname, function(err, user) {
-    if (err) throw err;
-    displayUserResult(user);
-});*/
 
 // ----------------------  finding lights  ------------------- //
 var HueApi = require("node-hue-api").HueApi;
@@ -155,10 +145,10 @@ require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ local_ip:local_ip, mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type, device_name:device_name });
+  io_relay.emit('get_token',{ local_ip:local_ip, mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
 });
 
-// ----------------------  cloud server  ------------------- //
+// ----------------------  file server  ------------------- //
 var koa =require('koa');
 var path = require('path');
 var tracer = require('tracer');
@@ -254,39 +244,14 @@ http.createServer(function(req, res) {
 }).listen(camera_port, function () {
   console.log('To use camera and file server, forward port '+camera_port+' to '+local_ip+' in your routers settings');
 });
-
-// ----------------------------  web interface  ----------------------------- //
-/*
-var program_port = 3000;
-program_server.listen(program_port, function () {
-  console.log('Access GUI on port %d', program_port);
-});     
-      
-program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
-program_io.on('connection', function (socket) {
-  socket.on('get_token', function (data) {
-    user = data['user'];
-    password = data['pwd'];
-    post_data = {user:user, pwd:password, mac:mac};
-    var response = request.post(
-      'http://68.12.157.176:8080/pyfi.org/php/set_token.php',
-      {form: post_data},
-      function (error, response, data) {
-        if (!error && response.statusCode == 200) {
-          console.log('set_token.php says: ' + data.token);
-          //io_relay.emit('token',{token:"blah"});
-          fs.writeFile( "device_info.json", data.token, "utf8", callback );
-          function callback(){
-            console.log('callback for device_info.json');
-          }
-          //body.data = data;          
-          //body.emit('update');
-        }
-      });
-    console.log( "token received for " + data['user']);
+proxy.on('error', function (err, req, res) {
+  res.writeHead(500, {
+    'Content-Type': 'text/plain'
   });
+
+  res.end('Something went wrong. And we are reporting a custom error message.');
 });
-*/
+
 // --------------  websocket server for devices  ----------------- //
 var ws_port = 4040;
 var WebSocketServer = require('ws').Server
@@ -324,11 +289,16 @@ io_relay.on('token', function (data) {
   //console.log("token set " + token);
 });
 
-io_relay.on('thermostat', function (data) {
+io_relay.on('get_thermostat', function (data) {
   var cmd = data.cmd;
   therm_ip = data.ip;
   get_therm_state(data.ip,cmd);
   console.log("thermostat |  " + cmd);  
+});
+
+io_relay.on('set_thermostat', function (data) {
+  set_thermostat(data);
+  console.log("set_thermostat |  " + JSON.stringify(data));  
 });
 
 io_relay.on('lights', function (light) {
@@ -349,7 +319,6 @@ io_relay.on('link_lights', function (data) {
   console.log("emitting light info");  
 });
 
-io_relay.emit('device_info',"testtt");
 io_relay.emit('png_test');
 for (var i=0; i < info_obj.lights.length; i++) {
   console.log("info_obj.lights | " + info_obj.lights[i].id);
@@ -439,7 +408,7 @@ api.setLightState(light_id, state)
 
 // -------------------------------------------------------- //
 
-var therm_ip = "";
+/*var therm_ip = "";
 function thermostat_loop(){
   setTimeout(function () {
     if (therm_ip != "") {
@@ -447,8 +416,8 @@ function thermostat_loop(){
     }
     thermostat_loop();
   }, 10 * 1000)
-}
-thermostat_loop();
+}*/
+//thermostat_loop();
 
 var ping_time = Date.now();
 function ping(){
@@ -457,9 +426,21 @@ function ping(){
   io_relay.emit('png_test');
 }
 
+function set_thermostat(state) {
+
+var request = require('request');
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'http://'+therm_ip+'/tstat',
+  body:    JSON.stringify(state)
+}, function(error, response, body){
+  console.log(body);
+  get_therm_state(therm_ip,"update");
+});
+}
+
 function get_therm_state( ipaddress, cmd ){
 
-    post_data = {};
     request.get(
       'http://'+ipaddress+'/tstat',
       function (error, response, data) {
@@ -472,13 +453,14 @@ function get_therm_state( ipaddress, cmd ){
       data_obj['token'] = token;
       data_obj['mac'] = mac;
       data_obj['ip'] = ipaddress;
-      data_obj['cmd'] = cmd;      
-      console.log("data_obj is " + JSON.stringify(data_obj));
+      data_obj['cmd'] = cmd;
+      //console.log("data_obj is " + JSON.stringify(data_obj));
       if (cmd === "link") {
         io_relay.emit('link_thermostat',data_obj);
       }
       if (cmd === "update") {
-        io_relay.emit('thermostat',data_obj);
+        //console.log("have current_state?? --> " + )
+        io_relay.emit('thermostat_state',data_obj);
       }      
     }
     if (error !== null) {
@@ -513,152 +495,35 @@ function isJSON (json_obj) {
   }  
 }
 
-
+// ----------------------------  web interface  ----------------------------- //
 /*
-/// create tables if the do not exist ///
-var query = "create table gateway_tok (timestamp text, user text, token text, mac text, ip text, port text, device_name text)";
-connection.connect();
-connection.query(query, function(err, rows, fields) {
-  if (err) {
-    //console.log('table already exist');  
-  } else {
-    console.log('created gateway_tok table');
-    //store device info in database
-    
-  }
-});
-
-server.listen(port, function () {
-  //console.log('send-receive commands on port %d', port);
-});
-
-io.on('connection', function (socket) {
-get_therm_state();
-function gb_timeout(){
-  setTimeout(function () {
-    gb_loop();
-  }, 100)
-}
-
-var previous_gb_value = "";
-var temp = 0;
-function gb_loop(){
-  const child = gb_read('gpio -g read 23',
-    (error, stdout, stderr) => {
-      gb_value = stdout;
-      if (previous_gb_value != gb_value && text_timeout == 0){
-        temp = Date.now();
-        count = count + 1;
-        console.log("window sensor triggered " + count);
-        io.emit('gpio_pin',count);
-        setTimeout(function () {
-          count = 0;
-        }, 10000);
-      }
-      if (count >= 10){
-        if (text_timeout == 0){
-          console.log("sending text alert!");
-          //send_command("curl -d number=\"4058168685\" -d \"message=ALERT:living room window sensor triggered\" http://textbelt.com/text");
-          text_timeout = 1; 
-          setTimeout(function () {
-            text_timeout = 0;
-          }, 60000); 
-         count = 0;
+var program_port = 3000;
+program_server.listen(program_port, function () {
+  console.log('Access GUI on port %d', program_port);
+});     
+      
+program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
+program_io.on('connection', function (socket) {
+  socket.on('get_token', function (data) {
+    user = data['user'];
+    password = data['pwd'];
+    post_data = {user:user, pwd:password, mac:mac};
+    var response = request.post(
+      'http://68.12.157.176:8080/pyfi.org/php/set_token.php',
+      {form: post_data},
+      function (error, response, data) {
+        if (!error && response.statusCode == 200) {
+          console.log('set_token.php says: ' + data.token);
+          //io_relay.emit('token',{token:"blah"});
+          fs.writeFile( "device_info.json", data.token, "utf8", callback );
+          function callback(){
+            console.log('callback for device_info.json');
+          }
+          //body.data = data;          
+          //body.emit('update');
         }
-      }
-      previous_gb_value = gb_value;
-  });
-  gb_timeout();
-}
-  gb_timeout();
-
-  socket.on('thermostat', function (data) {
-    var state = JSON.parse(current_therm_state);
-    console.log("finding temperature " + state.temp);
-    if (data == "temp_up"){
-      desired_temp = desired_temp + 2;   
-    } 
-    if (data == "temp_down"){
-      desired_temp = desired_temp - 2;     
-    }
-    if (state.temp > desired_temp){
-      mode = "t_cool";
-    } else {
-      mode = "t_heat";
-    }
-    send_command("curl -d '{\"tmode\":1,\""+mode+"\":"+desired_temp+",\"hold\":1}' http://192.168.0.27/tstat");
-    io.emit('thermostat', {"temp":desired_temp});
-    console.log( Date.now() + " thermostat " + data);
-    console.log("new temp: " + desired_temp);
-  });
-
-  socket.on('token', function (data) {
-    console.log('token: ' + data['token']);
-    console.log( Date.now() + " valid token");
-  });  
-
-  socket.on('media_upstairs', function (data) {
-    io_upstairs.emit('media', data);
-    console.log( Date.now() + " upstairs " + data);
-  });
-
-  socket.on('media_downstairs', function (data) {
-    io_downstairs.emit('media', data);
-    console.log( Date.now() + " downstairs " + data);
-  });
-  
-  socket.on('peerflix_downstairs', function (data) {
-    io_downstairs.emit('peerflix', data);
-    console.log( Date.now() + " downstairs peerflix " + data);
-  });  
-  
-  socket.on('peerflix_upstairs', function (data) {
-    io_upstairs.emit('peerflix', data);
-    console.log( Date.now() + " upstairs peerflix " + data);
-  });  
-
-  socket.on('lights', function (data) {
-      //Date.now = function() { return new Date().getTime(); }
-      console.log("<<-------- " + Date.now() + " -------->>");
-      if (data <= 254 && data >= 0){
-         if (data > 200) data = 254;
-         diff = Math.abs(data - previous_data);
-         if (diff > 20){
-           send_command("perl "+__dirname+"/huepl bri 1 " + data);
-           send_command("perl "+__dirname+"/huepl bri 2 " + data);
-           send_command("perl "+__dirname+"/huepl bri 3 " + data);
-           //send_command("perl "+__dirname+"/huepl bri 4 " + data);
-           send_command("perl "+__dirname+"/huepl bri 5 " + data); 
-           send_command("perl "+__dirname+"/huepl bri 6 " + data); 
-           send_command("perl "+__dirname+"/huepl bri 7 " + data); 
-           send_command("perl "+__dirname+"/huepl bri 8 " + data);
-           send_command("perl "+__dirname+"/huepl bri 9 " + data); 
-           previous_data = data;
-         }
-      } else {
-      if (data != "off") {
-        send_command("perl "+__dirname+"/huepl on 1");
-        send_command("perl "+__dirname+"/huepl on 2");
-        send_command("perl "+__dirname+"/huepl on 3");
-        //send_command("perl "+__dirname+"/huepl on 4");
-        send_command("perl "+__dirname+"/huepl on 5");         
-        send_command("perl "+__dirname+"/huepl on 6");
-        send_command("perl "+__dirname+"/huepl on 7");         
-        send_command("perl "+__dirname+"/huepl on 8");
-        send_command("perl "+__dirname+"/huepl on 9");         
-        //send_command("perl "+__dirname+"/huepl on 10");
-       }
-       send_command("perl "+__dirname+"/huepl "+data+" 1");
-       send_command("perl "+__dirname+"/huepl "+data+" 2");
-       send_command("perl "+__dirname+"/huepl "+data+" 3");
-       //send_command("perl "+__dirname+"/huepl "+data+" 4");
-       send_command("perl "+__dirname+"/huepl "+data+" 5");
-       send_command("perl "+__dirname+"/huepl "+data+" 6");
-       send_command("perl "+__dirname+"/huepl "+data+" 7");
-       send_command("perl "+__dirname+"/huepl "+data+" 8");
-       send_command("perl "+__dirname+"/huepl "+data+" 9");
-       //send_command("perl "+__dirname+"/huepl "+data+" 10");
-       }
+      });
+    console.log( "token received for " + data['user']);
   });
 });
 */
