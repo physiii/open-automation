@@ -228,7 +228,8 @@ var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
   session_id = "/session/" + token;
   //cloud_id = "/cloud/" + token;
-  console.log(req.url.substring(1,129));
+  
+  console.log("received: " + req.url.substring(1,129) + " | checking with: " + session_id);
   if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
     //req['url'] = '';
     proxy.web(req, res, { target:'http://localhost:9090' });
@@ -286,7 +287,7 @@ io_relay.on('token', function (data) {
   function callback(){
     //console.log('callback for session.dat');
   }  
-  //console.log("token set " + token);
+  console.log("token set " + token);
 });
 
 io_relay.on('get_thermostat', function (data) {
@@ -368,20 +369,6 @@ io_relay.on('media', function (data) {
 io_relay.on('gateway', function (data) {
   console.log(mac + " | " + data.command);
 });
-/*
-io_relay.emit('authentication', {username: "John", password: "secret", mac: mac});
-var auth_time = Date.now();
-io_relay.on('authenticated', function() {
-  auth_time = Date.now() - auth_time;
-  console.log('!!! authenticated in ' + auth_time + 'ms !!!');
-  io_relay.on('token', function (data) {
-    //get token from mysql database
-    //check data['token'] w database token
-    console.log('token: ' + data['token']);
-    console.log( Date.now() + " valid token");
-  });   
-});
-*/
 
 // --------------------  setting light state  ----------------- //
 
