@@ -1,3 +1,3 @@
 Set WshShell = WScript.CreateObject("WScript.Shell")
-Return = WshShell.Run("node c:\node\media-server\media-server.js", 0, true)
+Return = WshShell.Run("node C:\Users\Andy\home-gateway\gateway.js > C:\Users\Andy\gateway.log", 0, true)
 Wscript.echo "node started"
