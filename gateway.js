@@ -353,8 +353,8 @@ io_relay.on('media', function (data) {
     if (command == "play"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
   } else
   if ( platform === "linux" ) {  
-    if ( command === "volume_down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
-    if ( command === "volume_up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
+    if ( command === "volume down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
+    if ( command === "volume up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
     if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }
     if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
     if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
@@ -390,7 +390,6 @@ var host = info_obj.ip,
 api.setLightState(light_id, state)
     .then(displayResult)
     .done();
-
 }
 
 // -------------------------------------------------------- //
@@ -455,8 +454,8 @@ function get_therm_state( ipaddress, cmd ){
     }          
           
         }
-      });console.log("getting thermostat state");
-
+      });
+      console.log("getting thermostat state");
 }
 
 function send_command(command){

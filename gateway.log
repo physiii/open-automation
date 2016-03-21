@@ -2174,3 +2174,139 @@ session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78c
 camera proxied
 session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba406577665436495
 camera proxied
+192.168.0.13
+info_obj.lights | 1
+hue state 1000
+info_obj.lights | 2
+hue state 1000
+info_obj.lights | 3
+hue state 1000
+info_obj.lights | 4
+info_obj.lights | 5
+hue state 1000
+info_obj.lights | 6
+hue state 1000
+info_obj.lights | 7
+hue state 1000
+info_obj.lights | 8
+hue state 1000
+info_obj.lights | 9
+hue state 1000
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+{ [Api Error: link button not pressed] message: 'link button not pressed', type: 101 }
+setting light state result | true
+setting light state result | true
+replied in 76ms
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+media | volume down
+media | volume up
+192.168.0.13
+info_obj.lights | 1
+hue state 1000
+info_obj.lights | 2
+hue state 1000
+info_obj.lights | 3
+hue state 1000
+info_obj.lights | 4
+info_obj.lights | 5
+hue state 1000
+info_obj.lights | 6
+hue state 1000
+info_obj.lights | 7
+hue state 1000
+info_obj.lights | 8
+hue state 1000
+info_obj.lights | 9
+hue state 1000
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+{ [Api Error: link button not pressed] message: 'link button not pressed', type: 101 }
+setting light state result | true
+setting light state result | true
+setting light state result | true
+replied in 76ms
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+media | volume down
+media | volume up
+192.168.0.13
+info_obj.lights | 1
+hue state 1000
+info_obj.lights | 2
+hue state 1000
+info_obj.lights | 3
+hue state 1000
+info_obj.lights | 4
+info_obj.lights | 5
+hue state 1000
+info_obj.lights | 6
+hue state 1000
+info_obj.lights | 7
+hue state 1000
+info_obj.lights | 8
+hue state 1000
+info_obj.lights | 9
+hue state 1000
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+{ [Api Error: link button not pressed] message: 'link button not pressed', type: 101 }
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+received: session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba406577665436495 | checking with: /session/init
+denied
+192.168.0.13
+info_obj.lights | 1
+hue state 1000
+info_obj.lights | 2
+hue state 1000
+info_obj.lights | 3
+hue state 1000
+info_obj.lights | 4
+info_obj.lights | 5
+hue state 1000
+info_obj.lights | 6
+hue state 1000
+info_obj.lights | 7
+hue state 1000
+info_obj.lights | 8
+hue state 1000
+info_obj.lights | 9
+hue state 1000
+To use camera and file server, forward port 3032 to 192.168.4.2 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+{ [Api Error: link button not pressed] message: 'link button not pressed', type: 101 }
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+replied in 104ms
+setting light state result | true
+setting light state result | true
+setting light state result | true
+setting light state result | true
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
