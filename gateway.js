@@ -46,7 +46,6 @@ var text_timeout = 0
 var platform = process.platform;
 var hue = require("node-hue-api");
 var info_obj = JSON.parse(fs.readFileSync('info.json', 'utf8'));
-
 // ----------------------  find bridges  ------------------- //
 var bridge_obj = {};
 var displayBridges = function(bridge) {
@@ -58,6 +57,7 @@ var displayBridges = function(bridge) {
 hue.nupnpSearch().then(displayBridges).done();
 
 // ----------------------  link bridge  ------------------- //
+link_hue_bridge(info_obj.ip);
 function link_hue_bridge(ipaddress) {
 
 var HueApi = require("node-hue-api").HueApi;
@@ -87,7 +87,6 @@ hue.registerUser(hostname, userDescription)
     .done();
 
 }
-link_hue_bridge(info_obj.ip);
 
 // ----------------------  finding lights  ------------------- //
 var HueApi = require("node-hue-api").HueApi;
@@ -95,7 +94,6 @@ var HueApi = require("node-hue-api").HueApi;
 var displayResult = function(result) {
     info_obj['lights'] = result.lights;
     fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );    
-    //console.log(JSON.stringify(result, null, 2));
     //io_relay.emit('device_info',info_obj);
 };
 
@@ -105,14 +103,9 @@ var host = info_obj.ip,
 
 api = new HueApi(host, username);
 
-// Using a promise
-api.lights()
-    .then(displayResult)
-    .done();
-
 // Using a callback
 api.lights(function(err, lights) {
-    if (err) throw err;
+    if (err) console.log(err);
     displayResult(lights);
 });
 
@@ -303,16 +296,22 @@ io_relay.on('set_thermostat', function (data) {
 });
 
 io_relay.on('lights', function (light) {
-  console.log("data.lights | " + light.id);
+
+  set_light(light.id,light.state);
+//var state = {"rgb":light.state.rgb};
+/*for (var i=0; i < info_obj.lights.length; i++) {
+  console.log("info_obj.lights | " + info_obj.lights[i].id);
+  set_light(info_obj.lights[i].id,state);
+}*/
+//console.log(light.id + " | " + light.state.rgb);
+  /*
   var state = [];
-  state['on'] = !light.selected;  
-  console.log(light.selected)
-  //state['bri'] = light.state.bri;
+  //state['on'] = !light.selected;
+  state['rgb'] = [200, 200, 200];
   if (light.state.hue) {
-    state['hue'] = "1000";
-    console.log("hue state " + light.state.hue);    
-  }
-  set_light(light.id,state);
+    //state['hue'] = "1000";
+    //console.log("hue state " + light.state.hue);
+  }*/
 });
 
 io_relay.on('link_lights', function (data) {
@@ -321,17 +320,6 @@ io_relay.on('link_lights', function (data) {
 });
 
 io_relay.emit('png_test');
-for (var i=0; i < info_obj.lights.length; i++) {
-  console.log("info_obj.lights | " + info_obj.lights[i].id);
-  var state = [];
-  state['on'] = true;
-  state['bri'] = 1000;
-  if (info_obj.lights[i].state.hue) {
-    state['hue'] = "1000";
-  console.log("hue state " + info_obj.lights[i].state.hue);
-  }
-  set_light(info_obj.lights[i].id,state);
-}
 
 io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
@@ -341,11 +329,11 @@ io_relay.on('png_test', function (data) {
 io_relay.on('media', function (data) {
   var command = data.cmd;
   if ( platform === "win32" ) {
-    if (command == "volume down"){
+    if (command == "volume_down"){
       spawn('nircmd.exe', ['mutesysvolume', '0']);        
       spawn('nircmd.exe', ['changesysvolume', '-5000']);
     }
-    if (command == "volume up"){  
+    if (command == "volume_up"){  
       spawn('nircmd.exe', ['mutesysvolume', '0']);
       spawn('nircmd.exe', ['changesysvolume', '+5000']);
     }
@@ -379,31 +367,22 @@ var hue = require("node-hue-api"),
     lightState = hue.lightState;
 
 var displayResult = function(result) {
-    console.log("setting light state result | " + JSON.stringify(result, null, 2));
+    //console.log("result | " + JSON.stringify(result));
 };
 
 var host = info_obj.ip,
     username = info_obj.user,
-    api = new HueApi(host, username),
-    state;
+    api = new HueApi(host, username);
 
-api.setLightState(light_id, state)
-    .then(displayResult)
-    .done();
+api.setLightState(light_id, state, function(err, lights) {
+    if (err) console.log(err);
+    displayResult(lights);
+});
+
+console.log(light_id + " | setting state");
 }
 
 // -------------------------------------------------------- //
-
-/*var therm_ip = "";
-function thermostat_loop(){
-  setTimeout(function () {
-    if (therm_ip != "") {
-      get_therm_state(therm_ip,"update");    
-    }
-    thermostat_loop();
-  }, 10 * 1000)
-}*/
-//thermostat_loop();
 
 var ping_time = Date.now();
 function ping(){
