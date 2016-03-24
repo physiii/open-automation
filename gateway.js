@@ -329,11 +329,11 @@ io_relay.on('png_test', function (data) {
 io_relay.on('media', function (data) {
   var command = data.cmd;
   if ( platform === "win32" ) {
-    if (command == "volume_down"){
+    if (command == "volume down"){
       spawn('nircmd.exe', ['mutesysvolume', '0']);        
       spawn('nircmd.exe', ['changesysvolume', '-5000']);
     }
-    if (command == "volume_up"){  
+    if (command == "volume up"){  
       spawn('nircmd.exe', ['mutesysvolume', '0']);
       spawn('nircmd.exe', ['changesysvolume', '+5000']);
     }
