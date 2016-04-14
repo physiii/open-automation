@@ -9,7 +9,7 @@ Home automation and media server for controlling devices like cameras, lights, t
 3. sudo nano /etc/rc.local <br><b>su pi -c 'sudo node ~/home-gateway/gateway >> ~/home-gateway/gateway.log 2>&1 &'</b>
 
 ##camera (optional)
-1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
+1. sudo apt-get install apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev xdotool
 2. sudo a2enmod cgi;
 3. sudo nano /etc/default/motion
 <br><b>start_motion_daemon=yes</b>
