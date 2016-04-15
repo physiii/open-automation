@@ -36,7 +36,7 @@ var connection = mysql.createConnection({
   password : 'password',
   database : 'device'
 });
-var lights = [];
+
 var username = "init";
 var device_name = "init";
 var ip = "init";
@@ -50,14 +50,14 @@ var info_obj = JSON.parse(fs.readFileSync('info.json', 'utf8'));
 var bridge_obj = {};
 var displayBridges = function(bridge) {
     bridge_obj = bridge[0];
-    //info_obj['ip'] = bridge_obj.ipaddress;
+    info_obj['ip'] = bridge_obj.ipaddress;
     fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
     console.log("Hue Bridges Found: " + JSON.stringify(bridge));
 };
 hue.nupnpSearch().then(displayBridges).done();
 
 // ----------------------  link bridge  ------------------- //
-//link_hue_bridge(info_obj.ip);
+link_hue_bridge(info_obj.ip);
 function link_hue_bridge(ipaddress) {
 
 var HueApi = require("node-hue-api").HueApi;
@@ -291,7 +291,7 @@ io_relay.on('get_thermostat', function (data) {
 });
 
 io_relay.on('set_thermostat', function (data) {
-  set_thermostat(data.state.new_state);
+  set_thermostat(data);
   console.log("set_thermostat |  " + JSON.stringify(data));  
 });
 
@@ -319,36 +319,6 @@ io_relay.on('link_lights', function (data) {
   console.log("emitting light info");  
 });
 
-io_relay.on('light_theme', function (data) {
-  api.lights(function(err, lights) {
-    if (err) console.log(err);
-    displayResult(lights);
-  });
-  if (data.theme === 'presence') {
-    for (i = 0; i < info_obj.lights.length; i++) {
-      var state = {"on":true,"bri":"100"}
-      if (info_obj.lights[i].state.on == false) {
-        set_light(info_obj.lights[i].id,state);
-        console.log('setting ' + info_obj.lights[i].id );
-      }
-    }
-  }
-  if (data.theme === 'alert') {
-    for (i = 0; i < info_obj.lights.length; i++) {
-      var state = {"on":true,"rgb":[255,0,0],"bri":"255"}
-      console.log(info_obj.lights[i].id);
-      set_light(info_obj.lights[i].id,state);      
-    }
-  }
-  console.log("setting theme | " + data.theme);  
-});
-
-  io_relay.on('window_sensor', function (data) {
-    var _mac = data.mac;
-    var _magnitude = data.magnitude;
-    console.log( _mac + " | window_sensor data " + _magnitude);
-  });
-  
 io_relay.emit('png_test');
 
 io_relay.on('png_test', function (data) {
@@ -359,11 +329,11 @@ io_relay.on('png_test', function (data) {
 io_relay.on('media', function (data) {
   var command = data.cmd;
   if ( platform === "win32" ) {
-    if (command == "volume_down"){
+    if (command == "volume down"){
       spawn('nircmd.exe', ['mutesysvolume', '0']);        
       spawn('nircmd.exe', ['changesysvolume', '-5000']);
     }
-    if (command == "volume_up"){  
+    if (command == "volume up"){  
       spawn('nircmd.exe', ['mutesysvolume', '0']);
       spawn('nircmd.exe', ['changesysvolume', '+5000']);
     }
@@ -409,7 +379,7 @@ api.setLightState(light_id, state, function(err, lights) {
     displayResult(lights);
 });
 
-console.log(light_id + " | setting state: " + JSON.stringify(state));
+console.log(light_id + " | setting state");
 }
 
 // -------------------------------------------------------- //
@@ -422,24 +392,26 @@ function ping(){
 }
 
 function set_thermostat(state) {
-  console.log(state);
-  var request = require('request');
-  request.post({
-    headers: {'content-type' : 'application/x-www-form-urlencoded'},
-    url:     'http://'+therm_ip+'/tstat',
-    body:    JSON.stringify(state)
-  }, function(error, response, body){
-    console.log('set_thermostat: ' + body);
-    get_therm_state(therm_ip,"update");
-  });
+
+var request = require('request');
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'http://'+therm_ip+'/tstat',
+  body:    JSON.stringify(state)
+}, function(error, response, body){
+  console.log(body);
+  get_therm_state(therm_ip,"update");
+});
 }
 
-function get_therm_state( ipaddress, cmd ) {
-request.get(
-'http://'+ipaddress+'/tstat',
-function (error, response, data) {
-  if (!error && response.statusCode == 200) {
-        console.log('thermostat says: ' + data);
+function get_therm_state( ipaddress, cmd ){
+
+    request.get(
+      'http://'+ipaddress+'/tstat',
+      function (error, response, data) {
+        if (!error && response.statusCode == 200) {
+          console.log('thermostat says: ' + data);
+
     if (isJSON(data)) { 
       var data_obj = {};    
       data_obj['current_state'] = JSON.parse(data);
@@ -449,18 +421,20 @@ function (error, response, data) {
       data_obj['cmd'] = cmd;
       //console.log("data_obj is " + JSON.stringify(data_obj));
       if (cmd === "link") {
-          io_relay.emit('link_thermostat',data_obj);
-        }
-        if (cmd === "update") {
-          //console.log("have current_state?? --> " + )
-          io_relay.emit('thermostat_state',data_obj);
-        }      
+        io_relay.emit('link_thermostat',data_obj);
       }
-      if (error !== null) {
-        console.log('error ---> ' + error);
+      if (cmd === "update") {
+        //console.log("have current_state?? --> " + )
+        io_relay.emit('thermostat_state',data_obj);
       }      
     }
-  });
+    if (error !== null) {
+      console.log('error ---> ' + error);
+    }          
+          
+        }
+      });
+      console.log("getting thermostat state");
 }
 
 function send_command(command){
