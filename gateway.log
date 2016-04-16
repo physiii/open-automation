@@ -2310,3 +2310,94 @@ setting light state result | true
 setting light state result | true
 token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
 Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+replied in 45ms
+Hue Bridges Found: []
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+emitting light info
+media | volume up
+media | volume down
+media | volume down
+1 | setting state: {"on":true,"rgb":[0,0,255]}
+2 | setting state: {"on":true,"rgb":[0,0,255]}
+3 | setting state: {"on":true,"rgb":[0,0,255]}
+5 | setting state: {"on":true,"rgb":[0,0,255]}
+6 | setting state: {"on":true,"rgb":[0,0,255]}
+7 | setting state: {"on":true,"rgb":[0,0,255]}
+8 | setting state: {"on":true,"rgb":[0,0,255]}
+9 | setting state: {"on":true,"rgb":[0,0,255]}
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/physiii/code/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/physiii/code/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/physiii/code/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+media | volume down
+media | mute
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+emitting light info
+To use camera and file server, forward port 3032 to init in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+Hue Bridges Found: []
+replied in 65177ms
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+received: session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba406577665436495 | checking with: /session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+camera proxied
+emitting light info
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/physiii/code/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/physiii/code/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/physiii/code/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+replied in 56ms
+Hue Bridges Found: []
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
