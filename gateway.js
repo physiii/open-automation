@@ -269,6 +269,11 @@ wss.on('connection', function connection(ws) {
 // ------------------  relayed socket.io messages  ------------------- //
 //var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
 
+
+//
+//if disconnected from relay, loop reconnect attemp !!!!!
+//
+
 io_relay.on('token', function (data) {
   token = data.token;
   session_string = '/' + token;

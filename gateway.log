@@ -2401,3 +2401,471 @@ media | volume up
 media | volume down
 media | volume down
 media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+received: session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba406577665436495 | checking with: /session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+camera proxied
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/physiii/code/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/physiii/code/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/physiii/code/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+replied in 56ms
+Hue Bridges Found: []
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/physiii/code/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/physiii/code/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/physiii/code/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+replied in 50ms
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+Hue Bridges Found: []
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+emitting light info
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | mute
+1 | setting state: {"on":true,"rgb":[0,0,255]}
+2 | setting state: {"on":true,"rgb":[0,0,255]}
+3 | setting state: {"on":true,"rgb":[0,0,255]}
+5 | setting state: {"on":true,"rgb":[0,0,255]}
+6 | setting state: {"on":true,"rgb":[0,0,255]}
+7 | setting state: {"on":true,"rgb":[0,0,255]}
+8 | setting state: {"on":true,"rgb":[0,0,255]}
+9 | setting state: {"on":true,"rgb":[0,0,255]}
+1 | setting state: {"on":true,"rgb":[255,0,255]}
+2 | setting state: {"on":true,"rgb":[255,0,255]}
+3 | setting state: {"on":true,"rgb":[255,0,255]}
+5 | setting state: {"on":true,"rgb":[255,0,255]}
+6 | setting state: {"on":true,"rgb":[255,0,255]}
+7 | setting state: {"on":true,"rgb":[255,0,255]}
+8 | setting state: {"on":true,"rgb":[255,0,255]}
+9 | setting state: {"on":true,"rgb":[255,0,255]}
+To use camera and file server, forward port 3032 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/physiii/code/home-gateway/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+replied in 45ms
+Hue Bridges Found: []
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+To use camera and file server, forward port 3032 to 192.168.0.6 in your routers settings
+Enter device ID (94de80c37dcf) at http://dev.pyfi.org
+replied in 45ms
+Hue Bridges Found: []
+token set c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+emitting light info
+1 | setting state: {"on":true,"rgb":[0,0,255]}
+2 | setting state: {"on":true,"rgb":[0,0,255]}
+3 | setting state: {"on":true,"rgb":[0,0,255]}
+5 | setting state: {"on":true,"rgb":[0,0,255]}
+6 | setting state: {"on":true,"rgb":[0,0,255]}
+7 | setting state: {"on":true,"rgb":[0,0,255]}
+8 | setting state: {"on":true,"rgb":[0,0,255]}
+9 | setting state: {"on":true,"rgb":[0,0,255]}
+1 | setting state: {"bri":"126"}
+2 | setting state: {"bri":"126"}
+3 | setting state: {"bri":"126"}
+5 | setting state: {"bri":"126"}
+6 | setting state: {"bri":"126"}
+7 | setting state: {"bri":"126"}
+8 | setting state: {"bri":"126"}
+9 | setting state: {"bri":"126"}
+1 | setting state: {"bri":"124"}
+2 | setting state: {"bri":"124"}
+3 | setting state: {"bri":"124"}
+5 | setting state: {"bri":"124"}
+6 | setting state: {"bri":"124"}
+7 | setting state: {"bri":"124"}
+8 | setting state: {"bri":"124"}
+9 | setting state: {"bri":"124"}
+1 | setting state: {"bri":"123"}
+2 | setting state: {"bri":"123"}
+3 | setting state: {"bri":"123"}
+5 | setting state: {"bri":"123"}
+6 | setting state: {"bri":"123"}
+7 | setting state: {"bri":"123"}
+8 | setting state: {"bri":"123"}
+9 | setting state: {"bri":"123"}
+1 | setting state: {"bri":"122"}
+2 | setting state: {"bri":"122"}
+3 | setting state: {"bri":"122"}
+5 | setting state: {"bri":"122"}
+6 | setting state: {"bri":"122"}
+7 | setting state: {"bri":"122"}
+8 | setting state: {"bri":"122"}
+9 | setting state: {"bri":"122"}
+1 | setting state: {"bri":"121"}
+2 | setting state: {"bri":"121"}
+3 | setting state: {"bri":"121"}
+5 | setting state: {"bri":"121"}
+6 | setting state: {"bri":"121"}
+7 | setting state: {"bri":"121"}
+8 | setting state: {"bri":"121"}
+9 | setting state: {"bri":"121"}
+1 | setting state: {"bri":"120"}
+2 | setting state: {"bri":"120"}
+3 | setting state: {"bri":"120"}
+5 | setting state: {"bri":"120"}
+6 | setting state: {"bri":"120"}
+7 | setting state: {"bri":"120"}
+8 | setting state: {"bri":"120"}
+9 | setting state: {"bri":"120"}
+1 | setting state: {"bri":"119"}
+2 | setting state: {"bri":"119"}
+3 | setting state: {"bri":"119"}
+5 | setting state: {"bri":"119"}
+6 | setting state: {"bri":"119"}
+7 | setting state: {"bri":"119"}
+8 | setting state: {"bri":"119"}
+9 | setting state: {"bri":"119"}
+1 | setting state: {"bri":"118"}
+2 | setting state: {"bri":"118"}
+3 | setting state: {"bri":"118"}
+5 | setting state: {"bri":"118"}
+6 | setting state: {"bri":"118"}
+7 | setting state: {"bri":"118"}
+8 | setting state: {"bri":"118"}
+9 | setting state: {"bri":"118"}
+1 | setting state: {"bri":"117"}
+2 | setting state: {"bri":"117"}
+3 | setting state: {"bri":"117"}
+5 | setting state: {"bri":"117"}
+6 | setting state: {"bri":"117"}
+7 | setting state: {"bri":"117"}
+8 | setting state: {"bri":"117"}
+9 | setting state: {"bri":"117"}
+1 | setting state: {"bri":"116"}
+2 | setting state: {"bri":"116"}
+3 | setting state: {"bri":"116"}
+5 | setting state: {"bri":"116"}
+6 | setting state: {"bri":"116"}
+7 | setting state: {"bri":"116"}
+8 | setting state: {"bri":"116"}
+9 | setting state: {"bri":"116"}
+1 | setting state: {"bri":"115"}
+2 | setting state: {"bri":"115"}
+3 | setting state: {"bri":"115"}
+5 | setting state: {"bri":"115"}
+6 | setting state: {"bri":"115"}
+7 | setting state: {"bri":"115"}
+8 | setting state: {"bri":"115"}
+9 | setting state: {"bri":"115"}
+1 | setting state: {"bri":"114"}
+2 | setting state: {"bri":"114"}
+3 | setting state: {"bri":"114"}
+5 | setting state: {"bri":"114"}
+6 | setting state: {"bri":"114"}
+7 | setting state: {"bri":"114"}
+8 | setting state: {"bri":"114"}
+9 | setting state: {"bri":"114"}
+1 | setting state: {"bri":"113"}
+2 | setting state: {"bri":"113"}
+3 | setting state: {"bri":"113"}
+5 | setting state: {"bri":"113"}
+6 | setting state: {"bri":"113"}
+7 | setting state: {"bri":"113"}
+8 | setting state: {"bri":"113"}
+9 | setting state: {"bri":"113"}
+1 | setting state: {"bri":"112"}
+2 | setting state: {"bri":"112"}
+3 | setting state: {"bri":"112"}
+5 | setting state: {"bri":"112"}
+6 | setting state: {"bri":"112"}
+7 | setting state: {"bri":"112"}
+8 | setting state: {"bri":"112"}
+9 | setting state: {"bri":"112"}
+1 | setting state: {"bri":"111"}
+2 | setting state: {"bri":"111"}
+3 | setting state: {"bri":"111"}
+5 | setting state: {"bri":"111"}
+6 | setting state: {"bri":"111"}
+7 | setting state: {"bri":"111"}
+8 | setting state: {"bri":"111"}
+9 | setting state: {"bri":"111"}
+1 | setting state: {"bri":"110"}
+2 | setting state: {"bri":"110"}
+3 | setting state: {"bri":"110"}
+5 | setting state: {"bri":"110"}
+6 | setting state: {"bri":"110"}
+7 | setting state: {"bri":"110"}
+8 | setting state: {"bri":"110"}
+9 | setting state: {"bri":"110"}
+1 | setting state: {"bri":"109"}
+2 | setting state: {"bri":"109"}
+3 | setting state: {"bri":"109"}
+5 | setting state: {"bri":"109"}
+6 | setting state: {"bri":"109"}
+7 | setting state: {"bri":"109"}
+8 | setting state: {"bri":"109"}
+9 | setting state: {"bri":"109"}
+1 | setting state: {"bri":"110"}
+2 | setting state: {"bri":"110"}
+3 | setting state: {"bri":"110"}
+5 | setting state: {"bri":"110"}
+6 | setting state: {"bri":"110"}
+7 | setting state: {"bri":"110"}
+8 | setting state: {"bri":"110"}
+9 | setting state: {"bri":"110"}
+1 | setting state: {"bri":"111"}
+2 | setting state: {"bri":"111"}
+3 | setting state: {"bri":"111"}
+5 | setting state: {"bri":"111"}
+6 | setting state: {"bri":"111"}
+7 | setting state: {"bri":"111"}
+8 | setting state: {"bri":"111"}
+9 | setting state: {"bri":"111"}
+1 | setting state: {"bri":"112"}
+2 | setting state: {"bri":"112"}
+3 | setting state: {"bri":"112"}
+5 | setting state: {"bri":"112"}
+6 | setting state: {"bri":"112"}
+7 | setting state: {"bri":"112"}
+8 | setting state: {"bri":"112"}
+9 | setting state: {"bri":"112"}
+1 | setting state: {"bri":"113"}
+2 | setting state: {"bri":"113"}
+3 | setting state: {"bri":"113"}
+5 | setting state: {"bri":"113"}
+6 | setting state: {"bri":"113"}
+7 | setting state: {"bri":"113"}
+8 | setting state: {"bri":"113"}
+9 | setting state: {"bri":"113"}
+1 | setting state: {"bri":"114"}
+2 | setting state: {"bri":"114"}
+3 | setting state: {"bri":"114"}
+5 | setting state: {"bri":"114"}
+6 | setting state: {"bri":"114"}
+7 | setting state: {"bri":"114"}
+8 | setting state: {"bri":"114"}
+9 | setting state: {"bri":"114"}
+1 | setting state: {"bri":"115"}
+2 | setting state: {"bri":"115"}
+3 | setting state: {"bri":"115"}
+5 | setting state: {"bri":"115"}
+6 | setting state: {"bri":"115"}
+7 | setting state: {"bri":"115"}
+8 | setting state: {"bri":"115"}
+9 | setting state: {"bri":"115"}
+1 | setting state: {"bri":"116"}
+2 | setting state: {"bri":"116"}
+3 | setting state: {"bri":"116"}
+5 | setting state: {"bri":"116"}
+6 | setting state: {"bri":"116"}
+7 | setting state: {"bri":"116"}
+8 | setting state: {"bri":"116"}
+9 | setting state: {"bri":"116"}
+1 | setting state: {"bri":"117"}
+2 | setting state: {"bri":"117"}
+3 | setting state: {"bri":"117"}
+5 | setting state: {"bri":"117"}
+6 | setting state: {"bri":"117"}
+7 | setting state: {"bri":"117"}
+8 | setting state: {"bri":"117"}
+9 | setting state: {"bri":"117"}
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+emitting light info
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume up
+emitting light info
+received: session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba406577665436495 | checking with: /session/c6171c0306d7840a67c9e34df7ac8329bbb14125f7f8c68dea9cb6082a77bc7bb98fa78cf2c4337e70dfe7c2c6336c1f314d40cba4065776654364957c03e8d3
+camera proxied
+To use camera and file server, forward port 3032 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/physiii/code/home-gateway/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
