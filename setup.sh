@@ -1,3 +1,4 @@
+sudo apt-get update
 sudo apt-get install -y xdotool apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev
 sudo cp motion.conf /etc/motion/motion.conf
 sudo cp motion /etc/default/motion
