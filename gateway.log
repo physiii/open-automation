@@ -2940,3 +2940,179 @@ media | volume up
 media | volume up
 media | volume down
 media | volume down
+
+/home/pi/home-gateway/node_modules/node-hue-api/node_modules/axios/lib/axios.js:45
+  var promise = Promise.resolve(config);
+                ^
+ReferenceError: Promise is not defined
+    at Axios.request (/home/pi/home-gateway/node_modules/node-hue-api/node_modules/axios/lib/axios.js:45:17)
+    at wrap (/home/pi/home-gateway/node_modules/node-hue-api/node_modules/axios/lib/helpers/bind.js:9:15)
+    at Object.module.exports.invoke (/home/pi/home-gateway/node_modules/node-hue-api/hue-api/httpPromise.js:126:23)
+    at Object.module.exports.locateBridges [as nupnpSearch] (/home/pi/home-gateway/node_modules/node-hue-api/hue-api/bridge-discovery.js:31:24)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:57:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+
+/home/pi/home-gateway/node_modules/node-hue-api/node_modules/axios/lib/axios.js:45
+  var promise = Promise.resolve(config);
+                ^
+ReferenceError: Promise is not defined
+    at Axios.request (/home/pi/home-gateway/node_modules/node-hue-api/node_modules/axios/lib/axios.js:45:17)
+    at wrap (/home/pi/home-gateway/node_modules/node-hue-api/node_modules/axios/lib/helpers/bind.js:9:15)
+    at Object.module.exports.invoke (/home/pi/home-gateway/node_modules/node-hue-api/hue-api/httpPromise.js:126:23)
+    at Object.module.exports.locateBridges [as nupnpSearch] (/home/pi/home-gateway/node_modules/node-hue-api/hue-api/bridge-discovery.js:31:24)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:57:5)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+To use camera and file server, forward port 3034 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/home-gateway/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo EAI_AGAIN www.meethue.com:443
+    at Object.exports._errnoException (util.js:870:11)
+    at errnoException (dns.js:31:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+To use camera and file server, forward port 3040 to 192.168.0.30 in your routers settings
+Enter device ID (b827ebb95dad) at http://dev.pyfi.org
+replied in 571ms
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+token set 88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+emitting light info
+emitting light info
+emitting light info
+media | volume down
+emitting light info
+emitting light info
+emitting light info
+To use camera and file server, forward port 3040 to 192.168.0.30 in your routers settings
+Enter device ID (b827ebb95dad) at http://dev.pyfi.org
+replied in 950ms
+token set 88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+emitting light info
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+To use camera and file server, forward port 3040 to init in your routers settings
+Enter device ID (b827ebb95dad) at http://dev.pyfi.org
+replied in 1010ms
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+token set 88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/pi/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/pi/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/pi/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/pi/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/pi/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/pi/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/pi/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/pi/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+events.js:141
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::9090
+    at Object.exports._errnoException (util.js:870:11)
+    at exports._exceptionWithHostPort (util.js:893:20)
+    at Server._listen2 (net.js:1237:14)
+    at listen (net.js:1273:10)
+    at Server.listen (net.js:1369:5)
+    at Application.app.listen (/home/pi/home-gateway/node_modules/koa/lib/application.js:74:24)
+    at startServer (/home/pi/home-gateway/gateway.js:209:7)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:213:1)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3

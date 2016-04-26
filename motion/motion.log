@@ -1,0 +1,87 @@
+[0] [ALR] [ALL] conf_load: Configfile -n not found - trying defaults.: 
+[0] [NTC] [ALL] conf_load: Processing thread 0 - config file /home/pi/home-gateway/motion/motion.conf
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "ffmpeg_deinterlace"
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "sdl_threadnr"
+[0] [NTC] [ALL] motion_startup: Motion mmaltest Started
+[0] [ERR] [ALL] myfopen: Error opening file /var/log/motion/motion.log with mode a: 
+[0] [EMG] [ALL] motion_startup: Exit motion, cannot create log file /var/log/motion/motion.log: 
+[0] [ALR] [ALL] conf_load: Configfile -n not found - trying defaults.: 
+[0] [NTC] [ALL] conf_load: Processing thread 0 - config file /home/pi/home-gateway/motion/motion.conf
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "ffmpeg_deinterlace"
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "sdl_threadnr"
+[0] [NTC] [ALL] motion_startup: Motion mmaltest Started
+[0] [NTC] [ALL] motion_startup: Logging to file (/var/log/motion/motion.log)
+[0] [ALR] [ALL] conf_load: Configfile -n not found - trying defaults.: 
+[0] [NTC] [ALL] conf_load: Processing thread 0 - config file /home/pi/home-gateway/motion/motion.conf
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "ffmpeg_deinterlace"
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "sdl_threadnr"
+[0] [NTC] [ALL] motion_startup: Motion mmaltest Started
+[0] [NTC] [ALL] motion_startup: Logging to file (/var/log/motion/motion.log)
+[0] [ALR] [ALL] conf_load: Configfile -n not found - trying defaults.: 
+[0] [NTC] [ALL] conf_load: Processing thread 0 - config file /home/pi/home-gateway/motion/motion.conf
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "ffmpeg_deinterlace"
+[0] [ALR] [ALL] conf_cmdparse: Unknown config option "sdl_threadnr"
+[0] [NTC] [ALL] motion_startup: Motion mmaltest Started
+[0] [NTC] [ALL] motion_startup: Logging to file (/var/log/motion/motion.log)
+[0] [NTC] [ALL] conf_load: Processing thread 0 - config file motion-mmalcam-both.conf
+[0] [NTC] [ALL] motion_startup: Motion mmaltest Started
+[0] [NTC] [ALL] motion_startup: Logging to syslog
+[0] [NTC] [ALL] motion_startup: Using log type (ALL) log level (INF)
+[0] [NTC] [ENC] ffmpeg_init: ffmpeg LIBAVCODEC_BUILD 3670272 LIBAVFORMAT_BUILD 3670272
+[0] [NTC] [ALL] main: Thread 1 is from motion-mmalcam-both.conf
+[0] [NTC] [ALL] main: Thread 1 is device: /dev/video0 input -1
+[0] [NTC] [ALL] main: Stream port 8081
+[0] [NTC] [ALL] main: Waiting for threads to finish, pid: 2499
+[1] [NTC] [ALL] motion_init: Thread 1 started , motion detection Enabled
+[1] [ALR] [VID] mmalcam_start: MMAL Camera thread starting... for camera (vc.ril.camera) of 640 x 480 at 4 fps
+[1] [ALR] [VID] mmalcam_start: MMAL Camera using video capture
+[0] [NTC] [STR] httpd_run: motion-httpd testing : IPV4 addr: 0.0.0.0 port: 8080
+[0] [NTC] [STR] httpd_run: motion-httpd Bound : IPV4 addr: 0.0.0.0 port: 8080
+[0] [NTC] [STR] httpd_run: motion-httpd/mmaltest running, accepting connections
+[0] [NTC] [STR] httpd_run: motion-httpd: waiting for data on 0.0.0.0 port TCP 8080
+[1] [NTC] [VID] MMAL camera component created
+[1] [NTC] [ALL] image_ring_resize: Resizing pre_capture buffer to 1 items
+[1] [NTC] [STR] http_bindsock: motion-stream testing : IPV4 addr: 0.0.0.0 port: 8081
+[1] [NTC] [STR] http_bindsock: motion-stream Bound : IPV4 addr: 0.0.0.0 port: 8081
+[1] [NTC] [ALL] motion_init: Started motion-stream server in port 8081 auth Disabled
+[1] [NTC] [ALL] image_ring_resize: Resizing pre_capture buffer to 9 items
+[0] [NTC] [STR] httpd_run: motion-httpd - Read from client
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[0] [NTC] [STR] httpd_run: motion-httpd - Read from client
+[1] [INF] [ALL] motion_loop: Lightswitch detected
+[1] [INF] [ALL] motion_loop: Lightswitch detected
+[1] [NTC] [ALL] motion_loop: fps: 3.855154 idle 2.22% over 1.36%
+[1] [NTC] [EVT] event_new_video FPS 4
+[1] [NTC] [ENC] ffmpeg_open Selected Output FPS 4
+[1] [INF] [ENC] ffmpeg_avcodec_log: Using AVStream.codec.time_base as a timebase hint to the muxer is deprecated. Set AVStream.time_base instead.
+ - flag 24
+[1] [NTC] [EVT] event_newfile: File of type 8 saved to: /run/shm/20160426225144.avi
+[1] [NTC] [ALL] motion_detected: Motion detected - starting event 1
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.292691 idle 2.36% over 19.47%
+[1] [NTC] [ALL] motion_loop: fps: 3.378493 idle 6.42% over 21.48%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 4.070866 idle 36.89% over 3.37%
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160426225144.jpg
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160426225144.JPG
+[1] [NTC] [ALL] motion_loop: End of event 1
+[1] [NTC] [ALL] motion_loop: fps: 4.036164 idle 62.55% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.957763 idle 61.17% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 4.021798 idle 60.26% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.996850 idle 60.62% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.995493 idle 60.08% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 4.001392 idle 61.57% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998129 idle 61.84% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997106 idle 55.70% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998113 idle 50.26% over 0.00%
