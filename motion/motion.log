@@ -3651,3 +3651,387 @@ mmal: mmal_vc_component_enable: failed to enable component: ENOSPC
 [1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
 [1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
 [1] [NTC] [ALL] motion_loop: fps: 3.998401 idle 37.54% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999088 idle 36.78% over 0.00%
+[1] [NTC] [EVT] event_new_video FPS 4
+[1] [NTC] [ENC] ffmpeg_open Selected Output FPS 4
+[1] [INF] [ENC] ffmpeg_avcodec_log: Using AVStream.codec.time_base as a timebase hint to the muxer is deprecated. Set AVStream.time_base instead.
+ - flag 24
+[1] [NTC] [EVT] event_newfile: File of type 8 saved to: /run/shm/20160427004456.avi
+[1] [NTC] [ALL] motion_detected: Motion detected - starting event 11
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.697391 idle 19.83% over 8.41%
+[1] [NTC] [ALL] motion_loop: fps: 3.779675 idle 13.13% over 8.52%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.900917 idle 20.88% over 6.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.861645 idle 27.14% over 5.89%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 4.074681 idle 35.89% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160427004456.jpg
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160427004456.JPG
+[1] [NTC] [ALL] motion_loop: End of event 11
+[1] [NTC] [ALL] motion_loop: fps: 4.001008 idle 33.13% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.988100 idle 33.45% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 4.007213 idle 31.58% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.996403 idle 32.41% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997330 idle 37.30% over 0.00%
+[1] [NTC] [EVT] event_new_video FPS 4
+[1] [NTC] [ENC] ffmpeg_open Selected Output FPS 4
+[1] [INF] [ENC] ffmpeg_avcodec_log: Using AVStream.codec.time_base as a timebase hint to the muxer is deprecated. Set AVStream.time_base instead.
+ - flag 24
+[1] [NTC] [EVT] event_newfile: File of type 8 saved to: /run/shm/20160427004548.avi
+[1] [NTC] [ALL] motion_detected: Motion detected - starting event 12
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.793296 idle 29.48% over 6.10%
+[1] [NTC] [ALL] motion_loop: fps: 3.872172 idle 29.19% over 6.10%
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160427004548.jpg
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160427004548.JPG
+[1] [NTC] [ALL] motion_loop: End of event 12
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 4.095138 idle 42.06% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.987018 idle 45.90% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.991092 idle 46.14% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 4.007968 idle 45.39% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.994823 idle 47.44% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999376 idle 55.22% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999808 idle 52.02% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997777 idle 43.89% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998768 idle 44.14% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999264 idle 52.22% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 59.68% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997985 idle 52.96% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998257 idle 45.09% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999280 idle 51.89% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 58.61% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999152 idle 53.50% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999152 idle 54.64% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999120 idle 54.43% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999024 idle 47.81% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 44.14% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999136 idle 50.74% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999136 idle 52.20% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 44.06% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998081 idle 51.84% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.995078 idle 49.97% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.996020 idle 39.12% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997202 idle 39.64% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997681 idle 44.20% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998992 idle 47.59% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.996515 idle 51.95% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997889 idle 49.74% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999360 idle 48.84% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998513 idle 48.41% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998433 idle 41.77% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998609 idle 44.89% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999328 idle 52.71% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999072 idle 50.88% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998992 idle 48.48% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 44.92% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997090 idle 40.61% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997905 idle 43.61% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997378 idle 44.17% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.996627 idle 42.03% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998369 idle 38.62% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.995605 idle 38.17% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997170 idle 37.21% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999376 idle 35.77% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998513 idle 35.08% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999136 idle 34.22% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999072 idle 33.30% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 32.73% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999040 idle 32.48% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 32.27% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 32.71% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 31.00% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 29.84% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997729 idle 28.30% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998273 idle 26.45% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999248 idle 29.58% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998720 idle 32.56% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999056 idle 30.22% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998992 idle 27.86% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998992 idle 29.79% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999168 idle 44.01% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999152 idle 45.51% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999040 idle 35.97% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999072 idle 36.46% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999024 idle 34.75% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999136 idle 43.80% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999152 idle 49.20% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998864 idle 41.46% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997729 idle 34.51% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997346 idle 30.62% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998544 idle 31.10% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998864 idle 31.20% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998816 idle 32.23% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999056 idle 32.88% over 0.00%
+[1] [NTC] [EVT] event_new_video FPS 4
+[1] [NTC] [ENC] ffmpeg_open Selected Output FPS 4
+[1] [INF] [ENC] ffmpeg_avcodec_log: Using AVStream.codec.time_base as a timebase hint to the muxer is deprecated. Set AVStream.time_base instead.
+ - flag 24
+[1] [NTC] [EVT] event_newfile: File of type 8 saved to: /run/shm/20160427005227.avi
+[1] [NTC] [ALL] motion_detected: Motion detected - starting event 13
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 32.04% over 1.19%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.813737 idle 29.35% over 6.76%
+[1] [NTC] [ALL] motion_loop: fps: 3.885245 idle 34.54% over 5.57%
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160427005227.jpg
+[1] [NTC] [EVT] event_newfile: File of type 1 saved to: /run/shm/20160427005227.JPG
+[1] [NTC] [ALL] motion_loop: End of event 13
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 4.042479 idle 50.30% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.965013 idle 58.97% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 4.006972 idle 52.48% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 4.002658 idle 46.05% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.995796 idle 51.70% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 4.000624 idle 53.77% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998816 idle 45.79% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998784 idle 49.94% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999392 idle 55.32% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998880 idle 43.46% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999024 idle 46.85% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997234 idle 52.41% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997841 idle 47.60% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998641 idle 44.66% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998241 idle 41.68% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998513 idle 41.82% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997761 idle 40.79% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997346 idle 41.49% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.996579 idle 40.63% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998145 idle 38.07% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998960 idle 37.65% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998784 idle 40.65% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999136 idle 39.58% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 36.91% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 38.22% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999040 idle 45.26% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999120 idle 54.50% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998992 idle 46.54% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998960 idle 36.44% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999056 idle 37.31% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 37.56% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997346 idle 35.68% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997442 idle 33.88% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999472 idle 32.51% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998001 idle 31.61% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997122 idle 30.36% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997106 idle 28.68% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997905 idle 28.16% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999056 idle 30.03% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997442 idle 30.41% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997330 idle 35.61% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998704 idle 40.53% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998944 idle 42.58% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997602 idle 46.04% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998241 idle 37.76% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999184 idle 38.06% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998848 idle 50.74% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999136 idle 45.23% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997921 idle 38.48% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998385 idle 39.81% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999104 idle 34.14% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998704 idle 30.61% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999104 idle 31.06% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999008 idle 31.73% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998928 idle 32.30% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 32.10% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.998976 idle 32.45% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997330 idle 32.62% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.997090 idle 32.79% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997602 idle 33.67% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.996052 idle 42.64% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997857 idle 48.89% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999184 idle 43.29% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.998592 idle 39.86% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999168 idle 42.29% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.999168 idle 51.48% over 0.00%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.999168 idle 57.78% over 0.00%
+[1] [NTC] [ALL] motion_loop: fps: 3.997378 idle 49.35% over 0.00%
+[1] [NTC] [EVT] event_new_video FPS 4
+[1] [NTC] [ENC] ffmpeg_open Selected Output FPS 4
+[1] [INF] [ENC] ffmpeg_avcodec_log: Using AVStream.codec.time_base as a timebase hint to the muxer is deprecated. Set AVStream.time_base instead.
+ - flag 24
+[1] [NTC] [EVT] event_newfile: File of type 8 saved to: /run/shm/20160427005818.avi
+[1] [NTC] [ALL] motion_detected: Motion detected - starting event 14
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.863629 idle 24.10% over 3.56%
+[1] [NTC] [ALL] motion_loop: fps: 3.833812 idle 5.80% over 5.15%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.876194 idle 4.26% over 4.14%
+[1] [NTC] [ALL] motion_loop: fps: 3.764210 idle 2.46% over 6.74%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.763544 idle 1.83% over 6.98%
+[1] [NTC] [ALL] motion_loop: fps: 3.876570 idle 3.98% over 4.16%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.895203 idle 7.64% over 3.89%
+[1] [NTC] [ALL] motion_loop: fps: 3.801443 idle 6.74% over 5.84%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.754881 idle 3.88% over 7.40%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.805001 idle 3.40% over 6.38%
+[1] [NTC] [ALL] motion_loop: fps: 3.757407 idle 4.83% over 7.63%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.741031 idle 6.61% over 8.15%
+[1] [NTC] [ALL] motion_loop: fps: 3.840570 idle 4.16% over 5.12%
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.jpg
+[1] [NTC] [EVT] event_newfile: File of type 2 saved to: /run/shm/lastsnap.JPG
+[1] [NTC] [ALL] motion_loop: fps: 3.771407 idle 6.88% over 7.19%

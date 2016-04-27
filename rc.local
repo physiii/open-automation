@@ -16,6 +16,8 @@ _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
+sudo modprobe bcm2835-v4l2
 export DISPLAY=':0.0'
-su pi -c 'cd ~/home-gateway && node gateway -p 3034 >> gateway.log 2>&1 &'
+su pi -c 'cd ~/home-gateway/motion && ./motion -c motion-mmalcam-both.conf >> motion.log 2>&1 &'
+su pi -c 'cd ~/home-gateway && node gateway -p 3041 >> gateway.log 2>&1 &'
 exit 0
