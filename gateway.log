@@ -3116,3 +3116,48 @@ Error: listen EADDRINUSE :::9090
     at Function.Module.runMain (module.js:442:10)
     at startup (node.js:136:18)
     at node.js:966:3
+emitting light info
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+To use camera and file server, forward port 3040 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/home-gateway/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo EAI_AGAIN www.meethue.com:443
+    at Object.exports._errnoException (util.js:870:11)
+    at errnoException (dns.js:31:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+To use camera and file server, forward port 3040 to 192.168.0.30 in your routers settings
+Enter device ID (b827ebb95dad) at http://dev.pyfi.org
+replied in 923ms
+token set 88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+To use camera and file server, forward port 3040 to init in your routers settings
+Enter device ID (b827ebb95dad) at http://dev.pyfi.org
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/init
+denied
+replied in 985ms
+token set 88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
+camera proxied
+emitting light info
