@@ -5,18 +5,17 @@ sudo ./configure --host=arm-unknown-linux-gnueabi --enable-static --disable-open
 sudo make
 sudo make install
 
-cd cd /usr/src
-git clone git://source.ffmpeg.org/ffmpeg.git
-cd ffmpeg
-sudo ./configure --enable-cross-compile --cross-prefix=${CCPREFIX} --arch=armel --target-os=linux --prefix=/my/path/were/i/keep/built/arm/stuff --enable-gpl --enable-libx264 --enable-nonfree --enable-libaacplus --extra-cflags="-I/my/path/were/i/keep/built/arm/stuff/include" --extra-ldflags="-L/usr/src" --extra-libs=-ldl
-sudo make
-sudo make install
-
-cd /usr/src
 wget http://mirrors.zerg.biz/alsa/lib/alsa-lib-1.0.25.tar.bz2
 tar xjf alsa-lib-1.0.25.tar.bz2
 cd alsa-lib-1.0.25/
 sudo ./configure --host=arm-unknown-linux-gnueabi --prefix=/usr/src
+sudo make
+sudo make install
+
+cd cd /usr/src
+git clone git://source.ffmpeg.org/ffmpeg.git
+cd ffmpeg
+sudo ./configure --enable-cross-compile --cross-prefix=${CCPREFIX} --arch=armel --target-os=linux --prefix=/usr/src --enable-gpl --enable-libx264 --enable-nonfree --enable-libaacplus --extra-cflags="-I/usr/src" --extra-ldflags="-L/usr/src" --extra-libs=-ldl
 sudo make
 sudo make install
 
