@@ -1,3 +1,5 @@
+sudo apt-get install libtool-bin
+
 cd /usr/src
 git clone git://git.videolan.org/x264
 cd x264
