@@ -5,9 +5,9 @@ sudo ./configure --host=arm-unknown-linux-gnueabi --enable-static --disable-open
 sudo make
 sudo make install
 
-wget http://mirrors.zerg.biz/alsa/lib/alsa-lib-1.0.25.tar.bz2
-tar xjf alsa-lib-1.0.25.tar.bz2
-cd alsa-lib-1.0.25/
+wget ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.1.1.tar.bz2
+tar xjf alsa-lib-1.1.1.tar.bz2
+cd alsa-lib-1.1.1.tar.bz2/
 sudo ./configure --host=arm-unknown-linux-gnueabi --prefix=/usr/src
 sudo make
 sudo make install
