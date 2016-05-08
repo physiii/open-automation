@@ -1,5 +1,6 @@
 sudo apt-get install libtool-bin libfftw3-dev pkg-config autoconf automake libtool unzip
 
+cd /usr/src
 wget http://tipok.org.ua/downloads/media/aacplus/libaacplus/libaacplus-2.0.2.tar.gz
 tar -xzf libaacplus-2.0.2.tar.gz
 cd libaacplus-2.0.2
