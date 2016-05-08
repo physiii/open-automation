@@ -4,9 +4,9 @@ cd /usr/src
 wget http://tipok.org.ua/downloads/media/aacplus/libaacplus/libaacplus-2.0.2.tar.gz
 tar -xzf libaacplus-2.0.2.tar.gz
 cd libaacplus-2.0.2
-./autogen.sh --enable-shared --enable-static
-make
-make install
+sudo ./autogen.sh --enable-shared --enable-static
+sudo make
+sudo make install
 ldconfig
 
 cd /usr/src
