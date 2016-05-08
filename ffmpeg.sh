@@ -1,4 +1,12 @@
-sudo apt-get install libtool-bin
+sudo apt-get install libtool-bin libfftw3-dev pkg-config autoconf automake libtool unzip
+
+wget http://tipok.org.ua/downloads/media/aacplus/libaacplus/libaacplus-2.0.2.tar.gz
+tar -xzf libaacplus-2.0.2.tar.gz
+cd libaacplus-2.0.2
+./autogen.sh --enable-shared --enable-static
+make
+make install
+ldconfig
 
 cd /usr/src
 git clone git://git.videolan.org/x264
