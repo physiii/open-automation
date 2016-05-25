@@ -276,6 +276,7 @@ wss.on('connection', function connection(ws) {
 
 io_relay.on('token', function (data) {
   token = data.token;
+  console.log("RECIEVED TOKEN | " + token);  
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
   info_obj['token'] = token;

@@ -3161,3 +3161,465 @@ Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
 received: session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e7 | checking with: /session/88e9eacd23a70effe3034d80e23ab91305ddaaa573f14aded3a6f96527a2ef87f8cbc77d87eeec41054f9e79755ed492afcde9dacadb258e8a8749e76ae58af0
 camera proxied
 emitting light info
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+replied in 443ms
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+media | volume up
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+replied in 612ms
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+1 | setting state: {"on":true,"rgb":[0,0,255]}
+2 | setting state: {"on":true,"rgb":[0,0,255]}
+3 | setting state: {"on":true,"rgb":[0,0,255]}
+5 | setting state: {"on":true,"rgb":[0,0,255]}
+6 | setting state: {"on":true,"rgb":[0,0,255]}
+7 | setting state: {"on":true,"rgb":[0,0,255]}
+8 | setting state: {"on":true,"rgb":[0,0,255]}
+9 | setting state: {"on":true,"rgb":[0,0,255]}
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+emitting light info
+1 | setting state: {"on":false}
+2 | setting state: {"on":false}
+3 | setting state: {"on":false}
+5 | setting state: {"on":false}
+6 | setting state: {"on":false}
+7 | setting state: {"on":false}
+8 | setting state: {"on":false}
+9 | setting state: {"on":false}
+emitting light info
+emitting light info
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume up
+media | volume down
+media | volume up
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+emitting light info
+media | volume up
+media | volume up
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+                                                                                                                                                                                                                                                                                                                     To use camera and file server, forward port 3036 to init in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+replied in 1921ms
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+1 | setting state: {"on":true,"rgb":[0,0,255]}
+2 | setting state: {"on":true,"rgb":[0,0,255]}
+3 | setting state: {"on":true,"rgb":[0,0,255]}
+5 | setting state: {"on":true,"rgb":[0,0,255]}
+6 | setting state: {"on":true,"rgb":[0,0,255]}
+7 | setting state: {"on":true,"rgb":[0,0,255]}
+8 | setting state: {"on":true,"rgb":[0,0,255]}
+9 | setting state: {"on":true,"rgb":[0,0,255]}
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+1 | setting state: {"on":false}
+2 | setting state: {"on":false}
+3 | setting state: {"on":false}
+5 | setting state: {"on":false}
+6 | setting state: {"on":false}
+7 | setting state: {"on":false}
+8 | setting state: {"on":false}
+9 | setting state: {"on":false}
+emitting light info
+emitting light info
+1 | setting state: {"on":false}
+2 | setting state: {"on":false}
+3 | setting state: {"on":false}
+5 | setting state: {"on":false}
+6 | setting state: {"on":false}
+7 | setting state: {"on":false}
+8 | setting state: {"on":false}
+9 | setting state: {"on":false}
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+media | volume up
+media | volume down
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | mute
+media | mute
+media | volume down
+media | volume down
+media | volume up
+media | volume down
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+media | mute
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+1 | setting state: {"on":false}
+2 | setting state: {"on":false}
+3 | setting state: {"on":false}
+5 | setting state: {"on":false}
+6 | setting state: {"on":false}
+7 | setting state: {"on":false}
+8 | setting state: {"on":false}
+9 | setting state: {"on":false}
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-15T21:18:05.748Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/ 200 6646 6.863 ms
+received: js/angular-file.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+received: js/app.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-15T21:18:06.007Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 11.159 ms
+2016-05-15T21:18:06.012Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 9.731 ms
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-15T21:18:06+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-05-15T21:18:06.598Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/api/ 200 267 1.523 ms
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+media | mute
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+media | volume down
+emitting light info
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+replied in 358ms
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-20T02:24:29.525Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/ 200 6646 6.435 ms
+received: js/app.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+received: js/angular-file.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-20T02:24:29.715Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 8.787 ms
+2016-05-20T02:24:29.720Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 6.886 ms
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-20T02:24:30+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-05-20T02:24:30.385Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/api/ 200 267 1.049 ms
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+_http_outgoing.js:335
+    throw new Error('Can\'t set headers after they are sent.');
+    ^
+
+Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (_http_outgoing.js:335:11)
+    at ServerResponse.res.setHeader (/home/pi/home-gateway/node_modules/express/node_modules/connect/lib/patch.js:63:22)
+    at ServerResponse.<anonymous> (/home/pi/home-gateway/node_modules/express/node_modules/connect/lib/patch.js:80:14)
+    at Array.forEach (native)
+    at ServerResponse.res.writeHead (/home/pi/home-gateway/node_modules/express/node_modules/connect/lib/patch.js:79:28)
+    at ProxyServer.<anonymous> (/home/pi/home-gateway/gateway.js:242:7)
+    at ProxyServer.emit (/home/pi/home-gateway/node_modules/http-proxy/node_modules/eventemitter3/index.js:117:27)
+    at ClientRequest.proxyError (/home/pi/home-gateway/node_modules/http-proxy/lib/http-proxy/passes/web-incoming.js:141:16)
+    at emitOne (events.js:82:20)
+    at ClientRequest.emit (events.js:169:7)
+    at Socket.socketErrorListener (_http_client.js:258:9)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at emitErrorNT (net.js:1256:8)
+    at nextTickCallbackWith2Args (node.js:441:9)
+    at process._tickCallback (node.js:355:17)
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+Hue Bridges Found: []
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+Hue Bridges Found: []
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+emitting light info
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+token set undefined
+Hue Bridges Found: []
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/undefined
+denied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/undefined
+denied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/undefined
+denied
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+Hue Bridges Found: []
+RECIEVED TOKEN | b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+To use camera and file server, forward port 3036 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/home-gateway/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo EAI_AGAIN www.meethue.com:443
+    at Object.exports._errnoException (util.js:870:11)
+    at errnoException (dns.js:31:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+To use camera and file server, forward port 3036 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://dev.pyfi.org
+Hue Bridges Found: []
+RECIEVED TOKEN | b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+emitting light info
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-23T16:43:00.750Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/ 200 6646 5.390 ms
+received: js/angular-file.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+received: js/app.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-23T16:43:01.265Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 10.568 ms
+2016-05-23T16:43:01.277Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 2.717 ms
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-23T16:43:01+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-05-23T16:43:01.791Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/api/ 200 267 0.914 ms
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-24T23:03:58.796Z ::ffff:127.0.0.1 GET /b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0/ 200 6646 4.389 ms
+received: js/angular-file.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-24T23:03:58.905Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 5.291 ms
+received: js/app.js | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+cloud proxied
+2016-05-24T23:03:58.920Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 1.945 ms
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
+received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+camera proxied
