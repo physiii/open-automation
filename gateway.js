@@ -137,8 +137,8 @@ var device_name = "Gateway";
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-  console.log("Enter device ID (" + mac + ") at http://dev.pyfi.org");
-  io_relay.emit('get_token',{ local_ip:local_ip, mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
+  console.log("Enter device ID (" + mac + ") at http://pyfi.org");
+  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
 });
 
 // ----------------------  file server  ------------------- //
