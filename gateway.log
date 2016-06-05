@@ -3911,3 +3911,234 @@ Enter device ID (b827ebfecbe3) at http://dev.pyfi.org
 Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
 received: session/dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274f | checking with: /session/init
 denied
+To use camera and file server, forward port 3018 to 192.168.0.18 in your routers settings
+Enter device ID (b827ebfecbe3) at http://pyfi.org
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+To use camera and file server, forward port 3018 to 192.168.0.18 in your routers settings
+Enter device ID (b827ebfecbe3) at http://pyfi.org
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+To use camera and file server, forward port 3018 to 192.168.0.18 in your routers settings
+Enter device ID (b827ebfecbe3) at http://pyfi.org
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+To use camera and file server, forward port 3018 to 192.168.0.18 in your routers settings
+Enter device ID (b827ebfecbe3) at http://pyfi.org
+RECIEVED TOKEN | dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274fecf29b1b
+token set dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274fecf29b1b
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+1 | setting state: {"on":false}
+2 | setting state: {"on":false}
+3 | setting state: {"on":false}
+5 | setting state: {"on":false}
+6 | setting state: {"on":false}
+7 | setting state: {"on":false}
+8 | setting state: {"on":false}
+9 | setting state: {"on":false}
+1 | setting state: {"on":false}
+2 | setting state: {"on":false}
+3 | setting state: {"on":false}
+5 | setting state: {"on":false}
+6 | setting state: {"on":false}
+7 | setting state: {"on":false}
+8 | setting state: {"on":false}
+9 | setting state: {"on":false}
+To use camera and file server, forward port 3018 to 192.168.0.18 in your routers settings
+Enter device ID (b827ebfecbe3) at http://pyfi.org
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+RECIEVED TOKEN | dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274fecf29b1b
+token set dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274fecf29b1b
+emitting light info
+received: session/dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274f | checking with: /session/dca424c3656652f2cd6042e8ac93d5ec5570bcf1523707a45564ba230a55fc0d1bb64d3211ffbb5535abe858eceee3ade48e0b12a432a92adfd0274fecf29b1b
+camera proxied
+To use camera and file server, forward port 3018 to 192.168.0.17 in your routers settings
+Enter device ID (b827eb115c53) at http://pyfi.org
+RECIEVED TOKEN | a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+Enter device ID (b827eb115c53) at http://pyfi.org
+RECIEVED TOKEN | a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+Enter device ID (b827eb115c53) at http://pyfi.org
+free space: 2024718336
+removing old files
+RECIEVED TOKEN | a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+emitting light info
+emitting light info
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:17.715Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/ 200 6646 5.324 ms
+received: js/angular-file.js | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:18.174Z ::ffff:127.0.0.1 GET /js/angular-file.js 200 9811 7.111 ms
+received: js/app.js | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:18.221Z ::ffff:127.0.0.1 GET /js/app.js 200 6323 2.659 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:18+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-06-05T12:30:18.880Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/ 200 267 1.386 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:36+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files/Videos/
+2016-06-05T12:30:36.644Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/Videos/ 200 2 0.647 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:38+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files
+2016-06-05T12:30:38.230Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/ 200 267 0.333 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:39+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files/motion/
+2016-06-05T12:30:39.222Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/motion/ 200 219 0.284 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:40+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files/motion/20160605/
+2016-06-05T12:30:40.913Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/motion/20160605/ 200 10894 1.220 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:30:56+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files/motion/20160605/20160605044124.avi
+2016-06-05T12:30:56.831Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/motion/20160605/20160605044124.avi 200 - 2.286 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:31:18+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files/motion/20160605/20160605045358.avi
+2016-06-05T12:31:18.899Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/motion/20160605/20160605045358.avi 200 - 1.665 ms
+received: a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+cloud proxied
+2016-06-05T12:31:29+0000 <info> tools.js:24 (Object.module.exports.loadRealPath) files/motion/20160605/20160605055857.avi
+2016-06-05T12:31:29.426Z ::ffff:127.0.0.1 GET /a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629/api/motion/20160605/20160605055857.avi 200 - 1.657 ms
+emitting light info
+emitting light info
+emitting light info
+emitting light info
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+media | volume up
+media | volume up
+media | volume up
+media | volume up
+media | volume down
+media | volume down
+emitting light info
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+camera proxied
+emitting light info
+1 | setting state: {"on":true,"rgb":[255,0,255]}
+2 | setting state: {"on":true,"rgb":[255,0,255]}
+3 | setting state: {"on":true,"rgb":[255,0,255]}
+5 | setting state: {"on":true,"rgb":[255,0,255]}
+6 | setting state: {"on":true,"rgb":[255,0,255]}
+7 | setting state: {"on":true,"rgb":[255,0,255]}
+8 | setting state: {"on":true,"rgb":[255,0,255]}
+9 | setting state: {"on":true,"rgb":[255,0,255]}
+1 | setting state: {"on":true,"ct":500}
+2 | setting state: {"on":true,"ct":500}
+3 | setting state: {"on":true,"ct":500}
+5 | setting state: {"on":true,"ct":500}
+6 | setting state: {"on":true,"ct":500}
+7 | setting state: {"on":true,"ct":500}
+8 | setting state: {"on":true,"ct":500}
+9 | setting state: {"on":true,"ct":500}
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+Enter device ID (b827eb115c53) at http://pyfi.org
+free space: 2016595968
+removing old files | [object Object]
+RECIEVED TOKEN | a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+undefined:1
+
+
+
+SyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:48:21)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+undefined:1
+
+
+
+SyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:48:21)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+undefined:1
+
+
+
+SyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:48:21)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+undefined:1
+
+
+
+SyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:48:21)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3
+undefined:1
+
+
+
+SyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at Object.<anonymous> (/home/pi/home-gateway/gateway.js:48:21)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Function.Module.runMain (module.js:442:10)
+    at startup (node.js:136:18)
+    at node.js:966:3

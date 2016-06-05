@@ -46,6 +46,50 @@ var text_timeout = 0
 var platform = process.platform;
 var hue = require("node-hue-api");
 var info_obj = JSON.parse(fs.readFileSync('info.json', 'utf8'));
+
+
+// ----------------------  check disk space  ------------------- //
+var diskspace = require('diskspace');
+var findRemoveSync = require('find-remove');
+var _ = require('underscore');
+var path = require('path');
+
+timeout();
+check_diskspace();
+function timeout() {
+  setTimeout(function () {
+    check_diskspace();
+    timeout();
+  }, 60*60*1000);
+}
+
+function check_diskspace() {
+diskspace.check('/', function (err, total, free, status)
+{
+  console.log("free space: " + free);
+  if (free < 3000000000) {
+
+// Return only base file name without dir
+var oldest_dir = getMostRecentFileName('/var/lib/motion');
+function getMostRecentFileName(dir) {
+    var files = fs.readdirSync(dir);
+
+    // use underscore for max()
+    return _.min(files, function (f) {
+        var fullpath = path.join(dir, f);
+
+        // ctime = creation time is used
+        // replace with mtime for modification time
+        return fs.statSync(fullpath).ctime;
+    });
+}
+
+    //var result = findRemoveSync('/var/lib/motion/', {age: {seconds: 0}});
+    var result = findRemoveSync('/var/lib/motion/' + oldest_dir, {age: {seconds: 0}}, {files: '*'});
+    console.log("removed old files | " + oldest_dir);
+  }
+});
+}
 // ----------------------  find bridges  ------------------- //
 var bridge_obj = {};
 var displayBridges = function(bridge) {
@@ -355,7 +399,7 @@ io_relay.on('light_theme', function (data) {
     console.log( _mac + " | window_sensor data " + _magnitude);
   });
   
-io_relay.emit('png_test');
+  //io_relay.emit('png_test',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
 
 io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
