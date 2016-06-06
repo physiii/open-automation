@@ -53,6 +53,7 @@ var diskspace = require('diskspace');
 var findRemoveSync = require('find-remove');
 var _ = require('underscore');
 var path = require('path');
+var rimraf = require('rimraf');
 
 timeout();
 check_diskspace();
@@ -67,25 +68,24 @@ function check_diskspace() {
 diskspace.check('/', function (err, total, free, status)
 {
   console.log("free space: " + free);
-  if (free < 3000000000) {
-
-// Return only base file name without dir
-var oldest_dir = getMostRecentFileName('/var/lib/motion');
-function getMostRecentFileName(dir) {
-    var files = fs.readdirSync(dir);
-
-    // use underscore for max()
-    return _.min(files, function (f) {
+  if (free < 2000000000) {
+    // Return only base file name without dir
+    var oldest_dir = getMostRecentFileName('/var/lib/motion');
+    function getMostRecentFileName(dir) {
+      var files = fs.readdirSync(dir);
+      return _.min(files, function (f) {
         var fullpath = path.join(dir, f);
-
-        // ctime = creation time is used
-        // replace with mtime for modification time
         return fs.statSync(fullpath).ctime;
-    });
-}
-
-    //var result = findRemoveSync('/var/lib/motion/', {age: {seconds: 0}});
+      });
+    }
     var result = findRemoveSync('/var/lib/motion/' + oldest_dir, {age: {seconds: 0}}, {files: '*'});
+rimraf('/var/lib/motion/' + oldest_dir, function(error) {
+  if(error) {
+    console.log(error);
+  } else {
+    console.log('Files deleted');
+  }
+});
     console.log("removed old files | " + oldest_dir);
   }
 });
