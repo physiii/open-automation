@@ -1,15 +1,15 @@
 # home-gateway
 Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port in your routers settings to gain access to files and camera using remote tokens
 
-angularjs frontend (open-automation.org)
-nodejs and php on the backend
-websocket relay server for communicate behind firewalls and routers (https://github.com/physiii/node-relay)
-z-wave compatible (https://github.com/OpenZWave)
-text alerts
-motion (http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome)
-files (https://github.com/efeiefei/node-file-manager)
-thermostat (http://www.radiothermostat.com/)
-android ()
+1. angularjs frontend (open-automation.org)
+2. nodejs and php on the backend
+3. websocket relay server for communicate behind firewalls and routers (https://github.com/physiii/node-relay)
+4. z-wave compatible (https://github.com/OpenZWave)
+5. text alerts
+6. motion (http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome)
+7. files (https://github.com/efeiefei/node-file-manager)
+8. thermostat (http://www.radiothermostat.com/)
+9. android ()
 
 =======
 #installation
