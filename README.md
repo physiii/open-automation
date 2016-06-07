@@ -1,5 +1,5 @@
 # home-gateway
-Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message.
+Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port in your routers settings to gain access to files and camera using remote tokens
 
 angularjs frontend (open-automation.org)
 nodejs and php on the backend
@@ -11,10 +11,6 @@ files (https://github.com/efeiefei/node-file-manager)
 thermostat (http://www.radiothermostat.com/)
 android ()
 
-
-**camera and files are proxied out 
-**the port you set with -p [port]
-**forward that port in your router to gain access to files and camera using remote tokens
 =======
 #installation
 ##install node 4.x from source
