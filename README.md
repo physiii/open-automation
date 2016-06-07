@@ -1,8 +1,20 @@
 # home-gateway
-Automation software for controlling cameras, lights, thermostats, media, glass break, and sends alerts via text message.
+Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message.
 
-Works with z-wave devices. (using https://github.com/OpenZWave)
+angularjs frontend (open-automation.org)
+nodejs and php on the backend
+websocket relay server for communicate behind firewalls and routers (https://github.com/physiii/node-relay)
+z-wave compatible (https://github.com/OpenZWave)
+text alerts
+motion (http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome)
+files (https://github.com/efeiefei/node-file-manager)
+thermostat (http://www.radiothermostat.com/)
+android ()
 
+
+**camera and files are proxied out 
+**the port you set with -p [port]
+**forward that port in your router to gain access to files and camera using remote tokens
 =======
 #installation
 ##install node 4.x from source
