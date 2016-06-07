@@ -3,7 +3,7 @@ Automation software for controlling cameras, dead bolts, garage openers, lights,
 
 1. angularjs frontend (open-automation.org)
 2. nodejs and php on the backend
-3. websocket relay server for communicate behind firewalls and routers (https://github.com/physiii/node-relay)
+3. websocket relay server to communicate behind firewalls and routers (https://github.com/physiii/node-relay)
 4. z-wave compatible (https://github.com/OpenZWave)
 5. text alerts
 6. motion (http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome)
