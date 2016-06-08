@@ -198,30 +198,36 @@ function timeout() {
 }
 
 function check_diskspace() {
-diskspace.check('/', function (err, total, free, status)
-{
-  console.log("free space: " + free);
-  if (free < 2000000000) {
-    // Return only base file name without dir
-    var oldest_dir = getMostRecentFileName('/var/lib/motion');
-    function getMostRecentFileName(dir) {
-      var files = fs.readdirSync(dir);
-      return _.min(files, function (f) {
-        var fullpath = path.join(dir, f);
-        return fs.statSync(fullpath).ctime;
-      });
-    }
-    var result = findRemoveSync('/var/lib/motion/' + oldest_dir, {age: {seconds: 0}}, {files: '*'});
+  diskspace.check('/', function (err, total, free, status)
+  {
+    console.log("free space: " + free);
+    if (free < 2000000000) {
+      // Return only base file name without dir
+      var oldest_dir = getMostRecentFileName('/var/lib/motion');
+      try {
+       var result = findRemoveSync('/var/lib/motion/' + oldest_dir, {age: {seconds: 0}}, {files: '*'});
 rimraf('/var/lib/motion/' + oldest_dir, function(error) {
-  if(error) {
-    console.log(error);
-  } else {
-    console.log('Files deleted');
-  }
-});
-    console.log("removed old files | " + oldest_dir);
-  }
-});
+        if(error) {
+          console.log(error);
+        } else {
+          console.log('Files deleted');
+        }
+      });
+      console.log("removed old files | " + oldest_dir);
+      }
+      catch (e) {
+	console.log(e);
+      }
+    }
+  });
+}
+
+function getMostRecentFileName(dir) {
+  var files = fs.readdirSync(dir);
+  return _.min(files, function (f) {
+    var fullpath = path.join(dir, f);
+    return fs.statSync(fullpath).ctime;
+  });
 }
 // ----------------------  find bridges  ------------------- //
 var bridge_obj = {};
