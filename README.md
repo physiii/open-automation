@@ -24,11 +24,13 @@ open-automation is centered around web languages - NodeJS for processing and soc
 3. PHP for generating, setting, and retreiving model (mysql) data
 4. websockets on microcontrollers
 
+
+##System Overview
+![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
+
 #installation
 ##install node 4.x from source
 1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
 2. git clone https://github.com/physiii/home-gateway.git && cd home-gateway && sh install.sh
 
-##System Overview
-![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
 
