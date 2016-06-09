@@ -1,15 +1,21 @@
 # home-gateway
 Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port in your routers settings to gain access to files and camera using remote tokens
 
-1. angularjs frontend (open-automation.org)
+1. angularjs frontend (http://open-automation.org)
 2. nodejs and php on the backend
 3. websocket relay server to communicate behind firewalls and routers (https://github.com/physiii/node-relay)
-4. z-wave compatible (https://github.com/OpenZWave)
+4. z-wave compatible - https://github.com/OpenZWave
 5. text alerts
-6. motion (http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome)
-7. files (https://github.com/efeiefei/node-file-manager)
-8. thermostat (http://www.radiothermostat.com/)
-9. android (https://github.com/physiii/beacon)
+6. motion - http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome
+7. files - https://github.com/efeiefei/node-file-manager
+8. thermostat - http://www.radiothermostat.com/
+9. android - https://github.com/physiii/beacon
+
+# similar projects
+openhab - https://github.com/openhab/openhab
+
+# differences
+open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data. Interface is angularjs. Incorporating open-hab's android and iphone applications.
 
 =======
 #installation
