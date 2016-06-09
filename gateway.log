@@ -4243,3 +4243,36 @@ received: session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c
 camera proxied
 received: session/b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386 | checking with: /session/a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
 denied
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3081 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://pyfi.org
+free space: 1258844160
+{ [Error: ENOTDIR: not a directory, scandir '/var/lib/motion/lastsnap.jpg']
+  errno: -20,
+  code: 'ENOTDIR',
+  syscall: 'scandir',
+  path: '/var/lib/motion/lastsnap.jpg' }
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+failed to start driver
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/home-gateway/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3081 to 192.168.0.81 in your routers settings
+Enter device ID (b827eb37cb66) at http://pyfi.org
+free space: 1284554752
+removed old files | 20160609
+Files deleted
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+token set b107286d254c3aa478e762b5063d104980c6020075ad4e52c5fb09c309ceb1351b471638f493696dfa76c316e714bab689038373d3b731f21d22b386eefcc8a0
+failed to start driver
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/home-gateway/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
