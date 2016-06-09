@@ -20,9 +20,9 @@ open-automation is centered around web languages - NodeJS for processing and soc
 
 ## differences
 1. NodeJS for processing
-2. socket.io communication
+2. Socket.IO communication
 3. PHP for generating, setting, and retreiving model (mysql) data
-4. websockets on microcontrollers
+4. Websockets on microcontrollers
 
 
 ##System Overview
