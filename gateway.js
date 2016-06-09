@@ -99,8 +99,9 @@ zwave.on('value added', function(nodeid, comclass, value) {
   if (!nodes[nodeid]['classes'][comclass])
     nodes[nodeid]['classes'][comclass] = {};
     nodes[nodeid]['classes'][comclass][value.index] = value;
-    if (value.value_id == "4-98-1-0"){
       console.log("nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
+
+    if (value.value_id == "4-98-1-0"){
       //zwave.setValue(4, 98, 1, 0, true);
     }
 });
@@ -481,6 +482,11 @@ io_relay.on('get_thermostat', function (data) {
 io_relay.on('set_thermostat', function (data) {
   set_thermostat(data.state.new_state);
   console.log("set_thermostat |  " + JSON.stringify(data));  
+});
+
+io_relay.on('add_zwave_device', function (data) {
+  console.log("adding node");
+  zwave.addNode(1);
 });
 
 node_data = {};
