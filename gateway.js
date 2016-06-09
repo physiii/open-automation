@@ -76,7 +76,7 @@ zwave.on('driver ready', function(homeid) {
 zwave.on('driver failed', function() {
 	console.log('failed to start driver');
 	zwave.disconnect();
-	process.exit();
+	//process.exit();
 });
 
 zwave.on('node added', function(nodeid) {
