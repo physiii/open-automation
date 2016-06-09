@@ -13,7 +13,8 @@ Automation software for controlling cameras, dead bolts, garage openers, lights,
 
 ## similar projects
 openhab - https://github.com/openhab/openhab
-
+Z-Wave-Me - https://github.com/Z-Wave-Me/home-automation
+home-assistant - https://github.com/home-assistant/home-assistant
 ### differences
 open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs and currently incorporating open-hab's android and iphone applications.
 
