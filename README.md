@@ -23,6 +23,7 @@ open-automation is centered around web languages - NodeJS for processing and soc
 2. socket.io communication
 3. PHP for generating, setting, and retreiving model (mysql) data
 4. websockets on microcontrollers
+5. text alerts
 
 #installation
 ##install node 4.x from source
