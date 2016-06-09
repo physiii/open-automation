@@ -1,4 +1,4 @@
-# home-gateway
+# open-automation
 Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port in your routers settings to gain access to files and camera using remote tokens.
 
 open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs and currently incorporating open-hab's android and iphone applications.
