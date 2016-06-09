@@ -1,4 +1,4 @@
-###**open-automation** is centered around a cohesive set of web languages. NodeJS for general processing, socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs while incorporating open-hab's android and iphone applications.
+###**open-automation** is made from a cohesive set of web languages. NodeJS for general processing, socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs while incorporating open-hab's android and iphone applications.
 
 Software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port on your router to gain access to files and camera using remote tokens.
 
