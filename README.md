@@ -3,9 +3,9 @@ Automation software for controlling cameras, dead bolts, garage openers, lights,
 
 open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs and currently incorporating open-hab's android and iphone applications.
 
-1. angularjs frontend (http://open-automation.org)
+1. angularjs frontend - http://open-automation.org
 2. nodejs and php on the backend
-3. websocket relay server to communicate behind firewalls and routers (https://github.com/physiii/node-relay)
+3. websocket relay server to communicate behind firewalls and routers - https://github.com/physiii/node-relay
 4. z-wave compatible - https://github.com/OpenZWave
 5. text alerts
 6. motion - http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome
