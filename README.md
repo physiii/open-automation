@@ -15,7 +15,7 @@ Automation software for controlling cameras, dead bolts, garage openers, lights,
 openhab - https://github.com/openhab/openhab
 
 # differences
-open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data. Interface is angularjs. Incorporating open-hab's android and iphone applications.
+open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs and currently incorporating open-hab's android and iphone applications.
 
 =======
 #installation
