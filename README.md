@@ -1,10 +1,10 @@
 # open-automation
 Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port on your router to gain access to files and camera using remote tokens.
 
-open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs while incorporating open-hab's android and iphone applications.
+open-automation is centered around a cohesive set of web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs while incorporating open-hab's android and iphone applications.
 
-1. angularjs frontend - http://open-automation.org
-2. nodejs and php for tokens, authentication, general processing
+1. Angularjs frontend - http://open-automation.org
+2. NodeJS and PHP for tokens, authentication, general processing
 3. websocket relay server to communicate behind firewalls and routers - https://github.com/physiii/node-relay
 4. z-wave compatible - https://github.com/OpenZWave
 5. text alerts
