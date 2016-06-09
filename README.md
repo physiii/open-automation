@@ -1,5 +1,7 @@
 # home-gateway
-Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port in your routers settings to gain access to files and camera using remote tokens
+Automation software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port in your routers settings to gain access to files and camera using remote tokens.
+
+open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs and currently incorporating open-hab's android and iphone applications.
 
 1. angularjs frontend (http://open-automation.org)
 2. nodejs and php on the backend
@@ -16,8 +18,11 @@ Automation software for controlling cameras, dead bolts, garage openers, lights,
 2. Z-Wave-Me - https://github.com/Z-Wave-Me/home-automation
 3. home-assistant - https://github.com/home-assistant/home-assistant
 
-### differences
-open-automation is centered around web languages - NodeJS for processing and socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs and currently incorporating open-hab's android and iphone applications.
+## differences
+1. NodeJS for processing
+2. socket.io communication
+3. PHP for generating, setting, and retreiving model (mysql) data
+4. websockets on microcontrollers
 
 =======
 #installation
