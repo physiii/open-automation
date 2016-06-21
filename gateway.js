@@ -45,7 +45,7 @@ var count = 0;
 var text_timeout = 0
 var platform = process.platform;
 var hue = require("node-hue-api");
-var info_obj = JSON.parse(fs.readFileSync('/home/pi/home-gateway/info.json', 'utf8'));
+var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
 
 
 // -------------------------  zwave  ---------------------- //
