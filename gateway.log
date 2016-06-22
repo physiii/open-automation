@@ -9111,3 +9111,912 @@ camera proxied
 free space: 1608130560
 removed old files | 20160621
 Files deleted
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 172.24.1.1 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo EAI_AGAIN www.meethue.com:443
+    at Object.exports._errnoException (util.js:870:11)
+    at errnoException (dns.js:31:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to init in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo EAI_AGAIN www.meethue.com:443
+    at Object.exports._errnoException (util.js:870:11)
+    at errnoException (dns.js:31:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+=================== DRIVER READY! ====================
+scanning homeid=0x1852929...
+=================== NODE ADDED! ====================
+nodeid: 1 value: {"value_id":"1-32-1-0","node_id":1,"class_id":32,"type":"byte","genre":"basic","instance":1,"index":0,"label":"Basic","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 32
+=================== NODE ADDED! ====================
+nodeid: 2 value: {"value_id":"2-37-1-0","node_id":2,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 2 value: {"value_id":"2-39-1-0","node_id":2,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 3 value: {"value_id":"3-37-1-0","node_id":3,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 3 value: {"value_id":"3-39-1-0","node_id":3,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 4 value: {"value_id":"4-98-1-0","node_id":4,"class_id":98,"type":"bool","genre":"user","instance":1,"index":0,"label":"Locked","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-1","node_id":4,"class_id":98,"type":"list","genre":"user","instance":1,"index":1,"label":"Locked (Advanced)","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Unsecure","Unsecured with Timeout","Inside Handle Unsecured","Inside Handle Unsecured with Timeout","Outside Handle Unsecured","Outside Handle Unsecured with Timeout","Secured","Invalid"],"value":"Unsecure"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-2","node_id":4,"class_id":98,"type":"list","genre":"system","instance":1,"index":2,"label":"Timeout Mode","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["No Timeout","Secure Lock after Timeout"],"value":"No Timeout"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-5","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":5,"label":"Outside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-6","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":6,"label":"Inside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-99-1-255","node_id":4,"class_id":99,"type":"byte","genre":"system","instance":1,"index":255,"label":"Code Count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-254","node_id":4,"class_id":99,"type":"button","genre":"system","instance":1,"index":254,"label":"Refresh All UserCodes","units":"","help":"","read_only":false,"write_only":true,"is_polled":false,"min":0,"max":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-112-1-3","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":3,"label":"Beeper","units":"","help":"Enable or disable the beeper.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Beeper","Enable Beeper"],"value":"Enable Beeper"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-4","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":4,"label":"Vacation Mode","units":"","help":"Prevents all user codes from unlocking the deadbolt. Enable for extra security while you are away for an extended period of time.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Vacation Mode","Enable Vacation Mode"],"value":"Disable Vacation Mode"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-5","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":5,"label":"Lock & Leave","units":"","help":"When enabled: Press the Outside Schlage Button to lock the deadbolt. (Default setting). When disabled: Press the Outside Schlage Button and then enter a user code to lock the deadbolt.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Lock & Leave","Enable Lock & Leave"],"value":"Enable Lock & Leave"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-7","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":7,"label":"Lock Alarm Mode","units":"","help":"The alarm is turned off by default. After installation, you’ll need to turn on your alarm. Activity Alarms when the door opens or closes. Perfect for monitoring doors while you’re at home. After the alarm is triggered, there is a built-in 3-second delay for it to reset. Sounds two short beeps. Tamper Alarms when the lock is disturbed, while locked. Senses subtle activity at the lock. Sounds 15 second Alarm (90 dB) Forced Entry Alarms when significant force pushes against the door, while locked. Perfect for nighttime or when you’re away from home. • Least sensitive mode Sounds three-minute shrill, steady alarm (90 dB)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Alarm Off","Activity","Tamper","Forced Entry"],"value":"Alarm Off"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-8","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":8,"label":"Activity Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-9","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":9,"label":"Tamper Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-10","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":10,"label":"Forced Entry Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-11","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":11,"label":"Disable Local Alarm Controls","units":"","help":"Enables/Disables local alarm on/off, mode change, sensitivity changes","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable local alarm controls","Enable local alarm controls"],"value":"Enable local alarm controls"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-12","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":12,"label":"Electronic transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-13","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":13,"label":"Mechanical transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-14","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":14,"label":"Electronic failed count","units":"","help":"Each failed electronic attempt increments this count by one.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-15","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":15,"label":"Auto lock","units":"","help":"When enabled, the lock will automatically relock 30 seconds after unlocking. (Disabled by default.)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable auto lock","Enable auto lock"],"value":"Disable auto lock"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-16","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":16,"label":"User code pin length","units":"","help":"User Code PIN length, a value between 4 and 8. IMPORTANT: All user codes must be the same length.","read_only":false,"write_only":false,"is_polled":false,"min":4,"max":8,"value":4} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-17","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":17,"label":"Electrical High Preload Transition Count","units":"","help":"A subset of Electronic transition count, the number of transitions with high preload.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-18","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":18,"label":"Bootloader Version","units":"","help":"The version of the bootloader","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":101} comclass: 112
+nodeid: 4 value: {"value_id":"4-113-1-0","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":0,"label":"Alarm Type","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-1","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":1,"label":"Alarm Level","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-128-1-0","node_id":4,"class_id":128,"type":"byte","genre":"user","instance":1,"index":0,"label":"Battery Level","units":"%","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":100} comclass: 128
+nodeid: 4 value: {"value_id":"4-134-1-0","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":0,"label":"Library Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-1","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":1,"label":"Protocol Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-2","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":2,"label":"Application Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-152-1-0","node_id":4,"class_id":152,"type":"bool","genre":"system","instance":1,"index":0,"label":"Secured","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":true} comclass: 152
+=================== NODE ADDED! ====================
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+node1: Aeotec, Z-Stick S2
+node1: name="", type="Static PC Controller", location=""
+node1: class 32
+node1:   Basic=0
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+Enter device ID (b827eb115c53) at http://pyfi.org
+free space: 1065242624
+removed old files | 20160621
+nodeid: 4 value: {"value_id":"4-99-1-0","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":0,"label":"Enrollment Code","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-1","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":1,"label":"Code 1:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-2","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":2,"label":"Code 2:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-3","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":3,"label":"Code 3:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-4","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":4,"label":"Code 4:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-5","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":5,"label":"Code 5:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-6","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":6,"label":"Code 6:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-7","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":7,"label":"Code 7:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-8","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":8,"label":"Code 8:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-9","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":9,"label":"Code 9:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-10","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":10,"label":"Code 10:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-11","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":11,"label":"Code 11:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-12","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":12,"label":"Code 12:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-13","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":13,"label":"Code 13:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-14","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":14,"label":"Code 14:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-15","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":15,"label":"Code 15:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-16","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":16,"label":"Code 16:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-17","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":17,"label":"Code 17:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-18","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":18,"label":"Code 18:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-19","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":19,"label":"Code 19:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-20","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":20,"label":"Code 20:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-21","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":21,"label":"Code 21:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-22","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":22,"label":"Code 22:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-23","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":23,"label":"Code 23:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-24","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":24,"label":"Code 24:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-25","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":25,"label":"Code 25:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-26","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":26,"label":"Code 26:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-27","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":27,"label":"Code 27:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-28","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":28,"label":"Code 28:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-29","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":29,"label":"Code 29:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-30","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":30,"label":"Code 30:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+Files deleted
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+nodeid: 4 value: {"value_id":"4-113-1-2","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":2,"label":"SourceNodeId","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-9","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":9,"label":"Access Control","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-10","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":10,"label":"Burglar","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-11","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":11,"label":"Power Management","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-12","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":12,"label":"System","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 5 value: {"value_id":"5-132-1-0","node_id":5,"class_id":132,"type":"int","genre":"system","instance":1,"index":0,"label":"Wake-up Interval","units":"Seconds","help":"","read_only":false,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":3600} comclass: 132
+node5: notification(2): Notification - NoOperation
+node5: notification(4): Notification - Node Asleep
+node2: notification(2): Notification - NoOperation
+node2: notification(5): Notification - Node Dead
+node3: notification(2): Notification - NoOperation
+scan complete, hit ^C to finish.
+node3: notification(5): Notification - Node Dead
+node4: notification(1): Notification - TimeOut
+node4: notification(1): Notification - TimeOut
+node4: Schlage, BE469NXCEN Touchscreen DeadBolt
+node4: name="", type="Secure Keypad Door Lock", location=""
+node4: class 98
+node4:   Locked=true
+node4:   Locked (Advanced)=Unsecure
+node4:   Timeout Mode=No Timeout
+node4:   Outside Handle Control=0
+node4:   Inside Handle Control=0
+node4: class 99
+node4:   Enrollment Code=          
+node4:   Code 1:=**********
+node4:   Code 2:=          
+node4:   Code 3:=          
+node4:   Code 4:=          
+node4:   Code 5:=          
+node4:   Code 6:=          
+node4:   Code 7:=          
+node4:   Code 8:=          
+node4:   Code 9:=          
+node4:   Code 10:=          
+node4:   Code 11:=          
+node4:   Code 12:=          
+node4:   Code 13:=          
+node4:   Code 14:=          
+node4:   Code 15:=          
+node4:   Code 16:=          
+node4:   Code 17:=          
+node4:   Code 18:=          
+node4:   Code 19:=          
+node4:   Code 20:=          
+node4:   Code 21:=          
+node4:   Code 22:=          
+node4:   Code 23:=          
+node4:   Code 24:=          
+node4:   Code 25:=          
+node4:   Code 26:=          
+node4:   Code 27:=          
+node4:   Code 28:=          
+node4:   Code 29:=          
+node4:   Code 30:=          
+node4:   Refresh All UserCodes=undefined
+node4:   Code Count=30
+node4: class 112
+node4:   Beeper=Enable Beeper
+node4:   Vacation Mode=Disable Vacation Mode
+node4:   Lock & Leave=Enable Lock & Leave
+node4:   Lock Alarm Mode=Alarm Off
+node4:   Activity Alarm Sensitivity=Medium Sensitivity
+node4:   Tamper Alarm Sensitivity=Medium Sensitivity
+node4:   Forced Entry Alarm Sensitivity=Medium Sensitivity
+node4:   Disable Local Alarm Controls=Enable local alarm controls
+node4:   Electronic transition count=0
+node4:   Mechanical transition count=0
+node4:   Electronic failed count=0
+node4:   Auto lock=Disable auto lock
+node4:   User code pin length=4
+node4:   Electrical High Preload Transition Count=0
+node4:   Bootloader Version=101
+node4: class 113
+node4:   Alarm Type=0
+node4:   Alarm Level=0
+node4:   SourceNodeId=0
+node4:   Access Control=1
+node4:   Burglar=0
+node4:   Power Management=0
+node4:   System=1
+node4: class 128
+node4:   Battery Level=97
+node4: class 134
+node4:   Library Version=6
+node4:   Protocol Version=3.42
+node4:   Application Version=104.21
+node4: class 152
+node4:   Secured=true
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+=================== DRIVER READY! ====================
+scanning homeid=0x1852929...
+=================== NODE ADDED! ====================
+nodeid: 1 value: {"value_id":"1-32-1-0","node_id":1,"class_id":32,"type":"byte","genre":"basic","instance":1,"index":0,"label":"Basic","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 32
+=================== NODE ADDED! ====================
+nodeid: 2 value: {"value_id":"2-37-1-0","node_id":2,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 2 value: {"value_id":"2-39-1-0","node_id":2,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 3 value: {"value_id":"3-37-1-0","node_id":3,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 3 value: {"value_id":"3-39-1-0","node_id":3,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 4 value: {"value_id":"4-98-1-0","node_id":4,"class_id":98,"type":"bool","genre":"user","instance":1,"index":0,"label":"Locked","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-1","node_id":4,"class_id":98,"type":"list","genre":"user","instance":1,"index":1,"label":"Locked (Advanced)","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Unsecure","Unsecured with Timeout","Inside Handle Unsecured","Inside Handle Unsecured with Timeout","Outside Handle Unsecured","Outside Handle Unsecured with Timeout","Secured","Invalid"],"value":"Unsecure"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-2","node_id":4,"class_id":98,"type":"list","genre":"system","instance":1,"index":2,"label":"Timeout Mode","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["No Timeout","Secure Lock after Timeout"],"value":"No Timeout"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-5","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":5,"label":"Outside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-6","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":6,"label":"Inside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-99-1-255","node_id":4,"class_id":99,"type":"byte","genre":"system","instance":1,"index":255,"label":"Code Count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-254","node_id":4,"class_id":99,"type":"button","genre":"system","instance":1,"index":254,"label":"Refresh All UserCodes","units":"","help":"","read_only":false,"write_only":true,"is_polled":false,"min":0,"max":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-112-1-3","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":3,"label":"Beeper","units":"","help":"Enable or disable the beeper.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Beeper","Enable Beeper"],"value":"Enable Beeper"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-4","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":4,"label":"Vacation Mode","units":"","help":"Prevents all user codes from unlocking the deadbolt. Enable for extra security while you are away for an extended period of time.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Vacation Mode","Enable Vacation Mode"],"value":"Disable Vacation Mode"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-5","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":5,"label":"Lock & Leave","units":"","help":"When enabled: Press the Outside Schlage Button to lock the deadbolt. (Default setting). When disabled: Press the Outside Schlage Button and then enter a user code to lock the deadbolt.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Lock & Leave","Enable Lock & Leave"],"value":"Enable Lock & Leave"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-7","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":7,"label":"Lock Alarm Mode","units":"","help":"The alarm is turned off by default. After installation, you’ll need to turn on your alarm. Activity Alarms when the door opens or closes. Perfect for monitoring doors while you’re at home. After the alarm is triggered, there is a built-in 3-second delay for it to reset. Sounds two short beeps. Tamper Alarms when the lock is disturbed, while locked. Senses subtle activity at the lock. Sounds 15 second Alarm (90 dB) Forced Entry Alarms when significant force pushes against the door, while locked. Perfect for nighttime or when you’re away from home. • Least sensitive mode Sounds three-minute shrill, steady alarm (90 dB)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Alarm Off","Activity","Tamper","Forced Entry"],"value":"Alarm Off"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-8","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":8,"label":"Activity Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-9","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":9,"label":"Tamper Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-10","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":10,"label":"Forced Entry Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-11","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":11,"label":"Disable Local Alarm Controls","units":"","help":"Enables/Disables local alarm on/off, mode change, sensitivity changes","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable local alarm controls","Enable local alarm controls"],"value":"Enable local alarm controls"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-12","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":12,"label":"Electronic transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-13","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":13,"label":"Mechanical transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-14","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":14,"label":"Electronic failed count","units":"","help":"Each failed electronic attempt increments this count by one.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-15","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":15,"label":"Auto lock","units":"","help":"When enabled, the lock will automatically relock 30 seconds after unlocking. (Disabled by default.)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable auto lock","Enable auto lock"],"value":"Disable auto lock"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-16","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":16,"label":"User code pin length","units":"","help":"User Code PIN length, a value between 4 and 8. IMPORTANT: All user codes must be the same length.","read_only":false,"write_only":false,"is_polled":false,"min":4,"max":8,"value":4} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-17","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":17,"label":"Electrical High Preload Transition Count","units":"","help":"A subset of Electronic transition count, the number of transitions with high preload.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-18","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":18,"label":"Bootloader Version","units":"","help":"The version of the bootloader","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":101} comclass: 112
+nodeid: 4 value: {"value_id":"4-113-1-0","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":0,"label":"Alarm Type","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-1","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":1,"label":"Alarm Level","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-128-1-0","node_id":4,"class_id":128,"type":"byte","genre":"user","instance":1,"index":0,"label":"Battery Level","units":"%","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":100} comclass: 128
+nodeid: 4 value: {"value_id":"4-134-1-0","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":0,"label":"Library Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-1","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":1,"label":"Protocol Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-2","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":2,"label":"Application Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-152-1-0","node_id":4,"class_id":152,"type":"bool","genre":"system","instance":1,"index":0,"label":"Secured","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":true} comclass: 152
+=================== NODE ADDED! ====================
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+node1: Aeotec, Z-Stick S2
+node1: name="", type="Static PC Controller", location=""
+node1: class 32
+node1:   Basic=0
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+Enter device ID (b827eb115c53) at http://pyfi.org
+free space: 1067016192
+{ [Error: ENOTDIR: not a directory, scandir '/var/lib/motion/lastsnap.jpg']
+  errno: -20,
+  code: 'ENOTDIR',
+  syscall: 'scandir',
+  path: '/var/lib/motion/lastsnap.jpg' }
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+nodeid: 4 value: {"value_id":"4-99-1-0","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":0,"label":"Enrollment Code","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-1","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":1,"label":"Code 1:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-2","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":2,"label":"Code 2:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-3","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":3,"label":"Code 3:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-4","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":4,"label":"Code 4:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-5","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":5,"label":"Code 5:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-6","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":6,"label":"Code 6:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-7","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":7,"label":"Code 7:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-8","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":8,"label":"Code 8:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-9","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":9,"label":"Code 9:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-10","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":10,"label":"Code 10:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-11","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":11,"label":"Code 11:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-12","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":12,"label":"Code 12:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-13","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":13,"label":"Code 13:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-14","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":14,"label":"Code 14:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-15","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":15,"label":"Code 15:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-16","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":16,"label":"Code 16:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-17","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":17,"label":"Code 17:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-18","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":18,"label":"Code 18:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-19","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":19,"label":"Code 19:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-20","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":20,"label":"Code 20:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-21","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":21,"label":"Code 21:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-22","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":22,"label":"Code 22:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-23","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":23,"label":"Code 23:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-24","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":24,"label":"Code 24:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-25","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":25,"label":"Code 25:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-26","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":26,"label":"Code 26:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-27","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":27,"label":"Code 27:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-28","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":28,"label":"Code 28:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-29","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":29,"label":"Code 29:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-30","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":30,"label":"Code 30:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-113-1-2","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":2,"label":"SourceNodeId","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-9","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":9,"label":"Access Control","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-10","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":10,"label":"Burglar","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-11","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":11,"label":"Power Management","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-12","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":12,"label":"System","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 5 value: {"value_id":"5-132-1-0","node_id":5,"class_id":132,"type":"int","genre":"system","instance":1,"index":0,"label":"Wake-up Interval","units":"Seconds","help":"","read_only":false,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":3600} comclass: 132
+node5: notification(2): Notification - NoOperation
+node5: notification(4): Notification - Node Asleep
+node2: notification(2): Notification - NoOperation
+node2: notification(5): Notification - Node Dead
+node3: notification(2): Notification - NoOperation
+scan complete, hit ^C to finish.
+node3: notification(5): Notification - Node Dead
+node4: notification(1): Notification - TimeOut
+node4: notification(1): Notification - TimeOut
+node4: Schlage, BE469NXCEN Touchscreen DeadBolt
+node4: name="", type="Secure Keypad Door Lock", location=""
+node4: class 98
+node4:   Locked=true
+node4:   Locked (Advanced)=Unsecure
+node4:   Timeout Mode=No Timeout
+node4:   Outside Handle Control=0
+node4:   Inside Handle Control=0
+node4: class 99
+node4:   Enrollment Code=          
+node4:   Code 1:=**********
+node4:   Code 2:=          
+node4:   Code 3:=          
+node4:   Code 4:=          
+node4:   Code 5:=          
+node4:   Code 6:=          
+node4:   Code 7:=          
+node4:   Code 8:=          
+node4:   Code 9:=          
+node4:   Code 10:=          
+node4:   Code 11:=          
+node4:   Code 12:=          
+node4:   Code 13:=          
+node4:   Code 14:=          
+node4:   Code 15:=          
+node4:   Code 16:=          
+node4:   Code 17:=          
+node4:   Code 18:=          
+node4:   Code 19:=          
+node4:   Code 20:=          
+node4:   Code 21:=          
+node4:   Code 22:=          
+node4:   Code 23:=          
+node4:   Code 24:=          
+node4:   Code 25:=          
+node4:   Code 26:=          
+node4:   Code 27:=          
+node4:   Code 28:=          
+node4:   Code 29:=          
+node4:   Code 30:=          
+node4:   Refresh All UserCodes=undefined
+node4:   Code Count=30
+node4: class 112
+node4:   Beeper=Enable Beeper
+node4:   Vacation Mode=Disable Vacation Mode
+node4:   Lock & Leave=Enable Lock & Leave
+node4:   Lock Alarm Mode=Alarm Off
+node4:   Activity Alarm Sensitivity=Medium Sensitivity
+node4:   Tamper Alarm Sensitivity=Medium Sensitivity
+node4:   Forced Entry Alarm Sensitivity=Medium Sensitivity
+node4:   Disable Local Alarm Controls=Enable local alarm controls
+node4:   Electronic transition count=0
+node4:   Mechanical transition count=0
+node4:   Electronic failed count=0
+node4:   Auto lock=Disable auto lock
+node4:   User code pin length=4
+node4:   Electrical High Preload Transition Count=0
+node4:   Bootloader Version=101
+node4: class 113
+node4:   Alarm Type=0
+node4:   Alarm Level=0
+node4:   SourceNodeId=0
+node4:   Access Control=1
+node4:   Burglar=0
+node4:   Power Management=0
+node4:   System=1
+node4: class 128
+node4:   Battery Level=97
+node4: class 134
+node4:   Library Version=6
+node4:   Protocol Version=3.42
+node4:   Application Version=104.21
+node4: class 152
+node4:   Secured=true
+free space: 1056186368
+removed old files | 20160621
+Files deleted
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 169.254.1.225 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+=================== DRIVER READY! ====================
+scanning homeid=0x1852929...
+=================== NODE ADDED! ====================
+nodeid: 1 value: {"value_id":"1-32-1-0","node_id":1,"class_id":32,"type":"byte","genre":"basic","instance":1,"index":0,"label":"Basic","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 32
+=================== NODE ADDED! ====================
+nodeid: 2 value: {"value_id":"2-37-1-0","node_id":2,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 2 value: {"value_id":"2-39-1-0","node_id":2,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 3 value: {"value_id":"3-37-1-0","node_id":3,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 3 value: {"value_id":"3-39-1-0","node_id":3,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 4 value: {"value_id":"4-98-1-0","node_id":4,"class_id":98,"type":"bool","genre":"user","instance":1,"index":0,"label":"Locked","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-1","node_id":4,"class_id":98,"type":"list","genre":"user","instance":1,"index":1,"label":"Locked (Advanced)","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Unsecure","Unsecured with Timeout","Inside Handle Unsecured","Inside Handle Unsecured with Timeout","Outside Handle Unsecured","Outside Handle Unsecured with Timeout","Secured","Invalid"],"value":"Unsecure"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-2","node_id":4,"class_id":98,"type":"list","genre":"system","instance":1,"index":2,"label":"Timeout Mode","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["No Timeout","Secure Lock after Timeout"],"value":"No Timeout"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-5","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":5,"label":"Outside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-6","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":6,"label":"Inside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-99-1-255","node_id":4,"class_id":99,"type":"byte","genre":"system","instance":1,"index":255,"label":"Code Count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":30} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-254","node_id":4,"class_id":99,"type":"button","genre":"system","instance":1,"index":254,"label":"Refresh All UserCodes","units":"","help":"","read_only":false,"write_only":true,"is_polled":false,"min":0,"max":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-112-1-3","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":3,"label":"Beeper","units":"","help":"Enable or disable the beeper.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Beeper","Enable Beeper"],"value":"Enable Beeper"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-4","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":4,"label":"Vacation Mode","units":"","help":"Prevents all user codes from unlocking the deadbolt. Enable for extra security while you are away for an extended period of time.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Vacation Mode","Enable Vacation Mode"],"value":"Disable Vacation Mode"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-5","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":5,"label":"Lock & Leave","units":"","help":"When enabled: Press the Outside Schlage Button to lock the deadbolt. (Default setting). When disabled: Press the Outside Schlage Button and then enter a user code to lock the deadbolt.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Lock & Leave","Enable Lock & Leave"],"value":"Enable Lock & Leave"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-7","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":7,"label":"Lock Alarm Mode","units":"","help":"The alarm is turned off by default. After installation, you’ll need to turn on your alarm. Activity Alarms when the door opens or closes. Perfect for monitoring doors while you’re at home. After the alarm is triggered, there is a built-in 3-second delay for it to reset. Sounds two short beeps. Tamper Alarms when the lock is disturbed, while locked. Senses subtle activity at the lock. Sounds 15 second Alarm (90 dB) Forced Entry Alarms when significant force pushes against the door, while locked. Perfect for nighttime or when you’re away from home. • Least sensitive mode Sounds three-minute shrill, steady alarm (90 dB)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Alarm Off","Activity","Tamper","Forced Entry"],"value":"Alarm Off"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-8","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":8,"label":"Activity Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-9","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":9,"label":"Tamper Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-10","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":10,"label":"Forced Entry Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-11","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":11,"label":"Disable Local Alarm Controls","units":"","help":"Enables/Disables local alarm on/off, mode change, sensitivity changes","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable local alarm controls","Enable local alarm controls"],"value":"Enable local alarm controls"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-12","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":12,"label":"Electronic transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-13","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":13,"label":"Mechanical transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-14","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":14,"label":"Electronic failed count","units":"","help":"Each failed electronic attempt increments this count by one.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-15","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":15,"label":"Auto lock","units":"","help":"When enabled, the lock will automatically relock 30 seconds after unlocking. (Disabled by default.)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable auto lock","Enable auto lock"],"value":"Disable auto lock"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-16","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":16,"label":"User code pin length","units":"","help":"User Code PIN length, a value between 4 and 8. IMPORTANT: All user codes must be the same length.","read_only":false,"write_only":false,"is_polled":false,"min":4,"max":8,"value":4} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-17","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":17,"label":"Electrical High Preload Transition Count","units":"","help":"A subset of Electronic transition count, the number of transitions with high preload.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-18","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":18,"label":"Bootloader Version","units":"","help":"The version of the bootloader","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":101} comclass: 112
+nodeid: 4 value: {"value_id":"4-113-1-0","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":0,"label":"Alarm Type","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-1","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":1,"label":"Alarm Level","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-128-1-0","node_id":4,"class_id":128,"type":"byte","genre":"user","instance":1,"index":0,"label":"Battery Level","units":"%","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":100} comclass: 128
+nodeid: 4 value: {"value_id":"4-134-1-0","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":0,"label":"Library Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-1","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":1,"label":"Protocol Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-2","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":2,"label":"Application Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-152-1-0","node_id":4,"class_id":152,"type":"bool","genre":"system","instance":1,"index":0,"label":"Secured","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":true} comclass: 152
+=================== NODE ADDED! ====================
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+node1: Aeotec, Z-Stick S2
+node1: name="", type="Static PC Controller", location=""
+node1: class 32
+node1:   Basic=0
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+nodeid: 4 value: {"value_id":"4-99-1-0","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":0,"label":"Enrollment Code","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-1","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":1,"label":"Code 1:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-2","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":2,"label":"Code 2:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-3","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":3,"label":"Code 3:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-4","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":4,"label":"Code 4:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-5","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":5,"label":"Code 5:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-6","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":6,"label":"Code 6:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-7","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":7,"label":"Code 7:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-8","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":8,"label":"Code 8:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-9","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":9,"label":"Code 9:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-10","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":10,"label":"Code 10:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-11","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":11,"label":"Code 11:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-12","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":12,"label":"Code 12:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-13","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":13,"label":"Code 13:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-14","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":14,"label":"Code 14:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-15","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":15,"label":"Code 15:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-16","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":16,"label":"Code 16:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-17","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":17,"label":"Code 17:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-18","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":18,"label":"Code 18:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-19","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":19,"label":"Code 19:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-20","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":20,"label":"Code 20:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-21","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":21,"label":"Code 21:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-22","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":22,"label":"Code 22:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-23","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":23,"label":"Code 23:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-24","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":24,"label":"Code 24:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-25","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":25,"label":"Code 25:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-26","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":26,"label":"Code 26:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-27","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":27,"label":"Code 27:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-28","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":28,"label":"Code 28:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-29","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":29,"label":"Code 29:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-30","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":30,"label":"Code 30:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+Enter device ID (b827eb115c53) at http://pyfi.org
+free space: 1058193408
+removed old files | 20160621
+Files deleted
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+nodeid: 4 value: {"value_id":"4-113-1-2","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":2,"label":"SourceNodeId","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-9","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":9,"label":"Access Control","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-10","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":10,"label":"Burglar","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-11","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":11,"label":"Power Management","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-12","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":12,"label":"System","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 5 value: {"value_id":"5-132-1-0","node_id":5,"class_id":132,"type":"int","genre":"system","instance":1,"index":0,"label":"Wake-up Interval","units":"Seconds","help":"","read_only":false,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":3600} comclass: 132
+node5: notification(2): Notification - NoOperation
+node5: notification(4): Notification - Node Asleep
+node2: notification(2): Notification - NoOperation
+node2: notification(5): Notification - Node Dead
+node3: notification(2): Notification - NoOperation
+scan complete, hit ^C to finish.
+node3: notification(5): Notification - Node Dead
+node4: notification(1): Notification - TimeOut
+node4: notification(1): Notification - TimeOut
+node4: Schlage, BE469NXCEN Touchscreen DeadBolt
+node4: name="", type="Secure Keypad Door Lock", location=""
+node4: class 98
+node4:   Locked=true
+node4:   Locked (Advanced)=Unsecure
+node4:   Timeout Mode=No Timeout
+node4:   Outside Handle Control=0
+node4:   Inside Handle Control=0
+node4: class 99
+node4:   Enrollment Code=          
+node4:   Code 1:=**********
+node4:   Code 2:=          
+node4:   Code 3:=          
+node4:   Code 4:=          
+node4:   Code 5:=          
+node4:   Code 6:=          
+node4:   Code 7:=          
+node4:   Code 8:=          
+node4:   Code 9:=          
+node4:   Code 10:=          
+node4:   Code 11:=          
+node4:   Code 12:=          
+node4:   Code 13:=          
+node4:   Code 14:=          
+node4:   Code 15:=          
+node4:   Code 16:=          
+node4:   Code 17:=          
+node4:   Code 18:=          
+node4:   Code 19:=          
+node4:   Code 20:=          
+node4:   Code 21:=          
+node4:   Code 22:=          
+node4:   Code 23:=          
+node4:   Code 24:=          
+node4:   Code 25:=          
+node4:   Code 26:=          
+node4:   Code 27:=          
+node4:   Code 28:=          
+node4:   Code 29:=          
+node4:   Code 30:=          
+node4:   Refresh All UserCodes=undefined
+node4:   Code Count=30
+node4: class 112
+node4:   Beeper=Enable Beeper
+node4:   Vacation Mode=Disable Vacation Mode
+node4:   Lock & Leave=Enable Lock & Leave
+node4:   Lock Alarm Mode=Alarm Off
+node4:   Activity Alarm Sensitivity=Medium Sensitivity
+node4:   Tamper Alarm Sensitivity=Medium Sensitivity
+node4:   Forced Entry Alarm Sensitivity=Medium Sensitivity
+node4:   Disable Local Alarm Controls=Enable local alarm controls
+node4:   Electronic transition count=0
+node4:   Mechanical transition count=0
+node4:   Electronic failed count=0
+node4:   Auto lock=Disable auto lock
+node4:   User code pin length=4
+node4:   Electrical High Preload Transition Count=0
+node4:   Bootloader Version=101
+node4: class 113
+node4:   Alarm Type=0
+node4:   Alarm Level=0
+node4:   SourceNodeId=0
+node4:   Access Control=1
+node4:   Burglar=0
+node4:   Power Management=0
+node4:   System=1
+node4: class 128
+node4:   Battery Level=97
+node4: class 134
+node4:   Library Version=6
+node4:   Protocol Version=3.42
+node4:   Application Version=104.21
+node4: class 152
+node4:   Secured=true
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 169.254.1.225 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 192.168.0.17 in your routers settings
+=================== DRIVER READY! ====================
+scanning homeid=0x1852929...
+=================== NODE ADDED! ====================
+nodeid: 1 value: {"value_id":"1-32-1-0","node_id":1,"class_id":32,"type":"byte","genre":"basic","instance":1,"index":0,"label":"Basic","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 32
+=================== NODE ADDED! ====================
+nodeid: 2 value: {"value_id":"2-37-1-0","node_id":2,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 2 value: {"value_id":"2-39-1-0","node_id":2,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 3 value: {"value_id":"3-37-1-0","node_id":3,"class_id":37,"type":"bool","genre":"user","instance":1,"index":0,"label":"Switch","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 37
+nodeid: 3 value: {"value_id":"3-39-1-0","node_id":3,"class_id":39,"type":"list","genre":"system","instance":1,"index":0,"label":"Switch All","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disabled","Off Enabled","On Enabled","On and Off Enabled"],"value":"Disabled"} comclass: 39
+=================== NODE ADDED! ====================
+nodeid: 4 value: {"value_id":"4-98-1-0","node_id":4,"class_id":98,"type":"bool","genre":"user","instance":1,"index":0,"label":"Locked","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":false} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-1","node_id":4,"class_id":98,"type":"list","genre":"user","instance":1,"index":1,"label":"Locked (Advanced)","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Unsecure","Unsecured with Timeout","Inside Handle Unsecured","Inside Handle Unsecured with Timeout","Outside Handle Unsecured","Outside Handle Unsecured with Timeout","Secured","Invalid"],"value":"Unsecure"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-2","node_id":4,"class_id":98,"type":"list","genre":"system","instance":1,"index":2,"label":"Timeout Mode","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["No Timeout","Secure Lock after Timeout"],"value":"No Timeout"} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-5","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":5,"label":"Outside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-98-1-6","node_id":4,"class_id":98,"type":"byte","genre":"system","instance":1,"index":6,"label":"Inside Handle Control","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 98
+nodeid: 4 value: {"value_id":"4-99-1-255","node_id":4,"class_id":99,"type":"byte","genre":"system","instance":1,"index":255,"label":"Code Count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-254","node_id":4,"class_id":99,"type":"button","genre":"system","instance":1,"index":254,"label":"Refresh All UserCodes","units":"","help":"","read_only":false,"write_only":true,"is_polled":false,"min":0,"max":0} comclass: 99
+nodeid: 4 value: {"value_id":"4-112-1-3","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":3,"label":"Beeper","units":"","help":"Enable or disable the beeper.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Beeper","Enable Beeper"],"value":"Enable Beeper"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-4","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":4,"label":"Vacation Mode","units":"","help":"Prevents all user codes from unlocking the deadbolt. Enable for extra security while you are away for an extended period of time.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Vacation Mode","Enable Vacation Mode"],"value":"Disable Vacation Mode"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-5","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":5,"label":"Lock & Leave","units":"","help":"When enabled: Press the Outside Schlage Button to lock the deadbolt. (Default setting). When disabled: Press the Outside Schlage Button and then enter a user code to lock the deadbolt.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":255,"values":["Disable Lock & Leave","Enable Lock & Leave"],"value":"Enable Lock & Leave"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-7","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":7,"label":"Lock Alarm Mode","units":"","help":"The alarm is turned off by default. After installation, you’ll need to turn on your alarm. Activity Alarms when the door opens or closes. Perfect for monitoring doors while you’re at home. After the alarm is triggered, there is a built-in 3-second delay for it to reset. Sounds two short beeps. Tamper Alarms when the lock is disturbed, while locked. Senses subtle activity at the lock. Sounds 15 second Alarm (90 dB) Forced Entry Alarms when significant force pushes against the door, while locked. Perfect for nighttime or when you’re away from home. • Least sensitive mode Sounds three-minute shrill, steady alarm (90 dB)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Alarm Off","Activity","Tamper","Forced Entry"],"value":"Alarm Off"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-8","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":8,"label":"Activity Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-9","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":9,"label":"Tamper Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-10","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":10,"label":"Forced Entry Alarm Sensitivity","units":"","help":"Each alarm mode is preset to a sensitivity level of three. If your alarm is sounding too frequently, or not frequently enough, try changing this setting. If you change the alarm mode, the sensitivity will revert back to the default setting.","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Most Sensitive","Medium/high Sensitivity","Medium Sensitivity","Medium/low Sensitivity","Least Sensitivity"],"value":"Medium Sensitivity"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-11","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":11,"label":"Disable Local Alarm Controls","units":"","help":"Enables/Disables local alarm on/off, mode change, sensitivity changes","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable local alarm controls","Enable local alarm controls"],"value":"Enable local alarm controls"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-12","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":12,"label":"Electronic transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-13","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":13,"label":"Mechanical transition count","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-14","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":14,"label":"Electronic failed count","units":"","help":"Each failed electronic attempt increments this count by one.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-15","node_id":4,"class_id":112,"type":"list","genre":"config","instance":1,"index":15,"label":"Auto lock","units":"","help":"When enabled, the lock will automatically relock 30 seconds after unlocking. (Disabled by default.)","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"values":["Disable auto lock","Enable auto lock"],"value":"Disable auto lock"} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-16","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":16,"label":"User code pin length","units":"","help":"User Code PIN length, a value between 4 and 8. IMPORTANT: All user codes must be the same length.","read_only":false,"write_only":false,"is_polled":false,"min":4,"max":8,"value":4} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-17","node_id":4,"class_id":112,"type":"int","genre":"config","instance":1,"index":17,"label":"Electrical High Preload Transition Count","units":"","help":"A subset of Electronic transition count, the number of transitions with high preload.","read_only":true,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":0} comclass: 112
+nodeid: 4 value: {"value_id":"4-112-1-18","node_id":4,"class_id":112,"type":"byte","genre":"config","instance":1,"index":18,"label":"Bootloader Version","units":"","help":"The version of the bootloader","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":101} comclass: 112
+nodeid: 4 value: {"value_id":"4-113-1-0","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":0,"label":"Alarm Type","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-1","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":1,"label":"Alarm Level","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-128-1-0","node_id":4,"class_id":128,"type":"byte","genre":"user","instance":1,"index":0,"label":"Battery Level","units":"%","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":100} comclass: 128
+nodeid: 4 value: {"value_id":"4-134-1-0","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":0,"label":"Library Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-1","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":1,"label":"Protocol Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-134-1-2","node_id":4,"class_id":134,"type":"string","genre":"system","instance":1,"index":2,"label":"Application Version","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":"Unknown"} comclass: 134
+nodeid: 4 value: {"value_id":"4-152-1-0","node_id":4,"class_id":152,"type":"bool","genre":"system","instance":1,"index":0,"label":"Secured","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":true} comclass: 152
+=================== NODE ADDED! ====================
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+node1: Aeotec, Z-Stick S2
+node1: name="", type="Static PC Controller", location=""
+node1: class 32
+node1:   Basic=0
+node2: notification(2): Notification - NoOperation
+node3: notification(2): Notification - NoOperation
+Enter device ID (b827eb115c53) at http://pyfi.org
+free space: 1062146048
+removed old files | 20160621
+nodeid: 4 value: {"value_id":"4-99-1-0","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":0,"label":"Enrollment Code","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-1","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":1,"label":"Code 1:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-2","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":2,"label":"Code 2:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-3","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":3,"label":"Code 3:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-4","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":4,"label":"Code 4:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-5","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":5,"label":"Code 5:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-6","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":6,"label":"Code 6:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-7","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":7,"label":"Code 7:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-8","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":8,"label":"Code 8:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-9","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":9,"label":"Code 9:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-10","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":10,"label":"Code 10:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-11","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":11,"label":"Code 11:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-12","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":12,"label":"Code 12:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-13","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":13,"label":"Code 13:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-14","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":14,"label":"Code 14:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-15","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":15,"label":"Code 15:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-16","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":16,"label":"Code 16:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-17","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":17,"label":"Code 17:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-18","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":18,"label":"Code 18:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-19","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":19,"label":"Code 19:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-20","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":20,"label":"Code 20:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-21","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":21,"label":"Code 21:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-22","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":22,"label":"Code 22:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-23","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":23,"label":"Code 23:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-24","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":24,"label":"Code 24:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-25","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":25,"label":"Code 25:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-26","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":26,"label":"Code 26:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-27","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":27,"label":"Code 27:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-28","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":28,"label":"Code 28:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-29","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":29,"label":"Code 29:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+nodeid: 4 value: {"value_id":"4-99-1-30","node_id":4,"class_id":99,"type":"raw","genre":"user","instance":1,"index":30,"label":"Code 30:","units":"","help":"","read_only":false,"write_only":false,"is_polled":false,"min":0,"max":0,"value":{"type":"Buffer","data":[0,0,0,0,0,0,0,0,0,0]}} comclass: 99
+Files deleted
+Hue Bridges Found: [{"id":"001788fffe20d630","ipaddress":"192.168.0.13"}]
+token set a0c7e32e34c7380c17151cd4f486e9701c0b66a83880545c9fe43f7474976c27d3da7b9b017b3fc830062cdc0ec46c9b7f0559f3715c88c04694c210a9b69629
+nodeid: 4 value: {"value_id":"4-113-1-2","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":2,"label":"SourceNodeId","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-9","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":9,"label":"Access Control","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-10","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":10,"label":"Burglar","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-11","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":11,"label":"Power Management","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 4 value: {"value_id":"4-113-1-12","node_id":4,"class_id":113,"type":"byte","genre":"user","instance":1,"index":12,"label":"System","units":"","help":"","read_only":true,"write_only":false,"is_polled":false,"min":0,"max":255,"value":0} comclass: 113
+nodeid: 5 value: {"value_id":"5-132-1-0","node_id":5,"class_id":132,"type":"int","genre":"system","instance":1,"index":0,"label":"Wake-up Interval","units":"Seconds","help":"","read_only":false,"write_only":false,"is_polled":false,"min":-2147483648,"max":2147483647,"value":3600} comclass: 132
+node5: notification(2): Notification - NoOperation
+node5: notification(4): Notification - Node Asleep
+node2: notification(2): Notification - NoOperation
+node2: notification(5): Notification - Node Dead
+node3: notification(2): Notification - NoOperation
+scan complete, hit ^C to finish.
+node3: notification(5): Notification - Node Dead
+node4: notification(1): Notification - TimeOut
+node4: notification(1): Notification - TimeOut
+node4: Schlage, BE469NXCEN Touchscreen DeadBolt
+node4: name="", type="Secure Keypad Door Lock", location=""
+node4: class 98
+node4:   Locked=true
+node4:   Locked (Advanced)=Unsecure
+node4:   Timeout Mode=No Timeout
+node4:   Outside Handle Control=0
+node4:   Inside Handle Control=0
+node4: class 99
+node4:   Enrollment Code=          
+node4:   Code 1:=**********
+node4:   Code 2:=          
+node4:   Code 3:=          
+node4:   Code 4:=          
+node4:   Code 5:=          
+node4:   Code 6:=          
+node4:   Code 7:=          
+node4:   Code 8:=          
+node4:   Code 9:=          
+node4:   Code 10:=          
+node4:   Code 11:=          
+node4:   Code 12:=          
+node4:   Code 13:=          
+node4:   Code 14:=          
+node4:   Code 15:=          
+node4:   Code 16:=          
+node4:   Code 17:=          
+node4:   Code 18:=          
+node4:   Code 19:=          
+node4:   Code 20:=          
+node4:   Code 21:=          
+node4:   Code 22:=          
+node4:   Code 23:=          
+node4:   Code 24:=          
+node4:   Code 25:=          
+node4:   Code 26:=          
+node4:   Code 27:=          
+node4:   Code 28:=          
+node4:   Code 29:=          
+node4:   Code 30:=          
+node4:   Refresh All UserCodes=undefined
+node4:   Code Count=30
+node4: class 112
+node4:   Beeper=Enable Beeper
+node4:   Vacation Mode=Disable Vacation Mode
+node4:   Lock & Leave=Enable Lock & Leave
+node4:   Lock Alarm Mode=Alarm Off
+node4:   Activity Alarm Sensitivity=Medium Sensitivity
+node4:   Tamper Alarm Sensitivity=Medium Sensitivity
+node4:   Forced Entry Alarm Sensitivity=Medium Sensitivity
+node4:   Disable Local Alarm Controls=Enable local alarm controls
+node4:   Electronic transition count=0
+node4:   Mechanical transition count=0
+node4:   Electronic failed count=0
+node4:   Auto lock=Disable auto lock
+node4:   User code pin length=4
+node4:   Electrical High Preload Transition Count=0
+node4:   Bootloader Version=101
+node4: class 113
+node4:   Alarm Type=0
+node4:   Alarm Level=0
+node4:   SourceNodeId=0
+node4:   Access Control=1
+node4:   Burglar=0
+node4:   Power Management=0
+node4:   System=1
+node4: class 128
+node4:   Battery Level=97
+node4: class 134
+node4:   Library Version=6
+node4:   Protocol Version=3.42
+node4:   Application Version=104.21
+node4: class 152
+node4:   Secured=true
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 169.254.1.225 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 169.254.1.225 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 169.254.1.225 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
+connecting to /dev/ttyUSB0
+=================== CONNECTED! ====================
+To use camera and file server, forward port 3017 to 169.254.1.225 in your routers settings
+{ [Error: connect ENETUNREACH 192.168.0.13:80 - Local (0.0.0.0:0)]
+  code: 'ENETUNREACH',
+  errno: 'ENETUNREACH',
+  syscall: 'connect',
+  address: '192.168.0.13',
+  port: 80 }
+/home/pi/open-automation/node_modules/node-hue-api/node_modules/q/q.js:155
+                throw e;
+                ^
+
+Error: getaddrinfo ENOTFOUND www.meethue.com www.meethue.com:443
+    at errnoException (dns.js:26:10)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:77:26)
+Initialising OpenZWave 1.4.256 binary addon for Node.JS.
+	OpenZWave Security API is ENABLED
+	ZWave device db    : /usr/local/etc/openzwave
+	User settings path : /home/pi/open-automation/node_modules/openzwave-shared/build/Release/../../
+	Option Overrides : --ConsoleOutput false --Logging false --SaveConfiguration false --DriverMaxAttempts 3 --PollInterval 500 --SuppressValueRefresh true --NetworkKey 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10
