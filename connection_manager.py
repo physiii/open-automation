@@ -4,7 +4,6 @@ response = os.system("ping -c 1 " + hostname)
 if response == 0:
     pingstatus = "Network Active"
 else:
-    os.system("sudo mv /etc/network/interfaces /etc/network/interfaces.cl")
     os.system("sudo cp ~/open-automation/cp/interfaces.ap /etc/network/interfaces")
     os.system("sudo cp ~/open-automation/cp/hostapd.conf /etc/hostapd/hostapd.conf")
     os.system("sudo cp ~/open-automation/cp/hostapd /etc/default/hostapd")

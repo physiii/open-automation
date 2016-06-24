@@ -5,25 +5,16 @@ var app = express();
 var program_app = express();
 var querystring = require('querystring');
 var http = require('http');
-var server = require('http').createServer(app);
-var program_server = require('http').createServer(program_app);
-var program_io = require('socket.io')(program_server);
-var io = require('socket.io')(server);
-var io_upstairs = require('socket.io-client')('http://192.168.0.9:3000');
-var io_downstairs = require('socket.io-client')('http://192.168.0.3:3000');
-var io_relay = require('socket.io-client')('wss://peaceful-coast-12080.herokuapp.com');
+var server = http.createServer(app);
 var io_relay = require('socket.io-client')('http://68.12.126.213:5000');
 var port = process.env.PORT || 3030;
-//var program_port = process.env.PORT || 3000;
 var php = require("node-php");
 var request = require('request');
 var spawn = require('child_process').spawn;
-var exec = require('child_process').exec;
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
 var gb_event = new EventEmitter();
-const gb_read = require('child_process').exec;
 var token = "init";
 var d = new Date();
 var light_delay = 0; //command delay in ms
@@ -46,10 +37,108 @@ var text_timeout = 0
 var platform = process.platform;
 var hue = require("node-hue-api");
 var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
+const exec = require('child_process').exec;
 
+// -------------------------------  MangoDB  --------------------------------- //
+/*var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+var url = 'mongodb://localhost:27017/my_database_name';
+MongoClient.connect(url, function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    console.log('Connection established to', url);
+    var collection = db.collection('users');
+    var user1 = {name: 'modulus admin', age: 42, roles: ['admin', 'moderator', 'user']};
+    var user2 = {name: 'modulus user', age: 22, roles: ['user']};
+    var user3 = {name: 'modulus super admin', age: 92, roles: ['super-admin', 'admin', 'moderator', 'user']};
+    collection.insert([user1, user2, user3], function (err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+      }
+    db.close();
+  }
+});*/
+
+var ping = require ("net-ping");
+var session = ping.createSession ();
+var target = "8.8.8.8";
+session.pingHost (target, function (error, target) {
+    if (error) {
+console.log("hittt!");
+        console.log (target + ": " + error.toString ());
+//exec("sudo cp ~/open-automation/cp/interfaces.ap /etc/network/interfaces");
+//exec("sudo cp ~/open-automation/cp/hostapd.conf /etc/hostapd/hostapd.conf");
+//exec("sudo cp ~/open-automation/cp/hostapd /etc/default/hostapd");
+//exec("sudo ifdown wlan0 && sudo ifup wlan0 && sudo service hostapd restart");
+//exec("sudo reboot");
+}
+    else
+        console.log (target + ": Alive");
+});
+
+exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
+  if (error) {
+    //console.error(`exec error: ${error}`);
+    return;
+  }
+});
+// ----------------------------  program interface  ----------------------------- //
+var program_server = http.createServer(program_app);
+var program_io = require('socket.io')(program_server);
+var program_port = 3000;
+program_server.listen(program_port, function () {
+  console.log('Access GUI on port %d', program_port);
+});     
+
+var router_array = [];
+var router_list = [];
+exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
+  if (error) {
+    //console.error(`exec error: ${error}`);
+    return;
+  }
+  router_array = stdout.split('\n');
+  router_list = [];
+  for(var i = 0; i < router_array.length; i++) {
+    var router_ssid = router_array[i].replace(/^\s*/, "")
+  			             .replace(/\s*$/, "")
+ 			             .replace("ESSID:\"","")
+    			             .replace("\"","");
+    router_list.push({ssid:router_ssid});
+  }
+  console.log("router_array | " + router_list);
+});
+program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
+program_io.on('connection', function (socket) {
+  console.log(socket.id + " connected");
+  socket.emit('router_array',router_list);
+  socket.on('set_wifi', function (data) {
+    router_name = data['router_name'];
+    router_password = data['router_password'];
+    console.log(router_name + ":" + router_password);
+    var wpa_supplicant = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
+                       + "update_config=1\n"
+		       + "country=GB\n"
+                       + "network={\n"
+		       + "ssid=\""+router_name+"\"\n"
+		       + "psk=\""+router_password+"\"\n"
+		       + "key_mgmt=WPA-PSK\n"
+		       + "}";
+
+    fs.writeFile("/etc/wpa_supplicant/wpa_supplicant.conf", wpa_supplicant, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+}); 
+  });
+});
 
 // -------------------------  zwave  ---------------------- //
-//372414
 var OpenZWave = require('openzwave-shared');
 var zwave = new OpenZWave({
 	ConsoleOutput: false,
@@ -238,10 +327,10 @@ var displayBridges = function(bridge) {
     fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
     console.log("Hue Bridges Found: " + JSON.stringify(bridge));
 };
-hue.nupnpSearch().then(displayBridges).done();
+//hue.nupnpSearch().then(displayBridges).done();
 
 // ----------------------  link bridge  ------------------- //
-//link_hue_bridge(info_obj.ip);
+
 function link_hue_bridge(ipaddress) {
 
 var HueApi = require("node-hue-api").HueApi;
@@ -430,34 +519,6 @@ proxy.on('error', function (err, req, res) {
   res.end('Something went wrong. And we are reporting a custom error message.');
 });
 
-// --------------  websocket server for devices  ----------------- //
-var ws_port = 4040;
-var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: ws_port });
-//console.log('websockets on port %d', ws_port);
-wss.on('connection', function connection(ws) {
-  try {
-    ws.send('Hello from server!');  
-  }
-  catch (e) { 
-    console.log("error: " + e)
-  }
-  ws.on('message', function incoming(message) {
-    console.log(message);
-  });
-  ws.on('error', function() {
-    console.log('error catch!');
-  });
-});
-
-// ------------------  relayed socket.io messages  ------------------- //
-//var io_relay = require('socket.io-client')('wss://pyfi-relay.herokuapp.com');
-
-
-//
-//if disconnected from relay, loop reconnect attemp !!!!!
-//
-
 io_relay.on('token', function (data) {
   token = data.token;
   session_string = '/' + token;
@@ -500,7 +561,7 @@ io_relay.on('get_gateway_devices', function (data) {
 });
 
 
-//zwave.setValue(4, 98, 1, 0, true);
+
 io_relay.on('cmd_gateway_device', function (data) {
   console.log("cmd_gateway_device |  " + JSON.stringify(data));
   //zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
@@ -509,22 +570,7 @@ io_relay.on('cmd_gateway_device', function (data) {
 
 
 io_relay.on('lights', function (light) {
-
   set_light(light.id,light.state);
-//var state = {"rgb":light.state.rgb};
-/*for (var i=0; i < info_obj.lights.length; i++) {
-  console.log("info_obj.lights | " + info_obj.lights[i].id);
-  set_light(info_obj.lights[i].id,state);
-}*/
-//console.log(light.id + " | " + light.state.rgb);
-  /*
-  var state = [];
-  //state['on'] = !light.selected;
-  state['rgb'] = [200, 200, 200];
-  if (light.state.hue) {
-    //state['hue'] = "1000";
-    //console.log("hue state " + light.state.hue);
-  }*/
 });
 
 io_relay.on('link_lights', function (data) {
@@ -658,12 +704,10 @@ function (error, response, data) {
       data_obj['mac'] = mac;
       data_obj['ip'] = ipaddress;
       data_obj['cmd'] = cmd;
-      //console.log("data_obj is " + JSON.stringify(data_obj));
       if (cmd === "link") {
           io_relay.emit('link_thermostat',data_obj);
         }
         if (cmd === "update") {
-          //console.log("have current_state?? --> " + )
           io_relay.emit('thermostat_state',data_obj);
         }      
       }
@@ -696,36 +740,3 @@ function isJSON (json_obj) {
     return false;
   }  
 }
-
-// ----------------------------  web interface  ----------------------------- //
-/*
-var program_port = 3000;
-program_server.listen(program_port, function () {
-  console.log('Access GUI on port %d', program_port);
-});     
-      
-program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
-program_io.on('connection', function (socket) {
-  socket.on('get_token', function (data) {
-    user = data['user'];
-    password = data['pwd'];
-    post_data = {user:user, pwd:password, mac:mac};
-    var response = request.post(
-      'http://68.12.157.176:8080/pyfi.org/php/set_token.php',
-      {form: post_data},
-      function (error, response, data) {
-        if (!error && response.statusCode == 200) {
-          console.log('set_token.php says: ' + data.token);
-          //io_relay.emit('token',{token:"blah"});
-          fs.writeFile( "device_info.json", data.token, "utf8", callback );
-          function callback(){
-            console.log('callback for device_info.json');
-          }
-          //body.data = data;          
-          //body.emit('update');
-        }
-      });
-    console.log( "token received for " + data['user']);
-  });
-});
-*/

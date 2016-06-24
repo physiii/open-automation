@@ -1,125 +1,59 @@
-/*
- * OpenZWave test program.
- */
-
-var OpenZWave = require('openzwave-shared');
+var fs = require('fs');
 var os = require('os');
-
-var zwave = new OpenZWave({
-	ConsoleOutput: false,
-	Logging: false,
-	SaveConfiguration: false,
-	DriverMaxAttempts: 3,
-	PollInterval: 500,
-	SuppressValueRefresh: true,
+var express = require('express');
+var app = express();
+var program_app = express();
+var querystring = require('querystring');
+var http = require('http');
+var server = http.createServer(app);
+var io_relay = require('socket.io-client')('http://68.12.126.213:5000');
+var port = process.env.PORT || 3030;
+var php = require("node-php");
+var request = require('request');
+var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
+var mysql      = require('mysql');
+var EventEmitter = require("events").EventEmitter;
+var body = new EventEmitter();
+var gb_event = new EventEmitter();
+const gb_read = require('child_process').exec;
+var token = "init";
+var d = new Date();
+var light_delay = 0; //command delay in ms
+var previous_data = 0;
+var desired_temp = 70;
+var current_therm_state = "";
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : 'password',
+  database : 'device'
 });
-var nodes = [];
+var lights = [];
+var username = "init";
+var device_name = "init";
+var ip = "init";
+var device_port = "init";
+var count = 0;
+var text_timeout = 0
+var platform = process.platform;
 
-zwave.on('connected', function(homeid) {
-	console.log('=================== CONNECTED! ====================');
-});
+// ----------------------------  program interface  ----------------------------- //
+var program_server = http.createServer(program_app);
+var program_io = require('socket.io')(program_server);
+var program_port = 3000;
+program_server.listen(program_port, function () {
+  console.log('Access GUI on port %d', program_port);
+});     
 
-zwave.on('driver ready', function(homeid) {
-	console.log('=================== DRIVER READY! ====================');
-	console.log('scanning homeid=0x%s...', homeid.toString(16));
-});
-
-zwave.on('driver failed', function() {
-	console.log('failed to start driver');
-	zwave.disconnect();
-	process.exit();
-});
-
-zwave.on('node added', function(nodeid) {
-	console.log('=================== NODE ADDED! ====================');
-	nodes[nodeid] = {
-		manufacturer: '',
-		manufacturerid: '',
-		product: '',
-		producttype: '',
-		productid: '',
-		type: '',
-		name: '',
-		loc: '',
-		classes: {},
-		ready: false,
-	};
-});
-
-zwave.on('value added', function(nodeid, comclass, value) {
-	if (!nodes[nodeid]['classes'][comclass])
-		nodes[nodeid]['classes'][comclass] = {};
-	nodes[nodeid]['classes'][comclass][value.index] = value;
-});
-
-zwave.on('value changed', function(nodeid, comclass, value) {
-	if (nodes[nodeid]['ready']) {
-		console.log('node%d: changed: %d:%s:%s->%s', nodeid, comclass,
-			    value['label'],
-			    nodes[nodeid]['classes'][comclass][value.index]['value'],
-			    value['value']);
-	}
-	nodes[nodeid]['classes'][comclass][value.index] = value;
-});
-
-zwave.on('value removed', function(nodeid, comclass, index) {
-	if (nodes[nodeid]['classes'][comclass] &&
-	    nodes[nodeid]['classes'][comclass][index])
-		delete nodes[nodeid]['classes'][comclass][index];
-});
-
-zwave.on('node ready', function(nodeid, nodeinfo) {
-	nodes[nodeid]['manufacturer'] = nodeinfo.manufacturer;
-	nodes[nodeid]['manufacturerid'] = nodeinfo.manufacturerid;
-	nodes[nodeid]['product'] = nodeinfo.product;
-	nodes[nodeid]['producttype'] = nodeinfo.producttype;
-	nodes[nodeid]['productid'] = nodeinfo.productid;
-	nodes[nodeid]['type'] = nodeinfo.type;
-	nodes[nodeid]['name'] = nodeinfo.name;
-	nodes[nodeid]['loc'] = nodeinfo.loc;
-	nodes[nodeid]['ready'] = true;
-	console.log('node%d: %s, %s', nodeid,
-		    nodeinfo.manufacturer ? nodeinfo.manufacturer
-					  : 'id=' + nodeinfo.manufacturerid,
-		    nodeinfo.product ? nodeinfo.product
-				     : 'product=' + nodeinfo.productid +
-				       ', type=' + nodeinfo.producttype);
-	console.log('node%d: name="%s", type="%s", location="%s"', nodeid,
-		    nodeinfo.name,
-		    nodeinfo.type,
-		    nodeinfo.loc);
-	for (var comclass in nodes[nodeid]['classes']) {
-		switch (comclass) {
-		case 0x25: // COMMAND_CLASS_SWITCH_BINARY
-		case 0x26: // COMMAND_CLASS_SWITCH_MULTILEVEL
-			zwave.enablePoll(nodeid, comclass);
-			break;
-		}
-		var values = nodes[nodeid]['classes'][comclass];
-		console.log('node%d: class %d', nodeid, comclass);
-		for (var idx in values)
-			console.log('node%d:   %s=%s', nodeid, values[idx]['label'], values[idx]['value']);
-	}
-});
-
-zwave.on('notification', function(nodeid, notif, help) {
-	console.log('node%d: notification(%d): %s', nodeid, notif, help);
-});
-
-zwave.on('scan complete', function() {
-	console.log('scan complete, hit ^C to finish.');
-});
-
-var zwavedriverpaths = {
-	"darwin" : '/dev/cu.usbmodem1411',
-	"linux"  : '/dev/ttyUSB0',
-	"windows": '\\\\.\\COM3'
-}
-console.log("connecting to " + zwavedriverpaths[os.platform()]);
-zwave.connect( zwavedriverpaths[os.platform()] );
-
-process.on('SIGINT', function() {
-	console.log('disconnecting...');
-	zwave.disconnect();
-	process.exit();
+program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
+program_io.on('connection', function (socket) {
+  console.log(socket.id + " connected!!")
+  socket.on('ttest', function (data) {
+    console.log(data['test']);
+  });
+  socket.on('set_wifi', function (data) {
+    router_name = data['router_name'];console.log('hittt');
+    router_password = data['router_password'];
+  });
 });
