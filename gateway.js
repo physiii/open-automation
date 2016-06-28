@@ -40,51 +40,91 @@ var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 
 const exec = require('child_process').exec;
 
 // -------------------------------  MangoDB  --------------------------------- //
-/*var mongodb = require('mongodb');
+var mongodb = require('mongodb');
+var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
-var url = 'mongodb://localhost:27017/my_database_name';
-MongoClient.connect(url, function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established to', url);
-    var collection = db.collection('users');
-    var user1 = {name: 'modulus admin', age: 42, roles: ['admin', 'moderator', 'user']};
-    var user2 = {name: 'modulus user', age: 22, roles: ['user']};
-    var user3 = {name: 'modulus super admin', age: 92, roles: ['super-admin', 'admin', 'moderator', 'user']};
-    collection.insert([user1, user2, user3], function (err, result) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
-      }
-    db.close();
-  }
-});*/
+var url = 'mongodb://127.0.0.1:27017/settings';
 
 var ping = require ("net-ping");
 var session = ping.createSession ();
 var target = "8.8.8.8";
 session.pingHost (target, function (error, target) {
-    if (error) {
-console.log("hittt!");
-        console.log (target + ": " + error.toString ());
-//exec("sudo cp ~/open-automation/cp/interfaces.ap /etc/network/interfaces");
-//exec("sudo cp ~/open-automation/cp/hostapd.conf /etc/hostapd/hostapd.conf");
-//exec("sudo cp ~/open-automation/cp/hostapd /etc/default/hostapd");
-//exec("sudo ifdown wlan0 && sudo ifup wlan0 && sudo service hostapd restart");
-//exec("sudo reboot");
-}
-    else
-        console.log (target + ": Alive");
+  if (error) {
+    console.log (target + ": " + error.toString ());
+    MongoClient.connect(url, function (err, db) {
+      if (err) {
+        console.log('Unable to connect to the mongoDB server. Error:', err);
+      } else {
+        console.log('Connection established to', url);
+        var collection = db.collection('connection_info');
+        var cursor = collection.find({"_id":ObjectId("576d5f15cf0dda52c3818d1d")});
+        cursor.each(function (err, doc) {
+          if (err) {console.log(err)} 
+          else {
+  	    try {
+              console.log('NO REPLY: isAP', doc.isAP);
+  	      if (doc.isAP == false) {
+                console.log("Starting AP mode...");
+
+    var interfaces_file = "allow-hotplug wlan0\n"
+                   + "iface wlan0 inet static\n"
+    		   + "address 172.24.1.1\n"
+    		   + "netmask 255.255.255.0\n"
+    		   + "network 172.24.1.0\n"
+    		   + "broadcast 172.24.1.255\n";
+    fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("Interface file saved");
+    });
+
+    var dhcpcd_file = "#denyinterfaces wlan0\n"
+                    +  "hostname\n"
+                    +  "clientid\n"
+                    +  "persistent\n"
+                    +  "option rapid_commit\n"
+                    +  "option domain_name_servers, domain_name, domain_search, host_name\n"
+                    +  "option classless_static_routes\n"
+                    +  "option ntp_servers\n"
+                    +  "require dhcp_server_identifier\n"
+                    +  "slaac private\n"
+                    +  "nohook lookup-hostname\n";
+    fs.writeFile("/etc/dhcpcd.conf", dhcpcd_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("dhcpcd saved!");
+    });
+
+    MongoClient.connect(url, function (err, db) {
+      if (err) {
+        console.log('Unable to connect to the mongoDB server. Error:', err);
+      } else {
+        console.log('Connection established to', url);
+        var collection = db.collection('connection_info');
+        var connection_info = {"_id" : ObjectId("576d5f15cf0dda52c3818d1d"), isAP:true};
+        collection.save(connection_info, function (err, result) {
+          if (err) {console.log(err)} else {
+            console.log('web GUI: set isAP true', result.length, result);
+    exec("sudo ifdown wlan0 && sudo ifup wlan0");
+    exec("sudo reboot");
+          }
+        });
+      }
+    });
+
+	      }
+	    }
+	    catch (e){console.log("isAP null")}
+          }
+        });
+      }
+    });
+  }
+  else console.log (target + ": Alive");
 });
 
-exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
-  if (error) {
-    //console.error(`exec error: ${error}`);
-    return;
-  }
-});
 // ----------------------------  program interface  ----------------------------- //
 var program_server = http.createServer(program_app);
 var program_io = require('socket.io')(program_server);
@@ -119,6 +159,7 @@ program_io.on('connection', function (socket) {
     router_name = data['router_name'];
     router_password = data['router_password'];
     console.log(router_name + ":" + router_password);
+
     var wpa_supplicant = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
                        + "update_config=1\n"
 		       + "country=GB\n"
@@ -126,15 +167,66 @@ program_io.on('connection', function (socket) {
 		       + "ssid=\""+router_name+"\"\n"
 		       + "psk=\""+router_password+"\"\n"
 		       + "key_mgmt=WPA-PSK\n"
-		       + "}";
-
+		       + "}\n";
     fs.writeFile("/etc/wpa_supplicant/wpa_supplicant.conf", wpa_supplicant, function(err) {
-    if(err) {
+      if(err) {
         return console.log(err);
-    }
+      }
+      console.log("wpa_supplicant saved!");
+    });
 
-    console.log("The file was saved!");
-}); 
+    var interfaces_file = "source-directory /etc/network/interfaces.d\n"
+			+ "auto lo\n"
+			+ "iface lo inet loopback\n"
+			+ "iface eth0 inet manual\n"
+			+ "allow-hotplug wlan0\n"
+			+ "iface wlan0 inet manual\n"
+		    	+ "    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n"
+		    	+ "allow-hotplug wlan1\n"
+		    	+ "iface wlan1 inet manual\n"
+		    	+ "    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n";
+    fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("Interfaces saved!");
+    });
+
+    var dhcpcd_file = "#denyinterfaces wlan0\n"
+                    +  "hostname\n"
+                    +  "clientid\n"
+                    +  "persistent\n"
+                    +  "option rapid_commit\n"
+                    +  "option domain_name_servers, domain_name, domain_search, host_name\n"
+                    +  "option classless_static_routes\n"
+                    +  "option ntp_servers\n"
+                    +  "require dhcp_server_identifier\n"
+                    +  "slaac private\n"
+                    +  "nohook lookup-hostname\n";
+    fs.writeFile("/etc/dhcpcd.conf", dhcpcd_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("dhcpcd saved!");
+    });
+
+    MongoClient.connect(url, function (err, db) {
+      if (err) {
+        console.log('Unable to connect to the mongoDB server. Error:', err);
+      } else {
+        console.log('Connection established to', url);
+        var collection = db.collection('connection_info');
+        var connection_info = {"_id" : ObjectId("576d5f15cf0dda52c3818d1d"), isAP:false};
+        collection.save(connection_info, function (err, result) {
+          if (err) {console.log(err)} else {
+            console.log('web GUI: set isAP false', result.length, result);
+  	    exec("sudo ifdown wlan0; sudo ifup wlan0");
+      	    //exec("sudo reboot");
+          }
+        });
+      }
+    });
+
   });
 });
 
@@ -157,7 +249,7 @@ zwave.on('connected', function(homeid) {
 
 zwave.on('driver ready', function(homeid) {
 	console.log('=================== DRIVER READY! ====================');
-	console.log('scanning homeid=0x%s...', homeid.toString(16));
+	//console.log('scanning homeid=0x%s...', homeid.toString(16));
 //console.log("adding node");
 //zwave.addNode(1);
 });
@@ -188,7 +280,7 @@ zwave.on('value added', function(nodeid, comclass, value) {
   if (!nodes[nodeid]['classes'][comclass])
     nodes[nodeid]['classes'][comclass] = {};
     nodes[nodeid]['classes'][comclass][value.index] = value;
-      console.log("nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
+      //console.log("nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
 
     if (value.value_id == "4-98-1-0"){
       //zwave.setValue(4, 98, 1, 0, true);
