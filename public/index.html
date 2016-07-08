@@ -63,10 +63,9 @@
     <div ng-controller="post_ctrl">
       <div class="item item-text-wrap">
         <div class="list">
-
-<select ng-model="router_name" class="form-control">
-  <option ng-repeat="x in router_list">{{ x.ssid }}</option>
-</select>
+	  <select ng-model="router_name" class="form-control">
+	    <option ng-repeat="x in router_list">{{ x.ssid }}</option>
+	  </select>
           <label class="item item-input">
             <input type="password" ng-model="router_password" placeholder="Password">
           </label>        
@@ -76,8 +75,10 @@
         </div>  
       </div>
     </div>
+  </div>
 </div>
 
+<!---------------
 <div class="card">
   <div class="item item-divider">
     Link Account
@@ -100,20 +101,20 @@
       </div>
     </div>
 </div>
+-->
 
 <div class="card">
   <div class="item item-divider">
     Gateway
   </div>
-...list attached devices...
-    <div id="{{ x.mac }}_div" class="card">
-      <div style="margin:auto">    
-        <img style="border:2px solid #444;border-radius:0px 0px 3px 3px;" src="http://192.168.0.18:8081/"></img>
-      </div>
+  ...list attached devices...
+  <div id="{{ x.mac }}_div" class="card">
+    <div style="margin:auto">    
+      <img style="border:2px solid #444;border-radius:0px 0px 3px 3px;" src="http://172.24.1.1:8081/"></img>
     </div>
   </div>
-</div>  
-</div>  
+</div>
+
 </ion-content>
 </body>
 </html>
