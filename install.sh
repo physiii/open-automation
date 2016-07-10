@@ -8,7 +8,7 @@ sudo cp rc.local /etc/rc.local
 sudo chmod -R 777 /var
 rm files/Audio files/Videos files/Documents files/motion
 #mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
-mkdir ~/Audio ~/Videos ~/Documents
+mkdir ~/Audio ~/Videos ~/Documents files
 ln -s /var/lib/motion files
 ln -s ~/Audio files/
 ln -s ~/Videos files/
