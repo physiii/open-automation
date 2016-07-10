@@ -110,6 +110,34 @@ console.log("stderr: " + stderr);
 });
 
 }
+
+var router_array = [];
+var router_list = [];
+function wifi_scan_loop() {
+  setTimeout(function () {
+    console.log("scanning wifi...");
+    wifi_scan_loop();
+    scan_wifi();
+  }, 30*1000);
+}wifi_scan_loop();
+function scan_wifi() {
+  exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
+    if (error) {
+      //console.error(`exec error: ${error}`);
+      return;
+    }
+    router_array = stdout.split('\n');
+    router_list = [];
+    for(var i = 0; i < router_array.length; i++) {
+      var router_ssid = router_array[i].replace(/^\s*/, "")
+  			             .replace(/\s*$/, "")
+ 			             .replace("ESSID:\"","")
+    			             .replace("\"","");
+      router_list.push({ssid:router_ssid});
+    }
+    console.log("router_array | " + router_list);
+  });
+}scan_wifi();
 // ----------------------------  program interface  ----------------------------- //
 var program_server = http.createServer(program_app);
 var program_io = require('socket.io')(program_server);
@@ -118,24 +146,8 @@ program_server.listen(program_port, function () {
   console.log('Access GUI on port %d', program_port);
 });     
 
-var router_array = [];
-var router_list = [];
-exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
-  if (error) {
-    //console.error(`exec error: ${error}`);
-    return;
-  }
-  router_array = stdout.split('\n');
-  router_list = [];
-  for(var i = 0; i < router_array.length; i++) {
-    var router_ssid = router_array[i].replace(/^\s*/, "")
-  			             .replace(/\s*$/, "")
- 			             .replace("ESSID:\"","")
-    			             .replace("\"","");
-    router_list.push({ssid:router_ssid});
-  }
-  console.log("router_array | " + router_list);
-});
+
+
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
   console.log(socket.id + " connected");
@@ -177,9 +189,9 @@ program_io.on('connection', function (socket) {
     exec("sudo reboot");
     function timeout() {
       setTimeout(function () {
-        console.log("checking connection");
+        console.log("checking connection...");
         check_connection();
-      }, 20*1000);
+      }, 2*60*60*1000);
     }timeout();
     });
   });
