@@ -37,7 +37,8 @@ var count = 0;
 var text_timeout = 0;
 var platform = process.platform;
 var hue = require("node-hue-api");
-var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
+//var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
+var info_obj = {"user":"63dbf89b3c5fc06057c8053a1e582559","ip":"192.168.0.13"};
 const exec = require('child_process').exec;
 
 // -------------------------------  MangoDB  --------------------------------- //
@@ -411,7 +412,7 @@ var bridge_obj = {};
 var displayBridges = function(bridge) {
     bridge_obj = bridge[0];
     //info_obj['ip'] = bridge_obj.ipaddress;
-    fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
+    //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
     console.log("Hue Bridges Found: " + JSON.stringify(bridge));
 };
 //hue.nupnpSearch().then(displayBridges).done();
@@ -430,7 +431,7 @@ var displayUserResult = function(result) {
     info_obj['ip'] = ipaddress;
     info_obj['user'] = result;
     info_obj['token'] = token;
-    fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
+    //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
     console.log("Created user: " + JSON.stringify(result));
 };
 
@@ -453,7 +454,7 @@ var HueApi = require("node-hue-api").HueApi;
 
 var displayResult = function(result) {
     info_obj['lights'] = result.lights;
-    fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );    
+    //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );    
     //io_relay.emit('device_info',info_obj);
 };
 
@@ -662,7 +663,7 @@ io_relay.on('token', function (data) {
   app.use(mount(session_string, IndexRouter));
   info_obj['token'] = token;
   info_obj['mac'] = mac;
-  fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );  
+  //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );  
   //fs.writeFile( "session.dat", data.token, "utf8", callback );  
   function callback(){
     //console.log('callback for session.dat');
