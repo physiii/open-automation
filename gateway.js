@@ -38,7 +38,8 @@ var text_timeout = 0;
 var platform = process.platform;
 var hue = require("node-hue-api");
 //var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
-var info_obj = {"user":"63dbf89b3c5fc06057c8053a1e582559","ip":"192.168.0.13"};
+var settings_obj = {};
+settings_obj.hue = {"user":"63dbf89b3c5fc06057c8053a1e582559","ip":"192.168.0.13"};
 const exec = require('child_process').exec;
 
 // -------------------------------  MangoDB  --------------------------------- //
@@ -61,12 +62,167 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
-      //Close connection
       db.close();
     });
   }
 });
 
+function get_settings() {
+MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    console.log('Connection established');
+    var collection = db.collection('settings');
+    collection.find().toArray(function (err, result) {
+      if (err) {
+        console.log(err);
+      } else if (result.length) {
+	settings_obj = result[0];
+	console.log('load_settings | ',settings_obj);
+	io_relay.emit('load_settings',settings_obj);
+      } else {
+        console.log('No document(s) found with defined "find" criteria!');
+      }
+      db.close();
+    });
+  }
+});
+}
+function get_settings_loop() {
+  setTimeout(function () {
+    console.log("get_settings_loop");
+    get_settings_loop();
+    get_settings();
+  }, 60*1000);
+}get_settings_loop();
+
+function set_settings(data) {
+MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    console.log('Connection established');
+    var collection = db.collection('settings');
+    collection.find().toArray(function (err, result) {
+      if (err) {
+        console.log(err);
+      } else if (result.length) {
+        //console.log('Found:', result);
+        console.log('set_settings | ', data);
+	collection.update({},{$set:data});
+      } else {
+        console.log('No document(s) found with defined "find" criteria!');
+        collection.insert(data, function (err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Inserted %d', result.length, result);
+          }
+        });
+      }
+      db.close();
+    });
+  }
+});
+}
+// ----------------------  get device info  ------------------- //
+var local_ip = "init";
+var ifaces = os.networkInterfaces();
+Object.keys(ifaces).forEach(function (ifname) {
+  var alias = 0;
+  ifaces[ifname].forEach(function (iface) {
+    if ('IPv4' !== iface.family || iface.internal !== false) {
+      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+      return;
+    }
+    if (alias >= 1) {
+      // this single interface has multiple ipv4 addresses
+      //console.log(ifname + ':' + alias, iface.address);
+    } else {
+      // this interface has only one ipv4 adress
+      //console.log(ifname, iface.address);
+    }
+    local_ip = iface.address;
+    ++alias;
+    port = local_ip.split('.');
+    port = "30" + port[3];
+    settings_obj.port = port;
+    var rc_local = "#!/bin/sh -e\n"
+		 + "#\n"
+		 + "# rc.local\n"
+		 + "#\n"
+		 + "# This script is executed at the end of each multiuser runlevel.\n"
+		 + "# Make sure that the script will \"exit 0\" on success or any other\n"
+		 + "# value on error.\n"
+		 + "#\n"
+		 + "# In order to enable or disable this script just change the execution\n"
+		 + "# bits.\n"
+		 + "#\n"
+		 + "# By default this script does nothing.\n"
+		 + "sudo modprobe bcm2835-v4l2\n"
+                 + "export DISPLAY=':0.0'\n"
+                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> motion.log 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> gateway.log 2>&1 &'\n"
+                 + "exit 0;\n"
+    fs.writeFile("/etc/rc.local", rc_local, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("rc.local saved!");
+    });
+    settings_obj.local_ip = local_ip;
+  });
+});
+
+var mac = "init";
+var device_type = "gateway";
+var device_name = "Gateway";
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  console.log("Enter device ID (" + mac + ") at http://pyfi.org");
+  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
+    var hostapd_file = "interface=wlan0\n"
+		       + "driver=nl80211\n"
+		       + "ssid=Gateway " + mac + "\n"
+		       + "hw_mode=g\n"
+		       + "channel=6\n"
+		       + "ieee80211n=1\n"
+		       + "wmm_enabled=1\n"
+		       + "ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]\n"
+		       + "macaddr_acl=0\n"
+		       + "auth_algs=1\n"
+		       + "ignore_broadcast_ssid=0\n"
+		       + "wpa=2\n"
+		       + "wpa_key_mgmt=WPA-PSK\n"
+		       + "wpa_passphrase=raspberry\n"
+		       + "rsn_pairwise=CCMP\n";
+
+    fs.writeFile("/etc/hostapd/hostapd.conf", hostapd_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("hostapd_file saved!");
+    });
+});
+var public_ip = "init";
+get_public_ip();
+function get_public_ip() {
+request.get(
+'http://pyfi.org/php/get_ip.php',
+function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log('public_ip ' + data);
+    public_ip = data;
+    settings_obj.public_ip = public_ip;
+    set_settings(settings_obj);
+    if (error !== null) {
+     console.log('error ---> ' + error);
+    }      
+  }
+});
+}
 // -------------------------------  connection  -------------------------------- //
 check_connection();
 function check_connection() {
@@ -116,7 +272,7 @@ var router_array = [];
 var router_list = [];
 function wifi_scan_loop() {
   setTimeout(function () {
-    console.log("scanning wifi...");
+    //console.log("scanning wifi...");
     wifi_scan_loop();
     scan_wifi();
   }, 30*1000);
@@ -136,7 +292,7 @@ function scan_wifi() {
     			             .replace("\"","");
       router_list.push({ssid:router_ssid});
     }
-    console.log("router_array | " + router_list);
+    //console.log("router_array | " + router_list);
   });
 }scan_wifi();
 // ----------------------------  program interface  ----------------------------- //
@@ -428,9 +584,9 @@ var hostname = ipaddress,
     userDescription = "Node Gateway";
 
 var displayUserResult = function(result) {
-    info_obj['ip'] = ipaddress;
-    info_obj['user'] = result;
-    info_obj['token'] = token;
+    settings_obj.hue['ip'] = ipaddress;
+    settings_obj.hue['user'] = result;
+    settings_obj.hue['token'] = token;
     //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
     console.log("Created user: " + JSON.stringify(result));
 };
@@ -453,13 +609,13 @@ hue.registerUser(hostname, userDescription)
 var HueApi = require("node-hue-api").HueApi;
 
 var displayResult = function(result) {
-    info_obj['lights'] = result.lights;
+    settings_obj.hue['lights'] = result.lights;
     //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );    
     //io_relay.emit('device_info',info_obj);
 };
 
-var host = info_obj.ip,
-    username = info_obj.user,
+var host = settings_obj.hue.ip,
+    username = settings_obj.hue.user,
     api;
 
 api = new HueApi(host, username);
@@ -468,88 +624,6 @@ api = new HueApi(host, username);
 api.lights(function(err, lights) {
     if (err) console.log(err);
     displayResult(lights);
-});
-
-// ----------------------  get device info  ------------------- //
-var local_ip = "init";
-var ifaces = os.networkInterfaces();
-Object.keys(ifaces).forEach(function (ifname) {
-  var alias = 0;
-  ifaces[ifname].forEach(function (iface) {
-    if ('IPv4' !== iface.family || iface.internal !== false) {
-      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-      return;
-    }
-    if (alias >= 1) {
-      // this single interface has multiple ipv4 addresses
-      //console.log(ifname + ':' + alias, iface.address);
-    } else {
-      // this interface has only one ipv4 adress
-      //console.log(ifname, iface.address);
-    }
-    local_ip = iface.address;
-    ++alias;
-    port = local_ip.split('.');
-    port = "30" + port[3];
-    var rc_local = "#!/bin/sh -e\n"
-		 + "#\n"
-		 + "# rc.local\n"
-		 + "#\n"
-		 + "# This script is executed at the end of each multiuser runlevel.\n"
-		 + "# Make sure that the script will \"exit 0\" on success or any other\n"
-		 + "# value on error.\n"
-		 + "#\n"
-		 + "# In order to enable or disable this script just change the execution\n"
-		 + "# bits.\n"
-		 + "#\n"
-		 + "# By default this script does nothing.\n"
-		 + "sudo modprobe bcm2835-v4l2\n"
-                 + "export DISPLAY=':0.0'\n"
-                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> motion.log 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> gateway.log 2>&1 &'\n"
-                 + "exit 0;\n"
-    fs.writeFile("/etc/rc.local", rc_local, function(err) {
-      if(err) {
-        return console.log(err);
-      }
-      console.log("rc.local saved!");
-    });
-
-  });
-});
-
-var mac = "init";
-var device_type = "gateway";
-var device_name = "Gateway";
-require('getmac').getMac(function(err,macAddress){
-  if (err)  throw err
-  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-  console.log("Enter device ID (" + mac + ") at http://pyfi.org");
-  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
-
-    var hostapd_file = "interface=wlan0\n"
-		       + "driver=nl80211\n"
-		       + "ssid=Gateway " + mac + "\n"
-		       + "hw_mode=g\n"
-		       + "channel=6\n"
-		       + "ieee80211n=1\n"
-		       + "wmm_enabled=1\n"
-		       + "ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]\n"
-		       + "macaddr_acl=0\n"
-		       + "auth_algs=1\n"
-		       + "ignore_broadcast_ssid=0\n"
-		       + "wpa=2\n"
-		       + "wpa_key_mgmt=WPA-PSK\n"
-		       + "wpa_passphrase=raspberry\n"
-		       + "rsn_pairwise=CCMP\n";
-
-    fs.writeFile("/etc/hostapd/hostapd.conf", hostapd_file, function(err) {
-      if(err) {
-        return console.log(err);
-      }
-      console.log("hostapd_file saved!");
-    });
-
 });
 
 // ----------------------  file server  ------------------- //
@@ -661,13 +735,10 @@ io_relay.on('token', function (data) {
   token = data.token;
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
-  info_obj['token'] = token;
-  info_obj['mac'] = mac;
-  //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );  
-  //fs.writeFile( "session.dat", data.token, "utf8", callback );  
-  function callback(){
-    //console.log('callback for session.dat');
-  }  
+  settings_obj.token = token;
+  settings_obj.mac = mac;
+  set_settings(settings_obj);
+  get_settings();
   console.log("token set " + token);
 });
 
@@ -752,62 +823,16 @@ io_relay.on('get_gateway_devices', function (data) {
 
 
 io_relay.on('set_settings', function (data) {
-
-MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established');
-    var collection = db.collection('settings');
-    collection.find().toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-        console.log('Found:', result);
-	collection.update({'device_type':'gateway'},{$set:data});
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-        collection.insert(data, function (err, result) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Inserted %d', result.length, result);
-          }
-        });
-      }
-      db.close();
-    });
-  }
-});
-  console.log("set_settings |  " + JSON.stringify(data));
+  console.log("set_settings |  ", data);
+  data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
+  set_settings(data);
+  console.log("set_settings |  ", data);
 });
 
 io_relay.on('get_settings', function (data) {
-
-MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established');
-    var collection = db.collection('settings');
-    collection.find().toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-        console.log('Found:', result);
-	settings_obj = {};
-	settings_obj.mac = mac;
-	settings_obj.token = token;
-	settings_obj.settings = result;
-	io_relay.emit('load_settings',settings_obj);
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-      }
-      db.close();
-    });
-  }
-});
-  console.log("get_settings |  " + JSON.stringify(data));
+  set_settings({'device_name':data.device_name,'device_type':data.device_type});
+  get_settings();
+  console.log("get_settings |  ", data);
 });
 
 io_relay.on('cmd_gateway_device', function (data) {
@@ -822,7 +847,7 @@ io_relay.on('lights', function (light) {
 });
 
 io_relay.on('link_lights', function (data) {
-  io_relay.emit('device_info',info_obj);
+  io_relay.emit('device_info',settings_obj.hue);
   console.log("emitting light info");  
 });
 
@@ -832,19 +857,19 @@ io_relay.on('light_theme', function (data) {
     displayResult(lights);
   });
   if (data.theme === 'presence') {
-    for (i = 0; i < info_obj.lights.length; i++) {
+    for (i = 0; i < settings_obj.hue.lights.length; i++) {
       var state = {"on":true,"bri":"100"}
-      if (info_obj.lights[i].state.on == false) {
-        set_light(info_obj.lights[i].id,state);
-        console.log('setting ' + info_obj.lights[i].id );
+      if (settings_obj.hue.lights[i].state.on == false) {
+        set_light(settings_obj.hue.lights[i].id,state);
+        console.log('setting ' + settings_obj.hue.lights[i].id );
       }
     }
   }
   if (data.theme === 'alert') {
-    for (i = 0; i < info_obj.lights.length; i++) {
+    for (i = 0; i < settings_obj.hue.lights.length; i++) {
       var state = {"on":true,"rgb":[255,0,0],"bri":"255"}
-      console.log(info_obj.lights[i].id);
-      set_light(info_obj.lights[i].id,state);      
+      console.log(settings_obj.hue.lights[i].id);
+      set_light(settings_obj.hue.lights[i].id,state);      
     }
   }
   console.log("setting theme | " + data.theme);  
@@ -905,8 +930,8 @@ var displayResult = function(result) {
     //console.log("result | " + JSON.stringify(result));
 };
 
-var host = info_obj.ip,
-    username = info_obj.user,
+var host = settings_obj.hue.ip,
+    username = settings_obj.hue.user,
     api = new HueApi(host, username);
 
 api.setLightState(light_id, state, function(err, lights) {
