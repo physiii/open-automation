@@ -20,3 +20,4 @@ ln -s /var/lib/motion files
 ln -s ~/Audio files/
 ln -s ~/Videos files/
 ln -s ~/Documents files/
+echo "enable raspicam!"
