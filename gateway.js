@@ -1,3 +1,6 @@
+// -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
+// -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
+
 var fs = require('fs');
 var os = require('os');
 var express = require('express');

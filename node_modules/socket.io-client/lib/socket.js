@@ -28,6 +28,7 @@ var events = {
   connect: 1,
   connect_error: 1,
   connect_timeout: 1,
+  connecting: 1,
   disconnect: 1,
   error: 1,
   reconnect: 1,
@@ -57,11 +58,11 @@ function Socket(io, nsp){
   this.json = this; // compat
   this.ids = 0;
   this.acks = {};
-  if (this.io.autoConnect) this.open();
   this.receiveBuffer = [];
   this.sendBuffer = [];
   this.connected = false;
   this.disconnected = true;
+  if (this.io.autoConnect) this.open();
 }
 
 /**
@@ -100,6 +101,7 @@ Socket.prototype.connect = function(){
   this.subEvents();
   this.io.open(); // ensure open
   if ('open' == this.io.readyState) this.onopen();
+  this.emit('connecting');
   return this;
 };
 
@@ -181,7 +183,7 @@ Socket.prototype.onopen = function(){
 
   // write connect packet if necessary
   if ('/' != this.nsp) {
-    this.packet({ type: parser.CONNECT, options: { compress: true } });
+    this.packet({ type: parser.CONNECT });
   }
 };
 
@@ -284,8 +286,7 @@ Socket.prototype.ack = function(id){
     self.packet({
       type: type,
       id: id,
-      data: args,
-      options: { compress: true }
+      data: args
     });
   };
 };
@@ -383,7 +384,7 @@ Socket.prototype.close =
 Socket.prototype.disconnect = function(){
   if (this.connected) {
     debug('performing disconnect (%s)', this.nsp);
-    this.packet({ type: parser.DISCONNECT, options: { compress: true } });
+    this.packet({ type: parser.DISCONNECT });
   }
 
   // remove socket from pool

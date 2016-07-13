@@ -22,9 +22,12 @@ function Pool(options) {
 Pool.prototype.getConnection = function (cb) {
 
   if (this._closed) {
-    return process.nextTick(function(){
-      return cb(new Error('Pool is closed.'));
+    var err = new Error('Pool is closed.');
+    err.code = 'POOL_CLOSED';
+    process.nextTick(function () {
+      cb(err);
     });
+    return;
   }
 
   var connection;
@@ -32,8 +35,8 @@ Pool.prototype.getConnection = function (cb) {
 
   if (this._freeConnections.length > 0) {
     connection = this._freeConnections.shift();
-
-    return this.acquireConnection(connection, cb);
+    this.acquireConnection(connection, cb);
+    return;
   }
 
   if (this.config.connectionLimit === 0 || this._allConnections.length < this.config.connectionLimit) {
@@ -42,11 +45,12 @@ Pool.prototype.getConnection = function (cb) {
     this._acquiringConnections.push(connection);
     this._allConnections.push(connection);
 
-    return connection.connect({timeout: this.config.acquireTimeout}, function onConnect(err) {
+    connection.connect({timeout: this.config.acquireTimeout}, function onConnect(err) {
       spliceConnection(pool._acquiringConnections, connection);
 
       if (pool._closed) {
         err = new Error('Pool is closed.');
+        err.code = 'POOL_CLOSED';
       }
 
       if (err) {
@@ -58,12 +62,16 @@ Pool.prototype.getConnection = function (cb) {
       pool.emit('connection', connection);
       cb(null, connection);
     });
+    return;
   }
 
   if (!this.config.waitForConnections) {
-    return process.nextTick(function(){
-      return cb(new Error('No connections available.'));
+    process.nextTick(function(){
+      var err = new Error('No connections available.');
+      err.code = 'POOL_CONNLIMIT';
+      cb(err);
     });
+    return;
   }
 
   this._enqueueCallback(cb);
@@ -84,6 +92,7 @@ Pool.prototype.acquireConnection = function acquireConnection(connection, cb) {
 
     if (pool._closed) {
       err = new Error('Pool is closed.');
+      err.code = 'POOL_CLOSED';
     }
 
     if (err) {
@@ -110,7 +119,6 @@ Pool.prototype.acquireConnection = function acquireConnection(connection, cb) {
 };
 
 Pool.prototype.releaseConnection = function releaseConnection(connection) {
-  var cb;
   var pool = this;
 
   if (this._acquiringConnections.indexOf(connection) !== -1) {
@@ -133,17 +141,18 @@ Pool.prototype.releaseConnection = function releaseConnection(connection) {
     }
   }
 
-  while (this._closed && this._connectionQueue.length) {
+  if (this._closed) {
     // empty the connection queue
-    cb = this._connectionQueue.shift();
-
-    process.nextTick(cb.bind(null, new Error('Pool is closed.')));
-  }
-
-  if (this._connectionQueue.length) {
-    cb = this._connectionQueue.shift();
-
-    this.getConnection(cb);
+    this._connectionQueue.splice(0).forEach(function (cb) {
+      var err = new Error('Pool is closed.');
+      err.code = 'POOL_CLOSED';
+      process.nextTick(function () {
+        cb(err);
+      });
+    });
+  } else if (this._connectionQueue.length) {
+    // get connection with next waiting callback
+    this.getConnection(this._connectionQueue.shift());
   }
 };
 
@@ -157,25 +166,22 @@ Pool.prototype.end = function (cb) {
   }
 
   var calledBack   = false;
-  var waitingClose = this._allConnections.length;
+  var waitingClose = 0;
 
   function onEnd(err) {
-    if (calledBack) {
-      return;
-    }
-
-    if (err || --waitingClose === 0) {
+    if (!calledBack && (err || --waitingClose <= 0)) {
       calledBack = true;
-      return cb(err);
+      cb(err);
     }
-  }
-
-  if (waitingClose === 0) {
-    return process.nextTick(cb);
   }
 
   while (this._allConnections.length !== 0) {
+    waitingClose++;
     this._purgeConnection(this._allConnections[0], onEnd);
+  }
+
+  if (waitingClose === 0) {
+    process.nextTick(onEnd);
   }
 };
 
