@@ -207,6 +207,7 @@ require('getmac').getMac(function(err,macAddress){
         return console.log(err);
       }
       console.log("hostapd_file saved!");
+      spawn('hostapd', ['-B', '/etc/hostapd/hostapd.conf'])
     });
 });
 var public_ip = "init";
