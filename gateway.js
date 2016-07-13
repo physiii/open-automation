@@ -162,8 +162,8 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
                  + "export DISPLAY=':0.0'\n"
-                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> motion.log 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> gateway.log 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion.log 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway.log 2>&1 &'\n"
                  + "exit 0;\n"
     fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
