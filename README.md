@@ -32,6 +32,6 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 #installation
 ##install node 4.x from source
 1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
-2. git clone https://github.com/physiii/home-gateway.git && cd home-gateway && sh install.sh
+2. git clone https://github.com/physiii/open-automation.git && cd home-gateway && sh install.sh
 
 
