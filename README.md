@@ -20,9 +20,9 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 3. home-assistant - https://github.com/home-assistant/home-assistant
 
 ## differences
-1. NodeJS for processing
+1. NodeJS with MongoDB for processing
 2. Socket.IO communication
-3. PHP for generating, setting, and retreiving model (mysql) data
+3. PHP for generating, setting, and retreiving tokens
 4. Websockets on microcontrollers
 
 
@@ -33,5 +33,4 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 ##install node 4.x from source
 1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
 2. git clone https://github.com/physiii/open-automation.git && cd open-automation && sh install.sh
-
 

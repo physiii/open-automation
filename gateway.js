@@ -50,40 +50,25 @@ var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
 
-MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established');
-    var collection = db.collection('devices');
-    collection.find().toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-	devices = result;
-        console.log('Found:', devices);
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-      }
-      db.close();
-    });
-  }
-});
-
+var zwave_disabled = true;
 function get_settings() {
 MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    console.log('Connection established');
+    //console.log('Connection established');
     var collection = db.collection('settings');
     collection.find().toArray(function (err, result) {
       if (err) {
         console.log(err);
       } else if (result.length) {
 	settings_obj = result[0];
-	console.log('load_settings | ',settings_obj);
 	io_relay.emit('load_settings',settings_obj);
+	if (settings_obj.gateway_enabled && zwave_disabled) {
+	  init_zwave();
+	  zwave_disabled = false;
+	}
+	//console.log('load_settings | ',settings_obj);	
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
@@ -112,8 +97,9 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
         console.log(err);
       } else if (result.length) {
         //console.log('Found:', result);
-        console.log('set_settings | ', data);
-	collection.update({},{$set:data});
+        //console.log('set_settings | ', data);
+	//collection.update({},{$set:data});
+	collection.update({}, {$set:data}, function(err, item){console.log("item: ",item)});
       } else {
         console.log('No document(s) found with defined "find" criteria!');
         collection.insert(data, function (err, result) {
@@ -125,10 +111,52 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
         });
       }
       db.close();
+      get_settings();
     });
   }
 });
 }
+
+function set_device(device) {
+MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    var collection = db.collection('devices');
+    console.log('set_device | ', device);
+    collection.update({nodeid:device.nodeid}, {$setOnInsert:device}, {upsert:true}, function(err, item){console.log("update device: ",item)});
+    get_devices();
+    db.close();
+  }
+});
+}
+
+get_devices();
+function get_devices() {
+MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    console.log('get_devices!!!!');
+    var collection = db.collection('devices');
+    collection.find().toArray(function (err, result) {
+      if (err) {
+        console.log(err);
+      } else if (result.length) {
+	devices_obj = result[0];
+	devices_obj.token = token;
+	devices_obj.mac = mac;
+        console.log("RESULTS!!! ",devices_obj);
+	io_relay.emit('load_gateway_devices',devices_obj);
+      } else {
+        console.log('No document(s) found with defined "find" criteria!');
+      }
+      db.close();
+    });
+  }
+});
+}
+
 // ----------------------  get device info  ------------------- //
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
@@ -207,7 +235,8 @@ require('getmac').getMac(function(err,macAddress){
         return console.log(err);
       }
       console.log("hostapd_file saved!");
-      spawn('hostapd', ['-B', '/etc/hostapd/hostapd.conf'])
+      //exec("sudo hostapd -d /etc/hostapd/hostapd.conf");
+      spawn('hostapd', ['-d', '/etc/hostapd/hostapd.conf']);
     });
 });
 var public_ip = "init";
@@ -248,22 +277,22 @@ ping.sys.probe(host, function(isAlive){
       console.log("Interface file saved, starting AP");
       //exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo service hostapd restart");
 
-exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo service hostapd restart", (error, stdout, stderr) => {
+exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo hostapd -d /etc/hostapd/hostapd.conf", (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  console.log("stdout: " + stdout);
+  console.log("stderr: " + stderr);
+});
+/*exec("sudo service hostapd restart", (error, stdout, stderr) => {
   if (error) {
     console.error(`exec error: ${error}`);
     return;
   }
 console.log("stdout: " + stdout);
 console.log("stderr: " + stderr);
-});
-exec("sudo service hostapd restart", (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-console.log("stdout: " + stdout);
-console.log("stderr: " + stderr);
-});
+});*/
 
     });
   }
@@ -370,9 +399,9 @@ var zwave = new OpenZWave({
 	NetworkKey: "0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10"
 });
 var nodes = [];
-
+function init_zwave() {
 zwave.on('connected', function(homeid) {
-	console.log('=================== CONNECTED! ====================');
+	//console.log('=================== CONNECTED! ====================');
 });
 
 zwave.on('driver ready', function(homeid) {
@@ -424,8 +453,8 @@ zwave.on('value changed', function(nodeid, comclass, value) {
     node_data['token'] = token;
     node_data['mac'] = mac;
     node_data['nodes'] = nodes;
-    console.log("load_gateway_devices | " + node_data.mac + ":" + node_data.token);
-    io_relay.emit('load_gateway_devices', node_data);
+    console.log("!!!!!!???load_gateway_devices | " + node_data.mac + ":" + node_data.token);
+    //io_relay.emit('load_gateway_devices', node_data);
   }
   nodes[nodeid]['classes'][comclass][value.index] = value;
 });
@@ -446,6 +475,8 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 	nodes[nodeid]['name'] = nodeinfo.name;
 	nodes[nodeid]['loc'] = nodeinfo.loc;
 	nodes[nodeid]['ready'] = true;
+	nodes[nodeid]['nodeid'] = nodeid;
+
 	console.log('node%d: %s, %s', nodeid,
 		    nodeinfo.manufacturer ? nodeinfo.manufacturer
 					  : 'id=' + nodeinfo.manufacturerid,
@@ -456,6 +487,7 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 		    nodeinfo.name,
 		    nodeinfo.type,
 		    nodeinfo.loc);
+   	set_device(nodes[nodeid]);
 	for (var comclass in nodes[nodeid]['classes']) {
 		switch (comclass) {
 		case 0x25: // COMMAND_CLASS_SWITCH_BINARY
@@ -467,34 +499,6 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 		console.log('node%d: class %d', nodeid, comclass);
 		for (var idx in values)
 			console.log('node%d:   %s=%s', nodeid, values[idx]['label'], values[idx]['value']);
-
-/*MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established');
-    var collection = db.collection('devices');
-    var device = {device_type:"zwave", device_name:data_obj.device_name, local_ip:data_obj.ip};
-    collection.find(device).toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-        console.log('Found:', result);
-      } else {
-        console.log('Inserting device');
-        collection.insert(device, function (err, result) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Inserted %d', result.length, result);
-          }
-        });
-      }
-      //db.close();
-    });
-  }
-});*/
-
 	}
 });
 
@@ -519,13 +523,15 @@ process.on('SIGINT', function() {
 	zwave.disconnect();
 	process.exit();
 });
+}
+
 // ----------------------  check disk space  ------------------- //
 var diskspace = require('diskspace');
 var findRemoveSync = require('find-remove');
 var _ = require('underscore');
 var path = require('path');
 var rimraf = require('rimraf');
-
+var free_space = 0;
 timeout();
 check_diskspace();
 function timeout() {
@@ -538,7 +544,8 @@ function timeout() {
 function check_diskspace() {
   diskspace.check('/', function (err, total, free, status)
   {
-    console.log("free space: " + free);
+    //console.log("free space: " + free);
+    set_settings({free_space:free,total_space:total})
     if (free < 2000000000) {
       // Return only base file name without dir
       var oldest_dir = getMostRecentFileName('/var/lib/motion');
@@ -797,7 +804,8 @@ io_relay.on('add_zwave_device', function (data) {
 
 node_data = {};
 io_relay.on('get_gateway_devices', function (data) {
-  MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+  get_devices();
+  /*MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
@@ -822,13 +830,13 @@ io_relay.on('get_gateway_devices', function (data) {
         db.close();
       });
     }
-  });
+  });*/
 });
 
 
 io_relay.on('set_settings', function (data) {
   console.log("set_settings |  ", data);
-  data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
+  //data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
   set_settings(data);
   console.log("set_settings |  ", data);
 });
