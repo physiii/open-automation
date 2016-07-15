@@ -68,6 +68,9 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
 	  init_zwave();
 	  zwave_disabled = false;
 	}
+	if (got_token == false) {
+	  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
+	}
 	//console.log('load_settings | ',settings_obj);	
       } else {
         console.log('No document(s) found with defined "find" criteria!');
@@ -137,7 +140,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    console.log('get_devices!!!!');
+    console.log('get_devices');
     var collection = db.collection('devices');
     collection.find().toArray(function (err, result) {
       if (err) {
@@ -213,7 +216,6 @@ require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
   console.log("Enter device ID (" + mac + ") at http://pyfi.org");
-  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
     var hostapd_file = "interface=wlan0\n"
 		       + "driver=nl80211\n"
 		       + "ssid=Gateway " + mac + "\n"
@@ -742,6 +744,8 @@ proxy.on('error', function (err, req, res) {
   res.end('Something went wrong. And we are reporting a custom error message.');
 });
 
+//---------------------- socket.io -------------------//
+var got_token = false;
 io_relay.on('token', function (data) {
   token = data.token;
   session_string = '/' + token;
@@ -750,6 +754,7 @@ io_relay.on('token', function (data) {
   settings_obj.mac = mac;
   set_settings(settings_obj);
   get_settings();
+  got_token = true;
   console.log("token set " + token);
 });
 
