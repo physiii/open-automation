@@ -935,6 +935,10 @@ io_relay.on('gateway', function (data) {
   console.log(mac + " | " + data.command);
 });
 
+io_relay.on('disconnect', function() {
+  console.log("disconnected, setting got_token false");
+  got_token = false;
+});
 // --------------------  setting light state  ----------------- //
 
 function set_light(light_id,state) {
