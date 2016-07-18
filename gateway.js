@@ -39,10 +39,7 @@ var device_port = "init";
 var count = 0;
 var text_timeout = 0;
 var platform = process.platform;
-var hue = require("node-hue-api");
-//var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
 var settings_obj = {};
-var hue_obj = {};
 const exec = require('child_process').exec;
 
 // -------------------------------  MangoDB  --------------------------------- //
@@ -577,58 +574,84 @@ function getMostRecentFileName(dir) {
 }
 // ----------------------  link bridge  ------------------- //
 var HueApi = require("node-hue-api").HueApi;
-var hue = new HueApi();
+var hue_obj = {host:"init",user:"init",userDescription:"Gateway"};
 function find_hue_bridge() {
-  var bridge_obj = {};
+  var hue = require("node-hue-api");
   var displayBridges = function(bridge) {
-    bridge_obj = bridge[0];
-    link_hue_bridge(bridge_obj.ipaddress);
+    hue_obj = bridge[0];
+    create_user();
     console.log("Hue Bridges Found: ",bridge);
   };
   hue.nupnpSearch().then(displayBridges).done();
 }
 
-function link_hue_bridge(ipaddress) {
-  console.log(ipaddress);
-  var hostname = ipaddress,
-    userDescription = "Node Gateway";
-  var displayUserResult = function(result) {
-    hue_obj.hue['ip'] = ipaddress;
+function create_user() {
+  hue = new HueApi();
+  hue.createUser(hue_obj.ipaddress, function(err, user) {
+    if (err) console.log(err);
+    hue_obj.user = user;
+    console.log("created user",hue_obj);
+    //link_hue_bridge();
+  });
+}
+
+function link_hue_bridge() {
+  hue = new HueApi(hue_obj.ipaddress,hue_obj);
+  hue.config(function(err, config) {
+    if (err) console.log(err);
+    displayResult(config);
+  });
+  var displayResult = function(config) {
+    /*hue_obj.hue['ip'] = ipaddress;
     hue_obj.hue['user'] = result;
-    hue_obj.hue['token'] = token;
+    hue_obj.hue['token'] = token;*/
     find_lights();
-    console.log("Created user: " + JSON.stringify(result));
+    console.log("config: ",config);
   };
-  var displayError = function(err) {
+  /*var displayError = function(err) {
     console.log(err);
   };
   hue.registerUser(hostname, userDescription)
     .then(displayUserResult)
-    .fail(displayError)
+    //.fail(displayError)
     .done();
+*/
 }
 
 // ----------------------  finding lights  ------------------- //
 function find_lights() {
-var displayResult = function(result) {
+  var displayResult = function(result) {
     hue_obj.hue['lights'] = result.lights;
     set_device(hue_obj);
     console.log("find_lights",hue_obj);
+  };
+  hue.lights(function(err, lights) {
+    if (err) console.log(err);
+    displayResult(lights);
+  });
+}
+
+// --------------------  setting light state  ----------------- //
+function set_light(light_id,state) {
+
+var hue = require("node-hue-api"),
+    HueApi = hue.HueApi,
+    lightState = hue.lightState;
+
+var displayResult = function(result) {
+    //console.log("result | " + JSON.stringify(result));
 };
 
 var host = hue_obj.hue.ip,
     username = hue_obj.hue.user,
-    api;
+    api = new HueApi(host, username);
 
-api = new HueApi(host, username);
-
-// Using a callback
-api.lights(function(err, lights) {
+api.setLightState(light_id, state, function(err, lights) {
     if (err) console.log(err);
     displayResult(lights);
 });
+console.log(light_id + " | setting state: " + JSON.stringify(state));
 }
-
 // ----------------------  file server  ------------------- //
 var koa =require('koa');
 var path = require('path');
@@ -849,15 +872,14 @@ io_relay.on('cmd_gateway_device', function (data) {
   zwave.setValue(4, 98, 1, 0, data.value);
 });
 
-
 io_relay.on('lights', function (light) {
   set_light(light.id,light.state);
 });
 
 io_relay.on('link lights', function (data) {
-  io_relay.emit('device_info',hue_obj.hue);
+  //io_relay.emit('device_info',hue_obj.hue);
   find_hue_bridge();
-  console.log("link lights");  
+  console.log("link lights");
 });
 
 io_relay.on('light_theme', function (data) {
@@ -931,28 +953,6 @@ io_relay.on('disconnect', function() {
   console.log("disconnected, setting got_token false");
   got_token = false;
 });
-// --------------------  setting light state  ----------------- //
-
-function set_light(light_id,state) {
-
-var hue = require("node-hue-api"),
-    HueApi = hue.HueApi,
-    lightState = hue.lightState;
-
-var displayResult = function(result) {
-    //console.log("result | " + JSON.stringify(result));
-};
-
-var host = hue_obj.hue.ip,
-    username = hue_obj.hue.user,
-    api = new HueApi(host, username);
-
-api.setLightState(light_id, state, function(err, lights) {
-    if (err) console.log(err);
-    displayResult(lights);
-});
-console.log(light_id + " | setting state: " + JSON.stringify(state));
-}
 
 // -------------------------------------------------------- //
 
