@@ -42,7 +42,7 @@ var platform = process.platform;
 var hue = require("node-hue-api");
 //var info_obj = JSON.parse(fs.readFileSync('/home/pi/open-automation/info.json', 'utf8'));
 var settings_obj = {};
-settings_obj.hue = {"user":"63dbf89b3c5fc06057c8053a1e582559","ip":"192.168.0.13"};
+var hue_obj = {};
 const exec = require('child_process').exec;
 
 // -------------------------------  MangoDB  --------------------------------- //
@@ -63,7 +63,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
         console.log(err);
       } else if (result.length) {
 	settings_obj = result[0];
-	io_relay.emit('load_settings',settings_obj);
+	io_relay.emit('load settings',settings_obj);
 	if (settings_obj.gateway_enabled && zwave_disabled) {
 	  init_zwave();
 	  zwave_disabled = false;
@@ -99,10 +99,9 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
       if (err) {
         console.log(err);
       } else if (result.length) {
-        //console.log('Found:', result);
-        //console.log('set_settings | ', data);
-	//collection.update({},{$set:data});
-	collection.update({}, {$set:data}, function(err, item){console.log("item: ",item)});
+	collection.update({}, {$set:data}, function(err, item){
+	  //console.log("item: ",item);
+        });
       } else {
         console.log('No document(s) found with defined "find" criteria!');
         collection.insert(data, function (err, result) {
@@ -126,10 +125,10 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
     var collection = db.collection('devices');
-    console.log('set_device | ', device);
+    console.log('set_device', device);
     collection.update({nodeid:device.nodeid}, {$setOnInsert:device}, {upsert:true}, function(err, item){console.log("update device: ",item)});
-    get_devices();
     db.close();
+    get_devices();
   }
 });
 }
@@ -140,17 +139,17 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    console.log('get_devices');
     var collection = db.collection('devices');
     collection.find().toArray(function (err, result) {
       if (err) {
         console.log(err);
       } else if (result.length) {
-	devices_obj = result[0];
+	devices_obj = {};
+	devices_obj.devices = result;
 	devices_obj.token = token;
 	devices_obj.mac = mac;
-        console.log("RESULTS!!! ",devices_obj);
-	io_relay.emit('load_gateway_devices',devices_obj);
+        //console.log("get_devices",devices_obj);
+	io_relay.emit('load devices',devices_obj);
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
@@ -455,8 +454,8 @@ zwave.on('value changed', function(nodeid, comclass, value) {
     node_data['token'] = token;
     node_data['mac'] = mac;
     node_data['nodes'] = nodes;
-    console.log("!!!!!!???load_gateway_devices | " + node_data.mac + ":" + node_data.token);
-    //io_relay.emit('load_gateway_devices', node_data);
+    console.log("!!!!!!???send devices | " + node_data.mac + ":" + node_data.token);
+    //io_relay.emit('send devices', node_data);
   }
   nodes[nodeid]['classes'][comclass][value.index] = value;
 });
@@ -576,59 +575,51 @@ function getMostRecentFileName(dir) {
     return fs.statSync(fullpath).ctime;
   });
 }
-// ----------------------  find bridges  ------------------- //
+// ----------------------  link bridge  ------------------- //
+function find_hue_bridge() {
 var bridge_obj = {};
 var displayBridges = function(bridge) {
     bridge_obj = bridge[0];
-    //info_obj['ip'] = bridge_obj.ipaddress;
-    //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
+    link_hue_bridge(bridge_obj.ipaddress);
     console.log("Hue Bridges Found: " + JSON.stringify(bridge));
 };
-//hue.nupnpSearch().then(displayBridges).done();
-
-// ----------------------  link bridge  ------------------- //
+hue.nupnpSearch().then(displayBridges).done();
+}
 
 function link_hue_bridge(ipaddress) {
-
 var HueApi = require("node-hue-api").HueApi;
-
 console.log(ipaddress);
 var hostname = ipaddress,
     userDescription = "Node Gateway";
-
 var displayUserResult = function(result) {
-    settings_obj.hue['ip'] = ipaddress;
-    settings_obj.hue['user'] = result;
-    settings_obj.hue['token'] = token;
-    //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );
+    hue_obj.hue['ip'] = ipaddress;
+    hue_obj.hue['user'] = result;
+    hue_obj.hue['token'] = token;
+    find_lights();
     console.log("Created user: " + JSON.stringify(result));
 };
-
 var displayError = function(err) {
     console.log(err);
 };
-
 var hue = new HueApi();
-
-// Using a promise
 hue.registerUser(hostname, userDescription)
     .then(displayUserResult)
     .fail(displayError)
     .done();
-
 }
 
 // ----------------------  finding lights  ------------------- //
+function find_lights() {
 var HueApi = require("node-hue-api").HueApi;
 
 var displayResult = function(result) {
-    settings_obj.hue['lights'] = result.lights;
-    //fs.writeFile( "info.json", JSON.stringify(info_obj), "utf8" );    
-    //io_relay.emit('device_info',info_obj);
+    hue_obj.hue['lights'] = result.lights;
+    set_device(hue_obj);
+    console.log("find_lights",hue_obj);
 };
 
-var host = settings_obj.hue.ip,
-    username = settings_obj.hue.user,
+var host = hue_obj.hue.ip,
+    username = hue_obj.hue.user,
     api;
 
 api = new HueApi(host, username);
@@ -638,6 +629,7 @@ api.lights(function(err, lights) {
     if (err) console.log(err);
     displayResult(lights);
 });
+}
 
 // ----------------------  file server  ------------------- //
 var koa =require('koa');
@@ -790,11 +782,11 @@ io_relay.on('add thermostat', function (data) {
   console.log("add_thermostat |  " + JSON.stringify(data));  
 });
 
-io_relay.on('get_thermostat', function (data) {
-  var cmd = data.cmd;
-  therm_ip = data.ip;
-  get_therm_state(data.ip,cmd);
-  console.log("thermostat |  " + cmd);  
+io_relay.on('get thermostat', function (data) {
+  //var cmd = data.cmd;
+  //therm_ip = data.ip;
+  //get_therm_state(data.ip,cmd);
+  console.log("get thermostat",data);  
 });
 
 io_relay.on('set_thermostat', function (data) {
@@ -808,8 +800,9 @@ io_relay.on('add_zwave_device', function (data) {
 });
 
 node_data = {};
-io_relay.on('get_gateway_devices', function (data) {
+io_relay.on('get devices', function (data) {
   get_devices();
+  //console.log("get devices",data);
   /*MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -828,7 +821,7 @@ io_relay.on('get_gateway_devices', function (data) {
           device_data['devices'] = devices;
 	  console.log("mac: " + device_data.mac + " DATA: " + JSON.stringify(device_data));
 
-  	  io_relay.emit('load_gateway_devices', device_data);
+  	  io_relay.emit('send devices', device_data);
         } else {
           console.log('No document(s) found with defined "find" criteria!');
         }
@@ -839,17 +832,17 @@ io_relay.on('get_gateway_devices', function (data) {
 });
 
 
-io_relay.on('set_settings', function (data) {
-  console.log("set_settings |  ", data);
+io_relay.on('set settings', function (data) {
+  console.log("set settings |  ", data);
   //data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
   set_settings(data);
-  console.log("set_settings |  ", data);
+  console.log("set settings |  ", data);
 });
 
-io_relay.on('get_settings', function (data) {
+io_relay.on('get settings', function (data) {
   set_settings({'device_name':data.device_name,'device_type':data.device_type});
   get_settings();
-  console.log("get_settings |  ", data);
+  //console.log("get_settings |  ", data);
 });
 
 io_relay.on('cmd_gateway_device', function (data) {
@@ -863,9 +856,10 @@ io_relay.on('lights', function (light) {
   set_light(light.id,light.state);
 });
 
-io_relay.on('link_lights', function (data) {
-  io_relay.emit('device_info',settings_obj.hue);
-  console.log("emitting light info");  
+io_relay.on('link lights', function (data) {
+  io_relay.emit('device_info',hue_obj.hue);
+  find_hue_bridge();
+  console.log("link lights");  
 });
 
 io_relay.on('light_theme', function (data) {
@@ -874,19 +868,19 @@ io_relay.on('light_theme', function (data) {
     displayResult(lights);
   });
   if (data.theme === 'presence') {
-    for (i = 0; i < settings_obj.hue.lights.length; i++) {
+    for (i = 0; i < hue_obj.hue.lights.length; i++) {
       var state = {"on":true,"bri":"100"}
-      if (settings_obj.hue.lights[i].state.on == false) {
-        set_light(settings_obj.hue.lights[i].id,state);
-        console.log('setting ' + settings_obj.hue.lights[i].id );
+      if (hue_obj.hue.lights[i].state.on == false) {
+        set_light(hue_obj.hue.lights[i].id,state);
+        console.log('setting ' + hue_obj.hue.lights[i].id );
       }
     }
   }
   if (data.theme === 'alert') {
-    for (i = 0; i < settings_obj.hue.lights.length; i++) {
+    for (i = 0; i < hue_obj.hue.lights.length; i++) {
       var state = {"on":true,"rgb":[255,0,0],"bri":"255"}
-      console.log(settings_obj.hue.lights[i].id);
-      set_light(settings_obj.hue.lights[i].id,state);      
+      console.log(hue_obj.hue.lights[i].id);
+      set_light(hue_obj.hue.lights[i].id,state);      
     }
   }
   console.log("setting theme | " + data.theme);  
@@ -951,8 +945,8 @@ var displayResult = function(result) {
     //console.log("result | " + JSON.stringify(result));
 };
 
-var host = settings_obj.hue.ip,
-    username = settings_obj.hue.user,
+var host = hue_obj.hue.ip,
+    username = hue_obj.hue.user,
     api = new HueApi(host, username);
 
 api.setLightState(light_id, state, function(err, lights) {
@@ -1055,16 +1049,9 @@ function (error, response, data) {
     if (isJSON(data)) { 
       var data_obj = {};    
       data_obj['current_state'] = JSON.parse(data);
-      data_obj['token'] = token;
-      data_obj['mac'] = mac;
       data_obj['local_ip'] = ipaddress;
-      data_obj['cmd'] = cmd;
-      if (cmd === "link") {
-        io_relay.emit('link_thermostat',data_obj);
-      }
-      if (cmd === "update") {
-        io_relay.emit('thermostat_state',data_obj);
-      }      
+      set_device(data_obj);
+      console.log("get_therm_state",data_obj);
     }
     if (error !== null) {
      console.log('error ---> ' + error);
