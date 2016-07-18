@@ -195,8 +195,8 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
                  + "export DISPLAY=':0.0'\n"
-                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion.log 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway.log 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
                  + "exit 0;\n"
     fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
@@ -576,33 +576,33 @@ function getMostRecentFileName(dir) {
   });
 }
 // ----------------------  link bridge  ------------------- //
+var HueApi = require("node-hue-api").HueApi;
+var hue = new HueApi();
 function find_hue_bridge() {
-var bridge_obj = {};
-var displayBridges = function(bridge) {
+  var bridge_obj = {};
+  var displayBridges = function(bridge) {
     bridge_obj = bridge[0];
     link_hue_bridge(bridge_obj.ipaddress);
-    console.log("Hue Bridges Found: " + JSON.stringify(bridge));
-};
-hue.nupnpSearch().then(displayBridges).done();
+    console.log("Hue Bridges Found: ",bridge);
+  };
+  hue.nupnpSearch().then(displayBridges).done();
 }
 
 function link_hue_bridge(ipaddress) {
-var HueApi = require("node-hue-api").HueApi;
-console.log(ipaddress);
-var hostname = ipaddress,
+  console.log(ipaddress);
+  var hostname = ipaddress,
     userDescription = "Node Gateway";
-var displayUserResult = function(result) {
+  var displayUserResult = function(result) {
     hue_obj.hue['ip'] = ipaddress;
     hue_obj.hue['user'] = result;
     hue_obj.hue['token'] = token;
     find_lights();
     console.log("Created user: " + JSON.stringify(result));
-};
-var displayError = function(err) {
+  };
+  var displayError = function(err) {
     console.log(err);
-};
-var hue = new HueApi();
-hue.registerUser(hostname, userDescription)
+  };
+  hue.registerUser(hostname, userDescription)
     .then(displayUserResult)
     .fail(displayError)
     .done();
@@ -610,8 +610,6 @@ hue.registerUser(hostname, userDescription)
 
 // ----------------------  finding lights  ------------------- //
 function find_lights() {
-var HueApi = require("node-hue-api").HueApi;
-
 var displayResult = function(result) {
     hue_obj.hue['lights'] = result.lights;
     set_device(hue_obj);
