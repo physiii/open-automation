@@ -47,6 +47,7 @@
     "mysql": "^2.11.1",
     "node-hue-api": "^2.2.0",
     "node-php": "0.0.1",
+    "object.omit": "^2.0.0",
     "openzwave-shared": "^1.2.0",
     "optimist": "^0.6.1",
     "path": "^0.12.7",

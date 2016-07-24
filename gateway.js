@@ -7,8 +7,6 @@ var express = require('express');
 var app = express();
 var program_app = express();
 var querystring = require('querystring');
-var http = require('http');
-var server = http.createServer(app);
 var io_relay = require('socket.io-client')('http://68.12.126.213:5000');
 var port = process.env.PORT || 3030;
 var php = require("node-php");
@@ -16,6 +14,7 @@ var request = require('request');
 var spawn = require('child_process').spawn;
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
+var omit = require('object.omit');
 var body = new EventEmitter();
 var gb_event = new EventEmitter();
 var token = "init";
@@ -40,35 +39,28 @@ var count = 0;
 var text_timeout = 0;
 var platform = process.platform;
 var settings_obj = {};
+var device_array = {};
 const exec = require('child_process').exec;
+var zwave_disabled = true;
 
 // -------------------------------  MangoDB  --------------------------------- //
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
 
-var zwave_disabled = true;
-function get_settings() {
+//-- initialize variables --//
+get_devices();
 MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    //console.log('Connection established');
     var collection = db.collection('settings');
     collection.find().toArray(function (err, result) {
       if (err) {
         console.log(err);
       } else if (result.length) {
 	settings_obj = result[0];
-	io_relay.emit('load settings',settings_obj);
-	if (settings_obj.gateway_enabled && zwave_disabled) {
-	  init_zwave();
-	  zwave_disabled = false;
-	}
-	if (got_token == false) {
-	  io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
-	}
-	//console.log('load_settings | ',settings_obj);	
+	//console.log('initialize variables | ',settings_obj);	
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
@@ -76,89 +68,139 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
     });
   }
 });
-}
-function get_settings_loop() {
-  setTimeout(function () {
-    console.log("get_settings_loop");
-    get_settings_loop();
-    get_settings();
-  }, 60*1000);
-}get_settings_loop();
 
+//-- get and send settings object --//
+function get_settings() {
+  MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('settings');
+      collection.find().toArray(function (err, result) {
+        if (err) { 
+	  console.log(err);
+        } else if (result.length) {
+	  settings_obj = result[0];
+	  io_relay.emit('load settings',settings_obj);
+	  if (settings_obj.gateway_enabled && zwave_disabled) {
+	    init_zwave();
+	    zwave_disabled = false;
+  	  }
+	  if (got_token == false) {
+	    io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
+  	  }
+  	//console.log('load_settings | ',settings_obj);	
+        } else {
+	  console.log('No document(s) found with defined "find" criteria!');
+        }
+        db.close();
+      });
+    }
+  });
+}
+
+//-- store new settings --//
 function set_settings(data) {
-MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established');
-    var collection = db.collection('settings');
-    collection.find().toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-	collection.update({}, {$set:data}, function(err, item){
+  MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('settings');
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+  	  collection.update({}, {$set:data}, function(err, item){
 	  //console.log("item: ",item);
-        });
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-        collection.insert(data, function (err, result) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Inserted %d', result.length, result);
-          }
-        });
-      }
+          });
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+          collection.insert(data, function (err, result) {
+            if (err) {
+              console.log(err);
+            } else {
+               console.log('Inserted %d', result.length, result);
+            }
+          });
+        }
+        db.close();
+        get_settings();
+      });
+    }
+  });
+}
+
+//-- store new device --//
+function store_device(device) {
+  delete device["_id"];
+  MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('devices');
+      console.log('store_device',device);
+      collection.update({id:device.id}, {$set:device}, {upsert:true}, function(err, item){
+        console.log("update device: ",item)});
       db.close();
-      get_settings();
-    });
-  }
-});
+    }
+  });
+  get_devices();
 }
 
-function set_device(device) {
-MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    var collection = db.collection('devices');
-    console.log('set_device', device);
-    collection.update({nodeid:device.nodeid}, {$setOnInsert:device}, {upsert:true}, function(err, item){console.log("update device: ",item)});
-    db.close();
-    get_devices();
-  }
-});
-}
-
-get_devices();
+//-- load devices from database --//
 function get_devices() {
-MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    var collection = db.collection('devices');
-    collection.find().toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-	devices_obj = {};
-	devices_obj.devices = result;
-	devices_obj.token = token;
-	devices_obj.mac = mac;
-        //console.log("get_devices",devices_obj);
-	io_relay.emit('load devices',devices_obj);
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-      }
-      db.close();
-    });
-  }
-});
+  MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('devices');
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+	  //device_array = {};
+	  device_array = result;
+	  console.log("get_devices");
+	  io_relay.emit('load devices',{devices:device_array, mac:mac, token:token});
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+        }
+        db.close();
+      });
+    }
+  });
 }
 
-// ----------------------  get device info  ------------------- //
+main_loop();
+function main_loop () {
+setTimeout(function () {
+  get_settings();
+  get_devices();
+  check_connection();
+  get_public_ip();
+  scan_wifi();
+  get_therm_state();
+  main_loop();
+  console.log("main loop");
+  for (var i = 0; i < device_array.length; i++) {
+    if (device_array[i].device_type == 'thermostat') {
+      get_therm_state(device_array[i].local_ip);
+    }
+  }
+}, 60*1000);
+}
+// ---------------------- device info  ------------------- //
 var local_ip = "init";
 var ifaces = os.networkInterfaces();
+var mac = "init";
+var device_type = "gateway";
+var device_name = "Gateway";
+var public_ip = "init";
+get_public_ip();
+get_local_ip();
+get_mac();
+
+function get_local_ip () {
 Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
   ifaces[ifname].forEach(function (iface) {
@@ -204,10 +246,9 @@ Object.keys(ifaces).forEach(function (ifname) {
     settings_obj.local_ip = local_ip;
   });
 });
+}
 
-var mac = "init";
-var device_type = "gateway";
-var device_name = "Gateway";
+function get_mac () {
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
@@ -233,82 +274,64 @@ require('getmac').getMac(function(err,macAddress){
         return console.log(err);
       }
       console.log("hostapd_file saved!");
-      //exec("sudo hostapd -d /etc/hostapd/hostapd.conf");
-      spawn('hostapd', ['-d', '/etc/hostapd/hostapd.conf']);
+      //spawn('hostapd', ['-d', '/etc/hostapd/hostapd.conf']);
     });
 });
-var public_ip = "init";
-get_public_ip();
-function get_public_ip() {
-request.get(
-'http://pyfi.org/php/get_ip.php',
-function (error, response, data) {
-  if (!error && response.statusCode == 200) {
-    console.log('public_ip ' + data);
-    public_ip = data;
-    settings_obj.public_ip = public_ip;
-    set_settings(settings_obj);
-    if (error !== null) {
-     console.log('error ---> ' + error);
-    }      
-  }
-});
 }
+
+function get_public_ip() {
+  request.get(
+  'http://pyfi.org/php/get_ip.php',
+  function (error, response, data) {
+    if (!error && response.statusCode == 200) {
+      console.log('public_ip ' + data);
+      public_ip = data;
+      settings_obj.public_ip = public_ip;
+      set_settings(settings_obj);
+      if (error !== null) {
+       console.log('error ---> ' + error);
+      }      
+    }
+  });
+}
+
 // -------------------------------  connection  -------------------------------- //
-check_connection();
+var router_array = [];
+var router_list = [];
+scan_wifi();
+
 function check_connection() {
-var ping = require ("ping");
-host = "8.8.8.8";
-ping.sys.probe(host, function(isAlive){
-  var msg = isAlive ? 'alive' : 'dead';
-  if (msg == 'dead') {
-    var interfaces_file = "allow-hotplug wlan0\n"
+  var ping = require ("ping");
+  host = "8.8.8.8";
+  ping.sys.probe(host, function(isAlive){
+    var msg = isAlive ? 'alive' : 'dead';
+    if (msg == 'dead') {
+      var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
     		   + "netmask 255.255.255.0\n"
     		   + "network 172.24.1.0\n"
     		   + "broadcast 172.24.1.255\n";
-    fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
-      if(err) {
-        return console.log(err);
-      }
-      console.log("Interface file saved, starting AP");
-      //exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo service hostapd restart");
-
-exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo hostapd -d /etc/hostapd/hostapd.conf", (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-  console.log("stdout: " + stdout);
-  console.log("stderr: " + stderr);
-});
-/*exec("sudo service hostapd restart", (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-console.log("stdout: " + stdout);
-console.log("stderr: " + stderr);
-});*/
-
-    });
-  }
-  console.log(msg);
-});
-
+      fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+        if(err) return console.log(err);
+        console.log("Interface file saved, starting AP");
+        exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo hostapd -d /etc/hostapd/hostapd.conf", (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log("stdout: " + stdout);
+          console.log("stderr: " + stderr);
+        });
+      });
+    }
+    console.log(msg);
+  });
 }
 
-var router_array = [];
-var router_list = [];
-function wifi_scan_loop() {
-  setTimeout(function () {
-    //console.log("scanning wifi...");
-    wifi_scan_loop();
-    scan_wifi();
-  }, 30*1000);
-}wifi_scan_loop();
 function scan_wifi() {
+ap_mode = true;
+if (ap_mode == true) {
   exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
     if (error) {
       //console.error(`exec error: ${error}`);
@@ -323,18 +346,20 @@ function scan_wifi() {
     			             .replace("\"","");
       router_list.push({ssid:router_ssid});
     }
-    //console.log("router_array | " + router_list);
+    settings_obj.router_list = router_list;
+    set_settings(settings_obj);
+    //console.log("router_array | " + settings_obj.router_list);
   });
-}scan_wifi();
+}
+}
 // ----------------------------  program interface  ----------------------------- //
-var program_server = http.createServer(program_app);
-var program_io = require('socket.io')(program_server);
 var program_port = 3000;
+var program_server = program_app.listen(program_port);
+var program_io = require('socket.io')(program_server);
+
 program_server.listen(program_port, function () {
   console.log('Access GUI on port %d', program_port);
 });     
-
-
 
 program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
@@ -344,7 +369,6 @@ program_io.on('connection', function (socket) {
     router_name = data['router_name'];
     router_password = data['router_password'];
     console.log(router_name + ":" + router_password);
-
     var wpa_supplicant = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
                        + "update_config=1\n"
 		       + "country=GB\n"
@@ -359,7 +383,6 @@ program_io.on('connection', function (socket) {
       }
       console.log("wpa_supplicant saved!");
     });
-
     var interfaces_file = "source-directory /etc/network/interfaces.d\n"
 			+ "auto lo\n"
 			+ "iface lo inet loopback\n"
@@ -386,6 +409,7 @@ program_io.on('connection', function (socket) {
 });
 
 // -------------------------  zwave  ---------------------- //
+var nodes = [];
 var OpenZWave = require('openzwave-shared');
 var zwave = new OpenZWave({
 	ConsoleOutput: false,
@@ -396,7 +420,7 @@ var zwave = new OpenZWave({
 	SuppressValueRefresh: true,
 	NetworkKey: "0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10"
 });
-var nodes = [];
+
 function init_zwave() {
 zwave.on('connected', function(homeid) {
 	//console.log('=================== CONNECTED! ====================');
@@ -462,7 +486,6 @@ zwave.on('value removed', function(nodeid, comclass, index) {
 	    nodes[nodeid]['classes'][comclass][index])
 		delete nodes[nodeid]['classes'][comclass][index];
 });
-
 zwave.on('node ready', function(nodeid, nodeinfo) {
 	nodes[nodeid]['manufacturer'] = nodeinfo.manufacturer;
 	nodes[nodeid]['manufacturerid'] = nodeinfo.manufacturerid;
@@ -473,7 +496,9 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 	nodes[nodeid]['name'] = nodeinfo.name;
 	nodes[nodeid]['loc'] = nodeinfo.loc;
 	nodes[nodeid]['ready'] = true;
-	nodes[nodeid]['nodeid'] = nodeid;
+	nodes[nodeid]['id'] = nodeid;
+	nodes[nodeid]['device_type'] = nodeinfo.type;
+	nodes[nodeid]['local_ip'] = local_ip;
 
 	console.log('node%d: %s, %s', nodeid,
 		    nodeinfo.manufacturer ? nodeinfo.manufacturer
@@ -485,7 +510,7 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 		    nodeinfo.name,
 		    nodeinfo.type,
 		    nodeinfo.loc);
-   	set_device(nodes[nodeid]);
+   	store_device(nodes[nodeid]);
 	for (var comclass in nodes[nodeid]['classes']) {
 		switch (comclass) {
 		case 0x25: // COMMAND_CLASS_SWITCH_BINARY
@@ -574,83 +599,79 @@ function getMostRecentFileName(dir) {
 }
 // ----------------------  link bridge  ------------------- //
 var HueApi = require("node-hue-api").HueApi;
-var hue_obj = {host:"init",user:"init",userDescription:"Gateway"};
+//var hue_obj = {host:"init",user:"init",userDescription:"Gateway"};
 function find_hue_bridge() {
   var hue = require("node-hue-api");
-  var displayBridges = function(bridge) {
-    hue_obj = bridge[0];
-    create_user();
-    console.log("Hue Bridges Found: ",bridge);
-  };
-  hue.nupnpSearch().then(displayBridges).done();
+  hue.nupnpSearch(function(err, result) {
+    if (err) throw err;
+    found_bridge = false;  
+    for (var i = 0; i < device_array.length; i++) {
+      if (device_array[i].id == result[0].id) {
+	console.log("bridge already exist, creating user...");
+	create_user(result[0]);
+	found_bridge = true;
+      }
+    }
+    if (found_bridge == false) {
+      console.log("new bridge, creating user...");
+      device_array.push(result[0]);
+      create_user(result[0]);
+    }
+  });
 }
 
-function create_user() {
+function create_user(device) {
   hue = new HueApi();
-  hue.createUser(hue_obj.ipaddress, function(err, user) {
+  hue.createUser(device.ipaddress, function(err, user) {
     if (err) console.log(err);
-    hue_obj.user = user;
-    console.log("created user",hue_obj);
-    //link_hue_bridge();
+    for (var i = 0; i < device_array.length; i++) {
+      if (device_array[i].id == device.id) {
+        device_array[i].user = user;
+	device_array[i].device_type = "lights";
+	device_array[i].local_ip = local_ip;
+ 	//device_array[i].token = token;
+  	//device_array[i].mac = mac;
+	//store_device(device_array[i]);
+	find_lights(device_array[i]);
+        console.log("created user",device_array[i]);
+     }
+   }
   });
-}
-
-function link_hue_bridge() {
-  hue = new HueApi(hue_obj.ipaddress,hue_obj);
-  hue.config(function(err, config) {
-    if (err) console.log(err);
-    displayResult(config);
-  });
-  var displayResult = function(config) {
-    /*hue_obj.hue['ip'] = ipaddress;
-    hue_obj.hue['user'] = result;
-    hue_obj.hue['token'] = token;*/
-    find_lights();
-    console.log("config: ",config);
-  };
-  /*var displayError = function(err) {
-    console.log(err);
-  };
-  hue.registerUser(hostname, userDescription)
-    .then(displayUserResult)
-    //.fail(displayError)
-    .done();
-*/
 }
 
 // ----------------------  finding lights  ------------------- //
-function find_lights() {
-  var displayResult = function(result) {
-    hue_obj.hue['lights'] = result.lights;
-    set_device(hue_obj);
-    console.log("find_lights",hue_obj);
-  };
+function find_lights(device) {
+  hue = new HueApi(device.ipaddress,device.user);
   hue.lights(function(err, lights) {
     if (err) console.log(err);
-    displayResult(lights);
+    for (var i = 0; i < device_array.length; i++) {
+      if (device_array[i].id == device.id) {
+	device_array[i].lights = lights.lights;
+        store_device(device_array[i]);
+        //console.log("storing lights",device_array[i]);
+      }
+   }
   });
 }
 
 // --------------------  setting light state  ----------------- //
-function set_light(light_id,state) {
-
-var hue = require("node-hue-api"),
-    HueApi = hue.HueApi,
-    lightState = hue.lightState;
-
-var displayResult = function(result) {
-    //console.log("result | " + JSON.stringify(result));
-};
-
-var host = hue_obj.hue.ip,
-    username = hue_obj.hue.user,
-    api = new HueApi(host, username);
-
-api.setLightState(light_id, state, function(err, lights) {
-    if (err) console.log(err);
-    displayResult(lights);
-});
-console.log(light_id + " | setting state: " + JSON.stringify(state));
+function set_light(device_id,light) {
+  //console.log("set_light",light);
+  if (light.state.on == false)
+   light.state = {on:false};
+  for (var i = 0; i < device_array.length; i++) {
+    if (device_array[i].device_type == "lights") {
+      hue = new HueApi(device_array[i].ipaddress,device_array[i].user);
+      hue.setLightState(light.id, light.state, function(err, results) {
+        if (err) console.log(err);
+        for (var i = 0; i < device_array.length; i++) {
+          if (device_array[i].device_type == "lights") {
+            find_lights(device_array[i]);
+	  }
+	}
+      });
+    }
+  }
 }
 // ----------------------  file server  ------------------- //
 var koa =require('koa');
@@ -725,22 +746,17 @@ startServer(app, + 9090);
 
 //---------------------- proxy servers -------------------//
 var camera_port = argv.camera_port;
-//var camera_port = 3031;
 var httpProxy = require('http-proxy');
-//var camera_proxy = httpProxy.createProxyServer();
+var http = require('http');
 var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
-  session_id = "/session/" + token;
-  //cloud_id = "/cloud/" + token;
-  
+  session_id = "/session/" + token; 
   console.log("received: " + req.url.substring(1,129) + " | checking with: " + session_id);
   if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
-    //req['url'] = '';
     proxy.web(req, res, { target:'http://localhost:9090' });
     console.log("cloud proxied");
   } else
   if (req.url === session_id) {
-    //req['url'] = '';  
     proxy.web(req, res, { target:'http://localhost:8081', prependPath: false });
     console.log("camera proxied");
   } else {
@@ -777,7 +793,6 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    console.log('Connection established');
     var collection = db.collection('schedules');
     collection.find({'local_ip':data.local_ip}).toArray(function (err, result) {
       if (err) {
@@ -804,9 +819,8 @@ io_relay.on('add thermostat', function (data) {
 });
 
 io_relay.on('get thermostat', function (data) {
-  //var cmd = data.cmd;
-  //therm_ip = data.ip;
-  //get_therm_state(data.ip,cmd);
+  device = data.device;
+  get_therm_state(device.local_ip);
   console.log("get thermostat",data);  
 });
 
@@ -823,33 +837,7 @@ io_relay.on('add_zwave_device', function (data) {
 node_data = {};
 io_relay.on('get devices', function (data) {
   get_devices();
-  //console.log("get devices",data);
-  /*MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-    if (err) {
-      console.log('Unable to connect to the mongoDB server. Error:', err);
-    } else {
-      console.log('Connection established');
-      var collection = db.collection('devices');
-      collection.find().toArray(function (err, result) {
-        if (err) {
-          console.log(err);
-        } else if (result.length) {
-  	  devices = result;
-
-	  var device_data = {};
-	  device_data['token'] = token;
-	  device_data['mac'] = mac;
-          device_data['devices'] = devices;
-	  console.log("mac: " + device_data.mac + " DATA: " + JSON.stringify(device_data));
-
-  	  io_relay.emit('send devices', device_data);
-        } else {
-          console.log('No document(s) found with defined "find" criteria!');
-        }
-        db.close();
-      });
-    }
-  });*/
+  console.log("get devices",data);
 });
 
 
@@ -872,12 +860,15 @@ io_relay.on('cmd_gateway_device', function (data) {
   zwave.setValue(4, 98, 1, 0, data.value);
 });
 
-io_relay.on('lights', function (light) {
-  set_light(light.id,light.state);
+io_relay.on('lights', function (data) {
+  data.light = omit(data.light,"$$hashKey"); //bad angularjs array
+  var light = data.light;
+  var device = data.device;
+  set_light(device.id,light);
 });
 
 io_relay.on('link lights', function (data) {
-  //io_relay.emit('device_info',hue_obj.hue);
+  //io_relay.emit('device_info',settings_obj.hue.hue);
   find_hue_bridge();
   console.log("link lights");
 });
@@ -888,19 +879,19 @@ io_relay.on('light_theme', function (data) {
     displayResult(lights);
   });
   if (data.theme === 'presence') {
-    for (i = 0; i < hue_obj.hue.lights.length; i++) {
-      var state = {"on":true,"bri":"100"}
-      if (hue_obj.hue.lights[i].state.on == false) {
-        set_light(hue_obj.hue.lights[i].id,state);
-        console.log('setting ' + hue_obj.hue.lights[i].id );
+    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
+      if (settings_obj.hue.hue.lights[i].state.on == false) {
+        settings_obj.hue.lights[i].state = {"on":true,"bri":"100"};
+        set_light(settings_obj.hue.lights[i]);
+        console.log('presence',settings_obj.hue.lights[i]);
       }
     }
   }
   if (data.theme === 'alert') {
-    for (i = 0; i < hue_obj.hue.lights.length; i++) {
-      var state = {"on":true,"rgb":[255,0,0],"bri":"255"}
-      console.log(hue_obj.hue.lights[i].id);
-      set_light(hue_obj.hue.lights[i].id,state);      
+    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
+      settings_obj.hue.hue.lights[i].state = {"on":true,"rgb":[255,0,0],"bri":"255"}
+      set_light(settings_obj.hue.hue.lights[i]);
+      console.log(settings_obj.hue.hue.lights[i]);
     }
   }
   console.log("setting theme | " + data.theme);  
@@ -976,11 +967,14 @@ function (error, response, data2) {
       data_obj['current_state'] = JSON.parse(data2);
       data_obj['token'] = token;
       data_obj['mac'] = mac;
+      data_obj['device_type'] = 'thermostat';
       data_obj['local_ip'] = data.local_ip;
       data_obj['device_name'] = data.device_name;
-      var device_obj = {device_type:"thermostat", device_name:data_obj.device_name, local_ip:data_obj.local_ip, mac:mac, token:token};
-      devices.push(device_obj);
-
+      data_obj['schedule'] = {"7 AM":70,"9 AM":70,"11 AM":70,"1 PM":70,"3 PM":70,"5 PM":70,"7 PM":70,"9 PM":70,"11 PM":70,"1 AM":70};
+      //var device_obj = {device_type:"thermostat", device_name:data_obj.device_name, local_ip:data_obj.local_ip, schedule:data_obj.schedule};
+      store_device(data_obj);
+      device_array.push(data_obj);
+/*
 MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -1014,6 +1008,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
     });
   }
 });
+*/
 
       io_relay.emit('thermostat_state',data_obj);
     }
@@ -1038,24 +1033,27 @@ function set_thermostat(state) {
   });
 }
 
-function get_therm_state( ipaddress, cmd ) {
-request.get(
-'http://'+ipaddress+'/tstat',
-function (error, response, data) {
-  if (!error && response.statusCode == 200) {
-    console.log('thermostat says: ' + data);
-    if (isJSON(data)) { 
-      var data_obj = {};    
-      data_obj['current_state'] = JSON.parse(data);
-      data_obj['local_ip'] = ipaddress;
-      set_device(data_obj);
-      console.log("get_therm_state",data_obj);
+function get_therm_state(ipaddress) {
+  request.get(
+  'http://'+ipaddress+'/tstat',
+  function (error, response, data) {
+    if (!error && response.statusCode == 200) {
+      if (isJSON(data)) { 
+        var data_obj = {};    
+        data_obj = JSON.parse(data);
+        for (var i = 0; i < device_array.length; i++) {
+	  if (device_array[i].local_ip == ipaddress) {
+	    device_array[i].current_state = data_obj;
+            store_device(device_array[i]);
+            console.log("get_therm_state",data_obj);
+	  }
+	}
+      }
+      if (error !== null) {
+       console.log('error ---> ' + error);
+      }      
     }
-    if (error !== null) {
-     console.log('error ---> ' + error);
-    }      
-  }
-});
+  });
 }
 
 
