@@ -81,6 +81,7 @@ function get_settings() {
 	  console.log(err);
         } else if (result.length) {
 	  settings_obj = result[0];
+	  console.log('settings_obj',settings_obj);
 	  io_relay.emit('load settings',settings_obj);
 	  if (settings_obj.gateway_enabled && zwave_disabled) {
 	    init_zwave();
@@ -100,7 +101,7 @@ function get_settings() {
 }
 
 //-- store new settings --//
-function set_settings(data) {
+function set_settings(data) {console.log('set_settings',data);
   MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -111,7 +112,7 @@ function set_settings(data) {
           console.log(err);
         } else if (result.length) {
   	  collection.update({}, {$set:data}, function(err, item){
-	  //console.log("item: ",item);
+	  console.log("item: ",item);
           });
         } else {
           console.log('No document(s) found with defined "find" criteria!');
@@ -252,6 +253,8 @@ function get_mac () {
 require('getmac').getMac(function(err,macAddress){
   if (err)  throw err
   mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  settings_obj.mac = mac;
+  set_settings(settings_obj);
   console.log("Enter device ID (" + mac + ") at http://pyfi.org");
     var hostapd_file = "interface=wlan0\n"
 		       + "driver=nl80211\n"
@@ -268,7 +271,7 @@ require('getmac').getMac(function(err,macAddress){
 		       + "wpa_key_mgmt=WPA-PSK\n"
 		       + "wpa_passphrase=raspberry\n"
 		       + "rsn_pairwise=CCMP\n";
-
+    
     fs.writeFile("/etc/hostapd/hostapd.conf", hostapd_file, function(err) {
       if(err) {
         return console.log(err);
@@ -284,10 +287,10 @@ function get_public_ip() {
   'http://pyfi.org/php/get_ip.php',
   function (error, response, data) {
     if (!error && response.statusCode == 200) {
-      console.log('public_ip ' + data);
+      console.log('public_ip ',data);
       public_ip = data;
       settings_obj.public_ip = public_ip;
-      set_settings(settings_obj);
+      set_settings({"public_ip":public_ip});
       if (error !== null) {
        console.log('error ---> ' + error);
       }      
@@ -781,7 +784,7 @@ io_relay.on('token', function (data) {
   app.use(mount(session_string, IndexRouter));
   settings_obj.token = token;
   settings_obj.mac = mac;
-  set_settings(settings_obj);
+  set_settings({"token":token});
   get_settings();
   got_token = true;
   console.log("token set " + token);
