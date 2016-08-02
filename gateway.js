@@ -428,7 +428,7 @@ zwave.on('connected', function(homeid) {
 
 zwave.on('driver ready', function(homeid) {
 	console.log('=================== DRIVER READY! ====================');
-	//console.log('scanning homeid=0x%s...', homeid.toString(16));
+	console.log('scanning homeid=0x%s...', homeid.toString(16));
 //console.log("adding node");
 //zwave.addNode(1);
 });
@@ -440,7 +440,7 @@ zwave.on('driver failed', function() {
 });
 
 zwave.on('node added', function(nodeid) {
-	console.log('=================== NODE ADDED! ====================');
+	console.log('=================== NODE ADDED! ====================',nodeid);
 	nodes[nodeid] = {
 		manufacturer: '',
 		manufacturerid: '',
@@ -459,7 +459,7 @@ zwave.on('value added', function(nodeid, comclass, value) {
   if (!nodes[nodeid]['classes'][comclass])
     nodes[nodeid]['classes'][comclass] = {};
     nodes[nodeid]['classes'][comclass][value.index] = value;
-     //console.log("VALUE ADDED: nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
+    console.log("VALUE ADDED: nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
 
     if (value.value_id == "4-98-1-0"){
       //zwave.setValue(4, 98, 1, 0, true);
@@ -831,7 +831,11 @@ io_relay.on('set_thermostat', function (data) {
 
 io_relay.on('add_zwave_device', function (data) {
   console.log("adding node");
-  zwave.addNode(1);
+    if (zwave.hasOwnProperty('beginControllerCommand')) {
+      zwave.beginControllerCommand('AddDevice', true);
+    } else {
+      zwave.addNode(false);
+    }
 });
 
 node_data = {};
