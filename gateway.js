@@ -60,7 +60,8 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
         console.log(err);
       } else if (result.length) {
 	settings_obj = result[0];
-	//console.log('initialize variables | ',settings_obj);	
+	set_wifi(settings_obj);
+	console.log('initialize variables | ',settings_obj);
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
@@ -176,7 +177,7 @@ function main_loop () {
 setTimeout(function () {
   get_settings();
   get_devices();
-  check_connection();
+  //check_connection();
   get_public_ip();
   scan_wifi();
   get_therm_state();
@@ -274,7 +275,6 @@ require('getmac').getMac(function(err,macAddress){
         return console.log(err);
       }
       console.log("hostapd_file saved!");
-      //spawn('hostapd', ['-d', '/etc/hostapd/hostapd.conf']);
     });
 });
 }
@@ -315,17 +315,17 @@ function check_connection() {
       fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
         if(err) return console.log(err);
         console.log("Interface file saved, starting AP");
-        exec("sudo ifdown wlan0 && sudo ifup wlan0;sleep 5;sudo hostapd -d /etc/hostapd/hostapd.conf", (error, stdout, stderr) => {
+        spawn('hostapd', ['-d', '/etc/hostapd/hostapd.conf']);
+        /*exec("sudo hostapd -d /etc/hostapd/hostapd.conf", (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
             return;
           }
           console.log("stdout: " + stdout);
           console.log("stderr: " + stderr);
-        });
+        });*/
       });
     }
-    console.log(msg);
   });
 }
 
@@ -352,6 +352,37 @@ if (ap_mode == true) {
   });
 }
 }
+
+function set_wifi(data) {
+    //console.log("set_wifi",data);
+    var wpa_supplicant = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
+                       + "update_config=1\n"
+		       + "country=GB\n"
+                       + "network={\n"
+		       + "ssid=\""+data.router_name+"\"\n"
+		       + "psk=\""+data.router_password+"\"\n"
+		       + "key_mgmt=WPA-PSK\n"
+		       + "}\n";
+    var interfaces_file = "source-directory /etc/network/interfaces.d\n"
+			+ "auto lo\n"
+			+ "iface lo inet loopback\n"
+			+ "iface eth0 inet manual\n"
+			+ "allow-hotplug wlan0\n"
+			+ "iface wlan0 inet manual\n"
+		    	+ "    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n";
+
+    fs.writeFile("/etc/wpa_supplicant/wpa_supplicant.conf", wpa_supplicant, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+    });
+
+    fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+    });
+}
 // ----------------------------  program interface  ----------------------------- //
 var program_port = 3000;
 var program_server = program_app.listen(program_port);
@@ -365,46 +396,11 @@ program_app.use(express.static(__dirname + '/public'), php.cgi("/"));
 program_io.on('connection', function (socket) {
   console.log(socket.id + " connected");
   socket.emit('router_array',router_list);
-  socket.on('set_wifi', function (data) {
-    router_name = data['router_name'];
-    router_password = data['router_password'];
-    console.log(router_name + ":" + router_password);
-    var wpa_supplicant = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
-                       + "update_config=1\n"
-		       + "country=GB\n"
-                       + "network={\n"
-		       + "ssid=\""+router_name+"\"\n"
-		       + "psk=\""+router_password+"\"\n"
-		       + "key_mgmt=WPA-PSK\n"
-		       + "}\n";
-    fs.writeFile("/etc/wpa_supplicant/wpa_supplicant.conf", wpa_supplicant, function(err) {
-      if(err) {
-        return console.log(err);
-      }
-      console.log("wpa_supplicant saved!");
-    });
-    var interfaces_file = "source-directory /etc/network/interfaces.d\n"
-			+ "auto lo\n"
-			+ "iface lo inet loopback\n"
-			+ "iface eth0 inet manual\n"
-			+ "allow-hotplug wlan0\n"
-			+ "iface wlan0 inet manual\n"
-		    	+ "    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n";
 
-    fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
-      if(err) {
-        return console.log(err);
-      }
-      console.log("Interfaces saved!");
-    //exec("sudo ifdown wlan0 && sudo ifup wlan0;");
-    exec("sudo reboot");
-    function timeout() {
-      setTimeout(function () {
-        console.log("checking connection...");
-        check_connection();
-      }, 2*60*60*1000);
-    }timeout();
-    });
+  socket.on('set wifi', function (data) {
+    console.log("set wifi",data);
+    set_settings(data);
+    set_wifi(data);
   });
 });
 
@@ -455,16 +451,29 @@ zwave.on('node added', function(nodeid) {
 	};
 });
 
+//zwave.hardReset();
 zwave.on('value added', function(nodeid, comclass, value) {
+
+
   if (!nodes[nodeid]['classes'][comclass])
     nodes[nodeid]['classes'][comclass] = {};
     nodes[nodeid]['classes'][comclass][value.index] = value;
-    console.log("VALUE ADDED: nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
+    if (value.value_id == "3-98-1-0"){
+console.log("VALUE ADDED: nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
+  zwave.setValue(3, 98, 1, 0, true);
 
-    if (value.value_id == "4-98-1-0"){
-      //zwave.setValue(4, 98, 1, 0, true);
+
+
     }
 });
+  setTimeout(function () {
+    //hard_reset();
+  }, 60*1000);
+
+function hard_reset() {
+  console.log("hard reset...");
+  zwave.hardReset();
+}
 
 zwave.on('value changed', function(nodeid, comclass, value) {
   if (nodes[nodeid]['ready']) {
@@ -821,7 +830,7 @@ io_relay.on('add thermostat', function (data) {
 io_relay.on('get thermostat', function (data) {
   device = data.device;
   get_therm_state(device.local_ip);
-  console.log("get thermostat",data);  
+  //console.log("get thermostat",data);  
 });
 
 io_relay.on('set_thermostat', function (data) {
@@ -858,10 +867,10 @@ io_relay.on('get settings', function (data) {
   //console.log("get_settings |  ", data);
 });
 
-io_relay.on('cmd_gateway_device', function (data) {
-  console.log("cmd_gateway_device |  " + JSON.stringify(data));
-  //zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
-  zwave.setValue(4, 98, 1, 0, data.value);
+io_relay.on('set zwave', function (data) {
+  console.log("set zwave",data);
+  zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
+  //zwave.setValue(data.node_id, 98, 1, 0, data.value);
 });
 
 io_relay.on('lights', function (data) {
@@ -978,42 +987,6 @@ function (error, response, data2) {
       //var device_obj = {device_type:"thermostat", device_name:data_obj.device_name, local_ip:data_obj.local_ip, schedule:data_obj.schedule};
       store_device(data_obj);
       device_array.push(data_obj);
-/*
-MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established');
-    var collection = db.collection('devices');
-    collection.find(device_obj).toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-        console.log('Found:', result);
-      } else {
-        console.log('Inserting device');
-        collection.insert(device_obj, function (err, result) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Inserted %d', result.length, result);
-	    var collection = db.collection('schedules');
-	    var blank_schedule = {local_ip:data.local_ip, device_type:"thermostat", "7 AM":70,"9 AM":70,"11 AM":70,"1 PM":70,"3 PM":70,"5 PM":70,"7 PM":70,"9 PM":70,"11 PM":70,"1 AM":70};
-            collection.insert(blank_schedule, function (err, result) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log('Inserted schedule %d', result.length, result);
-              }
-            });
-          }
-        });
-      }
-    });
-  }
-});
-*/
-
       io_relay.emit('thermostat_state',data_obj);
     }
     if (error !== null) {
@@ -1049,7 +1022,7 @@ function get_therm_state(ipaddress) {
 	  if (device_array[i].local_ip == ipaddress) {
 	    device_array[i].current_state = data_obj;
             store_device(device_array[i]);
-            console.log("get_therm_state",data_obj);
+            //console.log("get_therm_state",data_obj);
 	  }
 	}
       }
@@ -1059,7 +1032,6 @@ function get_therm_state(ipaddress) {
     }
   });
 }
-
 
 function send_command(command) {
   console.log(command);

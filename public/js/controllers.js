@@ -10,7 +10,8 @@ var app = angular.module('starter', ['socket-io'])
 
   });
   $scope.set_wifi = function() {
-    ws.emit('set_wifi',{ router_name:$scope.router_name, router_password:$scope.router_password });
-    console.log("router info: " +$scope.router_name);
+    data = { router_name:$scope.router_name, router_password:$scope.router_password };
+    ws.emit('set wifi',data);
+    console.log("set_wifi",data);
   }
 });
