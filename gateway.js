@@ -7,7 +7,7 @@ var express = require('express');
 var app = express();
 var program_app = express();
 var querystring = require('querystring');
-var io_relay = require('socket.io-client')('http://68.12.126.213:5000');
+var io_relay = require('socket.io-client')('http://68.12.120.180:5000');
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var request = require('request');
@@ -451,24 +451,21 @@ zwave.on('node added', function(nodeid) {
 	};
 });
 
-//zwave.hardReset();
 zwave.on('value added', function(nodeid, comclass, value) {
-
-
   if (!nodes[nodeid]['classes'][comclass])
     nodes[nodeid]['classes'][comclass] = {};
-    nodes[nodeid]['classes'][comclass][value.index] = value;
-    if (value.value_id == "3-98-1-0"){
-console.log("VALUE ADDED: nodeid: " + nodeid + " value: " + JSON.stringify(value) + " comclass: " + comclass);
-  zwave.setValue(3, 98, 1, 0, true);
-
-
-
-    }
+  nodes[nodeid]['classes'][comclass][value.index] = value;
 });
-  setTimeout(function () {
-    //hard_reset();
-  }, 60*1000);
+
+setTimeout(function () {
+  //hard_reset();
+  //remove_node();
+}, 30*1000);
+
+function remove_node() {
+  console.log("remove node...");
+  zwave.removeNode();
+}
 
 function hard_reset() {
   console.log("hard reset...");
@@ -476,16 +473,19 @@ function hard_reset() {
 }
 
 zwave.on('value changed', function(nodeid, comclass, value) {
+
   if (nodes[nodeid]['ready']) {
     console.log('node%d: changed: %d:%s:%s->%s', nodeid, comclass,
       value['label'],
       nodes[nodeid]['classes'][comclass][value.index]['value'],
       value['value']);
-    node_data['token'] = token;
-    node_data['mac'] = mac;
-    node_data['nodes'] = nodes;
-    console.log("!!!!!!???send devices | " + node_data.mac + ":" + node_data.token);
-    //io_relay.emit('send devices', node_data);
+   
+    console.log("value changed",nodes[nodeid]);
+    store_device(nodes[nodeid]);
+    //io_relay.emit('load devices', node_data);
+    //node_data['token'] = token;
+    //node_data['mac'] = mac;
+    //node_data['nodes'] = nodes;
   }
   nodes[nodeid]['classes'][comclass][value.index] = value;
 });
@@ -794,6 +794,8 @@ io_relay.on('token', function (data) {
   get_settings();
   got_token = true;
   console.log("token set " + token);
+  var device_obj = { token:token, mac:mac, groups:[token] };
+  io_relay.emit('link device',device_obj);
 });
 
 io_relay.on('store_schedule', function (data) {
@@ -834,20 +836,18 @@ io_relay.on('get thermostat', function (data) {
 });
 
 io_relay.on('set_thermostat', function (data) {
-  set_thermostat(data.state.new_state);
-  console.log("set_thermostat |  " + JSON.stringify(data));  
+  set_thermostat(data);
 });
 
 io_relay.on('add_zwave_device', function (data) {
-  console.log("adding node");
     if (zwave.hasOwnProperty('beginControllerCommand')) {
       zwave.beginControllerCommand('AddDevice', true);
     } else {
-      zwave.addNode(false);
+      console.log("adding node");
+      zwave.addNode(1);
     }
 });
 
-node_data = {};
 io_relay.on('get devices', function (data) {
   get_devices();
   console.log("get devices",data);
@@ -861,15 +861,30 @@ io_relay.on('set settings', function (data) {
   console.log("set settings |  ", data);
 });
 
+
 io_relay.on('get settings', function (data) {
   set_settings({'device_name':data.device_name,'device_type':data.device_type});
   get_settings();
   //console.log("get_settings |  ", data);
 });
 
+io_relay.on('room_sensor', function (data) {
+  console.log("room_sensor", data);
+  if (data.status == 'alert') {
+    set_theme('alert');
+  }
+  if (data.status == 'presence') {
+    //set_theme('presence');
+  }
+});
+
 io_relay.on('set zwave', function (data) {
   console.log("set zwave",data);
-  zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
+  try {
+    //zwave.setValue(3, data.class_id, data.instance, data.index, data.value);
+    zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
+  } catch (e) { console.log(e) }
+
   //zwave.setValue(data.node_id, 98, 1, 0, data.value);
 });
 
@@ -886,7 +901,43 @@ io_relay.on('link lights', function (data) {
   console.log("link lights");
 });
 
-io_relay.on('light_theme', function (data) {
+function set_theme(theme) {
+  state = {"on":true,"rgb":[255,0,0],"bri":"255"};
+  for (var i = 0; i < device_array.length; i++) {
+    if (device_array[i].device_type == "lights") {
+      hue = new HueApi(device_array[i].ipaddress,device_array[i].user);
+      for (var j = 0; j < device_array[i].lights.length; j++) {
+      hue.setLightState(device_array[i].lights[j].id, state, function(err, results) {
+        if (err) console.log(err);
+        /*for (var i = 0; i < device_array.length; i++) {
+          if (device_array[i].device_type == "lights") {
+            find_lights(device_array[i]);
+	  }
+	}*/
+      });
+      }
+    }
+  }
+  /*if (theme === 'presence') {
+    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
+      if (settings_obj.hue.hue.lights[i].state.on == false) {
+        settings_obj.hue.lights[i].state = {"on":true,"bri":"100"};
+        set_light(settings_obj.hue.lights[i]);
+        console.log('presence',settings_obj.hue.lights[i]);
+      }
+    }
+  }
+  if (theme === 'alert') {
+    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
+      settings_obj.hue.hue.lights[i].state = {"on":true,"rgb":[255,0,0],"bri":"255"}
+      set_light(settings_obj.hue.hue.lights[i]);
+      console.log('alert',settings_obj.hue.lights[i]);
+    }
+  }*/
+}
+
+
+/*io_relay.on('light_theme', function (data) {
   api.lights(function(err, lights) {
     if (err) console.log(err);
     displayResult(lights);
@@ -908,7 +959,7 @@ io_relay.on('light_theme', function (data) {
     }
   }
   console.log("setting theme | " + data.theme);  
-});
+});*/
 
   io_relay.on('window_sensor', function (data) {
     var _mac = data.mac;
@@ -997,16 +1048,16 @@ function (error, response, data2) {
 
 }
 
-function set_thermostat(state) {
-  console.log(state);
+function set_thermostat(device) {
+  console.log("set_thermostat",device.set_state);
   var request = require('request');
   request.post({
     headers: {'content-type' : 'application/x-www-form-urlencoded'},
-    url:     'http://'+therm_ip+'/tstat',
-    body:    JSON.stringify(state)
+    url:     'http://'+device.local_ip+'/tstat',
+    body:    JSON.stringify(device.set_state)
   }, function(error, response, body){
-    console.log('set_thermostat: ' + body);
-    get_therm_state(therm_ip,"update");
+    console.log('set_thermostat',body);
+    get_therm_state(device.local_ip);
   });
 }
 
@@ -1044,6 +1095,12 @@ function send_command(command) {
       console.log("stderr!!!");
     }
   });
+}
+
+function find_index(array, key, value) {
+  for (var i=0; i < array.length; i++)
+    if (array[i][key] == value)
+      return i;
 }
 
 function isJSON (json_obj) {
