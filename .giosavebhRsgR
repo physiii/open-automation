@@ -61,7 +61,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
       } else if (result.length) {
 	settings_obj = result[0];
 	set_wifi(settings_obj);
-	//console.log('initialize variables | ',settings_obj);
+	console.log('initialize variables | ',settings_obj);
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
@@ -90,7 +90,7 @@ function get_settings() {
 	  if (got_token == false) {
 	    io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
   	  }
-  	//console.log('load settings',settings_obj);	
+  	console.log('load settings',settings_obj);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
@@ -107,7 +107,7 @@ function store_settings(data) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
       var collection = db.collection('settings');
-      //console.log('store_settings',data);
+      console.log('store_settings',data);
       collection.update({}, {$set:data}, {upsert:true}, function(err, item){
         console.log("item",item)
       });
@@ -191,7 +191,7 @@ function main_loop () {
 setTimeout(function () {
   get_settings();
   get_devices();
-  check_connection();
+  //check_connection();
   get_public_ip();
   scan_wifi();
   get_therm_state();
@@ -256,10 +256,9 @@ Object.keys(ifaces).forEach(function (ifname) {
       if(err) {
         return console.log(err);
       }
-      console.log("get_local_ip",settings_obj);
+      console.log("rc.local saved!");
     });
     settings_obj.local_ip = local_ip;
-    store_settings(settings_obj);
   });
 });
 }
@@ -314,46 +313,32 @@ function get_public_ip() {
 // -------------------------------  connection  -------------------------------- //
 var router_array = [];
 var router_list = [];
-var ap_mode = false;
 scan_wifi();
-var bad_connection = 0;
+
 function check_connection() {
   var ping = require ("ping");
   host = "8.8.8.8";
   ping.sys.probe(host, function(isAlive){
     var msg = isAlive ? 'alive' : 'dead';
     if (msg == 'dead') {
-      console.log('bad_connection',bad_connection);
-      if (bad_connection > -1  && !ap_mode) {
-        var interfaces_file = "allow-hotplug wlan0\n"
+      var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
     		   + "netmask 255.255.255.0\n"
     		   + "network 172.24.1.0\n"
     		   + "broadcast 172.24.1.255\n";
-          fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
-          if(err) return console.log(err);
-          ap_mode = true;
-          console.log("Interface file saved, starting AP");
-          const hostapd = spawn('hostapd', ['/etc/hostapd/hostapd.conf']);
-          hostapd.stdout.on('data',(data)=> {
-            console.log('stdout: ${data}');
-          });
-          exec("sudo ifup wlan0");
-          exec("sudo service dnsmasq restart");
-          //spawn('dnsmasq', ['/etc/hostapd/hostapd.conf']);
-        });
-        bad_connection = 0;
-      } bad_connection++;
-    }
-    if (msg == 'alive') {
-      bad_connection = 0;
+      fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+        if(err) return console.log(err);
+        console.log("Interface file saved, starting AP");
+        spawn('hostapd', ['-d', '/etc/hostapd/hostapd.conf']);
+      });
     }
   });
 }
 
 function scan_wifi() {
-//if (ap_mode == true) {
+ap_mode = true;
+if (ap_mode == true) {
   exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
     if (error) {
       //console.error(`exec error: ${error}`);
@@ -372,7 +357,7 @@ function scan_wifi() {
     store_settings(settings_obj);
     //console.log("router_array | " + settings_obj.router_list);
   });
-//}
+}
 }
 
 function set_wifi(data) {
@@ -408,13 +393,12 @@ function set_wifi(data) {
           }
           console.log("stdout: " + stdout);
           console.log("stderr: " + stderr);
-          ap_mode = false;
           check_connection();
         });
       });
     });
 
-  console.log("set_wifi");
+  console.log("set_wifi",data);
 }
 // ----------------------------  program interface  ----------------------------- //
 var program_port = 3000;
@@ -434,7 +418,6 @@ program_io.on('connection', function (socket) {
     console.log("set wifi",data);
     store_settings(data);
     set_wifi(data);
-    exec("sudo reboot");
   });
 });
 
@@ -1088,61 +1071,4 @@ function set_thermostat(device) {
   request.post({
     headers: {'content-type' : 'application/x-www-form-urlencoded'},
     url:     'http://'+device.local_ip+'/tstat',
-    body:    JSON.stringify(device.set_state)
-  }, function(error, response, body){
-    console.log('set_thermostat',body);
-    get_therm_state(device.local_ip);
-  });
-}
-
-function get_therm_state(ipaddress) {
-  request.get(
-  'http://'+ipaddress+'/tstat',
-  function (error, response, data) {
-    if (!error && response.statusCode == 200) {
-      if (isJSON(data)) { 
-        var data_obj = {};    
-        data_obj = JSON.parse(data);
-        for (var i = 0; i < device_array.length; i++) {
-	  if (device_array[i].local_ip == ipaddress) {
-	    device_array[i].current_state = data_obj;
-            store_device(device_array[i]);
-            //console.log("get_therm_state",data_obj);
-	  }
-	}
-      }
-      if (error !== null) {
-       console.log('error ---> ' + error);
-      }      
-    }
-  });
-}
-
-function send_command(command) {
-  console.log(command);
-  var child = exec(command,
-  function (error, stdout, stderr) {
-    if (error !== null) {
-      console.log('' + error);
-    }
-    if (stderr !== null) {
-      console.log("stderr!!!");
-    }
-  });
-}
-
-function find_index(array, key, value) {
-  for (var i=0; i < array.length; i++)
-    if (array[i][key] == value)
-      return i;
-}
-
-function isJSON (json_obj) {
-  if (/^[\],:{}\s]*$/.test(json_obj.replace(/\\["\\\/bfnrtu]/g, '@').
-  replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
-  replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-    return true;
-  }else{
-    return false;
-  }  
-}
+    body:    JSON.stringify(devic

@@ -256,10 +256,9 @@ Object.keys(ifaces).forEach(function (ifname) {
       if(err) {
         return console.log(err);
       }
-      console.log("get_local_ip",settings_obj);
+      console.log("rc.local saved!");
     });
     settings_obj.local_ip = local_ip;
-    store_settings(settings_obj);
   });
 });
 }
@@ -314,7 +313,6 @@ function get_public_ip() {
 // -------------------------------  connection  -------------------------------- //
 var router_array = [];
 var router_list = [];
-var ap_mode = false;
 scan_wifi();
 var bad_connection = 0;
 function check_connection() {
@@ -324,7 +322,7 @@ function check_connection() {
     var msg = isAlive ? 'alive' : 'dead';
     if (msg == 'dead') {
       console.log('bad_connection',bad_connection);
-      if (bad_connection > -1  && !ap_mode) {
+      if (bad_connection > 1) {
         var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
@@ -333,14 +331,8 @@ function check_connection() {
     		   + "broadcast 172.24.1.255\n";
           fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
           if(err) return console.log(err);
-          ap_mode = true;
           console.log("Interface file saved, starting AP");
-          const hostapd = spawn('hostapd', ['/etc/hostapd/hostapd.conf']);
-          hostapd.stdout.on('data',(data)=> {
-            console.log('stdout: ${data}');
-          });
-          exec("sudo ifup wlan0");
-          exec("sudo service dnsmasq restart");
+          spawn('hostapd', ['/etc/hostapd/hostapd.conf']);
           //spawn('dnsmasq', ['/etc/hostapd/hostapd.conf']);
         });
         bad_connection = 0;
@@ -353,7 +345,8 @@ function check_connection() {
 }
 
 function scan_wifi() {
-//if (ap_mode == true) {
+ap_mode = true;
+if (ap_mode == true) {
   exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
     if (error) {
       //console.error(`exec error: ${error}`);
@@ -372,7 +365,7 @@ function scan_wifi() {
     store_settings(settings_obj);
     //console.log("router_array | " + settings_obj.router_list);
   });
-//}
+}
 }
 
 function set_wifi(data) {
@@ -408,13 +401,12 @@ function set_wifi(data) {
           }
           console.log("stdout: " + stdout);
           console.log("stderr: " + stderr);
-          ap_mode = false;
-          check_connection();
+          //check_connection();
         });
       });
     });
 
-  console.log("set_wifi");
+  console.log("set_wifi",data);
 }
 // ----------------------------  program interface  ----------------------------- //
 var program_port = 3000;
@@ -434,7 +426,7 @@ program_io.on('connection', function (socket) {
     console.log("set wifi",data);
     store_settings(data);
     set_wifi(data);
-    exec("sudo reboot");
+    exec("pause 5;sudo reboot");
   });
 });
 
