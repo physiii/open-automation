@@ -324,7 +324,7 @@ function check_connection() {
     var msg = isAlive ? 'alive' : 'dead';
     if (msg == 'dead') {
       console.log('bad_connection',bad_connection);
-      if (bad_connection > -1  && !ap_mode) {
+      if (!ap_mode) {
         var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
@@ -409,7 +409,9 @@ function set_wifi(data) {
           console.log("stdout: " + stdout);
           console.log("stderr: " + stderr);
           ap_mode = false;
-          check_connection();
+          setTimeout(function () {
+            check_connection();
+          }, 20*1000);
         });
       });
     });
