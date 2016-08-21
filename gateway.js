@@ -41,6 +41,7 @@ var platform = process.platform;
 var settings_obj = {};
 var device_array = {};
 const exec = require('child_process').exec;
+const execFile = require('child_process').execFile;
 var zwave_disabled = true;
 
 // -------------------------------  MangoDB  --------------------------------- //
@@ -191,7 +192,7 @@ function main_loop () {
 setTimeout(function () {
   get_settings();
   get_devices();
-  check_connection();
+  //check_connection();
   get_public_ip();
   scan_wifi();
   get_therm_state();
@@ -333,15 +334,18 @@ function check_connection() {
     		   + "broadcast 172.24.1.255\n";
           fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
           if(err) return console.log(err);
-          ap_mode = true;
           console.log("Interface file saved, starting AP");
-          const hostapd = spawn('hostapd', ['/etc/hostapd/hostapd.conf']);
+          /*const hostapd = spawn('hostapd', ['/etc/hostapd/hostapd.conf']);
           hostapd.stdout.on('data',(data)=> {
-            console.log('stdout: ${data}');
+            console.log(data);
           });
-          exec("sudo ifup wlan0");
-          exec("sudo service dnsmasq restart");
-          //spawn('dnsmasq', ['/etc/hostapd/hostapd.conf']);
+          const child = exec('hostapd' ['/etc/hostapd/hostapd.conf'], (error, stdout, stderr) => {
+            if (error) console.log(error);
+            console.log(stdout);
+          });*/
+          exec("sudo ifdown wlan0 && sudo ifup wlan0 && sudo service dnsmasq restart && sudo hostapd /etc/hostapd/hostapd.conf");
+          //exec("sudo service dnsmasq restart");
+          ap_mode = true;
         });
         bad_connection = 0;
       } bad_connection++;
