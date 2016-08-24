@@ -50,7 +50,7 @@ var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
 
 //-- initialize variables --//
-get_devices();
+//get_devices();
 MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -83,18 +83,21 @@ function get_settings() {
 	  console.log(err);
         } else if (result.length) {
 	  settings_obj = result[0];
-	  io_relay.emit('load settings',settings_obj);
 	  if (settings_obj.gateway_enabled && zwave_disabled) {
 	    init_zwave();
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false) {
-	    io_relay.emit('get_token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type });
+            console.log('get_settings get token');
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:device_type, device_name:"5MP InfraRed" });
+            console.log("settings_obj",settings_obj);
   	  }
   	//console.log('load settings',settings_obj);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
+        console.log('!! get_settings !!',settings_obj);
+        io_relay.emit('load settings',settings_obj);
         db.close();
       });
     }
@@ -116,33 +119,6 @@ function store_settings(data) {
     }
   });
   get_settings();
-  /*MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
-    if (err) {
-      console.log('Unable to connect to the mongoDB server. Error:', err);
-    } else {
-      var collection = db.collection('settings');
-      collection.find().toArray(function (err, result) {
-        if (err) {
-          console.log(err);
-        } else if (result.length) {
-  	  collection.update({}, {$set:data}, function(err, item){
-	  //console.log("item: ",item);
-          });
-        } else {
-          console.log('No document(s) found with defined "find" criteria!');
-          collection.insert(data, function (err, result) {
-            if (err) {
-              console.log(err);
-            } else {
-               console.log('Inserted %d', result.length, result);
-            }
-          });
-        }
-        db.close();
-        get_settings();
-      });
-    }
-  });*/
 }
 
 //-- store new device --//
@@ -257,7 +233,7 @@ Object.keys(ifaces).forEach(function (ifname) {
       if(err) {
         return console.log(err);
       }
-      console.log("get_local_ip",settings_obj);
+      //console.log("get_local_ip",settings_obj);
     });
     settings_obj.local_ip = local_ip;
     store_settings(settings_obj);
@@ -291,7 +267,7 @@ require('getmac').getMac(function(err,macAddress){
       if(err) {
         return console.log(err);
       }
-      console.log("hostapd_file saved!");
+      //console.log("hostapd_file saved!");
     });
 });
 }
@@ -405,13 +381,13 @@ function set_wifi(data) {
         if(err) {
           return console.log(err);
         }
-        exec("sudo ifdown wlan0 && sudo ifup wlan0", (error, stdout, stderr) => {
+        exec("sudo /bin/sh -c 'if ! [ \"$(ping -c 1 8.8.8.8)\" ]; then echo \"resetting wlan0\" && sudo ifdown wlan0 && sudo ifup wlan0; else echo \"connection is good\"; fi'", (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
             return;
           }
-          console.log("stdout: " + stdout);
-          console.log("stderr: " + stderr);
+          console.log(stdout);
+          console.log(stderr);
           ap_mode = false;
           setTimeout(function () {
             check_connection();
@@ -522,10 +498,6 @@ zwave.on('value changed', function(nodeid, comclass, value) {
    
     console.log("value changed",nodes[nodeid]);
     store_device(nodes[nodeid]);
-    //io_relay.emit('load devices', node_data);
-    //node_data['token'] = token;
-    //node_data['mac'] = mac;
-    //node_data['nodes'] = nodes;
   }
   nodes[nodeid]['classes'][comclass][value.index] = value;
 });
@@ -824,7 +796,8 @@ proxy.on('error', function (err, req, res) {
 
 //---------------------- socket.io -------------------//
 var got_token = false;
-io_relay.on('token', function (data) {
+io_relay.on('get token', function (data) {
+  console.log("token set " + token);
   token = data.token;
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
@@ -833,9 +806,8 @@ io_relay.on('token', function (data) {
   store_settings(settings_obj);
   get_settings();
   got_token = true;
-  console.log("token set " + token);
-  var device_obj = { token:token, mac:mac, groups:[token] };
-  io_relay.emit('link device',device_obj);
+  //var device_obj = { token:token, mac:mac, groups:[token] };
+  //io_relay.emit('link device',device_obj);
 });
 
 io_relay.on('store_schedule', function (data) {
@@ -903,9 +875,9 @@ io_relay.on('set settings', function (data) {
 
 
 io_relay.on('get settings', function (data) {
-  store_settings({'device_name':data.device_name,'device_type':data.device_type});
-  get_settings();
   //console.log("get_settings |  ", data);
+  //store_settings({'device_name':data.device_name,'device_type':data.device_type});
+  get_settings();
 });
 
 io_relay.on('room_sensor', function (data) {
