@@ -89,9 +89,7 @@ function get_settings() {
   	  }
 	  if (got_token == false) {
             console.log('get_settings get token');
-            var device_types = [];
-            device_types.push("gateway");
-	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_types:["gateway"], device_name:"5MP InfraRed",groups:[token] });
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:"5MP InfraRed",groups:[token] });
             console.log("settings_obj",settings_obj);
   	  }
   	//console.log('load settings',settings_obj);	
