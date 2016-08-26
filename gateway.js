@@ -50,7 +50,7 @@ var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
 
 //-- initialize variables --//
-//get_devices();
+get_devices();
 MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -88,15 +88,14 @@ function get_settings() {
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false) {
-            console.log('get_settings get token');
 	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:"5MP InfraRed",groups:[token] });
-            console.log("settings_obj",settings_obj);
   	  }
   	//console.log('load settings',settings_obj);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        console.log('!! get_settings !!',settings_obj);
+        console.log('!! get_settings !!');
+        settings_obj.devices = device_array;
         io_relay.emit('load settings',settings_obj);
         db.close();
       });
@@ -123,7 +122,7 @@ function store_settings(data) {
 
 //-- store new device --//
 function store_device(device) {
-  delete device["_id"];
+  //delete device["_id"];
   MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -133,10 +132,19 @@ function store_device(device) {
       collection.update({id:device.id}, {$set:device}, {upsert:true}, function(err, item){
         //console.log("update device: ",item)
       });
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+	  device_array = result;
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+        }
+      });
       db.close();
     }
   });
-  get_devices();
+  get_settings();
 }
 
 //-- load devices from database --//
@@ -152,7 +160,7 @@ function get_devices() {
         } else if (result.length) {
 	  //device_array = {};
 	  device_array = result;
-	  console.log("get_devices");
+	  console.log("!! get_devices !!");
 	  io_relay.emit('load devices',{devices:device_array, mac:mac, token:token});
         } else {
           console.log('No document(s) found with defined "find" criteria!');
@@ -166,8 +174,8 @@ function get_devices() {
 main_loop();
 function main_loop () {
 setTimeout(function () {
-  get_settings();
-  get_devices();
+  //get_settings();
+  //get_devices();
   //check_connection();
   get_public_ip();
   scan_wifi();
@@ -496,7 +504,7 @@ zwave.on('value changed', function(nodeid, comclass, value) {
       nodes[nodeid]['classes'][comclass][value.index]['value'],
       value['value']);
    
-    console.log("value changed",nodes[nodeid]);
+    console.log("value changed",nodes[nodeid].product);
     store_device(nodes[nodeid]);
   }
   nodes[nodeid]['classes'][comclass][value.index] = value;
@@ -772,7 +780,7 @@ var http = require('http');
 var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
   session_id = "/session/" + token; 
-  console.log("received: " + req.url.substring(1,129) + " | checking with: " + session_id);
+  //console.log("received: " + req.url.substring(1,129) + " | checking with: " + session_id);
   if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
     proxy.web(req, res, { target:'http://localhost:9090' });
     console.log("cloud proxied");
@@ -804,10 +812,7 @@ io_relay.on('get token', function (data) {
   settings_obj.token = token;
   settings_obj.mac = mac;
   store_settings(settings_obj);
-  get_settings();
   got_token = true;
-  //var device_obj = { token:token, mac:mac, groups:[token] };
-  //io_relay.emit('link device',device_obj);
 });
 
 io_relay.on('store_schedule', function (data) {
@@ -891,7 +896,7 @@ io_relay.on('room_sensor', function (data) {
 });
 
 io_relay.on('set zwave', function (data) {
-  console.log("set zwave",data);
+  //console.log("set zwave",data);
   try {
     //zwave.setValue(3, data.class_id, data.instance, data.index, data.value);
     zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
