@@ -25,6 +25,10 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 3. PHP for generating, setting, and retreiving tokens
 4. Websockets on microcontrollers
 
+
+##System Overview
+![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
+
 ##Dashboard
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dash.png "Dashboard")
 
@@ -33,9 +37,6 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 
 ##Device List
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile_device_list.png "Device List")
-
-##System Overview
-![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
 
 #installation
 ##install node 4.x from source
