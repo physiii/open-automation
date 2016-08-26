@@ -741,7 +741,7 @@ if (argv.help) {
 }
 
 if (argv.version) {
-  console.log('FileManager', require('./package.json').version);
+  console.log('FileManager', require('package.json').version);
   process.exit(0);
 }
 
@@ -756,6 +756,26 @@ global.C = {
 // Start Server
 var Tools = require('./tools');
 
+var startServer = function (app, port) {
+  app.listen(port);
+  C.logger.info('listening on *.' + port);
+};
+
+var app = koa();
+app.proxy = true;
+app.use(Tools.handelError);
+app.use(Tools.realIp);
+app.use(morgan.middleware(C.morganFormat));
+
+var IndexRouter = require('./routes');
+app.use(mount('/', IndexRouter));
+app.use(koaStatic(path.join(__dirname,'./public/')));
+
+startServer(app, +9090);
+
+// Start Server
+/*var Tools = require('./tools');
+
 var app = koa();
 app.proxy = true;
 app.use(Tools.handelError);
@@ -768,10 +788,10 @@ app.use(koaStatic('./public/'));
 
 var startServer = function (app, port) {
   app.listen(port);
-  //C.logger.info('listening on *.' + port);
+  C.logger.info('listening on *.' + port);
 };
 
-startServer(app, + 9090);
+startServer(app, +9090);*/
 
 //---------------------- proxy servers -------------------//
 var camera_port = argv.camera_port;
@@ -780,8 +800,8 @@ var http = require('http');
 var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
   session_id = "/session/" + token; 
-  //console.log("received: " + req.url.substring(1,129) + " | checking with: " + session_id);
-  if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
+  console.log("received: " + req.url.substring(1,129) + " | checking with: " + req.url.substring(1,4));
+  if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js" || req.url.substring(1,4) === "api" ) {
     proxy.web(req, res, { target:'http://localhost:9090' });
     console.log("cloud proxied");
   } else
