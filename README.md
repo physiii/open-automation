@@ -32,7 +32,7 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile.png "Mobile")
 
 ##Device List
-![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/device_list.png "Device List")
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile_device_list.png "Device List")
 
 ##System Overview
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
