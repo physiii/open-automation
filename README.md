@@ -25,11 +25,13 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 3. PHP for generating, setting, and retreiving tokens
 4. Websockets on microcontrollers
 
-##Interfaces
+##Dashboard
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dash.png "Dashboard")
 
+##Mobile
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile.png "Mobile")
 
+##Device List
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/device_list.png "Device List")
 
 ##System Overview
