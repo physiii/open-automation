@@ -26,11 +26,11 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 4. Websockets on microcontrollers
 
 ##Interfaces
-![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/interface1.png "Interface")
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dash.png "Dashboard")
 
-![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/interface2.png "Interface")
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile.png "Mobile")
 
-![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/interface3.png "Interface")
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/device_list.png "Device List")
 
 ##System Overview
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
