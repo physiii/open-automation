@@ -798,8 +798,9 @@ var camera_port = argv.camera_port;
 var httpProxy = require('http-proxy');
 var http = require('http');
 var proxy = httpProxy.createProxyServer();
+var token = settings_obj.token;
 http.createServer(function(req, res) {
-  session_id = "/session/" + settings_obj.token; 
+  session_id = "/session/" + token; 
   if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
   //if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js" || req.url.substring(1,4) === "api" ) {
     proxy.web(req, res, { target:'http://localhost:9090' });
