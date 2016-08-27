@@ -194,7 +194,7 @@ var local_ip = "init";
 var ifaces = os.networkInterfaces();
 var mac = "init";
 var device_type = ["gateway"];
-var device_name = "Gateway";
+//var device_name = "Gateway";
 var public_ip = "init";
 get_public_ip();
 get_local_ip();
