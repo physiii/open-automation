@@ -799,12 +799,13 @@ var httpProxy = require('http-proxy');
 var http = require('http');
 var proxy = httpProxy.createProxyServer();
 http.createServer(function(req, res) {
-  session_id = "/session/" + token; 
-  console.log("received: " + req.url.substring(1,129) + " | checking with: " + req.url.substring(1,4));
-  if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js" || req.url.substring(1,4) === "api" ) {
+  session_id = "/session/" + settings_obj.token; 
+  if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js") {
+  //if (req.url.substring(1,129) === token || req.url.substring(0,3) === "/js" || req.url.substring(1,4) === "api" ) {
     proxy.web(req, res, { target:'http://localhost:9090' });
     console.log("cloud proxied");
   } else
+  console.log("received: " + req.url + " | checking with: " + session_id);  
   if (req.url === session_id) {
     proxy.web(req, res, { target:'http://localhost:8081', prependPath: false });
     console.log("camera proxied");
