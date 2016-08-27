@@ -88,7 +88,7 @@ function get_settings() {
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false) {
-	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:"5MP InfraRed",groups:[token] });
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], groups:[token] });
   	  }
   	//console.log('load settings',settings_obj);	
         } else {
@@ -112,7 +112,7 @@ function store_settings(data) {
       var collection = db.collection('settings');
       //console.log('store_settings',data);
       collection.update({}, {$set:data}, {upsert:true}, function(err, item){
-        console.log("item",item)
+        //console.log("item",item)
       });
       db.close();
     }
@@ -357,7 +357,7 @@ function scan_wifi() {
       router_list.push({ssid:router_ssid});
     }
     settings_obj.router_list = router_list;
-    store_settings(settings_obj);
+    store_settings({router_list:router_list});
     //console.log("router_array | " + settings_obj.router_list);
   });
 //}
@@ -749,7 +749,7 @@ global.C = {
   data: {
     root: argv.directory || path.dirname('.')
   },
-  logger: require('tracer').console({level: 'info'}),
+  logger: require('tracer').console({level: 'log'}),
   morganFormat: ':date[iso] :remote-addr :method :url :status :res[content-length] :response-time ms'
 };
 
@@ -832,8 +832,7 @@ io_relay.on('get token', function (data) {
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
   settings_obj.token = token;
-  settings_obj.mac = mac;
-  store_settings(settings_obj);
+  store_settings(data);
   got_token = true;
 });
 
