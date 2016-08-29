@@ -112,7 +112,7 @@ function store_settings(data) {
       var collection = db.collection('settings');
       //console.log('store_settings',data);
       collection.update({}, {$set:data}, {upsert:true}, function(err, item){
-        console.log("item",item)
+        //console.log("item",item)
       });
       db.close();
     }
@@ -405,7 +405,7 @@ function set_wifi(data) {
 
   console.log("set_wifi");
 }
-// ----------------------------  program interface  ----------------------------- //
+/* ----------------------------  program interface  ----------------------------- */
 var program_port = 3000;
 var program_server = program_app.listen(program_port);
 var program_io = require('socket.io')(program_server);
@@ -717,7 +717,7 @@ function set_lights(lights,state) {
 }
 ----------------- */
 
-// ----------------------  file server  ------------------- //
+/* ----------------------  file server  ------------------- */
 var koa =require('koa');
 var path = require('path');
 var tracer = require('tracer');
@@ -788,27 +788,7 @@ app.use(koaStatic(path.join(__dirname,'./public/')));
 
 startServer(app, +9090);
 
-// Start Server
-/*var Tools = require('./tools');
-
-var app = koa();
-app.proxy = true;
-app.use(Tools.handelError);
-app.use(Tools.realIp);
-app.use(morgan.middleware(C.morganFormat));
-
-var IndexRouter = require('./routes');
-
-app.use(koaStatic('./public/'));
-
-var startServer = function (app, port) {
-  app.listen(port);
-  C.logger.info('listening on *.' + port);
-};
-
-startServer(app, +9090);*/
-
-//---------------------- proxy servers -------------------//
+/*---------------------- proxy servers -------------------*/
 var camera_port = argv.camera_port;
 var httpProxy = require('http-proxy');
 var http = require('http');
