@@ -94,7 +94,7 @@ function get_settings() {
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        console.log('!! get_settings !!');
+        //console.log('!! get_settings !!');
         settings_obj.devices = device_array;
         io_relay.emit('load settings',settings_obj);
         db.close();
@@ -122,13 +122,12 @@ function store_settings(data) {
 
 //-- store new device --//
 function store_device(device) {
-  //delete device["_id"];
+  delete device["_id"];
   MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
       var collection = db.collection('devices');
-      //console.log('store_device',device);
       collection.update({id:device.id}, {$set:device}, {upsert:true}, function(err, item){
         //console.log("update device: ",item)
       });
@@ -144,7 +143,7 @@ function store_device(device) {
       db.close();
     }
   });
-  get_settings();
+  get_devices();
 }
 
 //-- load devices from database --//
@@ -160,7 +159,7 @@ function get_devices() {
         } else if (result.length) {
 	  //device_array = {};
 	  device_array = result;
-	  console.log("!! get_devices !!");
+	  //console.log("!! get_devices !!");
 	  io_relay.emit('load devices',{devices:device_array, mac:mac, token:token});
         } else {
           console.log('No document(s) found with defined "find" criteria!');
@@ -677,31 +676,47 @@ function find_lights(device) {
       if (device_array[i].id == device.id) {
 	device_array[i].lights = lights.lights;
         store_device(device_array[i]);
-        //console.log("storing lights",device_array[i]);
+        console.log("storing lights");
       }
    }
   });
 }
 
 // --------------------  setting light state  ----------------- //
-function set_light(device_id,light) {
-  //console.log("set_light",light);
-  if (light.state.on == false)
-   light.state = {on:false};
+function set_light(device_id,state) {
+  //console.log("set_light",state);
   for (var i = 0; i < device_array.length; i++) {
     if (device_array[i].device_type == "lights") {
+  
       hue = new HueApi(device_array[i].ipaddress,device_array[i].user);
-      hue.setLightState(light.id, light.state, function(err, results) {
+      hue.setLightState(device_id, state, function(err, results) {
         if (err) console.log(err);
-        for (var i = 0; i < device_array.length; i++) {
-          if (device_array[i].device_type == "lights") {
-            find_lights(device_array[i]);
-	  }
-	}
       });
+      //find_lights(device_array[i]);
     }
   }
 }
+
+/* --------------------  setting multiple light states  
+function set_lights(lights,state) {
+  //console.log("set_light",light);
+  for (var i = 0; i < device_array.length; i++) {
+    if (device_array[i].device_type == "lights") {
+      hue = new HueApi(device_array[i].ipaddress,device_array[i].user);
+      for (var j = 0; j < lights.length; j++) {
+          console.log('set_lights',lights[j]);
+        //if (lights[j].state.on == false)
+          //lights[j].state = {on:false};
+        hue.setLightState(lights[j].id, state, function(err, results) {
+          if (err) console.log(err);
+        });
+      }
+      find_lights(device_array[i]);
+    }
+  }
+}
+----------------- */
+
 // ----------------------  file server  ------------------- //
 var koa =require('koa');
 var path = require('path');
@@ -749,7 +764,7 @@ global.C = {
   data: {
     root: argv.directory || path.dirname('.')
   },
-  logger: require('tracer').console({level: 'info'}),
+  logger: require('tracer').console({level: 0}),
   morganFormat: ':date[iso] :remote-addr :method :url :status :res[content-length] :response-time ms'
 };
 
@@ -820,7 +835,6 @@ proxy.on('error', function (err, req, res) {
   res.writeHead(500, {
     'Content-Type': 'text/plain'
   });
-
   res.end('Something went wrong. And we are reporting a custom error message.');
 });
 
@@ -910,10 +924,12 @@ io_relay.on('get settings', function (data) {
 io_relay.on('room_sensor', function (data) {
   console.log("room_sensor", data);
   if (data.status == 'alert') {
+    alert = true;
     set_theme('alert');
   }
   if (data.status == 'presence') {
-    //set_theme('presence');
+    alert = false;
+    set_theme('presence');
   }
 });
 
@@ -927,78 +943,49 @@ io_relay.on('set zwave', function (data) {
   //zwave.setValue(data.node_id, 98, 1, 0, data.value);
 });
 
-io_relay.on('lights', function (data) {
+io_relay.on('set lights', function (data) {
   data.light = omit(data.light,"$$hashKey"); //bad angularjs array
-  var light = data.light;
-  var device = data.device;
-  set_light(device.id,light);
+  console.log('lights',data);
+  set_light(data.light.id,data.light.state);
 });
 
 io_relay.on('link lights', function (data) {
-  //io_relay.emit('device_info',settings_obj.hue.hue);
   find_hue_bridge();
   console.log("link lights");
 });
 
+
+var red = {"on":true,"rgb":[255,0,0],"bri":"255"};
+var blue = {"on":true,"rgb":[0,0,255],"bri":"255"};
+var state = red;
+var presence = {"on":true,"bri":"100"};
+var alert = false;
 function set_theme(theme) {
-  state = {"on":true,"rgb":[255,0,0],"bri":"255"};
+  if (alert == true) {
+    setTimeout(function () {
+      set_theme('alert');
+    }, 2*1000);
+    if (state == red) {
+      state = blue;
+    } else 
+    if (state == blue) {
+      state = red;
+    }
+    else state = red;
+  }
   for (var i = 0; i < device_array.length; i++) {
     if (device_array[i].device_type == "lights") {
       hue = new HueApi(device_array[i].ipaddress,device_array[i].user);
       for (var j = 0; j < device_array[i].lights.length; j++) {
-      hue.setLightState(device_array[i].lights[j].id, state, function(err, results) {
-        if (err) console.log(err);
-        /*for (var i = 0; i < device_array.length; i++) {
-          if (device_array[i].device_type == "lights") {
-            find_lights(device_array[i]);
-	  }
-	}*/
-      });
+        if (theme == 'presence') {
+          if (device_array[i].lights[j].on) continue;
+          state = presence;
+        }
+        set_light(device_array[i].lights[j].id,state);
       }
     }
   }
-  /*if (theme === 'presence') {
-    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
-      if (settings_obj.hue.hue.lights[i].state.on == false) {
-        settings_obj.hue.lights[i].state = {"on":true,"bri":"100"};
-        set_light(settings_obj.hue.lights[i]);
-        console.log('presence',settings_obj.hue.lights[i]);
-      }
-    }
-  }
-  if (theme === 'alert') {
-    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
-      settings_obj.hue.hue.lights[i].state = {"on":true,"rgb":[255,0,0],"bri":"255"}
-      set_light(settings_obj.hue.hue.lights[i]);
-      console.log('alert',settings_obj.hue.lights[i]);
-    }
-  }*/
 }
-
-
-/*io_relay.on('light_theme', function (data) {
-  api.lights(function(err, lights) {
-    if (err) console.log(err);
-    displayResult(lights);
-  });
-  if (data.theme === 'presence') {
-    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
-      if (settings_obj.hue.hue.lights[i].state.on == false) {
-        settings_obj.hue.lights[i].state = {"on":true,"bri":"100"};
-        set_light(settings_obj.hue.lights[i]);
-        console.log('presence',settings_obj.hue.lights[i]);
-      }
-    }
-  }
-  if (data.theme === 'alert') {
-    for (i = 0; i < settings_obj.hue.hue.lights.length; i++) {
-      settings_obj.hue.hue.lights[i].state = {"on":true,"rgb":[255,0,0],"bri":"255"}
-      set_light(settings_obj.hue.hue.lights[i]);
-      console.log(settings_obj.hue.hue.lights[i]);
-    }
-  }
-  console.log("setting theme | " + data.theme);  
-});*/
 
   io_relay.on('window_sensor', function (data) {
     var _mac = data.mac;
@@ -1137,9 +1124,12 @@ function send_command(command) {
 }
 
 function find_index(array, key, value) {
-  for (var i=0; i < array.length; i++)
-    if (array[i][key] == value)
+  for (var i=0; i < array.length; i++) {
+    if (array[i][key] == value) {
       return i;
+    }
+  }
+  return -1;
 }
 
 function isJSON (json_obj) {
