@@ -7,7 +7,7 @@ var express = require('express');
 var app = express();
 var program_app = express();
 var querystring = require('querystring');
-var io_relay = require('socket.io-client')('http://68.12.120.180:5000');
+var io_relay = require('socket.io-client')('http://68.12.114.145:5000');
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var request = require('request');
@@ -94,7 +94,7 @@ function get_settings() {
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        //console.log('!! get_settings !!');
+        console.log('!! get_settings !!');
         settings_obj.devices = device_array;
         io_relay.emit('load settings',settings_obj);
         db.close();
@@ -801,7 +801,7 @@ http.createServer(function(req, res) {
     proxy.web(req, res, { target:'http://localhost:9090' });
     console.log("cloud proxied");
   } else
-  console.log("received: " + req.url + " | checking with: " + session_id);  
+  //console.log("received: " + req.url + " | checking with: " + session_id);  
   if (req.url === session_id) {
     proxy.web(req, res, { target:'http://localhost:8081', prependPath: false });
     console.log("camera proxied");
@@ -892,6 +892,16 @@ io_relay.on('set settings', function (data) {
   //data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
   store_settings(data);
   console.log("set settings |  ", data);
+});
+
+io_relay.on('set alarm', function (data) {
+  console.log("set alarm", data);
+  if (data.mode == "armed") {
+    alert = true;
+  }
+  if (data.mode == "disarmed") {
+    alert = false;
+  }
 });
 
 
