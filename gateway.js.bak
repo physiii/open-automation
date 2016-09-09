@@ -7,7 +7,7 @@ var express = require('express');
 var app = express();
 var program_app = express();
 var querystring = require('querystring');
-var io_relay = require('socket.io-client')('http://68.12.120.180:5000');
+var io_relay = require('socket.io-client')('http://68.12.114.145:5000');
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var request = require('request');
@@ -88,7 +88,7 @@ function get_settings() {
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false) {
-	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], groups:[token] });
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:"5MP InfraRed",groups:[token] });
   	  }
   	//console.log('load settings',settings_obj);	
         } else {
@@ -180,7 +180,7 @@ setTimeout(function () {
   scan_wifi();
   get_therm_state();
   main_loop();
-  console.log("main loop");
+  console.log("Everying looks good",Date.now());
   for (var i = 0; i < device_array.length; i++) {
     if (device_array[i].device_type == 'thermostat') {
       get_therm_state(device_array[i].local_ip);
@@ -286,7 +286,7 @@ function get_public_ip() {
     if (!error && response.statusCode == 200) {
       public_ip = data;
       settings_obj.public_ip = public_ip;
-      console.log('public_ip ' + data);
+      //console.log('public_ip ' + data);
       store_settings({public_ip:public_ip});
       if (error !== null) {
        console.log('error ---> ' + error);
@@ -356,7 +356,7 @@ function scan_wifi() {
       router_list.push({ssid:router_ssid});
     }
     settings_obj.router_list = router_list;
-    store_settings({router_list:router_list});
+    store_settings(settings_obj);
     //console.log("router_array | " + settings_obj.router_list);
   });
 //}
@@ -405,7 +405,7 @@ function set_wifi(data) {
 
   console.log("set_wifi");
 }
-// ----------------------------  program interface  ----------------------------- //
+/* ----------------------------  program interface  ----------------------------- */
 var program_port = 3000;
 var program_server = program_app.listen(program_port);
 var program_io = require('socket.io')(program_server);
@@ -717,7 +717,7 @@ function set_lights(lights,state) {
 }
 ----------------- */
 
-// ----------------------  file server  ------------------- //
+/* ----------------------  file server  ------------------- */
 var koa =require('koa');
 var path = require('path');
 var tracer = require('tracer');
@@ -764,11 +764,7 @@ global.C = {
   data: {
     root: argv.directory || path.dirname('.')
   },
-<<<<<<< HEAD
   logger: require('tracer').console({level: 0}),
-=======
-  logger: require('tracer').console({level: 'log'}),
->>>>>>> fb2ce8077a50e77f3af33e9596472387b2a6a657
   morganFormat: ':date[iso] :remote-addr :method :url :status :res[content-length] :response-time ms'
 };
 
@@ -792,27 +788,7 @@ app.use(koaStatic(path.join(__dirname,'./public/')));
 
 startServer(app, +9090);
 
-// Start Server
-/*var Tools = require('./tools');
-
-var app = koa();
-app.proxy = true;
-app.use(Tools.handelError);
-app.use(Tools.realIp);
-app.use(morgan.middleware(C.morganFormat));
-
-var IndexRouter = require('./routes');
-
-app.use(koaStatic('./public/'));
-
-var startServer = function (app, port) {
-  app.listen(port);
-  C.logger.info('listening on *.' + port);
-};
-
-startServer(app, +9090);*/
-
-//---------------------- proxy servers -------------------//
+/*---------------------- proxy servers -------------------*/
 var camera_port = argv.camera_port;
 var httpProxy = require('http-proxy');
 var http = require('http');
@@ -825,7 +801,7 @@ http.createServer(function(req, res) {
     proxy.web(req, res, { target:'http://localhost:9090' });
     console.log("cloud proxied");
   } else
-  console.log("received: " + req.url + " | checking with: " + session_id);  
+  //console.log("received: " + req.url + " | checking with: " + session_id);  
   if (req.url === session_id) {
     proxy.web(req, res, { target:'http://localhost:8081', prependPath: false });
     console.log("camera proxied");
@@ -850,7 +826,8 @@ io_relay.on('get token', function (data) {
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
   settings_obj.token = token;
-  store_settings(data);
+  //settings_obj.mac = mac;
+  store_settings({token:token});
   got_token = true;
 });
 
@@ -917,6 +894,32 @@ io_relay.on('set settings', function (data) {
   console.log("set settings |  ", data);
 });
 
+io_relay.on('set alarm', function (data) {
+  if (data.mode == "armed") {
+    alert = true;
+    for (var i = 0; i < device_array.length; i++) {
+      try {
+        if (device_array[i].device_type == "Secure Keypad Door Lock") {
+          zwave.setValue(device_array[i].id, 98, 1, 0, true);
+          zwave.setValue(device_array[i].id, 112, 1, 7, 'Tamper');
+        }
+      } catch (e) { console.log(e) }
+    }
+  }
+  if (data.mode == "disarmed") {
+    alert = false;
+    for (var i = 0; i < device_array.length; i++) {
+      try {
+        if (device_array[i].device_type == "Secure Keypad Door Lock") {
+          zwave.setValue(device_array[i].id, 112, 1, 7, 'Activity');
+          zwave.setValue(device_array[i].id, 98, 1, 0, false);
+        }
+      } catch (e) { console.log(e) }
+    }
+  }
+  console.log("set alarm",data.mode);
+});
+
 
 io_relay.on('get settings', function (data) {
   //console.log("get_settings |  ", data);
@@ -937,13 +940,12 @@ io_relay.on('room_sensor', function (data) {
 });
 
 io_relay.on('set zwave', function (data) {
-  //console.log("set zwave",data);
+  console.log("set zwave",data);
   try {
-    //zwave.setValue(3, data.class_id, data.instance, data.index, data.value);
+    //zwave.setValue(data.node_id, 98, 1, 0, data.value);
+    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
     zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
   } catch (e) { console.log(e) }
-
-  //zwave.setValue(data.node_id, 98, 1, 0, data.value);
 });
 
 io_relay.on('set lights', function (data) {
@@ -1078,7 +1080,7 @@ function (error, response, data2) {
 }
 
 function set_thermostat(device) {
-  console.log("set_thermostat",device.set_state);
+  //console.log("set_thermostat",device.set_state);
   var request = require('request');
   request.post({
     headers: {'content-type' : 'application/x-www-form-urlencoded'},

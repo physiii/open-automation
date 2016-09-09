@@ -172,21 +172,19 @@ function get_devices() {
 
 main_loop();
 function main_loop () {
-setTimeout(function () {
-  //get_settings();
-  //get_devices();
-  //check_connection();
-  get_public_ip();
-  scan_wifi();
-  get_therm_state();
-  main_loop();
-  console.log("Everying looks good",Date.now());
-  for (var i = 0; i < device_array.length; i++) {
-    if (device_array[i].device_type == 'thermostat') {
-      get_therm_state(device_array[i].local_ip);
+  setTimeout(function () {
+    //check_connection();
+    get_public_ip();
+    scan_wifi();
+    get_therm_state();
+    main_loop();
+    for (var i = 0; i < device_array.length; i++) {
+      if (device_array[i].device_type == 'thermostat') {
+        get_therm_state(device_array[i].local_ip);
+      }
     }
-  }
-}, 60*1000);
+  }, 60*1000);
+  console.log(Date.now() + " | main loop");
 }
 // ---------------------- device info  ------------------- //
 var local_ip = "init";
@@ -826,8 +824,8 @@ io_relay.on('get token', function (data) {
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
   settings_obj.token = token;
-  //settings_obj.mac = mac;
-  store_settings({token:token});
+  settings_obj.mac = mac;
+  store_settings(settings_obj);
   got_token = true;
 });
 
