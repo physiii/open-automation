@@ -94,7 +94,7 @@ function get_settings() {
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        console.log('!! get_settings !!');
+        //console.log('!! get_settings !!');
         settings_obj.devices = device_array;
         io_relay.emit('load settings',settings_obj);
         db.close();
@@ -180,7 +180,7 @@ setTimeout(function () {
   scan_wifi();
   get_therm_state();
   main_loop();
-  console.log("main loop");
+  console.log("Everying looks good",Date.now());
   for (var i = 0; i < device_array.length; i++) {
     if (device_array[i].device_type == 'thermostat') {
       get_therm_state(device_array[i].local_ip);
@@ -286,7 +286,7 @@ function get_public_ip() {
     if (!error && response.statusCode == 200) {
       public_ip = data;
       settings_obj.public_ip = public_ip;
-      console.log('public_ip ' + data);
+      //console.log('public_ip ' + data);
       store_settings({public_ip:public_ip});
       if (error !== null) {
        console.log('error ---> ' + error);
@@ -895,13 +895,29 @@ io_relay.on('set settings', function (data) {
 });
 
 io_relay.on('set alarm', function (data) {
-  console.log("set alarm", data);
   if (data.mode == "armed") {
     alert = true;
+    for (var i = 0; i < device_array.length; i++) {
+      try {
+        if (device_array[i].device_type == "Secure Keypad Door Lock") {
+          zwave.setValue(device_array[i].id, 98, 1, 0, true);
+          zwave.setValue(device_array[i].id, 112, 1, 7, 'Tamper');
+        }
+      } catch (e) { console.log(e) }
+    }
   }
   if (data.mode == "disarmed") {
     alert = false;
+    for (var i = 0; i < device_array.length; i++) {
+      try {
+        if (device_array[i].device_type == "Secure Keypad Door Lock") {
+          zwave.setValue(device_array[i].id, 112, 1, 7, 'Activity');
+          zwave.setValue(device_array[i].id, 98, 1, 0, false);
+        }
+      } catch (e) { console.log(e) }
+    }
   }
+  console.log("set alarm",data.mode);
 });
 
 
@@ -924,13 +940,12 @@ io_relay.on('room_sensor', function (data) {
 });
 
 io_relay.on('set zwave', function (data) {
-  //console.log("set zwave",data);
+  console.log("set zwave",data);
   try {
-    //zwave.setValue(3, data.class_id, data.instance, data.index, data.value);
+    //zwave.setValue(data.node_id, 98, 1, 0, data.value);
+    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
     zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
   } catch (e) { console.log(e) }
-
-  //zwave.setValue(data.node_id, 98, 1, 0, data.value);
 });
 
 io_relay.on('set lights', function (data) {
@@ -1065,7 +1080,7 @@ function (error, response, data2) {
 }
 
 function set_thermostat(device) {
-  console.log("set_thermostat",device.set_state);
+  //console.log("set_thermostat",device.set_state);
   var request = require('request');
   request.post({
     headers: {'content-type' : 'application/x-www-form-urlencoded'},
