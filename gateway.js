@@ -826,8 +826,8 @@ io_relay.on('get token', function (data) {
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
   settings_obj.token = token;
-  settings_obj.mac = mac;
-  store_settings(settings_obj);
+  //settings_obj.mac = mac;
+  store_settings({token:token});
   got_token = true;
 });
 
