@@ -94,7 +94,7 @@ function get_settings() {
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        //console.log('!! get_settings !!');
+        console.log('!! get_settings !!');
         settings_obj.devices = device_array;
         io_relay.emit('load settings',settings_obj);
         db.close();
@@ -899,7 +899,7 @@ io_relay.on('set alarm', function (data) {
       try {
         if (device_array[i].device_type == "Secure Keypad Door Lock") {
           zwave.setValue(device_array[i].id, 98, 1, 0, true);
-          zwave.setValue(device_array[i].id, 112, 1, 7, 'Tamper');
+          //zwave.setValue(device_array[i].id, 112, 1, 7, 'Tamper');
         }
       } catch (e) { console.log(e) }
     }
@@ -909,7 +909,7 @@ io_relay.on('set alarm', function (data) {
     for (var i = 0; i < device_array.length; i++) {
       try {
         if (device_array[i].device_type == "Secure Keypad Door Lock") {
-          zwave.setValue(device_array[i].id, 112, 1, 7, 'Activity');
+          //zwave.setValue(device_array[i].id, 112, 1, 7, 'Activity');
           zwave.setValue(device_array[i].id, 98, 1, 0, false);
         }
       } catch (e) { console.log(e) }
