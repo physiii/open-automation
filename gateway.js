@@ -88,7 +88,7 @@ function get_settings() {
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false) {
-	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:"5MP InfraRed",groups:[token] });
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
   	  }
   	//console.log('load settings',settings_obj);	
         } else {
@@ -159,8 +159,9 @@ function get_devices() {
         } else if (result.length) {
 	  //device_array = {};
 	  device_array = result;
-	  //console.log("!! get_devices !!");
-	  io_relay.emit('load devices',{devices:device_array, mac:mac, token:token});
+          get_settings();
+          //settings_obj.devices = device_array;
+	  //io_relay.emit('load devices',settings_obj);
         } else {
           console.log('No document(s) found with defined "find" criteria!');
         }
@@ -168,6 +169,7 @@ function get_devices() {
       });
     }
   });
+  console.log("!! get_devices !!");
 }
 
 main_loop();
@@ -927,11 +929,11 @@ io_relay.on('get settings', function (data) {
 
 io_relay.on('room_sensor', function (data) {
   console.log("room_sensor", data);
-  if (data.status == 'alert') {
+  if (data.mode == 'armed') {
     alert = true;
     set_theme('alert');
   }
-  if (data.status == 'presence') {
+  if (data.status == 'disarmed') {
     alert = false;
     set_theme('presence');
   }
