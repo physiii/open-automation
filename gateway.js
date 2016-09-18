@@ -7,7 +7,7 @@ var express = require('express');
 var app = express();
 var program_app = express();
 var querystring = require('querystring');
-var io_relay = require('socket.io-client')('http://68.12.114.145:5000');
+var io_relay = require('socket.io-client')('http://24.253.223.242:5000');
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var request = require('request');
@@ -631,6 +631,7 @@ var HueApi = require("node-hue-api").HueApi;
 function find_hue_bridge() {
   var hue = require("node-hue-api");
   hue.nupnpSearch(function(err, result) {
+	console.log("find_hue_bridge",result);
     if (err) throw err;
     found_bridge = false;  
     for (var i = 0; i < device_array.length; i++) {
@@ -643,6 +644,7 @@ function find_hue_bridge() {
     if (found_bridge == false) {
       console.log("new bridge, creating user...");
       device_array.push(result[0]);
+      store_device_object(result[0])
       create_user(result[0]);
     }
   });
@@ -950,8 +952,8 @@ io_relay.on('set zwave', function (data) {
 
 io_relay.on('set lights', function (data) {
   data.light = omit(data.light,"$$hashKey"); //bad angularjs array
-  console.log('lights',data);
   set_light(data.light.id,data.light.state);
+  //console.log('lights',data);
 });
 
 io_relay.on('link lights', function (data) {
