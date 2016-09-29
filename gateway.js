@@ -175,7 +175,7 @@ function get_devices() {
 main_loop();
 function main_loop () {
   setTimeout(function () {
-    //check_connection();
+    check_connection();
     get_public_ip();
     scan_wifi();
     get_therm_state();
@@ -233,7 +233,6 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
                  + "export DISPLAY=':0.0'\n"
-                 + "su pi -c 'cd ~/open-automation && git pull'\n"
                  + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
                  + "exit 0;\n"
