@@ -233,6 +233,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
                  + "export DISPLAY=':0.0'\n"
+                 + "su pi -c 'cd ~/open-automation && git pull'\n"
                  + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
                  + "exit 0;\n"
@@ -931,6 +932,18 @@ io_relay.on('get settings', function (data) {
 
 io_relay.on('room_sensor', function (data) {
   console.log("room_sensor", data);
+  if (data.mode == 'armed' && data.motion == 'Motion Detected') {
+    alert = true;
+    set_theme('alert');
+  }
+  if (data.status == 'disarmed') {
+    alert = false;
+    set_theme('presence');
+  }
+});
+
+io_relay.on('motion_sensor', function (data) {
+  console.log("motion_sensor", data);
   if (data.mode == 'armed') {
     alert = true;
     set_theme('alert');
