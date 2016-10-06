@@ -307,31 +307,23 @@ function check_connection() {
   ping.sys.probe(host, function(isAlive){
     var msg = isAlive ? 'alive' : 'dead';
     if (msg == 'dead') {
+      bad_connection++;
       console.log('bad_connection',bad_connection);
-      if (!ap_mode) {
+      if (!ap_mode && bad_connection > 2) {
         var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
     		   + "netmask 255.255.255.0\n"
     		   + "network 172.24.1.0\n"
     		   + "broadcast 172.24.1.255\n";
-          fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+        fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
           if(err) return console.log(err);
           console.log("Interface file saved, starting AP");
-          /*const hostapd = spawn('hostapd', ['/etc/hostapd/hostapd.conf']);
-          hostapd.stdout.on('data',(data)=> {
-            console.log(data);
-          });
-          const child = exec('hostapd' ['/etc/hostapd/hostapd.conf'], (error, stdout, stderr) => {
-            if (error) console.log(error);
-            console.log(stdout);
-          });*/
           exec("sudo ifdown wlan0 && sudo ifup wlan0 && sudo service dnsmasq restart && sudo hostapd /etc/hostapd/hostapd.conf");
-          //exec("sudo service dnsmasq restart");
           ap_mode = true;
         });
         bad_connection = 0;
-      } bad_connection++;
+      }
     }
     if (msg == 'alive') {
       bad_connection = 0;
@@ -398,7 +390,7 @@ function set_wifi(data) {
           ap_mode = false;
           setTimeout(function () {
             check_connection();
-          }, 20*1000);
+          }, 30*1000);
         });
       });
     });
@@ -888,6 +880,10 @@ io_relay.on('get devices', function (data) {
   console.log("get devices",data);
 });
 
+io_relay.on('rename device', function (data) {
+  console.log("!! rename device !!",data);
+});
+
 
 io_relay.on('set settings', function (data) {
   console.log("set settings |  ", data);
@@ -957,7 +953,7 @@ io_relay.on('set zwave', function (data) {
   console.log("set zwave",data);
   try {
     //zwave.setValue(data.node_id, 98, 1, 0, data.value);
-    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
+    zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
     zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
   } catch (e) { console.log(e) }
 });
@@ -1057,7 +1053,7 @@ io_relay.on('disconnect', function() {
 // -------------------------------------------------------- //
 
 var ping_time = Date.now();
-function ping(){
+function send_ping(){
   ping_time = Date.now();
   console.log('sending ping...');
   io_relay.emit('png_test');
