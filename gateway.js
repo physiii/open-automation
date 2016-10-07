@@ -171,11 +171,17 @@ function get_devices() {
   });
   console.log("!! get_devices !!");
 }
-
+var ap_time_start;
 main_loop();
 function main_loop () {
   setTimeout(function () {
     check_connection();
+    if (ap_mode) {
+      ap_time = Data.now() - ap_time_start;
+      if (ap_time > 5*60*1000) {
+        set_wifi(setting_obj);
+      }
+    }
     get_public_ip();
     scan_wifi();
     get_therm_state();
@@ -321,6 +327,7 @@ function check_connection() {
           console.log("Interface file saved, starting AP");
           exec("sudo ifdown wlan0 && sudo ifup wlan0 && sudo service dnsmasq restart && sudo hostapd /etc/hostapd/hostapd.conf");
           ap_mode = true;
+          ap_time_start = Date.now();
         });
         bad_connection = 0;
       }
