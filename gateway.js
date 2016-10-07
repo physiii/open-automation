@@ -179,6 +179,7 @@ function main_loop () {
     if (ap_mode) {
       ap_time = Data.now() - ap_time_start;
       if (ap_time > 5*60*1000) {
+        console.log("trying wifi again...");
         set_wifi(setting_obj);
       }
     }
