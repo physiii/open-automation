@@ -52,6 +52,7 @@ var MongoClient = mongodb.MongoClient;
 //-- initialize variables --//
 get_devices();
 function set_wifi_from_db() {
+  console.log("set_wifi_from_db");
   MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
