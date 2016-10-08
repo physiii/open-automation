@@ -182,7 +182,7 @@ function main_loop () {
     if (ap_mode) {
       ap_time = Date.now() - ap_time_start;
       console.log("ap_time",ap_time);
-      if (ap_time > 5*60*1000) {
+      if (ap_time > 10*60*1000) {
         console.log("trying wifi again...");
         set_wifi_from_db();
         exec("sudo reboot");
@@ -321,7 +321,7 @@ function check_connection() {
     if (msg == 'dead') {
       bad_connection++;
       console.log('bad_connection',bad_connection);
-      if (!ap_mode && bad_connection > 2) {
+      if (!ap_mode && bad_connection > 1) {
         var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
