@@ -51,25 +51,29 @@ var MongoClient = mongodb.MongoClient;
 
 //-- initialize variables --//
 get_devices();
-MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    var collection = db.collection('settings');
-    collection.find().toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-	settings_obj = result[0];
-	set_wifi(settings_obj);
-	//console.log('initialize variables | ',settings_obj);
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-      }
-      db.close();
-    });
-  }
-});
+function set_wifi_from_db() {
+  console.log("set_wifi_from_db");
+  MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('settings');
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+  	  settings_obj = result[0];
+  	  set_wifi(settings_obj);
+ 	  //console.log('initialize variables | ',settings_obj);
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+        }
+        db.close();
+      });
+    }
+  });
+}
+set_wifi_from_db();
 
 //-- get and send settings object --//
 function get_settings() {
@@ -177,10 +181,12 @@ function main_loop () {
   setTimeout(function () {
     check_connection();
     if (ap_mode) {
-      ap_time = Data.now() - ap_time_start;
-      if (ap_time > 5*60*1000) {
+      ap_time = Date.now() - ap_time_start;
+      console.log("ap_time",ap_time);
+      if (ap_time > 10*60*1000) {
         console.log("trying wifi again...");
-        set_wifi(setting_obj);
+        set_wifi_from_db();
+        exec("sudo reboot");
       }
     }
     get_public_ip();
@@ -247,7 +253,7 @@ Object.keys(ifaces).forEach(function (ifname) {
       if(err) {
         return console.log(err);
       }
-      //console.log("get_local_ip",settings_obj);
+      console.log("writing rc.local");
     });
     settings_obj.local_ip = local_ip;
     store_settings(settings_obj);
@@ -311,12 +317,12 @@ var bad_connection = 0;
 function check_connection() {
   var ping = require ("ping");
   host = "8.8.8.8";
-  ping.sys.probe(host, function(isAlive){
+  ping.sys.probe(host, function(isAlive) {
     var msg = isAlive ? 'alive' : 'dead';
     if (msg == 'dead') {
       bad_connection++;
       console.log('bad_connection',bad_connection);
-      if (!ap_mode && bad_connection > 2) {
+      if (!ap_mode && bad_connection > 1) {
         var interfaces_file = "allow-hotplug wlan0\n"
                    + "iface wlan0 inet static\n"
     		   + "address 172.24.1.1\n"
@@ -402,7 +408,6 @@ function set_wifi(data) {
         });
       });
     });
-
   console.log("set_wifi");
 }
 /* ----------------------------  program interface  ----------------------------- */
