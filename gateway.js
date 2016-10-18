@@ -890,6 +890,7 @@ io_relay.on('get devices', function (data) {
 
 io_relay.on('rename device', function (data) {
   console.log("!! rename device !!",data);
+  store_settings(data);
 });
 
 
@@ -934,7 +935,7 @@ io_relay.on('get settings', function (data) {
 });
 
 io_relay.on('room_sensor', function (data) {
-  console.log("room_sensor", data);
+  //console.log("room_sensor", data);
   if (data.mode == 'armed' && data.motion == 'Motion Detected') {
     alert = true;
     set_theme('alert');
