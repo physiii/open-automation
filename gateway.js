@@ -836,6 +836,7 @@ io_relay.on('get token', function (data) {
   settings_obj.mac = mac;
   store_settings(settings_obj);
   got_token = true;
+  io_relay.emit('png_test',settings_obj);
 });
 
 io_relay.on('store_schedule', function (data) {
@@ -907,6 +908,8 @@ io_relay.on('set settings', function (data) {
 });
 
 io_relay.on('set alarm', function (data) {
+  settings_obj.mode = data.mode;
+  store_settings(settings_obj);
   if (data.mode == "armed") {
     alert = true;
     for (var i = 0; i < device_array.length; i++) {
@@ -929,6 +932,16 @@ io_relay.on('set alarm', function (data) {
       } catch (e) { console.log(e) }
     }
   }
+  if (data.mode == "night") {
+    for (var i = 0; i < device_array.length; i++) {
+      try {
+        if (device_array[i].device_type == "Secure Keypad Door Lock") {
+          zwave.setValue(device_array[i].id, 98, 1, 0, true);
+          //zwave.setValue(device_array[i].id, 112, 1, 7, 'Tamper');
+        }
+      } catch (e) { console.log(e) }
+    }
+  }
   console.log("set alarm",data.mode);
 });
 
@@ -937,6 +950,18 @@ io_relay.on('get settings', function (data) {
   //console.log("get_settings |  ", data);
   //store_settings({'device_name':data.device_name,'device_type':data.device_type});
   get_settings();
+});
+
+io_relay.on('update', function (data) {
+  exec("cd ~/open-automation;git pull;sudo pkill node;sudo /etc/rc.local", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+        return;
+      }
+    console.log(stdout);
+    console.log(stderr);
+  });
+  console.log("update |  ", data);
 });
 
 io_relay.on('room_sensor', function (data) {
