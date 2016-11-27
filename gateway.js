@@ -1047,10 +1047,10 @@ function set_theme(theme) {
     console.log( _mac + " | window_sensor data " + _magnitude);
   });
 
-io_relay.on('png_test', function (data) {
+/*io_relay.on('png_test', function (data) {
   ping_time = Date.now() - ping_time;
   console.log("replied in " + ping_time + "ms");
-});
+});*/
 
 io_relay.on('media', function (data) {
   var command = data.cmd;
