@@ -1,3 +1,4 @@
+#!/bin/sh -e
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get update
 sudo apt-get install -y nodejs mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat56 libavformat-dev libavcodec56 libavcodec-dev libavutil54 libavutil-dev libc6-dev zlib1g-dev libmysqlclient18 libmysqlclient-dev libpq5 libpq-dev tmux xdotool apache2 mysql-server php5 php5-mysql php5-gd motion libmysqlclient-dev libcurl4-openssl-dev

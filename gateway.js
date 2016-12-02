@@ -7,10 +7,26 @@ var express = require('express');
 var app = express();
 var program_app = express();
 var querystring = require('querystring');
-var io_relay = require('socket.io-client')('http://24.253.223.242:5000');
+var request = require('request');
+var relay_server = "init";
+var io_relay;
+get_relay_server();
+function get_relay_server() {
+  request.get(
+  'http://pyfi.org/php/get_ip.php?server_name=socket_io',
+  function (error, response, data) {
+    if (!error && response.statusCode == 200) {
+      relay_server = data;
+      io_relay = require('socket.io-client')('http://'+relay_server);
+      start_io_relay();
+      if (error !== null) {
+       console.log('error ---> ' + error);
+      }
+    }
+  });
+}
 var port = process.env.PORT || 3030;
 var php = require("node-php");
-var request = require('request');
 var spawn = require('child_process').spawn;
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
@@ -43,7 +59,7 @@ var device_array = {};
 const exec = require('child_process').exec;
 const execFile = require('child_process').execFile;
 var zwave_disabled = true;
-
+var io_relay_connected = false;
 // -------------------------------  MangoDB  --------------------------------- //
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
@@ -91,7 +107,7 @@ function get_settings() {
 	    init_zwave();
 	    zwave_disabled = false;
   	  }
-	  if (got_token == false) {
+	  if (got_token == false && io_relay_connected) {
 	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
   	  }
   	//console.log('load settings',settings_obj);	
@@ -100,7 +116,8 @@ function get_settings() {
         }
         console.log('!! get_settings !!');
         settings_obj.devices = device_array;
-        io_relay.emit('load settings',settings_obj);
+        if (io_relay_connected)
+          io_relay.emit('load settings',settings_obj);
         db.close();
       });
     }
@@ -164,8 +181,6 @@ function get_devices() {
 	  //device_array = {};
 	  device_array = result;
           get_settings();
-          //settings_obj.devices = device_array;
-	  //io_relay.emit('load devices',settings_obj);
         } else {
           console.log('No document(s) found with defined "find" criteria!');
         }
@@ -827,6 +842,10 @@ proxy.on('error', function (err, req, res) {
 
 //---------------------- socket.io -------------------//
 var got_token = false;
+function start_io_relay() {
+io_relay_connected = true;
+console.log('socket io connected:',relay_server);
+get_settings();
 io_relay.on('get token', function (data) {
   console.log("token set " + token);
   token = data.token;
@@ -863,6 +882,50 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   }
 });
   console.log("store_schedule |  " + data);  
+});
+
+var keep_ffmpeg_on = false;
+io_relay.on('ffmpeg', function (data) {
+  if (data.mode == "start") {
+    console.log('ffmpeg start',data);
+    //const ffmpeg = spawn('ffmpeg', ['-s', '800x600', '-f', 'video4linux2', '-i', '/dev/video0', '-f', 'mpeg1video', '-b', '400k', '-r','24','http://24.253.223.242:8082/test123/800/600/']);
+    var command = "sudo pkill ffmpeg;sudo pkill ffmpeg;ffmpeg -r 5 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
+    exec(command, (error, stdout, stderr) => {
+      if (error) {return console.error(`exec error: ${error}`)}
+      console.log(stdout);
+      console.log(stderr);
+      setTimeout(function () {
+        stop_ffmpeg();
+      }, 5*60*1000);
+    });
+  }
+  if (data.mode == "stop") {
+    stop_ffmpeg();
+  }
+});
+
+function stop_ffmpeg() {
+  if (!keep_ffmpeg_on) {
+    exec("sudo pkill ffmpeg", (error, stdout, stderr) => {
+      if (error) {return console.error(`exec error: ${error}`)}
+      console.log(stdout);
+      console.log(stderr);
+    });
+    console.log('ffmpeg stop');
+  }
+}
+
+io_relay.on('ssh', function (data) {
+  console.log('ssh',data);
+});
+
+io_relay.on('update', function (data) {
+  exec("sh ./update.sh", (error, stdout, stderr) => {
+    if (error) {return console.error(`exec error: ${error}`)}
+    console.log(stdout);
+    console.log(stderr);
+  });
+  console.log('update',data);
 });
 
 io_relay.on('add thermostat', function (data) {
@@ -1088,7 +1151,7 @@ io_relay.on('disconnect', function() {
   console.log("disconnected, setting got_token false");
   got_token = false;
 });
-
+}
 // -------------------------------------------------------- //
 
 var ping_time = Date.now();
