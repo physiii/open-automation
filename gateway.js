@@ -28,6 +28,7 @@ function get_relay_server() {
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var spawn = require('child_process').spawn;
+var SSH = require('simple-ssh');
 var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
 var omit = require('object.omit');
@@ -259,7 +260,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# bits.\n"
 		 + "#\n"
 		 + "# By default this script does nothing.\n"
-		 + "sudo modprobe bcm2835-v4l2\n"
+		 + "# sudo modprobe bcm2835-v4l2\n"
                  + "export DISPLAY=':0.0'\n"
                  + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
@@ -885,24 +886,31 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
 });
 
 var keep_ffmpeg_on = false;
+ffmpeg_timer = setTimeout(function () {}, 1);
 io_relay.on('ffmpeg', function (data) {
   if (data.mode == "start") {
-    console.log('ffmpeg start',data);
-    //const ffmpeg = spawn('ffmpeg', ['-s', '800x600', '-f', 'video4linux2', '-i', '/dev/video0', '-f', 'mpeg1video', '-b', '400k', '-r','24','http://24.253.223.242:8082/test123/800/600/']);
-    var command = "sudo pkill ffmpeg;sudo pkill ffmpeg;ffmpeg -r 5 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
-    exec(command, (error, stdout, stderr) => {
-      if (error) {return console.error(`exec error: ${error}`)}
-      console.log(stdout);
-      console.log(stderr);
-      setTimeout(function () {
-        stop_ffmpeg();
-      }, 5*60*1000);
-    });
+    start_ffmpeg();
+    clearTimeout(ffmpeg_timer);
+    ffmpeg_timer = setTimeout(function () {
+      stop_ffmpeg();
+    }, 5*60*1000);
   }
   if (data.mode == "stop") {
+    console.log("received ffmpeg stop command");
     stop_ffmpeg();
   }
 });
+
+ffmpeg_started = false;
+function start_ffmpeg() {
+  exec("sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &", (error, stdout, stderr) => {
+    if (error) {return console.error(`exec error: ${error}`)}
+    console.log(stdout);
+    console.log(stderr);
+  });
+  ffmpeg_started = true;
+  console.log('ffmpeg start');
+}
 
 function stop_ffmpeg() {
   if (!keep_ffmpeg_on) {
@@ -911,12 +919,79 @@ function stop_ffmpeg() {
       console.log(stdout);
       console.log(stderr);
     });
+    ffmpeg_started = false;
     console.log('ffmpeg stop');
   }
 }
 
+var ssh = new SSH({
+    host: 'localhost',
+    user: 'pi',
+    pass: 'raspberry'
+});
 io_relay.on('ssh', function (data) {
-  console.log('ssh',data);
+var command = data.command;
+console.log('ssh',command);
+ssh.exec(command, {
+    out: function(stdout) {
+        stdout_obj = {token:token,stdout:stdout};
+        io_relay.emit('ssh_out',stdout_obj);
+        console.log(stdout);
+    }
+}).start();
+
+  /*var pwd = data.ssh_pwd;
+  var server_ip = data.ssh_server_ip;
+  var server_port = data.ssh_server_port;
+  var user = data.ssh_user;
+  var reverse_port = "19999";
+
+  var CommandArguments = [
+        '-p',
+        pwd,
+        'ssh',
+        '-o',
+        'StrictHostKeyChecking=no', //tell ssh not to care about RSA key checking
+        '-R',
+        '19999:localhost:22',
+        user+'@'+server_ip,
+        '-p',      
+        server_port
+    ];
+  const ssh = spawn('sshpass', CommandArguments, {shell:true});
+  console.log(CommandArguments.join(" "));
+ssh.stdout.on('data', (data) => {
+  console.log(`stdout: ${data}`);
+});
+
+ssh.stderr.on('data', (data) => {
+  console.log(`stderr: ${data}`);
+});
+
+ssh.on('close', (code) => {
+  console.log(`child process exited with code ${code}`);
+});
+*/
+  /*var CommandArguments = [
+        'sshpass',
+        '-p',
+        pwd,
+        'ssh',
+        '-o',
+        'StrictHostKeyChecking=no', //tell ssh not to care about RSA key checking
+        '-R',
+        '19999:localhost:22',
+        user+'@'+server_ip,
+        '-p',      
+        server_port
+    ];
+  var command = "sshpass -p "+pwd+" ssh -T -R "+reverse_port+":localhost:22 test@"+server_ip+" -p "+server_port;
+var child = exec(CommandArguments.join(" "), function(error, stdout, stderr){
+    console.log("error: ", error);
+    console.log("stdout: ", stdout);
+    console.log("stderr: ", stderr);
+    });*/
+  //console.log('ssh',data);
 });
 
 io_relay.on('update', function (data) {
