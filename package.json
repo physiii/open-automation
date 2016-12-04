@@ -1,22 +1,22 @@
 {
-  "name": "OpenShift-Sample-App",
+  "name": "Universal-Automation-Server",
   "version": "1.0.0",
-  "description": "OpenShift Sample Application",
+  "description": "Automation Gateway",
   "keywords": [
-    "OpenShift",
+    "automation",
     "Node.js",
     "application",
-    "openshift"
+    "open-automation"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "Andy Payne",
+    "email": "andy@pyfi.org",
+    "url": "https://github.com/physiii/open-automation"
   },
-  "homepage": "http://www.openshift.com/",
+  "homepage": "https://github.com/physiii/open-automation",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openshift/origin-server"
+    "url": "https://github.com/physiii/open-automation"
   },
   "engines": {
     "node": ">= 0.6.0",
@@ -32,7 +32,7 @@
     "co-views": "^2.1.0",
     "diskspace": "^1.0.3",
     "ejs": "^2.3.4",
-    "express": "~3.4.4",
+    "express": "^3.4.8",
     "file-browser": "0.0.5",
     "find-remove": "^0.2.12",
     "getmac": "^1.2.1",
@@ -44,7 +44,6 @@
     "koa-router": "^5.1.2",
     "koa-static": "^1.5.2",
     "mongodb": "^2.2.1",
-    "mysql": "^2.11.1",
     "node-hue-api": "^2.2.0",
     "node-php": "0.0.1",
     "object.omit": "^2.0.0",
@@ -54,6 +53,7 @@
     "ping": "^0.1.10",
     "request": "^2.73.0",
     "rimraf": "^2.5.3",
+    "simple-ssh": "^0.9.0",
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8",
     "tracer": "^0.8.3",
@@ -63,5 +63,5 @@
   "devDependencies": {},
   "bundleDependencies": [],
   "private": true,
-  "main": "server.js"
+  "main": "gateway.js"
 }
