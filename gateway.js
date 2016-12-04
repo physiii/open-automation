@@ -29,7 +29,6 @@ var port = process.env.PORT || 3030;
 var php = require("node-php");
 var spawn = require('child_process').spawn;
 var SSH = require('simple-ssh');
-var mysql      = require('mysql');
 var EventEmitter = require("events").EventEmitter;
 var omit = require('object.omit');
 var body = new EventEmitter();
@@ -40,12 +39,6 @@ var light_delay = 0; //command delay in ms
 var previous_data = 0;
 var desired_temp = 70;
 var current_therm_state = "";
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'password',
-  database : 'device'
-});
 var lights = [];
 var devices = [];
 var username = "init";
