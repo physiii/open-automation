@@ -5,7 +5,7 @@ sudo apt-get install -y git nodejs mongodb dnsmasq hostapd pkg-config libudev-de
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 cd ~
 #TODO: just include the binary
-wget http://old.openzwave.com/snapshots/openzwave-1.4.324.tar.gz
+wget http://old.openzwave.com/downloads/openzwave-1.4.1.tar.gz
 tar zxvf openzwave-*.gz
 cd openzwave-* && make && sudo make install
 export LD_LIBRARY_PATH=/usr/local/lib
