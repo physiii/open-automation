@@ -1,8 +1,15 @@
-###**open-automation** is made from a cohesive set of web languages. NodeJS for general processing, socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets on microcontrollers. Interface is angularjs while incorporating open-hab's android and iphone applications.
+###**open-automation** is made from a cohesive set of web languages. NodeJS for general processing, socket.io communication, PHP for generating, setting, and retreiving model (mysql) data, and websockets for transport on microcontrollers to live token based streaming with JSMPEG decoding. Interface is angularjs. Android app for location beacons.
 
-Software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port on your router to gain access to files and camera using remote tokens.
+Software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port on your router to gain access to files and camera using remote tokens. 
+###update: now supports streaming from behind routers, this is done through websockets; so no port forwarding necessary!
 
-
+## Uses
+###Automation Gateway 
+Send and receive messages w wifi and zwave devices.
+###Solar Powered Security Camera
+Adjustable bitrate for low data streaming and timeout functions to save data cost.
+###Motion Detection w Recording
+Uses motion to trigger recording to local disk and local disk can be proxied (working on streaming from disk but should be similar to streaming from webcam)
 
 1. Angularjs frontend - http://open-automation.org
 2. NodeJS and PHP for tokens, authentication, general processing
