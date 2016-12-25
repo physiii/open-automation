@@ -253,7 +253,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# bits.\n"
 		 + "#\n"
 		 + "# By default this script does nothing.\n"
-		 + "# sudo modprobe bcm2835-v4l2\n"
+		 + "sudo modprobe bcm2835-v4l2\n"
                  + "export DISPLAY=':0.0'\n"
                  + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
@@ -886,7 +886,7 @@ io_relay.on('ffmpeg', function (data) {
     clearTimeout(ffmpeg_timer);
     ffmpeg_timer = setTimeout(function () {
       stop_ffmpeg();
-    }, 5*60*1000);
+    }, 4*60*1000);
   }
   if (data.mode == "stop") {
     console.log("received ffmpeg stop command");
@@ -896,13 +896,15 @@ io_relay.on('ffmpeg', function (data) {
 
 ffmpeg_started = false;
 function start_ffmpeg() {
-  exec("sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &", (error, stdout, stderr) => {
+  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
+  exec(command, (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
   });
   ffmpeg_started = true;
-  console.log('ffmpeg start');
+  io_relay.emit('ffmpeg started',settings_obj);
+  console.log('ffmpeg started',command);
 }
 
 function stop_ffmpeg() {
@@ -997,8 +999,8 @@ io_relay.on('update', function (data) {
 });
 
 io_relay.on('add thermostat', function (data) {
+  console.log("add thermostat",data);
   add_thermostat(data);
-  console.log("add_thermostat |  " + JSON.stringify(data));  
 });
 
 io_relay.on('get thermostat', function (data) {
