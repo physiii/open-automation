@@ -49,6 +49,8 @@
     "object.omit": "^2.0.0",
     "openzwave-shared": "^1.2.0",
     "optimist": "^0.6.1",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "ping": "^0.1.10",
     "request": "^2.73.0",

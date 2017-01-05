@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html ng-app="main_site" ng-controller="index" >
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+  <% include ../partials/nav.ejs %>
+  <div style="height:100vh">
+    <div style="height:100%;" class="parallax-container">
+      <div class="parallax">
+        <img src="images/pyfi_images/hand_finished1.jpg"></img>
+      </div>          
+      <div style="max-width:600px;margin:20vh auto auto auto;padding:20px;background-color: rgba(0,0,0,0.6);">
+        <div id="contact_form">
+          <div style="width:100%;text-align:center;font-size:300%;color:#3ec1f9;">
+            <b>FREE</b> HOME CONSULTATION
+          </div>
+          <form style="padding:0px 40px 0px 40px;" id="customer_contact_form">
+            <div class="row">
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="first_name" type="text" class="validate">
+                <label for="first_name"><b style="color:white;font-size:19px">First Name</b></label>
+              </div>
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="last_name" type="text" class="validate">
+                <label for="last_name"><b style="color:white;font-size:19px">Last Name</b></label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input style="color:white;font-size:18px" id="phone_number" type="text" class="validate">
+                <label for="Phone"><b style="color:white;font-size:19px">Phone</b></label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input style="color:white;font-size:18px" id="email" type="email" class="validate" class="card-panel hoverable">
+                <label for="email"><b style="color:white;font-size:19px">Email</b></label>
+              </div>
+            </div>
+            <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" onclick="myFunction()" >Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </form>
+        </div>
+        
+        <div id="main_login_form" style="display:none;">
+          <div style="width:100%;text-align:center;font-size:300%;color:#3ec1f9;">
+            User Login
+          </div>
+
+          <form style="padding:0px 40px 0px 40px;">
+            <div class="row">
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="email" type="email" ng-model="user.username" class="validate">
+                <label for="email"><b style="color:white;font-size:19px">Email</b></label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="password" ng-model="user.password" type="password" class="validate">
+                <label for="password"><b style="color:white;font-size:19px">Password</b></label>
+              </div>
+            </div>
+            <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" ng-click="login(user)" >login
+              <i class="material-icons right">send</i>
+            </button>
+          </form>
+        </div>
+        
+        <div id="main_register_form" style="display:none;">
+          <div style="width:100%;text-align:center;font-size:300%;color:#3ec1f9;">
+            Register New Account
+          </div>
+          <form style="padding:0px 40px 0px 40px;">
+            <div class="row">
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="email" type="email" ng-model="new_user.username" class="validate">
+                <label for="email"><b style="color:white;font-size:19px">Email</b></label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="password" ng-model="new_user.password" type="password" class="validate">
+                <label for="password"><b style="color:white;font-size:19px">Password</b></label>
+              </div>
+              <div class="input-field col s6">
+                <input style="color:white;font-size:18px" id="password" ng-model="new_user.confirm_password" type="password" class="validate">
+                <label for="password"><b style="color:white;font-size:19px">Confirm Password</b></label>
+              </div>
+            </div>
+            <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" ng-click="register(user)" >register
+              <i class="material-icons right">send</i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+<script>
+function myFunction() {
+
+  var first_name = document.getElementById("first_name").value;
+  var last_name = document.getElementById("last_name").value;
+  var phone = document.getElementById("phone_number").value;
+  var email = document.getElementById("email").value;
+  document.getElementById("contact_form").className = "fade-out";
+  // Returns successful data submission message when the entered information is stored in database.
+  var dataString = 'first_name=' + first_name + '&last_name=' + last_name + '&phone_number=' + phone + '&email=' + email;
+  console.log(dataString);
+  // AJAX code to submit form.
+  $.ajax({
+      type: "POST",
+      url: "http://24.253.223.242:8080/open-automation.org/php/add_customer_contact.php",
+      data: dataString,
+      cache: false,
+      success: function(html) {
+        console.log(html);
+      }
+    });
+  return false;
+}
+
+  $(document).ready(function () {
+    $(function () {
+        $('#mycarousel').carousel({
+            interval: 3000
+        });
+    });
+  });
+</script>
+
+  <div style="height:100vh" class="parallax-container">
+    <div class="parallax"><img src="images/pyfi_images/desktop_screenshots.jpg"></div>
+  </div>
+  
+  <div class="section black">
+    <div class="row container" style="margin:auto;max-width:800px;text-align:center;">
+      <h2 class="header" style="text-align:center;font-size:50px;color:#1a5fce">About Us</h2>
+      <p style="text-align:left;font-size:20px;color:#789edb">Pyfi's Home Automation and Security provides homeowners with quality home media and automation services such as location controlled thermostats, media, lights, dead bolts, and surveillance. 
+
+Pyfi's Home Automation and Security is able to provide customized services, tailored to your specific needs. All of Pyfi's services are controlled from a user friendly dashboard, conveniently managed from your desktop or mobile device.
+
+    </div>
+  </div>
+
+  <div class="slider">
+    <ul class="slides">
+      <li>
+        <img src="images/pyfi_images/pyfi_universal_controller_spreadout.jpg">
+        <div class="caption right-align">
+          <h1 class="black-text">Hands On Engineering</h1>
+          <h3 class="black-text">We have been hands on from the ground up!</h3>
+        </div>
+      </li>
+      <li>
+        <img src="http://lorempixel.com/580/250/nature/2"> 
+        <div class="caption left-align">
+          <h1>Left Aligned Caption</h1>
+          <h3 class="light grey-text text-lighten-3">Here's our small slogan.</h3>
+        </div>
+      </li>
+      <li>
+        <img src="images/pyfi_images/hand_populated.jpg"> 
+        <div class="caption right-align">
+          <h1 class="light blue-text">Trusted Development</h1>
+          <h3 class="light blue-text">Hand populated and trialed means you can trust our devices to maintain performance!</h3>
+        </div>
+      </li>
+      <li>
+        <img src="http://lorempixel.com/580/250/nature/4"> 
+        <div class="caption center-align">
+          <h1>This is our big Tagline!</h1>
+          <h3 class="light grey-text text-lighten-3">Here's our small slogan.</h3>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</body>
+</html>
