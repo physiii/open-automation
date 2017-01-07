@@ -1,5 +1,6 @@
 angular.module('main_site', ['socket-io'])
 .controller('index', function($scope,$rootScope) {
+  console.log("<< ------ main_site ------- >>");
   $scope.show_form = function(form) {
     document.getElementById(form).style.display = "inline";
     document.getElementById(form + "_btn").style.display = "none";
@@ -26,7 +27,7 @@ angular.module('main_site', ['socket-io'])
     document.getElementById("main_login_form").style.display = "none";
     document.getElementById("main_register_form").style.display = "inline";
   }
-  
+
   $scope.register = function(user) {
     $.post( "/register",user).success(function(data){
       if (data.error) {
@@ -71,17 +72,33 @@ angular.module('starter.controllers', ['socket-io'])
   var sirens = [];
   var alarms = [];
   var smoke_alarms = [];
-
+  var server_type = "development";
   console.log("<< ------  userinfo  ------ >> ");
-  var relay_socket = io.connect('http://24.253.223.242:5000');
-  $rootScope.relay_socket = relay_socket;
-  var token = $.cookie('token');
-  var user = $.cookie('user');
-  $rootScope.token = token;
-  console.log($rootScope.token);
-  relay_socket.emit('link user',{token:token, user:user});
-  relay_socket.emit('get devices',{token:token});
-  relay_socket.emit('get contacts',{user_token:token});
+  if (server_type == "development") {
+    $rootScope.server_ip = "98.168.142.41";
+    /*$.get( "http://pyfi.org/php/get_ip.php?server_name=socket_io_dev").success(function(data){
+      init_socket(data);
+      console.log(server_type + " server: " + data);
+    });*/
+  }
+  if (server_type == "production") {
+    $rootScope.server_ip = "24.253.223.242";
+    /*$.get( "http://pyfi.org/php/get_ip.php?server_name=socket_io").success(function(data){
+      init_socket(data);
+      console.log(server_type + " server: " + data);
+    });*/
+  }
+ 
+    var relay_socket = io.connect('http://'+$rootScope.server_ip+':5000');
+    $rootScope.relay_socket = relay_socket;
+    var token = $.cookie('token');
+    var user = $.cookie('user');
+    $rootScope.token = token;
+    console.log($rootScope.token);
+    relay_socket.emit('link user',{token:token, user:user});
+    relay_socket.emit('get devices',{token:token});
+    relay_socket.emit('get contacts',{user_token:token});  
+
   //relay_socket.emit('get devices',data);
   //relay_socket.emit('get contacts',{user_token:$rootScope.token});
   //$rootScope.username = username;
@@ -276,7 +293,7 @@ relay_socket.on('room_sensor', function (data) {
         console.log('stream already started',gateways[i].stream_started);
         continue;
       }
-      gateways[i].camera_socket = new WebSocket( 'ws://24.253.223.242:8084' );
+      gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
       gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
       gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
       console.log('token for video stream',gateways[i].token);

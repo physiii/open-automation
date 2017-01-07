@@ -77,7 +77,6 @@ app.post('/login',
 
 app.post('/register', function(req, res) {
   var username = req.body.username;
-  
   var index = find_index(accounts,'username',username);
   if (index < 0) {
     var account_obj = {username:username};
@@ -1174,7 +1173,7 @@ io.on('connection', function (socket) {
     if (index < 0) {
       data.socket = socket;
       user_objects.push(data);
-      console.log('added user', data.user)
+      console.log('link user', data.user)
     } else console.log('socket already exists');
   });
   
