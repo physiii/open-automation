@@ -108,7 +108,7 @@ function get_settings() {
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        console.log('!! get_settings !!');
+        //console.log('!! get_settings !!');
         settings_obj.devices = device_array;
         if (io_relay_connected)
           io_relay.emit('load settings',settings_obj);
@@ -572,7 +572,7 @@ zwave.on('notification', function(nodeid, notif, help) {
 });
 
 zwave.on('scan complete', function() {
-	console.log('scan complete, hit ^C to finish.');
+	console.log('zwave scan complete');
 });
 
 var zwavedriverpaths = {
@@ -1014,11 +1014,14 @@ io_relay.on('set_thermostat', function (data) {
 });
 
 io_relay.on('add_zwave_device', function (data) {
+    //var secure_device = data.secure_device;
+    var secure_device = true;
     if (zwave.hasOwnProperty('beginControllerCommand')) {
-      zwave.beginControllerCommand('AddDevice', true);
+      console.log("searching for nodes");
+      zwave.beginControllerCommand('AddDevice', secure_device);
     } else {
-      console.log("adding node");
-      zwave.addNode(1);
+      console.log("searching for nodes!");
+      zwave.addNode(secure_device);
     }
 });
 
@@ -1125,7 +1128,7 @@ io_relay.on('set zwave', function (data) {
   console.log("set zwave",data);
   try {
     //zwave.setValue(data.node_id, 98, 1, 0, data.value);
-    zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
+    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
     zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
   } catch (e) { console.log(e) }
 });
