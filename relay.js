@@ -1297,6 +1297,7 @@ io.on('connection', function (socket) {
         if (groups[index].members[i] == device_objects[j].token) {
           device_objects[j].device_name = data.device_name;
           store_device_object(device_objects[j]);
+          if (device_objects[j].socket) return console.log("rename device, device object undefined",device_objects[j].mac)
           device_objects[j].socket.emit('rename device',data);
         }
       }

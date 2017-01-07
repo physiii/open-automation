@@ -41,6 +41,11 @@ angular.module('main_site', ['socket-io'])
   }
 });
 
+
+
+
+
+
 angular.module('starter.controllers', ['socket-io'])
 
 .directive('flipContainer', function() {
@@ -73,11 +78,12 @@ angular.module('starter.controllers', ['socket-io'])
   var token = $.cookie('token');
   var user = $.cookie('user');
   $rootScope.token = token;
-  $rootScope.username = user;
   console.log($rootScope.token);
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
-  
+  relay_socket.emit('get contacts',{user_token:token});
+  //relay_socket.emit('get devices',data);
+  //relay_socket.emit('get contacts',{user_token:$rootScope.token});
   //$rootScope.username = username;
   $.getJSON("http://ipinfo.io", function (data) {
     var lat = data.loc.substring(0,7);
@@ -89,17 +95,12 @@ angular.module('starter.controllers', ['socket-io'])
     $scope.ipAddress = data.ip;
     $scope.postal = data.postal;
     $rootScope.postal = data.postal;
-    $rootScope.initialize_map();
+    //$rootScope.initialize_map();
   });
   $rootScope.alert_contacts = [];
-  /*$.post( "php/get_alert_contact.php",{ user:$rootScope.username }).success(function(data){
-    var alert_contacts = JSON.parse(data);
-    $rootScope.alert_contacts = alert_contacts;
-  });*/
 
-  relay_socket.emit('get user token',{mac:$rootScope.username,user:$rootScope.username});
-
-  relay_socket.on('room_sensor', function (data) {
+  //relay_socket.emit('get user token',{mac:$rootScope.username,user:$rootScope.username});
+relay_socket.on('room_sensor', function (data) {
 
     if (data.status = 'alert') {
       $rootScope.alarm_status = data.status;
@@ -1212,4 +1213,5 @@ function post_enabler() {
     return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
   }]; 
 }
+
 
