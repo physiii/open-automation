@@ -10,20 +10,36 @@ var querystring = require('querystring');
 var request = require('request');
 var relay_server = "init";
 var io_relay;
-get_relay_server();
-function get_relay_server() {
-  request.get(
-  'http://pyfi.org/php/get_ip.php?server_name=socket_io',
-  function (error, response, data) {
-    if (!error && response.statusCode == 200) {
-      relay_server = data;
-      io_relay = require('socket.io-client')('http://'+relay_server);
-      start_io_relay();
-      if (error !== null) {
-       console.log('error ---> ' + error);
+get_relay_server('development');
+function get_relay_server(server_type) {
+  if (server_type == 'development') {
+    request.get(
+    'http://pyfi.org/php/get_ip.php?server_name=socket_io_dev',
+    function (error, response, data) {
+      if (!error && response.statusCode == 200) {
+        relay_server = data;
+        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        start_io_relay();
+        if (error !== null) {
+         console.log('error ---> ' + error);
+        }
       }
-    }
-  });
+    }); 
+  }
+  if (server_type == 'production') {
+    request.get(
+    'http://pyfi.org/php/get_ip.php?server_name=socket_io',
+    function (error, response, data) {
+      if (!error && response.statusCode == 200) {
+        relay_server = data;
+        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        start_io_relay();
+        if (error !== null) {
+         console.log('error ---> ' + error);
+        }
+      }
+    });
+  }
 }
 var port = process.env.PORT || 3030;
 var php = require("node-php");
@@ -896,7 +912,7 @@ io_relay.on('ffmpeg', function (data) {
 
 ffmpeg_started = false;
 function start_ffmpeg() {
-  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
+  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://"+relay_server+":8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
   exec(command, (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
