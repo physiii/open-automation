@@ -911,8 +911,10 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 ffmpeg_started = false;
+var video_width = 1280;
+var video_height = 720;
 function start_ffmpeg() {
-  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://"+relay_server+":8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
+  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s "+video_width+"x"+video_height+" -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 2000k -r 2 -strict -1 http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
   exec(command, (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
