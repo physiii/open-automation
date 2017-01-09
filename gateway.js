@@ -270,9 +270,11 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "#\n"
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
+		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
+		 + "ffmpeg -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
-                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
+                 + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo node gateway >> /var/log/gateway 2>&1 &'\n"
                  + "exit 0;\n"
     fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
@@ -894,7 +896,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   console.log("store_schedule |  " + data);  
 });
 
-var keep_ffmpeg_on = false;
+
 ffmpeg_timer = setTimeout(function () {}, 1);
 io_relay.on('ffmpeg', function (data) {
   if (data.mode == "start") {
@@ -911,11 +913,19 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 ffmpeg_started = false;
-var video_width = 1280;
-var video_height = 720;
+var video_width = 1024;
+var video_height = 768;
 function start_ffmpeg() {
-  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 2 -strict -1 -s "+video_width+"x"+video_height+" -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 2000k -r 2 -strict -1 http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
-  exec(command, (error, stdout, stderr) => {
+  var command = "ffmpeg -r 2 -strict -1 -s "+video_width+"x"+video_height+" -f video4linux2 -i /dev/video11 -f mpeg1video -b:v 2000k -r 2 -strict -1 http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
+  var options = {
+    encoding: 'utf8',
+    timeout: 20,
+    //maxBuffer: 200*1024,
+    killSignal: 'SIGTERM',
+    cwd: null,
+    env: null
+  }
+  exec(command, options, (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
@@ -925,6 +935,7 @@ function start_ffmpeg() {
   console.log('ffmpeg started',command);
 }
 
+var keep_ffmpeg_on = true;
 function stop_ffmpeg() {
   if (!keep_ffmpeg_on) {
     exec("sudo pkill ffmpeg", (error, stdout, stderr) => {
