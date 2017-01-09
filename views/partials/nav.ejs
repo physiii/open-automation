@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
   <nav>
     <div style="" class="nav-wrapper black">
       <a href="#!" class=""><img img style="width:160px;margin:5px auto auto 10px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
@@ -12,6 +14,7 @@
         <li id="login_form" style="display:none">
           <input type="email" style="font-size:18px;color:white" class="form-control" ng-model="user.username" placeholder="Email">
           <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="user.password" placeholder="Password">
+          <div id="login_message" style="display:none"></div>
           <button style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="login(user)">Login</button>
         </li>
         <li>
@@ -21,6 +24,7 @@
           <input style="font-size:18px;color:white" type="email" class="form-control" ng-model="new_user.username" placeholder="Email">
           <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="new_user.password" placeholder="Password">
           <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="new_user.confirm_password" placeholder="Confirm Password">
+          <div id="register_message" style="display:none"></div>
           <button style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="register(new_user)">Register</button>
         </li>        
         <li>
@@ -29,8 +33,6 @@
       </ul>
     </div>
   </nav>
-    
-
 <script>
   $(document).ready(function () {
     $(".button-collapse").sideNav();

@@ -39,6 +39,7 @@
                 <label for="email"><b style="color:white;font-size:19px">Email</b></label>
               </div>
             </div>
+
             <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" onclick="myFunction()" >Submit
               <i class="material-icons right">send</i>
             </button>
@@ -61,6 +62,7 @@
                 <label for="password"><b style="color:white;font-size:19px">Password</b></label>
               </div>
             </div>
+          <div style="width:100%;text-align:center;color:white"><h5>{{ login_message }}</h5></div>
             <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" ng-click="login(user)" >login
               <i class="material-icons right">send</i>
             </button>
@@ -73,22 +75,23 @@
           </div>
           <form style="padding:0px 40px 0px 40px;">
             <div class="row">
-              <div class="input-field col s6">
-                <input style="color:white;font-size:18px" id="email" type="email" ng-model="user.username" class="validate">
+              <div class="input-field col s12">
+                <input style="width:100%;;color:white;font-size:18px" id="email" type="email" ng-model="new_user.username" class="validate">
                 <label for="email"><b style="color:white;font-size:19px">Email</b></label>
               </div>  
             </div>
             <div class="row">
               <div class="input-field col s6">
-                <input style="color:white;font-size:18px" id="password" ng-model="user.password" type="password" class="validate">
+                <input style="color:white;font-size:18px" id="password" ng-model="new_user.password" type="password" class="validate">
                 <label for="password"><b style="color:white;font-size:19px">Password</b></label>
               </div>
               <div class="input-field col s6">
-                <input style="color:white;font-size:18px" id="password" ng-model="user.confirm_password" type="password" class="validate">
+                <input style="color:white;font-size:18px" id="password" ng-model="new_user.confirm_password" type="password" class="validate">
                 <label for="password"><b style="color:white;font-size:19px">Confirm Password</b></label>
               </div>
             </div>
-            <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" ng-click="register(user)" >register
+            <div style="width:100%;text-align:center;color:white"><h5>{{ register_message }}</h5></div>
+            <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" ng-click="register(new_user)" >register
               <i class="material-icons right">send</i>
             </button>
           </form>
@@ -122,7 +125,9 @@ function myFunction() {
   return false;
 }
 
+
   $(document).ready(function () {
+      $(".button-collapse").sideNav();
     $(function () {
         $('#mycarousel').carousel({
             interval: 3000

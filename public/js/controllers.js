@@ -1,19 +1,46 @@
 angular.module('main_site', ['socket-io'])
 .controller('index', function($scope,$rootScope) {
   console.log("<< ------ main_site ------- >>");
+
+
   $scope.show_form = function(form) {
-    document.getElementById(form).style.display = "inline";
-    document.getElementById(form + "_btn").style.display = "none";
+    console.log(form);
+    if (form == "register_form") {
+      document.getElementById("register_form").style.display = "inline";
+      document.getElementById("register_form_btn").style.display = "none";
+      document.getElementById("login_form").style.display = "none";
+      document.getElementById("login_form_btn").style.display = "inline";
+    }
+    if (form == "login_form") {
+      document.getElementById("login_form").style.display = "inline";
+      document.getElementById("login_form_btn").style.display = "none";
+      document.getElementById("register_form").style.display = "none";
+      document.getElementById("register_form_btn").style.display = "inline";
+    }
+    console.log("show_form: ",form);
   }
-  
+
+
+  //$rootScope.login_message = "init";
   $scope.login = function(user) {
     console.log(user);
     $.post( "/login",user).success(function(data){
+      console.log("login!",data);
+      if (data.error) {
+        console.log("error",data.error);
+        return;
+      }
       $.cookie('user',data.user);
       $.cookie('token',data.token, { expires : 5 });
       console.log("login",data);
       window.location.replace("/home");
+    }).fail(function(data) {
+    document.getElementById("login_message").style.display = "inline";
+    $scope.$apply(function () {
+      $rootScope.login_message = "Invalid username/password";
     });
+    console.log( "error: ",data );
+  });
   }
   
   $scope.show_login = function() {
@@ -31,6 +58,10 @@ angular.module('main_site', ['socket-io'])
   $scope.register = function(user) {
     $.post( "/register",user).success(function(data){
       if (data.error) {
+        document.getElementById("register_message").style.display = "inline";
+        $scope.$apply(function () {
+          $rootScope.register_message = data.error;
+        });
         console.log("error",data.error);
         return;
       }

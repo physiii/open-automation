@@ -41,7 +41,10 @@ passport.serializeUser(function(user, done) {
 passport.use(new LocalStrategy(
   function(username, password, done) {
     var index = find_index(accounts,'username',username);
-    if (index < 0) return console.log("account not found",username);
+    if (index < 0) {
+      console.log("account not found",username);
+      return done(null, false, { message: 'Incorrect username' });
+    }
     var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
     if (token != accounts[index].token) return console.log("passwords do not match");
     return done(null, token);

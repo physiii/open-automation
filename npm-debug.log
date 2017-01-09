@@ -1,0 +1,819 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs',
+1 verbose cli   '/usr/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'openzwave-shared' ]
+2 info using npm@2.15.8
+3 info using node@v4.4.7
+4 verbose install initial load of /home/austin/open-automation/package.json
+5 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/accepts/package.json
+6 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/after/package.json
+7 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ansi-regex/package.json
+8 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ansi-styles/package.json
+9 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/any-promise/package.json
+10 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/array-find-index/package.json
+11 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/arraybuffer.slice/package.json
+12 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/asn1/package.json
+13 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/assert-plus/package.json
+14 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/asynckit/package.json
+15 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/aws-sign2/package.json
+16 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/aws4/package.json
+17 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/axios/package.json
+18 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/backo2/package.json
+19 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/balanced-match/package.json
+20 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/base64-arraybuffer/package.json
+21 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/base64-url/package.json
+22 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/base64id/package.json
+23 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/basic-auth/package.json
+24 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/basic-auth-connect/package.json
+25 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/batch/package.json
+26 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/bcrypt-pbkdf/package.json
+27 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/better-assert/package.json
+28 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/blob/package.json
+29 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/bluebird/package.json
+30 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/body-parser/package.json
+31 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/boom/package.json
+32 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/brace-expansion/package.json
+33 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/bson/package.json
+34 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/buffer-crc32/package.json
+35 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/buffer-shims/package.json
+36 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/builtin-modules/package.json
+37 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/bytes/package.json
+38 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/callsite/package.json
+39 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/camelcase/package.json
+40 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/camelcase-keys/package.json
+41 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/caseless/package.json
+42 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/chalk/package.json
+43 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co/package.json
+44 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-body/package.json
+45 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-from-stream/package.json
+46 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-fs/package.json
+47 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-fs-extra/package.json
+48 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-multiparty/package.json
+49 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-read/package.json
+50 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-render/package.json
+51 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/co-views/package.json
+52 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/colors/package.json
+53 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/combined-stream/package.json
+54 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/commander/package.json
+55 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/component-bind/package.json
+56 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/component-emitter/package.json
+57 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/component-inherit/package.json
+58 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/composition/package.json
+59 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/compressible/package.json
+60 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/compression/package.json
+61 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/concat-map/package.json
+62 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/connect/package.json
+63 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/connect-timeout/package.json
+64 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/consolidate/package.json
+65 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/content-disposition/package.json
+66 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/content-type/package.json
+67 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/cookie/package.json
+68 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/cookie-parser/package.json
+69 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/cookie-signature/package.json
+70 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/cookies/package.json
+71 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/copy-to/package.json
+72 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/core-util-is/package.json
+73 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/crc/package.json
+74 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/cryptiles/package.json
+75 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/csrf/package.json
+76 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/csurf/package.json
+77 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/currently-unhandled/package.json
+78 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/dashdash/package.json
+79 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/dateformat/package.json
+80 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/debug/package.json
+81 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/decamelize/package.json
+82 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/deep-equal/package.json
+83 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/deep-extend/package.json
+84 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/delayed-stream/package.json
+85 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/delegates/package.json
+86 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/depd/package.json
+87 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/destroy/package.json
+88 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/diskspace/package.json
+89 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/eachr/package.json
+90 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ecc-jsbn/package.json
+91 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/editions/package.json
+92 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ee-first/package.json
+93 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ejs/package.json
+94 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/enable/package.json
+95 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/engine.io/package.json
+96 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/engine.io-client/package.json
+97 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/engine.io-parser/package.json
+98 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/error-ex/package.json
+99 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/error-inject/package.json
+100 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/errorhandler/package.json
+101 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/es6-promise/package.json
+102 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/escape-html/package.json
+103 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/escape-string-regexp/package.json
+104 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/etag/package.json
+105 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/eventemitter3/package.json
+106 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/express/package.json
+107 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/express-session/package.json
+108 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/extend/package.json
+109 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/extract-opts/package.json
+110 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/extsprintf/package.json
+111 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/file-browser/package.json
+112 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/finalhandler/package.json
+113 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/find-remove/package.json
+114 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/find-up/package.json
+115 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/finished/package.json
+116 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/fmerge/package.json
+117 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/follow-redirects/package.json
+118 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/for-in/package.json
+119 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/for-own/package.json
+120 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/forever-agent/package.json
+121 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/form-data/package.json
+122 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/forwarded/package.json
+123 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/fresh/package.json
+124 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/fs-extra/package.json
+125 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/fs.realpath/package.json
+126 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/generate-function/package.json
+127 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/generate-object-property/package.json
+128 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/get-stdin/package.json
+129 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/getmac/package.json
+130 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/getpass/package.json
+131 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/glob/package.json
+132 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/graceful-fs/package.json
+133 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/graceful-readlink/package.json
+134 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/har-validator/package.json
+135 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/has-ansi/package.json
+136 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/has-binary/package.json
+137 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/has-cors/package.json
+138 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/hawk/package.json
+139 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/hoek/package.json
+140 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/hosted-git-info/package.json
+141 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/http-assert/package.json
+142 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/http-errors/package.json
+143 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/http-proxy/package.json
+144 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/http-signature/package.json
+145 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/iconv-lite/package.json
+146 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/indent-string/package.json
+147 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/indexof/package.json
+148 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/inflation/package.json
+149 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/inflight/package.json
+150 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/inherits/package.json
+151 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ipaddr.js/package.json
+152 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-arrayish/package.json
+153 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-builtin-module/package.json
+154 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-extendable/package.json
+155 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-finite/package.json
+156 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-my-json-valid/package.json
+157 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-property/package.json
+158 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-typedarray/package.json
+159 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/is-utf8/package.json
+160 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/isarray/package.json
+161 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/isstream/package.json
+162 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/jodid25519/package.json
+163 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/jsbn/package.json
+164 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/json-schema/package.json
+165 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/json-stringify-safe/package.json
+166 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/json3/package.json
+167 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/jsonfile/package.json
+168 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/jsonpointer/package.json
+169 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/jsprim/package.json
+170 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/keygrip/package.json
+171 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/klaw/package.json
+172 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa/package.json
+173 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-bodyparser/package.json
+174 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-compose/package.json
+175 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-is-json/package.json
+176 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-morgan/package.json
+177 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-mount/package.json
+178 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-router/package.json
+179 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-send/package.json
+180 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/koa-static/package.json
+181 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/load-json-file/package.json
+182 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/lodash/package.json
+183 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/loud-rejection/package.json
+184 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/map-obj/package.json
+185 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/media-typer/package.json
+186 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/meow/package.json
+187 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/merge-descriptors/package.json
+188 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/method-override/package.json
+189 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/methods/package.json
+190 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mime/package.json
+191 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mime-db/package.json
+192 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mime-types/package.json
+193 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/minimatch/package.json
+194 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/minimist/package.json
+195 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mkdirp/package.json
+196 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mongodb/package.json
+197 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mongodb-core/package.json
+198 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/morgan/package.json
+199 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ms/package.json
+200 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/multiparty/package.json
+201 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/mz/package.json
+202 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/nan/package.json
+203 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/negotiator/package.json
+204 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/node-hue-api/package.json
+205 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/node-php/package.json
+206 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/normalize-package-data/package.json
+207 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/number-is-nan/package.json
+208 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/oauth-sign/package.json
+209 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/object-assign/package.json
+210 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/object-component/package.json
+211 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/object.omit/package.json
+212 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/on-finished/package.json
+213 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/on-headers/package.json
+214 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/once/package.json
+215 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/only/package.json
+216 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/optimist/package.json
+217 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/options/package.json
+218 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/parse-json/package.json
+219 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/parsejson/package.json
+220 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/parseqs/package.json
+221 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/parseuri/package.json
+222 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/parseurl/package.json
+223 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/passport/package.json
+224 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/passport-local/package.json
+225 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/passport-strategy/package.json
+226 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/path/package.json
+227 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/path-exists/package.json
+228 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/path-is-absolute/package.json
+229 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/path-to-regexp/package.json
+230 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/path-type/package.json
+231 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/pause/package.json
+232 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/pify/package.json
+233 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ping/package.json
+234 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/pinkie/package.json
+235 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/pinkie-promise/package.json
+236 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/process/package.json
+237 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/process-nextick-args/package.json
+238 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/proxy-addr/package.json
+239 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/punycode/package.json
+240 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/q/package.json
+241 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/qs/package.json
+242 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/random-bytes/package.json
+243 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/range-parser/package.json
+244 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/raw-body/package.json
+245 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/read-pkg/package.json
+246 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/read-pkg-up/package.json
+247 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/readable-stream/package.json
+248 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/redent/package.json
+249 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/repeating/package.json
+250 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/request/package.json
+251 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/require_optional/package.json
+252 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/requires-port/package.json
+253 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/resolve-from/package.json
+254 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/resolve-path/package.json
+255 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/response-time/package.json
+256 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/rimraf/package.json
+257 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/rndm/package.json
+258 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/sax/package.json
+259 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/semver/package.json
+260 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/send/package.json
+261 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/serve-favicon/package.json
+262 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/serve-index/package.json
+263 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/serve-static/package.json
+264 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/setprototypeof/package.json
+265 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/signal-exit/package.json
+266 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/simple-ssh/package.json
+267 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/sntp/package.json
+268 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/socket.io/package.json
+269 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/socket.io-adapter/package.json
+270 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/socket.io-client/package.json
+271 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/socket.io-parser/package.json
+272 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/spdx-correct/package.json
+273 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/spdx-expression-parse/package.json
+274 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/spdx-license-ids/package.json
+275 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ssh2/package.json
+276 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ssh2-streams/package.json
+277 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/sshpk/package.json
+278 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/statuses/package.json
+279 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/stream-consume/package.json
+280 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/stream-counter/package.json
+281 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/streamsearch/package.json
+282 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/string_decoder/package.json
+283 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/stringstream/package.json
+284 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/strip-ansi/package.json
+285 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/strip-bom/package.json
+286 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/strip-indent/package.json
+287 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/supports-color/package.json
+288 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/thenify/package.json
+289 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/thenify-all/package.json
+290 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/thunkify/package.json
+291 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/thunkify-wrap/package.json
+292 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/tinytim/package.json
+293 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/to-array/package.json
+294 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/tough-cookie/package.json
+295 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/tracer/package.json
+296 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/traits/package.json
+297 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/trim-newlines/package.json
+298 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/tsscmp/package.json
+299 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/tunnel-agent/package.json
+300 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/tweetnacl/package.json
+301 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/type-is/package.json
+302 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/typechecker/package.json
+303 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/uid-safe/package.json
+304 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ultron/package.json
+305 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/underscore/package.json
+306 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/unpipe/package.json
+307 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/util/package.json
+308 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/util-deprecate/package.json
+309 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/utils-merge/package.json
+310 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/uuid/package.json
+311 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/validate-npm-package-license/package.json
+312 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/vary/package.json
+313 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/verror/package.json
+314 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/vhost/package.json
+315 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/wordwrap/package.json
+316 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/wrappy/package.json
+317 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/ws/package.json
+318 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/wtf-8/package.json
+319 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/xml2js/package.json
+320 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/xmlbuilder/package.json
+321 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/xmlhttprequest-ssl/package.json
+322 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/xtend/package.json
+323 verbose installManyTop reading scoped package data from /home/austin/open-automation/node_modules/yeast/package.json
+324 info package.json after@0.8.1 No license field.
+325 info package.json arraybuffer.slice@0.0.6 No license field.
+326 info package.json base64-arraybuffer@0.1.5 No license field.
+327 info package.json batch@0.5.3 No license field.
+328 info package.json better-assert@1.0.2 No license field.
+329 info package.json bcrypt-pbkdf@1.0.0 No repository field.
+330 info package.json blob@0.0.4 No license field.
+331 info package.json base64id@0.1.0 No license field.
+332 info package.json buffer-crc32@0.2.3 No license field.
+333 info package.json callsite@1.0.0 No repository field.
+334 info package.json callsite@1.0.0 No license field.
+335 info package.json component-bind@1.0.0 No license field.
+336 info package.json component-emitter@1.1.2 No license field.
+337 info package.json component-inherit@0.0.3 No license field.
+338 info package.json diskspace@1.0.3 No license field.
+339 info package.json extsprintf@1.0.2 No license field.
+340 info package.json has-binary@0.1.7 No repository field.
+341 info package.json indexof@0.0.1 No repository field.
+342 info package.json indexof@0.0.1 No license field.
+343 info package.json jsbn@0.1.0 license should be a valid SPDX license expression
+344 info package.json json-schema@0.2.3 No license field.
+345 info package.json json3@3.3.2 No license field.
+346 info package.json keygrip@1.0.1 No license field.
+347 info package.json mime@1.3.4 No license field.
+348 info package.json ms@0.7.1 No license field.
+349 info package.json node-php@0.0.1 No license field.
+350 info package.json object-component@0.0.3 No repository field.
+351 info package.json object-component@0.0.3 No license field.
+352 info package.json optimist@0.6.1 license should be a valid SPDX license expression
+353 info package.json only@0.0.2 No license field.
+354 info package.json options@0.0.6 No license field.
+355 info package.json path@0.12.7 path is also the name of a node core module.
+356 info package.json passport-strategy@1.0.0 No license field.
+357 info package.json path-to-regexp@0.1.2 No license field.
+358 info package.json ping@0.1.10 No license field.
+359 info package.json process@0.11.9 process is also the name of a node core module.
+360 info package.json punycode@1.4.1 punycode is also the name of a node core module.
+361 info package.json q@1.4.1 license should be a valid SPDX license expression
+362 info package.json passport-local@1.0.0 No license field.
+363 info package.json simple-ssh@0.9.0 No license field.
+364 info package.json sntp@1.0.9 No license field.
+365 info package.json ssh2-streams@0.1.16 No license field.
+366 info package.json ssh2@0.5.4 No license field.
+367 info package.json streamsearch@0.1.2 No license field.
+368 info package.json string_decoder@0.10.31 string_decoder is also the name of a node core module.
+369 info package.json stream-counter@0.2.0 license should be a valid SPDX license expression
+370 info package.json to-array@0.1.4 No license field.
+371 info package.json traits@0.4.0 No description
+372 info package.json traits@0.4.0 No repository field.
+373 info package.json traits@0.4.0 No license field.
+374 info package.json util@0.10.3 util is also the name of a node core module.
+375 info package.json utils-merge@1.0.0 No license field.
+376 info package.json verror@1.3.6 No license field.
+377 info package.json xmlhttprequest-ssl@1.5.3 No license field.
+378 verbose readDependencies loading dependencies from /home/austin/open-automation/package.json
+379 silly cache add args [ 'openzwave-shared@^1.2.0', null ]
+380 verbose cache add spec openzwave-shared@^1.2.0
+381 silly cache add parsed spec Result {
+381 silly cache add   raw: 'openzwave-shared@^1.2.0',
+381 silly cache add   scope: null,
+381 silly cache add   name: 'openzwave-shared',
+381 silly cache add   rawSpec: '^1.2.0',
+381 silly cache add   spec: '>=1.2.0 <2.0.0',
+381 silly cache add   type: 'range' }
+382 silly addNamed openzwave-shared@>=1.2.0 <2.0.0
+383 verbose addNamed ">=1.2.0 <2.0.0" is a valid semver range for openzwave-shared
+384 silly addNameRange { name: 'openzwave-shared',
+384 silly addNameRange   range: '>=1.2.0 <2.0.0',
+384 silly addNameRange   hasData: false }
+385 silly mapToRegistry name openzwave-shared
+386 silly mapToRegistry using default registry
+387 silly mapToRegistry registry https://registry.npmjs.org/
+388 silly mapToRegistry data Result {
+388 silly mapToRegistry   raw: 'openzwave-shared',
+388 silly mapToRegistry   scope: null,
+388 silly mapToRegistry   name: 'openzwave-shared',
+388 silly mapToRegistry   rawSpec: '',
+388 silly mapToRegistry   spec: 'latest',
+388 silly mapToRegistry   type: 'tag' }
+389 silly mapToRegistry uri https://registry.npmjs.org/openzwave-shared
+390 verbose addNameRange registry:https://registry.npmjs.org/openzwave-shared not in flight; fetching
+391 verbose request uri https://registry.npmjs.org/openzwave-shared
+392 verbose request no auth needed
+393 info attempt registry request try #1 at 6:25:34 PM
+394 verbose request id 3b0784a34c08c558
+395 verbose etag W/"586ec627-c487"
+396 verbose lastModified Thu, 05 Jan 2017 22:18:15 GMT
+397 http request GET https://registry.npmjs.org/openzwave-shared
+398 http 304 https://registry.npmjs.org/openzwave-shared
+399 verbose headers { date: 'Sun, 08 Jan 2017 00:25:34 GMT',
+399 verbose headers   via: '1.1 varnish',
+399 verbose headers   'cache-control': 'max-age=300',
+399 verbose headers   etag: 'W/"586ec627-c487"',
+399 verbose headers   age: '17',
+399 verbose headers   connection: 'keep-alive',
+399 verbose headers   'x-served-by': 'cache-dfw1830-DFW',
+399 verbose headers   'x-cache': 'HIT',
+399 verbose headers   'x-cache-hits': '1',
+399 verbose headers   'x-timer': 'S1483835134.995879,VS0,VE0',
+399 verbose headers   vary: 'Accept-Encoding' }
+400 silly get cb [ 304,
+400 silly get   { date: 'Sun, 08 Jan 2017 00:25:34 GMT',
+400 silly get     via: '1.1 varnish',
+400 silly get     'cache-control': 'max-age=300',
+400 silly get     etag: 'W/"586ec627-c487"',
+400 silly get     age: '17',
+400 silly get     connection: 'keep-alive',
+400 silly get     'x-served-by': 'cache-dfw1830-DFW',
+400 silly get     'x-cache': 'HIT',
+400 silly get     'x-cache-hits': '1',
+400 silly get     'x-timer': 'S1483835134.995879,VS0,VE0',
+400 silly get     vary: 'Accept-Encoding' } ]
+401 verbose etag https://registry.npmjs.org/openzwave-shared from cache
+402 verbose get saving openzwave-shared to /home/austin/.npm/registry.npmjs.org/openzwave-shared/.cache.json
+403 verbose correctMkdir /home/austin/.npm correctMkdir not in flight; initializing
+404 silly addNameRange number 2 { name: 'openzwave-shared',
+404 silly addNameRange   range: '>=1.2.0 <2.0.0',
+404 silly addNameRange   hasData: true }
+405 silly addNameRange versions [ 'openzwave-shared',
+405 silly addNameRange   [ '0.0.1',
+405 silly addNameRange     '0.0.2',
+405 silly addNameRange     '0.1.0',
+405 silly addNameRange     '1.0.0',
+405 silly addNameRange     '1.0.1',
+405 silly addNameRange     '1.0.2',
+405 silly addNameRange     '1.0.3',
+405 silly addNameRange     '1.0.4',
+405 silly addNameRange     '1.0.5',
+405 silly addNameRange     '1.0.6',
+405 silly addNameRange     '1.0.8',
+405 silly addNameRange     '1.0.9',
+405 silly addNameRange     '1.1.0',
+405 silly addNameRange     '1.1.2',
+405 silly addNameRange     '1.1.3',
+405 silly addNameRange     '1.1.4',
+405 silly addNameRange     '1.1.5',
+405 silly addNameRange     '1.1.6',
+405 silly addNameRange     '1.1.7',
+405 silly addNameRange     '1.1.8',
+405 silly addNameRange     '1.1.9',
+405 silly addNameRange     '1.2.0',
+405 silly addNameRange     '1.2.2',
+405 silly addNameRange     '1.2.3',
+405 silly addNameRange     '1.2.5',
+405 silly addNameRange     '1.2.6',
+405 silly addNameRange     '1.2.7' ] ]
+406 silly addNamed openzwave-shared@1.2.7
+407 verbose addNamed "1.2.7" is a plain semver version for openzwave-shared
+408 silly cache afterAdd openzwave-shared@1.2.7
+409 verbose afterAdd /home/austin/.npm/openzwave-shared/1.2.7/package/package.json not in flight; writing
+410 verbose correctMkdir /home/austin/.npm correctMkdir not in flight; initializing
+411 verbose afterAdd /home/austin/.npm/openzwave-shared/1.2.7/package/package.json written
+412 silly install resolved [ { name: 'openzwave-shared',
+412 silly install resolved     version: '1.2.7',
+412 silly install resolved     description: 'Node.JS bindings for OpenZWave including management and security functions',
+412 silly install resolved     main: './lib/openzwave-shared.js',
+412 silly install resolved     dependencies: { nan: '2.5.0' },
+412 silly install resolved     scripts:
+412 silly install resolved      { test: 'node test.js',
+412 silly install resolved        preinstall: 'node lib/install-ozw.js',
+412 silly install resolved        install: 'node-gyp rebuild' },
+412 silly install resolved     repository:
+412 silly install resolved      { type: 'git',
+412 silly install resolved        url: 'git://github.com/OpenZWave/node-openzwave-shared.git' },
+412 silly install resolved     keywords: [ 'zwave', 'z-wave', 'home automation', 'openzwave', 'open-zwave' ],
+412 silly install resolved     author:
+412 silly install resolved      { name: 'Elias Karakoulakis',
+412 silly install resolved        email: 'elias.karakoulakis@gmail.com' },
+412 silly install resolved     contributors:
+412 silly install resolved      [ [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object],
+412 silly install resolved        [Object] ],
+412 silly install resolved     license: { type: 'ISC', url: 'http://opensource.org/licenses/ISC' },
+412 silly install resolved     gypfile: true,
+412 silly install resolved     gitHead: '4189499f3f55debd065988940fd1b7fb53c7140c',
+412 silly install resolved     bugs: { url: 'https://github.com/OpenZWave/node-openzwave-shared/issues' },
+412 silly install resolved     homepage: 'https://github.com/OpenZWave/node-openzwave-shared#readme',
+412 silly install resolved     _id: 'openzwave-shared@1.2.7',
+412 silly install resolved     _shasum: '59d57c8b2a62ec26678ac82d0e4a82783d2fbc82',
+412 silly install resolved     _from: 'openzwave-shared@>=1.2.0 <2.0.0',
+412 silly install resolved     _npmVersion: '4.0.5',
+412 silly install resolved     _nodeVersion: '7.3.0',
+412 silly install resolved     _npmUser: { name: 'ekarak', email: 'elias.karakoulakis@gmail.com' },
+412 silly install resolved     dist:
+412 silly install resolved      { shasum: '59d57c8b2a62ec26678ac82d0e4a82783d2fbc82',
+412 silly install resolved        tarball: 'https://registry.npmjs.org/openzwave-shared/-/openzwave-shared-1.2.7.tgz' },
+412 silly install resolved     maintainers: [ [Object] ],
+412 silly install resolved     _npmOperationalInternal:
+412 silly install resolved      { host: 'packages-18-east.internal.npmjs.com',
+412 silly install resolved        tmp: 'tmp/openzwave-shared-1.2.7.tgz_1483654694473_0.1487219468690455' },
+412 silly install resolved     directories: {},
+412 silly install resolved     _resolved: 'https://registry.npmjs.org/openzwave-shared/-/openzwave-shared-1.2.7.tgz',
+412 silly install resolved     readme: 'ERROR: No README data found!' } ]
+413 info install openzwave-shared@1.2.7 into /home/austin/open-automation
+414 info installOne openzwave-shared@1.2.7
+415 verbose installOne of openzwave-shared to /home/austin/open-automation not in flight; installing
+416 verbose correctMkdir /home/austin/.npm/_locks correctMkdir not in flight; initializing
+417 verbose lock using /home/austin/.npm/_locks/openzwave-shared-43e9bdc15fac8f2c.lock for /home/austin/open-automation/node_modules/openzwave-shared
+418 silly install write writing openzwave-shared 1.2.7 to /home/austin/open-automation/node_modules/openzwave-shared
+419 verbose unbuild node_modules/openzwave-shared
+420 silly gentlyRm /home/austin/open-automation/node_modules/openzwave-shared is being purged from base /home/austin/open-automation
+421 verbose gentlyRm don't care about contents; nuking /home/austin/open-automation/node_modules/openzwave-shared
+422 verbose tar unpack /home/austin/.npm/openzwave-shared/1.2.7/package.tgz
+423 verbose tar unpacking to /home/austin/open-automation/node_modules/openzwave-shared
+424 silly gentlyRm /home/austin/open-automation/node_modules/openzwave-shared is being purged
+425 verbose gentlyRm don't care about contents; nuking /home/austin/open-automation/node_modules/openzwave-shared
+426 silly gunzTarPerm modes [ '775', '664' ]
+427 silly gunzTarPerm extractEntry package.json
+428 silly gunzTarPerm extractEntry .npmignore
+429 silly gunzTarPerm extractEntry README.md
+430 silly gunzTarPerm extractEntry test.js
+431 silly gunzTarPerm extractEntry test2.js
+432 silly gunzTarPerm extractEntry test3.js
+433 silly gunzTarPerm extractEntry LICENSE.md
+434 silly gunzTarPerm extractEntry README-api.md
+435 silly gunzTarPerm extractEntry README-events.md
+436 silly gunzTarPerm extractEntry README-example.md
+437 silly gunzTarPerm extractEntry README-mgmt.md
+438 silly gunzTarPerm extractEntry README-raspbian.md
+439 silly gunzTarPerm extractEntry README-security.md
+440 silly gunzTarPerm extractEntry README-ubuntu.md
+441 silly gunzTarPerm extractEntry binding.gyp
+442 silly gunzTarPerm extractEntry config/options.xml
+443 silly gunzTarPerm modified mode [ 'config/options.xml', 420, 436 ]
+444 silly gunzTarPerm extractEntry lib/install-ozw.js
+445 silly gunzTarPerm extractEntry lib/openzwave-shared.js
+446 silly gunzTarPerm extractEntry lib/ozwpaths.js
+447 silly gunzTarPerm extractEntry notes.txt
+448 silly gunzTarPerm extractEntry .cproject
+449 silly gunzTarPerm extractEntry src/openzwave-network.cc
+450 silly gunzTarPerm extractEntry src/.cproject
+451 silly gunzTarPerm extractEntry src/callbacks.cc
+452 silly gunzTarPerm extractEntry src/callbacks.hpp
+453 silly gunzTarPerm extractEntry src/openzwave-config.cc
+454 silly gunzTarPerm extractEntry src/openzwave-driver.cc
+455 silly gunzTarPerm extractEntry src/openzwave-groups.cc
+456 silly gunzTarPerm extractEntry src/openzwave-management.cc
+457 silly gunzTarPerm extractEntry src/.project
+458 silly gunzTarPerm extractEntry src/openzwave-nodes.cc
+459 silly gunzTarPerm extractEntry src/openzwave-polling.cc
+460 silly gunzTarPerm extractEntry src/openzwave-scenes.cc
+461 silly gunzTarPerm extractEntry src/openzwave-values.cc
+462 silly gunzTarPerm extractEntry src/openzwave.cc
+463 silly gunzTarPerm extractEntry src/openzwave.hpp
+464 silly gunzTarPerm extractEntry src/utils.cc
+465 silly gunzTarPerm extractEntry src/utils.hpp
+466 silly gunzTarPerm extractEntry .project
+467 silly gunzTarPerm extractEntry Dockerfile
+468 verbose write writing to /home/austin/open-automation/node_modules/openzwave-shared/package.json
+469 info preinstall openzwave-shared@1.2.7
+470 verbose unsafe-perm in lifecycle true
+471 verbose readDependencies loading dependencies from /home/austin/open-automation/node_modules/openzwave-shared/package.json
+472 silly prepareForInstallMany adding nan@2.5.0 from openzwave-shared dependencies
+473 verbose readDependencies loading dependencies from /home/austin/open-automation/node_modules/openzwave-shared/package.json
+474 silly cache add args [ 'nan@2.5.0', null ]
+475 verbose cache add spec nan@2.5.0
+476 silly cache add parsed spec Result {
+476 silly cache add   raw: 'nan@2.5.0',
+476 silly cache add   scope: null,
+476 silly cache add   name: 'nan',
+476 silly cache add   rawSpec: '2.5.0',
+476 silly cache add   spec: '2.5.0',
+476 silly cache add   type: 'version' }
+477 silly addNamed nan@2.5.0
+478 verbose addNamed "2.5.0" is a plain semver version for nan
+479 silly mapToRegistry name nan
+480 silly mapToRegistry using default registry
+481 silly mapToRegistry registry https://registry.npmjs.org/
+482 silly mapToRegistry data Result {
+482 silly mapToRegistry   raw: 'nan',
+482 silly mapToRegistry   scope: null,
+482 silly mapToRegistry   name: 'nan',
+482 silly mapToRegistry   rawSpec: '',
+482 silly mapToRegistry   spec: 'latest',
+482 silly mapToRegistry   type: 'tag' }
+483 silly mapToRegistry uri https://registry.npmjs.org/nan
+484 verbose addNameVersion registry:https://registry.npmjs.org/nan not in flight; fetching
+485 verbose request uri https://registry.npmjs.org/nan
+486 verbose request no auth needed
+487 info attempt registry request try #1 at 6:25:35 PM
+488 verbose etag W/"585acecf-1d7db"
+489 verbose lastModified Wed, 21 Dec 2016 18:49:51 GMT
+490 http request GET https://registry.npmjs.org/nan
+491 http 304 https://registry.npmjs.org/nan
+492 verbose headers { date: 'Sun, 08 Jan 2017 00:25:35 GMT',
+492 verbose headers   via: '1.1 varnish',
+492 verbose headers   'cache-control': 'max-age=300',
+492 verbose headers   etag: 'W/"585acecf-1d7db"',
+492 verbose headers   age: '270',
+492 verbose headers   connection: 'keep-alive',
+492 verbose headers   'x-served-by': 'cache-dfw1830-DFW',
+492 verbose headers   'x-cache': 'HIT',
+492 verbose headers   'x-cache-hits': '3',
+492 verbose headers   'x-timer': 'S1483835135.201941,VS0,VE0',
+492 verbose headers   vary: 'Accept-Encoding' }
+493 silly get cb [ 304,
+493 silly get   { date: 'Sun, 08 Jan 2017 00:25:35 GMT',
+493 silly get     via: '1.1 varnish',
+493 silly get     'cache-control': 'max-age=300',
+493 silly get     etag: 'W/"585acecf-1d7db"',
+493 silly get     age: '270',
+493 silly get     connection: 'keep-alive',
+493 silly get     'x-served-by': 'cache-dfw1830-DFW',
+493 silly get     'x-cache': 'HIT',
+493 silly get     'x-cache-hits': '3',
+493 silly get     'x-timer': 'S1483835135.201941,VS0,VE0',
+493 silly get     vary: 'Accept-Encoding' } ]
+494 verbose etag https://registry.npmjs.org/nan from cache
+495 verbose get saving nan to /home/austin/.npm/registry.npmjs.org/nan/.cache.json
+496 verbose correctMkdir /home/austin/.npm correctMkdir not in flight; initializing
+497 silly cache afterAdd nan@2.5.0
+498 verbose afterAdd /home/austin/.npm/nan/2.5.0/package/package.json not in flight; writing
+499 verbose correctMkdir /home/austin/.npm correctMkdir not in flight; initializing
+500 verbose afterAdd /home/austin/.npm/nan/2.5.0/package/package.json written
+501 silly install resolved [ { name: 'nan',
+501 silly install resolved     version: '2.5.0',
+501 silly install resolved     description: 'Native Abstractions for Node.js: C++ header for Node 0.8 -> 7 compatibility',
+501 silly install resolved     main: 'include_dirs.js',
+501 silly install resolved     repository: { type: 'git', url: 'git://github.com/nodejs/nan.git' },
+501 silly install resolved     scripts:
+501 silly install resolved      { test: 'tap --gc --stderr test/js/*-test.js',
+501 silly install resolved        'rebuild-tests': 'node-gyp rebuild --msvs_version=2013 --directory test',
+501 silly install resolved        docs: 'doc/.build.sh' },
+501 silly install resolved     contributors:
+501 silly install resolved      [ [Object],
+501 silly install resolved        [Object],
+501 silly install resolved        [Object],
+501 silly install resolved        [Object],
+501 silly install resolved        [Object],
+501 silly install resolved        [Object],
+501 silly install resolved        [Object] ],
+501 silly install resolved     devDependencies:
+501 silly install resolved      { bindings: '~1.2.1',
+501 silly install resolved        commander: '^2.8.1',
+501 silly install resolved        glob: '^5.0.14',
+501 silly install resolved        'node-gyp': '~3.0.1',
+501 silly install resolved        'readable-stream': '^2.1.4',
+501 silly install resolved        tap: '~0.7.1',
+501 silly install resolved        xtend: '~4.0.0' },
+501 silly install resolved     license: 'MIT',
+501 silly install resolved     bugs: { url: 'https://github.com/nodejs/nan/issues' },
+501 silly install resolved     homepage: 'https://github.com/nodejs/nan#readme',
+501 silly install resolved     _id: 'nan@2.5.0',
+501 silly install resolved     _shasum: 'aa8f1e34531d807e9e27755b234b4a6ec0c152a8',
+501 silly install resolved     _resolved: 'https://registry.npmjs.org/nan/-/nan-2.5.0.tgz',
+501 silly install resolved     _from: 'nan@2.5.0',
+501 silly install resolved     _npmVersion: '3.10.3',
+501 silly install resolved     _nodeVersion: '6.3.1',
+501 silly install resolved     _npmUser: { name: 'kkoopa', email: 'bbyholm@abo.fi' },
+501 silly install resolved     dist:
+501 silly install resolved      { shasum: 'aa8f1e34531d807e9e27755b234b4a6ec0c152a8',
+501 silly install resolved        tarball: 'https://registry.npmjs.org/nan/-/nan-2.5.0.tgz' },
+501 silly install resolved     maintainers: [ [Object], [Object] ],
+501 silly install resolved     _npmOperationalInternal:
+501 silly install resolved      { host: 'packages-12-west.internal.npmjs.com',
+501 silly install resolved        tmp: 'tmp/nan-2.5.0.tgz_1482346189010_0.8120697599370033' },
+501 silly install resolved     directories: {},
+501 silly install resolved     readme: 'ERROR: No README data found!' } ]
+502 info install nan@2.5.0 into /home/austin/open-automation/node_modules/openzwave-shared
+503 info installOne nan@2.5.0
+504 verbose installOne of nan to /home/austin/open-automation/node_modules/openzwave-shared not in flight; installing
+505 verbose correctMkdir /home/austin/.npm/_locks correctMkdir not in flight; initializing
+506 verbose lock using /home/austin/.npm/_locks/nan-067f5b65b0df3e3f.lock for /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+507 silly install write writing nan 2.5.0 to /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+508 verbose unbuild node_modules/openzwave-shared/node_modules/nan
+509 silly gentlyRm /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan is being purged from base /home/austin/open-automation
+510 verbose gentlyRm don't care about contents; nuking /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+511 verbose tar unpack /home/austin/.npm/nan/2.5.0/package.tgz
+512 verbose tar unpacking to /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+513 silly gentlyRm /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan is being purged
+514 verbose gentlyRm don't care about contents; nuking /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+515 silly gunzTarPerm modes [ '775', '664' ]
+516 silly gunzTarPerm extractEntry package.json
+517 silly gunzTarPerm extractEntry README.md
+518 silly gunzTarPerm extractEntry include_dirs.js
+519 silly gunzTarPerm extractEntry nan_converters.h
+520 silly gunzTarPerm extractEntry CHANGELOG.md
+521 silly gunzTarPerm extractEntry LICENSE.md
+522 silly gunzTarPerm extractEntry doc/node_misc.md
+523 silly gunzTarPerm extractEntry doc/asyncworker.md
+524 silly gunzTarPerm extractEntry doc/callback.md
+525 silly gunzTarPerm extractEntry doc/converters.md
+526 silly gunzTarPerm extractEntry doc/errors.md
+527 silly gunzTarPerm extractEntry doc/maybe_types.md
+528 silly gunzTarPerm extractEntry doc/methods.md
+529 silly gunzTarPerm extractEntry doc/new.md
+530 silly gunzTarPerm extractEntry doc/buffers.md
+531 silly gunzTarPerm extractEntry doc/object_wrappers.md
+532 silly gunzTarPerm extractEntry doc/persistent.md
+533 silly gunzTarPerm extractEntry doc/scopes.md
+534 silly gunzTarPerm extractEntry doc/script.md
+535 silly gunzTarPerm extractEntry doc/string_bytes.md
+536 silly gunzTarPerm extractEntry doc/v8_internals.md
+537 silly gunzTarPerm extractEntry doc/v8_misc.md
+538 silly gunzTarPerm extractEntry nan.h
+539 silly gunzTarPerm extractEntry nan_callbacks.h
+540 silly gunzTarPerm extractEntry nan_callbacks_12_inl.h
+541 silly gunzTarPerm extractEntry nan_callbacks_pre_12_inl.h
+542 silly gunzTarPerm extractEntry nan_converters_43_inl.h
+543 silly gunzTarPerm extractEntry nan_converters_pre_43_inl.h
+544 silly gunzTarPerm extractEntry nan_implementation_12_inl.h
+545 silly gunzTarPerm extractEntry nan_implementation_pre_12_inl.h
+546 silly gunzTarPerm extractEntry nan_maybe_43_inl.h
+547 silly gunzTarPerm extractEntry nan_maybe_pre_43_inl.h
+548 silly gunzTarPerm extractEntry nan_new.h
+549 silly gunzTarPerm extractEntry nan_object_wrap.h
+550 silly gunzTarPerm extractEntry nan_persistent_12_inl.h
+551 silly gunzTarPerm extractEntry nan_persistent_pre_12_inl.h
+552 silly gunzTarPerm extractEntry nan_private.h
+553 silly gunzTarPerm extractEntry nan_string_bytes.h
+554 silly gunzTarPerm extractEntry nan_typedarray_contents.h
+555 silly gunzTarPerm extractEntry nan_weak.h
+556 silly gunzTarPerm extractEntry tools/package.json
+557 silly gunzTarPerm extractEntry tools/README.md
+558 silly gunzTarPerm extractEntry tools/1to2.js
+559 verbose write writing to /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan/package.json
+560 info preinstall nan@2.5.0
+561 verbose readDependencies loading dependencies from /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan/package.json
+562 verbose readDependencies loading dependencies from /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan/package.json
+563 silly install resolved []
+564 verbose about to build /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+565 info build /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+566 info linkStuff nan@2.5.0
+567 silly linkStuff nan@2.5.0 has /home/austin/open-automation/node_modules/openzwave-shared/node_modules as its parent node_modules
+568 verbose linkBins nan@2.5.0
+569 verbose linkMans nan@2.5.0
+570 verbose rebuildBundles nan@2.5.0
+571 info install nan@2.5.0
+572 info postinstall nan@2.5.0
+573 verbose unlock done using /home/austin/.npm/_locks/nan-067f5b65b0df3e3f.lock for /home/austin/open-automation/node_modules/openzwave-shared/node_modules/nan
+574 verbose about to build /home/austin/open-automation/node_modules/openzwave-shared
+575 info build /home/austin/open-automation/node_modules/openzwave-shared
+576 info linkStuff openzwave-shared@1.2.7
+577 silly linkStuff openzwave-shared@1.2.7 has /home/austin/open-automation/node_modules as its parent node_modules
+578 verbose linkBins openzwave-shared@1.2.7
+579 verbose linkMans openzwave-shared@1.2.7
+580 verbose rebuildBundles openzwave-shared@1.2.7
+581 verbose rebuildBundles [ 'nan' ]
+582 info install openzwave-shared@1.2.7
+583 verbose unsafe-perm in lifecycle true
+584 info openzwave-shared@1.2.7 Failed to exec install script
+585 verbose unlock done using /home/austin/.npm/_locks/openzwave-shared-43e9bdc15fac8f2c.lock for /home/austin/open-automation/node_modules/openzwave-shared
+586 verbose stack Error: openzwave-shared@1.2.7 install: `node-gyp rebuild`
+586 verbose stack Exit status 1
+586 verbose stack     at EventEmitter.<anonymous> (/usr/lib/node_modules/npm/lib/utils/lifecycle.js:217:16)
+586 verbose stack     at emitTwo (events.js:87:13)
+586 verbose stack     at EventEmitter.emit (events.js:172:7)
+586 verbose stack     at ChildProcess.<anonymous> (/usr/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+586 verbose stack     at emitTwo (events.js:87:13)
+586 verbose stack     at ChildProcess.emit (events.js:172:7)
+586 verbose stack     at maybeClose (internal/child_process.js:827:16)
+586 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+587 verbose pkgid openzwave-shared@1.2.7
+588 verbose cwd /home/austin/open-automation
+589 error Linux 4.4.0-53-generic
+590 error argv "/usr/bin/nodejs" "/usr/bin/npm" "install" "openzwave-shared"
+591 error node v4.4.7
+592 error npm  v2.15.8
+593 error code ELIFECYCLE
+594 error openzwave-shared@1.2.7 install: `node-gyp rebuild`
+594 error Exit status 1
+595 error Failed at the openzwave-shared@1.2.7 install script 'node-gyp rebuild'.
+595 error This is most likely a problem with the openzwave-shared package,
+595 error not with npm itself.
+595 error Tell the author that this fails on your system:
+595 error     node-gyp rebuild
+595 error You can get information on how to open an issue for this project with:
+595 error     npm bugs openzwave-shared
+595 error Or if that isn't available, you can get their info via:
+595 error
+595 error     npm owner ls openzwave-shared
+595 error There is likely additional logging output above.
+596 verbose exit [ 1, true ]
+597 verbose unbuild node_modules/openzwave-shared
+598 info preuninstall openzwave-shared@1.2.7
+599 info uninstall openzwave-shared@1.2.7
+600 verbose unbuild rmStuff openzwave-shared@1.2.7 from /home/austin/open-automation/node_modules
+601 info postuninstall openzwave-shared@1.2.7
+602 silly gentlyRm /home/austin/open-automation/node_modules/openzwave-shared is being purged from base /home/austin/open-automation
+603 verbose gentlyRm don't care about contents; nuking /home/austin/open-automation/node_modules/openzwave-shared
+604 silly vacuum-fs purging /home/austin/open-automation/node_modules/openzwave-shared
+605 silly vacuum-fs quitting because other entries in /home/austin/open-automation/node_modules
