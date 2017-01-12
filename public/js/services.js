@@ -214,12 +214,12 @@ angular.module('starter.services', [])
     name: 'Access',
     lastText: '3 active',
     icon: 'fa fa-lock fa-5x'
-  }, {
+  },/* {
     id: 5,
     name: 'Files',
     lastText: '3 active',
     icon: 'fa fa-list fa-5x'
-  },  {
+  },*/  {
     id: 6,
     name: 'Health',
     lastText: '3 active',

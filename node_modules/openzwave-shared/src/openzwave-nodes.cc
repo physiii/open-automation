@@ -1,6 +1,6 @@
 /*
 * Copyright (c) 2013 Jonathan Perkin <jonathan@perkin.org.uk>
-* Copyright (c) 2015 Elias Karakoulakis <elias.karakoulakis@gmail.com>
+* Copyright (c) 2015-1016 Elias Karakoulakis <elias.karakoulakis@gmail.com>
 *
 * Permission to use, copy, modify, and distribute this software for any
 * purpose with or without fee is hereby granted, provided that the above
@@ -34,12 +34,12 @@ namespace OZW {
 		uint8 nodeid = info[0]->ToNumber()->Value();
 		uint8 numNeighbors = OpenZWave::Manager::Get()->GetNodeNeighbors(homeid, nodeid, &neighbors);
 		Local<Array> o_neighbors = Nan::New<Array>(numNeighbors);
-
-		for (uint8 nr = 0; nr < numNeighbors; nr++) {
-			o_neighbors->Set(Nan::New<Integer>(nr), Nan::New<Integer>(neighbors[nr]));
+		if (numNeighbors > 0) {
+			for (uint8 nr = 0; nr < numNeighbors; nr++) {
+				o_neighbors->Set(Nan::New<Integer>(nr), Nan::New<Integer>(neighbors[nr]));
+			}
+			delete neighbors;
 		}
-		delete[] neighbors;
-
 		info.GetReturnValue().Set( o_neighbors );
 	}
 
@@ -95,7 +95,7 @@ namespace OZW {
 	// ===================================================================
 	{
 		Nan::HandleScope scope;
-		OpenZWave::ValueID* ozwvid = getZwaveValueID(info);
+		OpenZWave::ValueID* ozwvid = populateValueId(info);
 		if (ozwvid == NULL) {
 			Nan::ThrowTypeError("OpenZWave valueId not found");
 		} else {

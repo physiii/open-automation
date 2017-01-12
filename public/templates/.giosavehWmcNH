@@ -1,0 +1,595 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view view-title="{{chat.name}}">
+
+  <ion-content class="padding">
+<div style="max-width:1000px;margin:auto;">
+    <div ng-app="myApp">
+    
+<div ng-if="chat.name == 'Alerts'" ng-controller="AlertsCtrl" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+  <div class="item item-divider">
+    Window Sensors
+  </div>
+  
+  <div class="item item-divider" data-ng-repeat="x in window_sensors" >
+    <label>
+       {{ x.device_name }}
+    </label>
+    <button style="float:right" ng-click="showInfo(x.mac)"><i class="fa fa-question"></i></button>
+    <div id="{{ x.mac }}_info" style="display:none" class="card"><br><br>
+      <div class="item item-text-wrap"><h3>
+        Mac Address <b>{{ x.mac }}</b><br>          
+        IP Address <b>{{ x.public_ip }}</b>
+        <button class="button button-small button-block button-assertive" ng-click="removeDevice(x.mac)">Remove</i></button>  
+      </div>
+    </div>      
+    <div style="margin:10px 0px 5px 0px">
+      <meter id="{{ x.mac }}_meter" style="width:100%;height:20px" low="5000" optimum="4000" high="15000" min="0" max="20000"></meter>
+    </div>
+  </div>
+  <div style="margin:10px">
+    <input ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#bbb" class="button button-block button-stable" />
+  </div>    
+</div>
+
+
+<div class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+    Motion Detectors
+  </div>
+  <div class="card">   
+    <div class="item item-divider">
+      <label>
+        Room 1
+      </label>     
+      <div>
+        <meter id="window_1" style="width:100%;height:20px" low="5000" optimum="4000" high="15000" min="0" max="20000"></meter>
+      </div>
+    </div>
+ 
+    <div class="item item-divider">
+      <label>
+        Hallway 1
+      </label>     
+      <div>
+        <meter id="window_1" style="width:100%;height:20px" low="5000" optimum="4000" high="15000" min="0" max="20000"></meter>
+      </div>
+    </div>
+
+    <div class="item item-divider">
+      <label>
+        Hallway 2
+      </label>     
+      <div>
+        <meter id="window_1" style="width:100%;height:20px" low="5000" optimum="4000" high="15000" min="0" max="20000"></meter>
+      </div>  
+    </div>
+    <div class="item item-divider">
+      <label>
+        Room 3
+      </label>     
+      <div>
+        <meter id="window_1" style="width:100%;height:20px" low="5000" optimum="4000" high="15000" min="0" max="20000"></meter>
+      </div>
+    </div>
+  </div> 
+  <div style="margin:10px">
+    <input ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#bbb" class="button button-block button-stable" />
+  </div>  
+
+</div>
+
+
+</div>
+
+</div>
+
+<div ng-controller="MediaCtrl" style="margin:10px 0px 0px 0px" ng-if="chat.name == 'Media'">
+
+<div data-ng-repeat="x in gateways" class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+    <h2>{{ x.device_name }}</h2>
+  </div>
+  <div class="row item item-divider" style="margin:auto">
+    <button style="height:100px;width:100%;border-radius:2px" ng-click="media('mute',x)"><i class="fa fa-volume-off fa-4x col"></i></button>
+    <button style="height:100px;width:100%;border-radius:2px" ng-click="media('volume down',x)"><i class="fa fa-volume-down fa-4x col"></i></button>
+    <button style="height:100px;width:100%;border-radius:2px" ng-click="media('volume up',x)"><i class="fa fa-volume-up fa-4x col"></i></button>
+  </div>
+  <div class="row item item-divider" style="margin:auto">
+    <button style="height:100px;width:100%;border-radius:2px" ng-click="media('power',x)"><i class=" fa fa-power-off fa-4x col"></i></button>
+    <button style="height:100px;width:100%;border-radius:2px" ng-click="media('play',x)"><i class="fa fa-pause fa-4x col"></i></button>
+    <button style="height:100px;width:100%;border-radius:2px" ng-click="media('next',x)"><i  class="fa fa-forward fa-4x col"></i></button>
+  </div>
+  <div class="row item-divider" style="margin:5px auto auto auto">
+    <input ng-model="link" style="width:100%;padding:10px" placeholder="Magnet link...">
+    <button style="border-radius:2px;" ng-click="torrent(link,x)" d><i class="fa fa-play fa-2x col"></i></button>
+  </div>
+</div>
+
+</div>
+
+
+<div ng-controller="AccessCtrl" style="margin:10px 0px 0px 0px" ng-if="chat.name == 'Access'">
+
+<div data-ng-repeat="device in devices" class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+    <h2>Garage</h2>
+  </div>
+
+<div class="item item-divider" style="width:100%;height:130px">
+<div class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
+  <div style="width:100%;text-align:center;font-size:20px;">CLOSED</div>
+  <div class="fa fa-lock fa-5x col"></div>
+</div>
+</div>
+
+<div class="row item item-divider" style="margin:auto">
+      <button style="height:100px" ng-click="media('play')" class="fa fa-lock fa-3x col"></button>
+      <button style="height:100px" ng-click="media('next')" class="fa fa-unlock fa-3x col"></button>
+</div>
+
+  <input type="hidden" ng-init="new_light.device_type = 'lights'" />
+  <input type="hidden" ng-init="new_light.token = x.token" />
+  <input type="hidden" ng-model="new_light.mac" value="{{ x.mac }}" />     
+  <input type="hidden" ng-init="add_device(new_light)" />
+</div>
+
+</div>
+
+<! -------------------------------------------------------------- >
+<! -----------------------  Lights  ----------------------------- >
+<! -------------------------------------------------------------- >
+<div ng-controller="LightsCtrl" ng-if="chat.name == 'Lights'" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:#e8e8e8;height:100px" ng-click="all_lights('warm')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:#111;height:100px" ng-click="all_lights('off')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:#cc0000;height:100px" ng-click="all_lights('red')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:#fff;height:100px" ng-click="all_lights('white')" class="button col-xs-6 col-md-4 col-lg-3"></button> 
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:blue;height:100px" ng-click="all_lights('blue')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:green;height:100px" ng-click="all_lights('green')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:orange;height:100px" ng-click="all_lights('orange')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:purple;height:100px" ng-click="all_lights('purple')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+      <button style="border-style:solid;border-width:1px;border-color:#444;border-radius:1px;background:magenta;height:100px" ng-click="all_lights('magenta')" class="button col-xs-6 col-md-4 col-lg-3"></button>
+            <div style="width:100%" class="item range range-positive">
+        <i class="icon ion-ios-sunny"></i>
+        <input ng-model="slider_value" ng-change="all_lights('slider')" type="range" name="volume" min="0" max="254" value="33">
+        <i class="icon ion-ios-sunny-outline"></i>
+      </div>
+</div>
+<div data-ng-repeat="gateway in gateways">
+  <input type="hidden" ng-init="new_light.device_type = 'lights'" />
+  <input type="hidden" ng-init="new_light.token = gateway.token" />
+  <input type="hidden" ng-model="new_light.mac" value="{{ gateway.mac }}" />     
+  <input type="hidden" ng-init="add_device(new_light)" />
+</div>
+
+  <div class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#AAA">
+    <div style="text-align:center" class="item item-divider">
+      Set Light Schedule
+    </div>
+    <div class="item item-divider" style="width:100%;">  
+        <div id="lights_schedule_container" style="height: 400px"></div>
+        <div id="lights_drag"></div>
+        <div id="lights_drop"></div>
+    </div>
+  </div>
+<!--
+<div class="card" style="max-width:1200px;margin:20px;border-style:solid;border-width:1px;border-color:#AAA">
+  <li data-ng-repeat="light in lights"  class="item item-divider item-toggle" style="padding:15px">
+    {{ light.name }}       
+    <label class="toggle toggle-balanced">
+      <input type="checkbox" value="{{ light.name }}" ng-click="light_command(light)" >
+      <div class="track">
+        <div class="handle"></div>
+      </div>
+    </label>
+  </li>
+</div>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/css/lightness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet">
+<style>
+  #draggable { width: 100px; height: 100px; padding: 0.5em; float: left; margin: 10px 10px 10px 0; }
+  #droppable { width: 150px; height: 150px; padding: 0.5em; float: left; margin: 10px; }
+</style>
+<div id="draggable" class="ui-widget-content">
+  <p>Drag me to my target</p>
+</div>
+<div id="droppable" style="width:100%" class="ui-widget-header">
+  <p>Drop here</p>
+</div>
+<div>
+  <canvas id="canvas" style=""></canvas>
+</div>
+<div id="color" style="width:100%;margin:20px"></div>
+-->
+</div>
+
+<! ----------------------------  Video  ---------------------------------- >
+<div ng-if="chat.name == 'Video'" ng-controller="VideoCtrl">
+<div data-ng-repeat="x in devices"  class="card" style="padding:0px;margin:0px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="marign:0px;padding:0px;background-color:#444;color:#eee;text-align:center" class="item item-divider">
+
+  <div class="row" style="margin:auto">
+        <button style="width:100%;padding:0px;margin:0px" ng-click="showInfo(x.mac)"  class="button button-dark">{{ x.device_name }}</button>
+        <div style="margin:auto;float:right" class="fa fa-chevron-right fa-2x"></div>
+  </div>
+      <div id="{{ x.mac }}_info" style="display:none;" class="card"><br><br>
+      <div class="item item-text-wrap" style="margin:0px;border-style:solid;border-width:1px;border-color:#AAA">
+        <div style="max-width:250px;margin:auto;">
+        IP Address <b>{{ x.ip }}</b><br>
+        Port <b>{{ x.port }}</b><br>    
+        Mac Address <b>{{ x.mac }}</b>
+        </div>
+       <button style="margin:6px;margin:auto;float:right" ng-click="removeDevice(x.mac)">Remove</button>    
+     </div>
+   </div>       
+</div>
+  <div class="item item-divider" style="margin:auto">
+    <div style="border:2px solid #444;border-radius:2px;margin:10px auto 10px auto;max-width:720px;">
+      <img id="mainUrl" width="100%" height="100%" ng-src="http://{{x.public_ip}}:{{x.port}}/session/{{x.token}}" scrolling="no" frameborder="0" allowTransparency="true"></img>  
+    </div>
+  </div>  
+</div>
+
+</div>
+
+<! ----------------------------  Files  ---------------------------------- >
+<div ng-if="chat.name == 'Files'" ng-controller="VideoCtrl">
+
+  <div data-ng-repeat="x in cameras">
+    <div id="{{ x.mac }}_div" class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+        <b> {{ x.device_name }}</b>
+        <button style="margin:0px 2px 0px 0px;float:right;background-color:#444;color:#eee;" ng-click="showInfo(x.mac)"><i class="fa fa-chevron-right"></i></button>
+        <div id="{{ x.mac }}_info" style="display:none" class="card"><br><br>
+          <div class="item item-text-wrap"><h3>
+            IP Address <b>{{ x.ip }}</b><br>
+            Port <b>{{ x.port }}</b><br>    
+            Mac Address <b>{{ x.mac }}</b>
+           <button style="margin:6px;margin:auto;float:right" ng-click="removeDevice(x.mac)"><i class="fa fa-times"></i></button>    
+         </div>
+       </div>
+     </div>
+     <div style="max-width:1000px;padding:20px;margin:auto;">
+       <iframe style="border:2px solid #444;border-radius:0px 0px 3px 3px;" width="100%" height="500" ng-src="{{ x.url }}"></iframe>        
+     </div>
+   </div>
+  </div>
+
+</div>
+
+
+
+<div ng-controller="HealthCtrl" style="margin:10px 0px 0px 0px" ng-if="chat.name == 'Health'">
+
+<div data-ng-repeat="x in gateways" class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+  <i style="float:left" class="fa fa-medkit"></i>  <h2> {{ x.device_name }}</h2>
+  </div>
+
+
+<div class="card" style="text-align:center;padding:10px">
+  <h1>Systolic 120 </h1>
+  <h1>Diastolic 80 </h1>
+  <div style="float:right"><h3>Pulse 60</h3></div>
+</div>
+<div class="row item item-divider" style="margin:auto">
+      <button style="height:100px" ng-click="media('power')" class=" fa fa-power-off fa-5x col"></button>
+</div>
+
+<div class="row item-divider" style="margin:5px auto auto auto">
+    <button ng-click="blood_pressure()" class="button-block"><i class="fa fa-heartbeat fa-2x col"> History</i></button>
+</div>
+  <input type="hidden" ng-init="new_light.device_type = 'lights'" />
+  <input type="hidden" ng-init="new_light.token = x.token" />
+  <input type="hidden" ng-model="new_light.mac" value="{{ x.mac }}" />     
+  <input type="hidden" ng-init="add_device(new_light)" />
+</div>
+
+</div>
+
+
+
+
+<div ng-controller="ClimateCtrl" ng-if="chat.name == 'Climate'">
+
+<div data-ng-repeat="device in devices" ng-if="device.device_type == 'thermostat'" class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+    Thermostat | {{ device.local_ip }}
+  </div>
+  <div class="item item-divider" style="width:100%;height:100px">
+    <div class="row card item item-divider" style="height:80px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
+      <div style="width:100%;text-align:left;font-size:50px;">{{ loading }}{{ device.state.current_state.temp }}F</div>
+      <div style="padding:10px;width:100%;">
+        <div style="font-size:15px;text-align:right">Mode: {{ device.state.mode }} </div>
+        <div style="font-size:15px;text-align:right">Fan: {{ device.state.fan }} </div>
+     </div>
+  </div>
+</div>
+
+<div class="row item item-divider" style="margin:auto">
+  <button style="height:100px;width:100%;border-radius:2px" ng-click="set_thermostat('temp_up',device)" ><i class="fa fa-chevron-up fa-4x col"></i></button>
+  <button style="height:100px;width:100%;border-radius:2px" ng-click="set_thermostat('temp_down',device)"><i class="fa fa-chevron-down fa-4x col"></i></button>
+  <div style="padding:10px;width:250px;">
+    <div style="font-size:15px;text-align:center">Set</div>
+    <div style="font-size:40px;text-align:right">{{ device.state.set_temp }}F</div>
+  </div>      
+</div>
+<div class="row item item-divider" style="margin:auto">
+  <button style="margin:auto;width:100%;border-radius:2px" ng-click="set_thermostat('power',device)"><i class=" fa fa-power-off fa-5x col"></i></button>
+  <div style="padding:10px;width:150px;">
+    <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;border-radius:2px" ng-click="set_thermostat('cool',device)">Cool</button></div>
+    <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;border-radius:2px" ng-click="set_thermostat('warm',device)">Warm</button></div>    
+  </div>
+</div>
+
+  <input type="hidden" ng-init="new_light.device_type = 'lights'" />
+  <input type="hidden" ng-init="new_light.token = x.token" />
+  <input type="hidden" ng-model="new_light.mac" value="{{ x.mac }}" />     
+  <input type="hidden" ng-init="add_device(new_light)" />
+</div>
+
+  <div class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#AAA">
+    <div style="text-align:center" class="item item-divider">
+      Set Thermostat Schedule | {{ device.local_ip }}
+    </div>
+    <div class="item item-divider" style="width:100%;">  
+        <div id="thermostat_schedule_container" style="height: 400px"></div>
+        <div id="drag"></div>
+        <div id="drop"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">
+  <div style="background-color:#444;color:#eee;text-align:center" class="item item-divider">
+      Weather | {{ postal }}
+    </div>
+    <div style="padding:10px" class="item item-divider">
+      <div style="background:#f8f8f8;border:2px solid #444;">
+      <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>      
+      </div>
+    <div style="background:#f8f8f8;border:2px solid #444;border-width:0px 2px 2px 2px">
+        <img src='//radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+
+<div ng-if="chat.name == 'Pi\'s'">
+<div class="card">
+  <div class="item item-divider">
+    Raspberry Pi <b>127.0.0.1</b>
+  </div>
+  <div style="padding:10px">
+
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 3
+  </div>
+  <div style="padding:0px">
+    <ion-toggle  ng-model="pin3">
+        High {{_status}}
+    </ion-toggle>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 5
+  </div>
+  <div style="padding:10px">
+    <ion-toggle  ng-model="pin5">
+        High {{_status}}
+    </ion-toggle>
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 7
+  </div>
+  <div style="padding:0px">
+    <ion-toggle  ng-model="pin7">
+        High {{PIN1_status}}
+    </ion-toggle>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 8
+  </div>
+  <div style="padding:10px">
+    <ion-toggle  ng-model="pin8">
+        High {{PIN1_status}}
+    </ion-toggle>
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 10
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 11
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 12
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 13
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 15
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 16
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 18
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin18">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 19 - MOSI
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 21 - MISO
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin21">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 22
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 23 - SCLK
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin23">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 24 - SPI
+  </div>
+  <div style="padding:10px">
+  </div>
+</div>
+</div>
+
+<div class="row">
+<div style="margin:10px" class="card col-50">
+  <div class="item item-divider">
+    PIN 26 - SPI
+  </div>
+  <div style="padding:0px">
+    <ion-list>
+    <ion-toggle  ng-model="pin1">
+        High {{PIN1_status}}
+    </ion-toggle>
+    </ion-list>
+  </div>
+</div>
+</div>
+
+
+<div class="card">
+  <div class="item item-divider">
+    GPIO 22
+  </div>
+  <div style="padding:10px;text-align:center">
+    Pulse width  <b>{{pwm_value}} ms</b> | frequency <b>{{pwm_freq}} 100 Hz</b>
+  </div>
+  <input type="hidden" ng-model="$scope.pwm_value"/>
+  <div class="item range range-balanced">
+    <i class="icon ion-ios-sunny"></i>
+    <input ng-model="pwm_value" ng-change="pwm(pwm_value)" type="range" name="volume" min="0" max="254" value="33">
+    <i class="icon ion-ios-sunny-outline"></i>
+  </div>
+</div>
+
+  </div>
+ </div>
+</div>
+
+<form style="margin:40px" action="/pyfi.org/dashboard#/tab/categories">
+  <button style="margin:auto" class="button-block" type="submit" >Device List</button>
+</form>      
+    </div>
+
+</div>
+
+  </ion-content>
+</ion-view>
