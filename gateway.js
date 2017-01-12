@@ -923,7 +923,7 @@ function start_ffmpeg() {
     console.log(stdout);
     console.log(stderr);
   });*/
-
+  if (ffmpeg_started) return console.log("ffmpeg already started");
   var command =  [
                    '-r', '2',
                    '-strict', '-1',
@@ -947,6 +947,7 @@ ffmpeg.stderr.on('data', (data) => {
 });
 
 ffmpeg.on('close', (code) => {
+  stop_ffmpeg(ffmpeg);
   console.log(`child process exited with code ${code}`);
 });
   clearTimeout(ffmpeg_timer);
@@ -969,7 +970,7 @@ function stop_ffmpeg(ffmpeg) {
       console.log(stdout);
       console.log(stderr);
     });*/
-    ffmpeg.kill();
+    //ffmpeg.kill();
     ffmpeg_started = false;
     console.log('ffmpeg stop');
   }
