@@ -10,20 +10,36 @@ var querystring = require('querystring');
 var request = require('request');
 var relay_server = "init";
 var io_relay;
-get_relay_server();
-function get_relay_server() {
-  request.get(
-  'http://pyfi.org/php/get_ip.php?server_name=socket_io',
-  function (error, response, data) {
-    if (!error && response.statusCode == 200) {
-      relay_server = data;
-      io_relay = require('socket.io-client')('http://'+relay_server);
-      start_io_relay();
-      if (error !== null) {
-       console.log('error ---> ' + error);
+get_relay_server('development');
+function get_relay_server(server_type) {
+  if (server_type == 'development') {
+    request.get(
+    'http://pyfi.org/php/get_ip.php?server_name=socket_io_dev',
+    function (error, response, data) {
+      if (!error && response.statusCode == 200) {
+        relay_server = data;
+        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        start_io_relay();
+        if (error !== null) {
+         console.log('error ---> ' + error);
+        }
       }
-    }
-  });
+    }); 
+  }
+  if (server_type == 'production') {
+    request.get(
+    'http://pyfi.org/php/get_ip.php?server_name=socket_io',
+    function (error, response, data) {
+      if (!error && response.statusCode == 200) {
+        relay_server = data;
+        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        start_io_relay();
+        if (error !== null) {
+         console.log('error ---> ' + error);
+        }
+      }
+    });
+  }
 }
 var port = process.env.PORT || 3030;
 var php = require("node-php");
@@ -108,7 +124,7 @@ function get_settings() {
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        console.log('!! get_settings !!');
+        //console.log('!! get_settings !!');
         settings_obj.devices = device_array;
         if (io_relay_connected)
           io_relay.emit('load settings',settings_obj);
@@ -254,9 +270,11 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "#\n"
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
+		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
+		 + "ffmpeg -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
-                 + "su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && sudo node gateway -p "+port+" >> /var/log/gateway 2>&1 &'\n"
+                 + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo node gateway >> /var/log/gateway 2>&1 &'\n"
                  + "exit 0;\n"
     fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
@@ -572,7 +590,7 @@ zwave.on('notification', function(nodeid, notif, help) {
 });
 
 zwave.on('scan complete', function() {
-	console.log('scan complete, hit ^C to finish.');
+	console.log('zwave scan complete');
 });
 
 var zwavedriverpaths = {
@@ -841,7 +859,6 @@ io_relay_connected = true;
 console.log('socket io connected:',relay_server);
 get_settings();
 io_relay.on('get token', function (data) {
-  console.log("token set " + token);
   token = data.token;
   session_string = '/' + token;
   app.use(mount(session_string, IndexRouter));
@@ -850,6 +867,7 @@ io_relay.on('get token', function (data) {
   store_settings(settings_obj);
   got_token = true;
   io_relay.emit('png_test',settings_obj);
+  console.log("get token", token);
 });
 
 io_relay.on('store_schedule', function (data) {
@@ -878,7 +896,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
   console.log("store_schedule |  " + data);  
 });
 
-var keep_ffmpeg_on = false;
+
 ffmpeg_timer = setTimeout(function () {}, 1);
 io_relay.on('ffmpeg', function (data) {
   if (data.mode == "start") {
@@ -895,25 +913,63 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 ffmpeg_started = false;
+var video_width = 1024;
+var video_height = 768;
+const spawn = require('child_process').spawn;
 function start_ffmpeg() {
-  var command = "sudo pkill ffmpeg;sleep 1;ffmpeg -r 10 -s 800x600 -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 200k -r 20 http://24.253.223.242:8082/"+token+"/800/600/ </dev/null >/dev/null 2>/var/log/ffmpeg &";
+  /*var command = "pkill ffmpeg;sleep 1;ffmpeg -r 2 -strict -1 -s "+video_width+"x"+video_height+" -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 2000k -r 2 -strict -1 http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/ </dev/null >/dev/null 2>&1 &";
   exec(command, (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
-  });
+  });*/
+
+  var command =  [
+                   '-r', '2',
+                   '-strict', '-1',
+                   '-s', video_width+"x"+video_height,
+                   '-f', 'video4linux2',
+                   '-i', '/dev/video11',
+                   '-f', 'mpeg1video',
+                   '-b:v', '2000k',
+                   '-r', '2',
+                   '-strict', '-1',
+                   "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"
+                 ];
+const ffmpeg = spawn('ffmpeg', command);
+
+ffmpeg.stdout.on('data', (data) => {
+  console.log(`stdout: ${data}`);
+});
+
+ffmpeg.stderr.on('data', (data) => {
+  console.log(`stderr: ${data}`);
+});
+
+ffmpeg.on('close', (code) => {
+  console.log(`child process exited with code ${code}`);
+});
+  clearTimeout(ffmpeg_timer);
+  setTimeout(function () {
+    //ffmpeg.kill();
+    console.log("ffmpeg stopped")
+    stop_ffmpeg(ffmpeg);
+  }, 2*60*1000);
+  
   ffmpeg_started = true;
   io_relay.emit('ffmpeg started',settings_obj);
-  console.log('ffmpeg started',command);
+  console.log('ffmpeg started | ',command);
 }
 
-function stop_ffmpeg() {
+var keep_ffmpeg_on = false;
+function stop_ffmpeg(ffmpeg) {
   if (!keep_ffmpeg_on) {
-    exec("sudo pkill ffmpeg", (error, stdout, stderr) => {
+    /*exec("sudo pkill ffmpeg", (error, stdout, stderr) => {
       if (error) {return console.error(`exec error: ${error}`)}
       console.log(stdout);
       console.log(stderr);
-    });
+    });*/
+    ffmpeg.kill();
     ffmpeg_started = false;
     console.log('ffmpeg stop');
   }
@@ -1014,11 +1070,14 @@ io_relay.on('set_thermostat', function (data) {
 });
 
 io_relay.on('add_zwave_device', function (data) {
+    //var secure_device = data.secure_device;
+    var secure_device = true;
     if (zwave.hasOwnProperty('beginControllerCommand')) {
-      zwave.beginControllerCommand('AddDevice', true);
+      console.log("searching for nodes");
+      zwave.beginControllerCommand('AddDevice', secure_device);
     } else {
-      console.log("adding node");
-      zwave.addNode(1);
+      console.log("searching for nodes!");
+      zwave.addNode(secure_device);
     }
 });
 
@@ -1125,7 +1184,7 @@ io_relay.on('set zwave', function (data) {
   console.log("set zwave",data);
   try {
     //zwave.setValue(data.node_id, 98, 1, 0, data.value);
-    zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
+    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
     zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
   } catch (e) { console.log(e) }
 });
