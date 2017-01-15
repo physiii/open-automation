@@ -118,6 +118,8 @@ function get_settings() {
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false && io_relay_connected) {
+	    //console.log("getting token...");
+	    got_token = true;
 	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
   	  }
   	//console.log('load settings',settings_obj);	
@@ -271,7 +273,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
 		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
-		 + "ffmpeg -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
+		 + "ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
                  + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo node gateway >> /var/log/gateway 2>&1 &'\n"
@@ -903,12 +905,12 @@ io_relay.on('ffmpeg', function (data) {
     start_ffmpeg();
     clearTimeout(ffmpeg_timer);
     ffmpeg_timer = setTimeout(function () {
-      stop_ffmpeg();
+      //stop_ffmpeg(ffmpeg);
     }, 4*60*1000);
   }
   if (data.mode == "stop") {
     console.log("received ffmpeg stop command");
-    stop_ffmpeg();
+    stop_ffmpeg(ffmpeg);
   }
 });
 
@@ -916,6 +918,7 @@ ffmpeg_started = false;
 var video_width = 1024;
 var video_height = 768;
 const spawn = require('child_process').spawn;
+const ffmpeg = null;
 function start_ffmpeg() {
   /*var command = "pkill ffmpeg;sleep 1;ffmpeg -r 2 -strict -1 -s "+video_width+"x"+video_height+" -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 2000k -r 2 -strict -1 http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/ </dev/null >/dev/null 2>&1 &";
   exec(command, (error, stdout, stderr) => {
@@ -925,55 +928,47 @@ function start_ffmpeg() {
   });*/
   if (ffmpeg_started) return console.log("ffmpeg already started");
   var command =  [
+                   '-loglevel', 'panic',
                    '-r', '2',
                    '-strict', '-1',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
                    '-i', '/dev/video11',
                    '-f', 'mpeg1video',
-                   '-b:v', '2000k',
+                   '-b:v', '1000k',
                    '-r', '2',
                    '-strict', '-1',
                    "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"
                  ];
-const ffmpeg = spawn('ffmpeg', command);
+  const ffmpeg = spawn('ffmpeg', command);
 
-ffmpeg.stdout.on('data', (data) => {
-  console.log(`stdout: ${data}`);
-});
+  ffmpeg.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
 
-ffmpeg.stderr.on('data', (data) => {
-  console.log(`stderr: ${data}`);
-});
+  ffmpeg.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
 
-ffmpeg.on('close', (code) => {
-  stop_ffmpeg(ffmpeg);
-  console.log(`child process exited with code ${code}`);
-});
+  ffmpeg.on('close', (code) => {
+    stop_ffmpeg(ffmpeg);
+    console.log(`child process exited with code ${code}`);
+  });
+  
   clearTimeout(ffmpeg_timer);
   setTimeout(function () {
-    //ffmpeg.kill();
-    console.log("ffmpeg stopped")
     stop_ffmpeg(ffmpeg);
-  }, 2*60*1000);
+  }, 5*60*1000);
   
   ffmpeg_started = true;
   io_relay.emit('ffmpeg started',settings_obj);
   console.log('ffmpeg started | ',command);
 }
 
-var keep_ffmpeg_on = false;
 function stop_ffmpeg(ffmpeg) {
-  if (!keep_ffmpeg_on) {
-    /*exec("sudo pkill ffmpeg", (error, stdout, stderr) => {
-      if (error) {return console.error(`exec error: ${error}`)}
-      console.log(stdout);
-      console.log(stderr);
-    });*/
-    //ffmpeg.kill();
+    ffmpeg.kill();
     ffmpeg_started = false;
     console.log('ffmpeg stop');
-  }
 }
 
 var ssh = new SSH({
