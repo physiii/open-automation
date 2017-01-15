@@ -899,14 +899,40 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
 });
 
 
+var motion_started = false;
+start_motion();
+function start_motion() {
+  var command = "sudo pkill motion;sudo motion/motion -c motion/motion.conf";
+  exec(command, (error, stdout, stderr) => {
+    if (error) {return console.error(`exec error: ${error}`)}
+    console.log(stdout);
+    console.log(stderr);
+  });
+  /*if (motion_started) return console.log("motion already started");
+  var command =  [
+                   '-c', 'motion/motion.conf'
+                 ];
+  const motion = spawn('motion/motion', command);
+
+  motion.stdout.on('data', (data) => {console.log(`stdout: ${data}`)});
+
+  motion.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
+
+  motion.on('close', (code) => { 
+    motion_started = false;
+    console.log(`child process exited with code ${code}`);
+  });*/
+  
+  
+  motion_started = true;
+  io_relay.emit('motion started',settings_obj);
+  console.log('motion started | ',command);
+}
+
 ffmpeg_timer = setTimeout(function () {}, 1);
 io_relay.on('ffmpeg', function (data) {
   if (data.mode == "start") {
     start_ffmpeg();
-    clearTimeout(ffmpeg_timer);
-    ffmpeg_timer = setTimeout(function () {
-      //stop_ffmpeg(ffmpeg);
-    }, 4*60*1000);
   }
   if (data.mode == "stop") {
     console.log("received ffmpeg stop command");
@@ -920,12 +946,6 @@ var video_height = 768;
 const spawn = require('child_process').spawn;
 const ffmpeg = null;
 function start_ffmpeg() {
-  /*var command = "pkill ffmpeg;sleep 1;ffmpeg -r 2 -strict -1 -s "+video_width+"x"+video_height+" -f video4linux2 -i /dev/video0 -f mpeg1video -b:v 2000k -r 2 -strict -1 http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/ </dev/null >/dev/null 2>&1 &";
-  exec(command, (error, stdout, stderr) => {
-    if (error) {return console.error(`exec error: ${error}`)}
-    console.log(stdout);
-    console.log(stderr);
-  });*/
   if (ffmpeg_started) return console.log("ffmpeg already started");
   var command =  [
                    '-loglevel', 'panic',
