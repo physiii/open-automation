@@ -26,7 +26,7 @@
           <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
             <ion-card-header ng-click="flip()" >
               <h4 style="margin:10px;float:right;color:#ccc">
-                {{ x.settings.device_name }}
+                {{ x.device_name }}
               </h4>
             </ion-card-header>
             <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;">
@@ -200,7 +200,6 @@
 <!------------------------------------------------------------------------>
 <!-----------------------------  Media  ---------------------------------->
 <!------------------------------------------------------------------------>
-
 <div style="margin:20px;" ng-controller="MediaCtrl">
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="flip-container">
@@ -373,28 +372,46 @@
       </div>
     </div>
   </div>
+</div>
 
+<!------------------------------------------------------------------------>
+<!-----------------------------  Locks  ---------------------------------->
+<!------------------------------------------------------------------------>
+<div style="margin:20px;" ng-controller="AccessCtrl">
   <div data-ng-repeat="gateway in gateways">
     <div data-ng-repeat="device in gateway.settings.devices" ng-if="device.device_type == 'Secure Keypad Door Lock'" class="col-lg-4 col-md-6 col-sm-12">
-        <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
           <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
-        Deadbolt
-      </h4>
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">{{ device.device_type }}</h4>
+            </div>
           </ion-card-header>
-        <div class="item item-divider" style="height:130px;">
+          <div class="item item-divider" style="width:100%;height:130px">
           <div ng-if="device.classes['98']['0'].value == true" style="background:#9C0C1B;height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">LOCKED<i class="fa fa-lock fa-4x col"></i></div>
           <div ng-if="device.classes['98']['0'].value == false" style="background:#0B7520;height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">UNLOCKED<i class="fa fa-unlock fa-4x col"></i></div>
-        </div>
+          </div>
         <div class="row item item-divider" style="margin:auto">
           <button style="height:100px" ng-click="lock(device,gateway)" class="fa fa-lock fa-3x col"></button>
           <button style="height:100px" ng-click="unlock(device,gateway)" class="fa fa-unlock fa-3x col"></button>
         </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Access History</h4>
+            </div>
+          </ion-card-header>
+          <div class="row item item-divider" style="margin:auto">
+ 	    
+          </div>
+        </div>
       </div>
     </div>
+  </div>
 </div>
-
-
+</div>
 
 <!------------------------------------------------------------------------>
 <!----------------------------  Alerts  ---------------------------------->
@@ -438,40 +455,64 @@
   </div>
 -->
 
-
 <!------------------------------------------------------------------------>
-<!----------------------------  Beacon  ---------------------------------->
+<!-----------------------------  Beacon  --------------------------------->
 <!------------------------------------------------------------------------>
-<div class="col-lg-4 col-md-6 col-sm-12">
-  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es"></script>
-  <div class="card" ng-controller="MapCtrl" class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
-    <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
-        Beacon
-      </h4>
-    </ion-card-header>
+<div style="margin:20px;" ng-controller="MediaCtrl">
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Beacon</h4>
+            </div>
+          </ion-card-header>
     <div style="padding:10px" class="item item-divider">
       <div style="border:2px solid #555;width:100%;height:500px;" id="map"></div>
+    </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Device List</h4>
+            </div>
+          </ion-card-header>          
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!------------------------------------------------------------------------>
-<!----------------------------  Weather  --------------------------------->
+<!-----------------------------  Weather  --------------------------------->
 <!------------------------------------------------------------------------>
-<div class="col-lg-4 col-md-6 col-sm-12">
-  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
-    <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
-        Weather
-      </h4>
-    </ion-card-header>
+<div style="margin:20px;" ng-controller="MediaCtrl">
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Weather</h4>
+            </div>
+          </ion-card-header>
     <div style="padding:10px" class="item item-divider">
       <div style="background:#f8f8f8;border:2px solid #444;">
         <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>
       </div>
       <div style="background:#f8f8f8;border:2px solid #444;border-width:0px 2px 2px 2px">
         <img src='//radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
+      </div>
+    </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Detailed Weather</h4>
+            </div>
+          </ion-card-header>          
+        </div>
       </div>
     </div>
   </div>

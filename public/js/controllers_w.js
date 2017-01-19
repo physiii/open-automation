@@ -102,33 +102,17 @@ angular.module('starter.controllers', ['socket-io'])
   var sirens = [];
   var alarms = [];
   var smoke_alarms = [];
-  var server_type = "development";
+
   console.log("<< ------  userinfo  ------ >> ");
-  if (server_type == "development") {
-    $rootScope.server_ip = "98.168.142.41";
-    /*$.get( "http://pyfi.org/php/get_ip.php?server_name=socket_io_dev").success(function(data){
-      init_socket(data);
-      console.log(server_type + " server: " + data);
-    });*/
-  }
-  if (server_type == "production") {
-    $rootScope.server_ip = "24.253.223.242";
-    /*$.get( "http://pyfi.org/php/get_ip.php?server_name=socket_io").success(function(data){
-      init_socket(data);
-      console.log(server_type + " server: " + data);
-    });*/
-  }
- 
-    var relay_socket = io.connect('http://'+$rootScope.server_ip+':5000');
-    $rootScope.relay_socket = relay_socket;
-    var token = $.cookie('token');
-    var user = $.cookie('user');
-    $rootScope.token = token;
-    $rootScope.user = user;
-    relay_socket.emit('link user',{token:token, user:user});
-    relay_socket.emit('get devices',{token:token});
-    relay_socket.emit('get contacts',{user_token:token});  
-    relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
+  var relay_socket = io.connect('http://98.168.142.41:5000');
+  $rootScope.relay_socket = relay_socket;
+  var token = $.cookie('token');
+  var user = $.cookie('user');
+  $rootScope.token = token;
+  console.log($rootScope.token);
+  relay_socket.emit('link user',{token:token, user:user});
+  relay_socket.emit('get devices',{token:token});
+  relay_socket.emit('get contacts',{user_token:token});
   //relay_socket.emit('get devices',data);
   //relay_socket.emit('get contacts',{user_token:$rootScope.token});
   //$rootScope.username = username;
@@ -256,7 +240,7 @@ relay_socket.on('room_sensor', function (data) {
       if (devices[i].device_type[j] == "gateway") {
         var command = devices[i];
         command.mode = "start";
-        devices[i].stream_started = false;
+        devices[i].stream_started = 0;
         relay_socket.emit('ffmpeg',command);
         gateways.push( devices[i] );
       }
@@ -319,13 +303,15 @@ relay_socket.on('room_sensor', function (data) {
   relay_socket.on('load settings', function (data) {
     load_settings(data);
     for (var i = 0; i < gateways.length; i++) {
-      if (data.mac == gateways[i].mac && !gateways[i].stream_started) {
-        gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
-        console.log('token for video stream',gateways[i].token);
-        gateways[i].stream_started = true;
-        gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-        gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
-      } else console.log('stream already started',gateways[i].mac);
+      if (gateways[i].stream_started > 3) {
+        console.log('stream already started',gateways[i].stream_started);
+        continue;
+      }
+      gateways[i].camera_socket = new WebSocket( 'ws://24.253.223.242:8084' );
+      gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
+      gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+      console.log('token for video stream',gateways[i].token);
+      gateways[i].stream_started++;
     }
     console.log('load settings',data);
   });
@@ -839,7 +825,6 @@ function disable_update() {
   console.log('<< ------  AccountCtrl  ------ >>');
   var relay_socket = $rootScope.relay_socket;
   var alert_contacts = $rootScope.alert_contacts;
-      relay_socket.emit('link lights',{ mac:"TESTMAC!!", token:"!!TESTTOK" });
   $scope.link_lights = function(gateway) {
     relay_socket.emit('link lights',{ mac:gateway.mac, token:gateway.token });
     console.log('link lights',gateway);
