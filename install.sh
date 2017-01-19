@@ -12,6 +12,13 @@ export LD_LIBRARY_PATH=/usr/local/lib
 sudo ldconfig
 sudo sed -i '$a LD_LIBRARY_PATH=/usr/local/lib' /etc/environment
 sudo chmod -R 777 /var
+
+## create loop back devices for video
+git clone https://github.com/umlaeute/v4l2loopback
+cd v4l2loopback
+make && sudo make install
+sudo modprobe v4l2loopback video_nr=1,10,11
+
 rm files/Audio files/Videos files/Documents files/motion
 #mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
 mkdir ~/Audio ~/Videos ~/Documents files
