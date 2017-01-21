@@ -11,6 +11,7 @@ cd openzwave-* && make && sudo make install
 export LD_LIBRARY_PATH=/usr/local/lib
 sudo ldconfig
 sudo sed -i '$a LD_LIBRARY_PATH=/usr/local/lib' /etc/environment
+sudo ln -s /usr/local/lib64/libopenzwave.so.1.4 /usr/local/lib/
 sudo chmod -R 777 /var
 
 ## create loop back devices for video
