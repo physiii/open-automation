@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+  <nav>
+    <div style="" class="nav-wrapper black">
+      <a href="#!" class=""><img img style="width:160px;margin:5px auto auto 10px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <button style="margin:10px 10px auto auto" class="waves-effect waves-light btn" ng-click="show_login()">Login</button>
+        <button style="margin:10px 10px auto auto" class="waves-effect waves-light btn" ng-click="show_register()">Register</button>
+      </ul>
+
+
+      <ul style="padding:15px;border-right:1px solid #999;" class="side-nav black" id="mobile-demo">
+        <li id="login_form" style="display:none">
+          <input type="email" style="font-size:18px;color:white" class="form-control" ng-model="user.username" placeholder="Email">
+          <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="user.password" placeholder="Password">
+          <div id="login_message" style="display:none"></div>
+          <button style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="login(user)">Login</button>
+        </li>
+        <li>
+          <button id="login_form_btn"  style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="show_form('login_form')">Login</button>
+        </li>
+        <li id="register_form" style="display:none">
+          <input style="font-size:18px;color:white" type="email" class="form-control" ng-model="new_user.username" placeholder="Email">
+          <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="new_user.password" placeholder="Password">
+          <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="new_user.confirm_password" placeholder="Confirm Password">
+          <div id="register_message" style="display:none"></div>
+          <button style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="register(new_user)">Register</button>
+        </li>        
+        <li>
+          <button id="register_form_btn" style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="show_form('register_form')">Register</button>
+        </li> 
+      </ul>
+    </div>
+  </nav>
+<script>
+  $(document).ready(function () {
+    $(".button-collapse").sideNav();
+  });
+</script>

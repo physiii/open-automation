@@ -318,7 +318,7 @@ relay_socket.on('room_sensor', function (data) {
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
     load_settings(data);
-    for (var i = 0; i < gateways.length; i++) {
+    /*for (var i = 0; i < gateways.length; i++) {
       if (data.mac == gateways[i].mac && !gateways[i].stream_started) {
         gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
         console.log('token for video stream',gateways[i].token);
@@ -326,7 +326,7 @@ relay_socket.on('room_sensor', function (data) {
         gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
         gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
       } else console.log('stream already started',gateways[i].mac);
-    }
+    }*/
     console.log('load settings',data);
   });
 
@@ -662,6 +662,19 @@ image.addEventListener('load', function() {
 
 .controller('VideoCtrl', function($scope, $rootScope, $stateParams, socket, $ionicLoading, $compile, $http) {
   console.log("<< ------  VideoCtrl  ------ >> ");
+  
+  $scope.start_stream = function(mac) {
+    var gateways = $rootScope.gateways;
+    var i = $rootScope.find_index(gateways,"mac",mac);
+    document.getElementById("play-button_"+mac).style.display = "none";
+    if (gateways[i].stream_started) return console.log("stream already started");
+    gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
+    console.log('token for video stream',gateways[i].token);
+    gateways[i].stream_started = true;
+    gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
+    gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+  }
+  
   $scope.fullscreen = function(div_id) { 
     console.log("fullscreen",div_id);
     if (document.getElementById(div_id).className == "") {
