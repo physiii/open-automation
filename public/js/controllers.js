@@ -46,12 +46,21 @@ angular.module('main_site', ['socket-io'])
     document.getElementById("contact_form").style.display = "none";
     document.getElementById("main_login_form").style.display = "inline";
     document.getElementById("main_register_form").style.display = "none";
+    document.getElementById("price_generator_form").style.display = "none";
   }
   
   $scope.show_register = function() {
     document.getElementById("contact_form").style.display = "none";
     document.getElementById("main_login_form").style.display = "none";
     document.getElementById("main_register_form").style.display = "inline";
+    document.getElementById("price_generator_form").style.display = "none";
+  }
+  
+  $scope.show_price_generator = function() {
+    document.getElementById("contact_form").style.display = "none";
+    document.getElementById("main_login_form").style.display = "none";
+    document.getElementById("main_register_form").style.display = "none";
+    document.getElementById("price_generator_form").style.display = "inline";
   }
 
   $scope.register = function(user) {
