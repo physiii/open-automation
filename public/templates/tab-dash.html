@@ -22,16 +22,17 @@
   <div class="">
     <div class="flip-container">
       <div class="flipper clearfix" >
-        <div style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;" class="front card item-text-wrapped">
-          <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
-            <ion-card-header ng-click="flip()" >
-              <h4 style="margin:10px;float:right;color:#ccc">
-                {{ x.device_name }}
-              </h4>
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip()" style="width:100%">
+                <h4 style="margin:10px;text-align:right;color:#ccc">{{ x.device_name }}</h4>
+              </div>
             </ion-card-header>
-            <div id="play-button_{{ x.mac }}" class="play-button" ng-click="start_stream(x.mac)">
+            </ion-card-header>
+            <div id="play-button_{{ x.mac }}" class="" style="position:absolute;top:40%;left:50%" ng-click="start_stream(x.mac)">
+              <i style="" class="fa fa-play fa-4x col"></i>
 	    </div>
-            <canvas id="videoCanvas_{{ x.mac }}" ng-if="true" style="width:100%;">
+            <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;">
               <p>
                 Please use a browser that supports the Canvas Element, like
   	        <a href="http://www.google.com/chrome">Chrome</a>,
@@ -51,11 +52,14 @@
           </ion-card-header>
           <!-- <iframe style="border:2px solid #444;border-radius:0px 0px 3px 3px;height:30vh" width="100%" height="" ng-src="{{ x.settings.cloud_url }}"></iframe>  -->
         </div>
-      </div>
+
     </div>
   </div>
 </div>
 
+
+
+<!--
 <div style="margin:20px;" data-ng-repeat="x in gateways" ng-if="x.settings.camera_enabled && x.settings.dashboard_enabled">
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div ng-click="flip()" class="flip-container">
@@ -83,70 +87,72 @@
     </div>
   </div>
 </div>
-
+-->
 </div>
 <!-------------------------------------------------------------->
 <!----------------------  Thermostat  -------------------------->
 <!-------------------------------------------------------------->
 <div ng-controller="ClimateCtrl" data-ng-repeat="gateway in gateways">
-<div data-ng-repeat="device in gateway.devices" ng-if="device.device_type == 'thermostat' && gateway.settings.dashboard_enabled">
-<div style="margin:20px;">
-  <div class="col-lg-4 col-md-6 col-sm-12">
-    <div class="flip-container">
-      <div class="flipper clearfix" >
-        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
 
-          <ion-card-header >
-            <div ng-click="flip()" style="width:100%">
-              <h4 style="margin:10px;text-align:right;color:#ccc">Thermostat</h4>
+<div data-ng-repeat="device in gateway.devices" ng-if="device.device_type == 'thermostat' && gateway.settings.dashboard_enabled">
+  <div style="margin:20px;">
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="flip-container">
+        <div class="flipper clearfix" >
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip()" style="width:100%">
+                <h4 style="margin:10px;text-align:right;color:#ccc">Thermostat</h4>
+              </div>
+            </ion-card-header>
+            <div class="item item-divider" style="width:100%;height:100px">
+              <div class="row card item item-divider" style="height:80px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
+                <div style="width:100%;text-align:left;font-size:50px;">{{ loading }}{{ device.current_state.temp }}F</div>
+                <div style="padding:10px;width:100%;">
+                  <div style="font-size:15px;text-align:right">Mode: {{ device.current_state.mode }} </div>
+                  <div style="font-size:15px;text-align:right">Fan: {{ device.current_state.fan }} </div>
+                </div>
+              </div>
             </div>
-          </ion-card-header>
-        <div class="item item-divider" style="width:100%;height:100px">
-          <div class="row card item item-divider" style="height:80px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
-            <div style="width:100%;text-align:left;font-size:50px;">{{ loading }}{{ device.current_state.temp }}F</div>
-            <div style="padding:10px;width:100%;">
-              <div style="font-size:15px;text-align:right">Mode: {{ device.current_state.mode }} </div>
-              <div style="font-size:15px;text-align:right">Fan: {{ device.current_state.fan }} </div>
+            <div class="row item item-divider" style="margin:auto">
+              <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_up',device,gateway)" ><i class="fa fa-chevron-up fa-4x col"></i></button>
+              <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_down',device,gateway)"><i class="fa fa-chevron-down fa-4x col"></i></button>
+              <div style="padding:10px;width:250px;">
+                <div style="font-size:15px;text-align:center">Set</div>
+                <div style="font-size:40px;text-align:right">{{ device.set_state.set_temp }}F</div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row item item-divider" style="margin:auto">
-          <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_up',device,gateway)" ><i class="fa fa-chevron-up fa-4x col"></i></button>
-          <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_down',device,gateway)"><i class="fa fa-chevron-down fa-4x col"></i></button>
-          <div style="padding:10px;width:250px;">
-            <div style="font-size:15px;text-align:center">Set</div>
-            <div style="font-size:40px;text-align:right">{{ device.set_state.set_temp }}F</div>
-          </div>
-        </div>
-        <div class="row item item-divider" style="margin:auto">
-          <button style="margin:auto;width:100%;" ng-click="set_thermostat('power',device,gateway)"><i class=" fa fa-power-off fa-5x col"></i></button>
-          <div style="padding:10px;width:150px;">
-            <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('cool',device,gateway)">Cool</button></div>
-            <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('warm',device,gateway)">Warm</button></div>    
-          </div>
-        </div>
-        </div>
-        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
-          <ion-card-header >
-            <div ng-click="flip()" style="width:100%">
-              <h4 style="margin:10px;text-align:right;color:#ccc">History</h4>
-            </div>
-          </ion-card-header>
-          <div class="item item-divider" style="width:100%;height:130px">
-            <div id="{{x.mac}}_screen" class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;background:#222">
-              <div style="width:100%;text-align:center;font-size:45px;">{{ dash.state.label }}</div>
+            <div class="row item item-divider" style="margin:auto">
+              <button style="margin:auto;width:100%;" ng-click="set_thermostat('power',device,gateway)"><i class=" fa fa-power-off fa-5x col"></i></button>
+              <div style="padding:10px;width:150px;">
+                <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('cool',device,gateway)">Cool</button></div>
+                <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('warm',device,gateway)">Warm</button></div>    
+              </div>
             </div>
           </div>
-          <div class="row item item-divider" style="margin:auto">
-            <button style="height:100px;width:100%;" ng-click="media_dash('mute')"><i  class="fa fa-lock fa-3x col"></i></button>
-            <button style="height:100px;width:100%;" ng-click="media_dash('volume up')"><i class="fa fa-unlock fa-3x col"></i></button>
+          <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip()" style="width:100%">
+                <h4 style="margin:10px;text-align:right;color:#ccc">History</h4>
+              </div>
+            </ion-card-header>
+            <div class="item item-divider" style="width:100%;height:130px">
+              <div id="{{x.mac}}_screen" class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;background:#222">
+                <div style="width:100%;text-align:center;font-size:45px;">{{ dash.state.label }}</div>
+              </div>
+            </div>
+            <div class="row item item-divider" style="margin:auto">
+              <button style="height:100px;width:100%;" ng-click="media_dash('mute')"><i  class="fa fa-lock fa-3x col"></i></button>
+              <button style="height:100px;width:100%;" ng-click="media_dash('volume up')"><i class="fa fa-unlock fa-3x col"></i></button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-</div>
+
+
 </div>
 
 <!-------------------------------------------------------------->
