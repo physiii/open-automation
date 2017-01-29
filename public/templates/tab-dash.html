@@ -14,7 +14,6 @@
 <!------------------------------------------------------------------------>
 <!-----------------------------  Video  ---------------------------------->
 <!------------------------------------------------------------------------>
-
 <div ng-controller="VideoCtrl">
 
 <div style="margin:20px;" data-ng-repeat="x in gateways" ng-if="x.settings.stream_enabled && x.settings.dashboard_enabled">
@@ -29,15 +28,9 @@
                 {{ x.settings.device_name }}
               </h4>
             </ion-card-header>
-            <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;">
-              <p>
-                Please use a browser that supports the Canvas Element, like
-  	        <a href="http://www.google.com/chrome">Chrome</a>,
-	        <a href="http://www.mozilla.com/firefox/">Firefox</a>,
-	        <a href="http://www.apple.com/safari/">Safari</a> or Internet Explorer 10
-              </p>
-            </canvas>
-              <button class="button" ng-click="fullscreen('container_' + x.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px"><i class="ion-arrow-expand"></i></button>
+            <canvas id="previewCanvas_{{ x.mac }}" style=""></canvas>
+            <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;"></canvas>
+            <button class="button" ng-click="fullscreen('container_' + x.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px"><i class="ion-arrow-expand"></i></button>
           </div>
         </div>
         <div class="back card success" style="background-color:#444">

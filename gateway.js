@@ -929,6 +929,34 @@ function start_motion() {
   console.log('motion started | ',command);
 }
 
+
+io_relay.on('camera', function (data) {
+  //if (data.command == 'snapshot')
+  //if (data.command == 'preview')
+  get_camera_preview();
+});
+
+function get_camera_preview() {
+  var settings = {width: 1024, height: 768};
+  var command =  [
+                   '-loglevel', 'panic',
+                   '-s', settings.width+"x"+settings.height,
+                   '-i', '/dev/video11',
+                   "/var/tmp/camera_preview_.jpg"
+                 ];
+  const ffmpeg = spawn('ffmpeg', command);
+  send_camera_preview(settings);
+}
+
+function send_camera_preview (settings) {
+  fs.readFile('/var/tmp/camera_preview_.jpg', function(err, data) {
+    if (err) throw err; // Fail if the file can't be read.
+    data_obj = {mac:settings_obj.mac, token:settings_obj.token, image:data.toString('base64')}
+    data_obj.settings = settings; 
+    io_relay.emit('camera preview',data_obj);
+  });
+}
+
 ffmpeg_timer = setTimeout(function () {}, 1);
 io_relay.on('ffmpeg', function (data) {
   if (data.mode == "start") {
@@ -945,6 +973,7 @@ var video_width = 1024;
 var video_height = 768;
 const spawn = require('child_process').spawn;
 const ffmpeg = null;
+
 function start_ffmpeg() {
   if (ffmpeg_started) return console.log("ffmpeg already started");
   var command =  [
