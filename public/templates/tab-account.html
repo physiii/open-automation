@@ -6,9 +6,9 @@
 <!-----------------------  Gateways  --------------------------->
 <!-------------------------------------------------------------->
 <div class="col-lg-4 col-md-6 col-sm-12">
-  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Gateway
       </h4>
     </ion-card-header>
@@ -179,7 +179,7 @@
 <div class="col-lg-4 col-md-6 col-sm-12">
   <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Room Sensors
       </h4>
     </ion-card-header>
@@ -248,7 +248,7 @@
 <div class="col-lg-4 col-md-6 col-sm-12">
   <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Garage
       </h4>
     </ion-card-header>
@@ -288,7 +288,7 @@
 <div class="col-lg-4 col-md-6 col-sm-12">
   <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Media Controllers
       </h4>
     </ion-card-header>
@@ -322,13 +322,14 @@
   </div>
 </div>
 -->
+
 <!-------------------------------------------------------------->
 <!------------------------- Sirens ----------------------------->
 <!-------------------------------------------------------------->
 <div class="col-lg-4 col-md-6 col-sm-12">
   <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Sirens
       </h4>
     </ion-card-header>
@@ -367,7 +368,7 @@
 <div class="col-lg-4 col-md-6 col-sm-12">
   <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Mobile Devices
       </h4>
     </ion-card-header>
@@ -385,9 +386,9 @@
 <!-----------------------  Contacts  --------------------------->
 <!-------------------------------------------------------------->
 <div class="col-lg-4 col-md-6 col-sm-12">
-  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:left;">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
     <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
+      <h4 style="margin:10px;color:#ccc">
         Security Contacts
       </h4>
     </ion-card-header>
@@ -413,6 +414,36 @@
     </div>
   </div>
 </div>
+
+<!-------------------------------------------------------------->
+<!----------------------  Add Device  -------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header>
+      <h4 style="margin:10px;color:#ccc">
+        Link your device
+      </h4>
+    </ion-card-header>
+    <div class="item item-divider">  
+      <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">
+        <div id="siren_form" style="display:none" >
+          <div style="padding:0px 25px 0px 10px">
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_device.device_name" placeholder="Name your device" />        
+            <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_device.mac" placeholder="Enter the Device ID" />
+          </div>
+          <input type="submit"  ng-click="add_device(new_device)" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+        </div>
+        <input type="submit" id="link_device_form_btn" ng-click="show_form('link_device_form')" value="Link your device" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+        <input type="submit" ng-click="redirect('store.pyfi.org')" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
 
       </div>
   </ion-content>

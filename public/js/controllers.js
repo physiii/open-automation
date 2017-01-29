@@ -30,9 +30,8 @@ angular.module('main_site', ['socket-io'])
         console.log("error",data.error);
         return;
       }
-      $.cookie('user',data.user);
-      $.cookie('token',data.token, { expires : 5 });
-      console.log("login",data);
+      $.cookie('user',data.user, { path: '/' });
+      $.cookie('token',data.token, { path: '/' });
       window.location.replace("/home");
     }).fail(function(data) {
     document.getElementById("login_message").style.display = "inline";
@@ -47,12 +46,21 @@ angular.module('main_site', ['socket-io'])
     document.getElementById("contact_form").style.display = "none";
     document.getElementById("main_login_form").style.display = "inline";
     document.getElementById("main_register_form").style.display = "none";
+    document.getElementById("price_generator_form").style.display = "none";
   }
   
   $scope.show_register = function() {
     document.getElementById("contact_form").style.display = "none";
     document.getElementById("main_login_form").style.display = "none";
     document.getElementById("main_register_form").style.display = "inline";
+    document.getElementById("price_generator_form").style.display = "none";
+  }
+  
+  $scope.show_price_generator = function() {
+    document.getElementById("contact_form").style.display = "none";
+    document.getElementById("main_login_form").style.display = "none";
+    document.getElementById("main_register_form").style.display = "none";
+    document.getElementById("price_generator_form").style.display = "inline";
   }
 
   $scope.register = function(user) {
@@ -66,8 +74,8 @@ angular.module('main_site', ['socket-io'])
         return;
       }
       console.log("register",data);
-      $.cookie('user',data.username);
-      $.cookie('token',data.token, { expires : 5 });
+      $.cookie('user',data.username, { path: '/' } );
+      $.cookie('token',data.token, { path: '/' } );
       window.location.replace("/home");
     });
   }
@@ -125,11 +133,11 @@ angular.module('starter.controllers', ['socket-io'])
     var token = $.cookie('token');
     var user = $.cookie('user');
     $rootScope.token = token;
-    console.log($rootScope.token);
+    $rootScope.user = user;
     relay_socket.emit('link user',{token:token, user:user});
     relay_socket.emit('get devices',{token:token});
     relay_socket.emit('get contacts',{user_token:token});  
-
+    relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
   //relay_socket.emit('get devices',data);
   //relay_socket.emit('get contacts',{user_token:$rootScope.token});
   //$rootScope.username = username;
@@ -257,7 +265,7 @@ relay_socket.on('room_sensor', function (data) {
       if (devices[i].device_type[j] == "gateway") {
         var command = devices[i];
         command.mode = "start";
-        devices[i].stream_started = 0;
+        devices[i].stream_started = false;
         relay_socket.emit('ffmpeg',command);
         gateways.push( devices[i] );
       }
@@ -319,17 +327,15 @@ relay_socket.on('room_sensor', function (data) {
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
     load_settings(data);
-    for (var i = 0; i < gateways.length; i++) {
-      if (gateways[i].stream_started > 3) {
-        console.log('stream already started',gateways[i].stream_started);
-        continue;
-      }
-      gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
-      gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-      gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
-      console.log('token for video stream',gateways[i].token);
-      gateways[i].stream_started++;
-    }
+    /*for (var i = 0; i < gateways.length; i++) {
+      if (data.mac == gateways[i].mac && !gateways[i].stream_started) {
+        gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
+        console.log('token for video stream',gateways[i].token);
+        gateways[i].stream_started = true;
+        gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
+        gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+      } else console.log('stream already started',gateways[i].mac);
+    }*/
     console.log('load settings',data);
   });
 
@@ -665,6 +671,19 @@ image.addEventListener('load', function() {
 
 .controller('VideoCtrl', function($scope, $rootScope, $stateParams, socket, $ionicLoading, $compile, $http) {
   console.log("<< ------  VideoCtrl  ------ >> ");
+  
+  $scope.start_stream = function(mac) {
+    var gateways = $rootScope.gateways;
+    var i = $rootScope.find_index(gateways,"mac",mac);
+    document.getElementById("play-button_"+mac).style.display = "none";
+    if (gateways[i].stream_started) return console.log("stream already started");
+    gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
+    console.log('token for video stream',gateways[i].token);
+    gateways[i].stream_started = true;
+    gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
+    gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+  }
+  
   $scope.fullscreen = function(div_id) { 
     console.log("fullscreen",div_id);
     if (document.getElementById(div_id).className == "") {
@@ -842,6 +861,7 @@ function disable_update() {
   console.log('<< ------  AccountCtrl  ------ >>');
   var relay_socket = $rootScope.relay_socket;
   var alert_contacts = $rootScope.alert_contacts;
+      relay_socket.emit('link lights',{ mac:"TESTMAC!!", token:"!!TESTTOK" });
   $scope.link_lights = function(gateway) {
     relay_socket.emit('link lights',{ mac:gateway.mac, token:gateway.token });
     console.log('link lights',gateway);

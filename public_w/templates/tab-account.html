@@ -1,0 +1,419 @@
+<ion-view view-title="Account">
+  <ion-content>
+    <div style="max-width:2000px;margin:0px auto 50px auto;">
+
+<!-------------------------------------------------------------->
+<!-----------------------  Gateways  --------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Gateway
+      </h4>
+    </ion-card-header>
+    <div id="{{ gateway.mac }}_div" data-ng-repeat="gateway in gateways">
+      <button style="text-align:left;font-size:25px;color:#555;padding:10px" class="button-block fa fa-chevron-right fa-3x col" ng-click="showInfo(gateway.mac)">
+        {{ gateway.device_name }}
+      </button>
+      <div id="{{ gateway.mac }}_account_info" style="display:none">
+          <div class="" style="border-style:solid;border-width:1px;border-color:#999;">
+
+             <li class="item item-divider">
+               <div id="{{ gateway.mac }}_show_rename_device" >
+               <div style="float:left">Device Name</div>
+                   <button style="padding:2px;float:right" class="fa fa-pencil-square-o fa-1x" ng-click="show_rename_device(gateway,true)"></button>
+                 <div style="text-align:center;text-size:25px">
+                   <b>{{ gateway.device_name }}</b>
+                 </div>
+               </div>
+               <div id="{{ gateway.mac }}_rename_device" style="display:none">
+                 <input style="border-style:solid;border-width:1px;border-color:#ddd;" ng-model="gateway.device_name" placeholder="Name your device" />
+                 <button style="" class="btn-block" ng-click="rename_device(gateway)">Save</button>
+               </div>              
+             </li>
+
+            <li  class="item item-divider">
+              <div style="float:left">Device ID</div>
+              <div style="float:right"><b>{{ gateway.mac }}</b></div>
+            </li>
+            <li  class="item item-divider">
+              <div style="float:left">Local</div>
+              <div style="float:right"><b>{{ gateway.local_ip }}</b></div>
+            </li>
+            <li  class="item item-divider">
+              <div style="float:left">Public</div>
+              <div style="float:right"><b>{{ gateway.public_ip }}</b></div>
+            </li>
+
+     	     <div class="item item-divider" data-ng-repeat="device in gateway.devices"> 
+               <li ng-if="device.device_type != 'lights'" class="item item-divider">
+                 <div style="float:left">{{device.device_type}}</div>
+<button style="padding:5px;float:right" class="fa fa-times fa-1x" ng-click="rename_device(gateway)"></button>
+               </li>
+               <li data-ng-repeat="light in device.lights" class="item item-divider">
+                 <div style="float:left">{{ light.name }}</div>
+                 <label style="float:right" class="toggle toggle-balanced">
+                   <input type="checkbox" ng-model="light.state.on" value="{{light.state.on}}" ng-click="light_command(gateway,device,light)" >
+                   <div class="track">
+                     <div class="handle"></div>
+                   </div>
+                 </label>
+               </li>
+	     </div>
+          </div>
+
+          <li class="item" style="margin:auto">
+            <div style="float:left;margin:20px">
+              Camera<br>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" ng-model="gateway.settings.camera_enabled" value="{{gateway.settings.camera_enabled}}" ng-click="toggle_setting({camera_enabled:gateway.settings.camera_enabled,token:gateway.token})" >
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+            </div>
+            <div style="float:left;margin:20px">
+              Stream<br>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" ng-model="gateway.settings.stream_enabled" value="{{gateway.settings.stream_enabled}}" ng-click="toggle_setting({stream_enabled:gateway.settings.stream_enabled,token:gateway.token})" >
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+            </div>
+            <div style="float:left;margin:20px">
+              Media<br>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" value="{{gateway.settings.media_enabled}}" ng-model="gateway.settings.media_enabled" ng-click="toggle_setting({media_enabled:gateway.settings.media_enabled,token:gateway.token})" >
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+            </div>
+            <div style="float:left;margin:20px">
+              Gateway<br>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" value="{{gateway.settings.gateway_enabled}}" ng-model="gateway.settings.gateway_enabled" ng-click="toggle_setting({gateway_enabled:gateway.settings.gateway_enabled,token:gateway.token})" >
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+            </div>
+            <div style="float:left;margin:20px">
+              Dashboard<br>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" value="{{gateway.settings.dashboard_enabled}}" ng-model="gateway.settings.dashboard_enabled" ng-click="toggle_setting({dashboard_enabled:gateway.settings.dashboard_enabled,token:gateway.token})" >
+                <div class="track">
+                  <div class="handle"></div>  
+                </div>
+              </label>
+            </div>
+          </li>
+
+          <div ng-if="gateway.settings.gateway_enabled" class="item-divider">  
+            <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      
+              <div id="{{ gateway.mac }}_add_thermostat_form" style="display:none" >
+                <div style="max-width:300px;margin:auto;padding:0px 25px 0px 25px;margin:10px 0px 0px 0px;">
+                  <input  ng-model="new_thermostat.local_ip" placeholder="Enter IP Address"  />
+                </div>
+                <div style="max-width:300px;margin:auto;padding:0px 25px 0px 25px;margin:0px 0px 0px 0px;">
+                  <input class="item" ng-model="new_thermostat.device_name" placeholder="Name your device" />
+                </div>
+                <div style="max-width:300px;margin:auto;">
+                  <input type="hidden" ng-init="new_thermostat.device_type = 'thermostat'" />
+                  <input type="hidden" ng-init="new_thermostat.token = gateway.token" />
+                  <input type="hidden" ng-model="new_thermostat.mac" value="{{ gateway.mac }}" />
+                  <input type="submit" ng-click="add_device(new_thermostat)" value="Add" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />                  </div>        
+              </div>
+              <input type="hidden" ng-init="new_light.device_type = 'lights'" />
+              <input type="hidden" ng-init="new_light.token = gateway.token" />
+              <input type="hidden" ng-model="new_light.mac" value="{{ gateway.mac }}" />
+              <input type="hidden" ng-init="add_device(new_light)" />
+              <input type="submit" id="{{ gateway.mac }}_add_thermostat_form_btn" ng-click="show_form(gateway.mac+'_add_thermostat_form')" value="Add thermostat" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+              <div id="lights_scan_form" style="display:none" >
+                <div style="max-width:300px;margin:auto;padding:10px 25px 0px 25px;">
+                  <h2>Scanning network for lights...</h2>
+                </div>
+              </div>
+              <input type="submit" id="lights_scan_btn" ng-click="link_lights(gateway)" value="Scan for lights" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+              <input type="submit" id="add_zwave_device" ng-click="add_zwave_device(gateway)" value="Scan for Z-Wave" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+
+              <div id="ssh_form_{{ gateway.mac }}" style="display:none" >
+                <div style="max-width:300px;margin:auto;padding:10px 25px 0px 25px;">
+                  <div style="width:100%;height100%;color:#fff;background:#222;border-style:solid;border-width:1px;border-radius:2px;">{{ gateway.ssh_out }}</div>
+                  <input style="font-size:100%;" ng-model="gateway.command" placeholder="Command" />
+                  <input type="submit" ng-click="ssh(gateway)" value="Send" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />  
+                </div>
+              </div>
+
+              <input type="submit" id="add_ssh" ng-click="show_form('ssh_form_' + gateway.mac)" value="Command" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+            </div>
+          </div>
+            <button style="margin:15px;float:left" class="button button-small button-balanced" ng-click="update_device(gateway)"><b>Update</b></i></button>
+          <button style="margin:15px;float:right" class="button button-small button-assertive" ng-click="remove_device(gateway)" ><b>Remove</b></button>
+        </div>
+      </div>
+
+      <div class="item item-divider">
+        <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      
+          <div id="gateway_form" style="display:none" >
+            <div style="padding:0px 25px 0px 10px">
+              <input type="hidden" ng-init="new_gateway.device_type = 'gateway'" />
+              <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_gateway.device_name" placeholder="Name your device" />
+              <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_gateway.mac" placeholder="Enter the Device ID" />
+            </div>
+            <input type="submit" ng-click="add_device(new_gateway)" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />        
+          </div>
+          <input type="submit" id="gateway_form_btn" ng-click="show_form('gateway_form')" value="Link your gateway" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+          <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<!-------------------------------------------------------------->
+<!---------------------  Room Sensors  ------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Room Sensors
+      </h4>
+    </ion-card-header>
+    <div style="padding:0px" class="item item-divider" data-ng-repeat="x in room_sensors" id="{{ x.mac }}_div">
+      <button style="text-align:left;font-size:25px;color:#555;padding:10px" class="button-block fa fa-chevron-right fa-3x col" ng-click="showInfo(x.mac)">
+        {{ x.device_name }}
+      </button>
+      <div id="{{ x.mac }}_account_info" style="display:none" class="">
+
+             <li class="item item-divider">
+               <div id="{{ x.mac }}_show_rename_device" >
+                 <div style="margin:0px 0px 0px 15px;text-align:center">
+                   <b>{{ x.device_name }}</b>
+                   <button style="padding:5px;float:right" class="fa fa-pencil-square-o fa-1x" ng-click="show_rename_device(x,true)"></button>
+                 </div>
+               </div>
+               <div id="{{ x.mac }}_rename_device" style="display:none">
+                 <input style="" ng-model="x.device_name" placeholder="Name your device" />
+                 <button style="padding:10px;float:right" class="btn-block" ng-click="rename_device(x)">Save</button>
+               </div>              
+             </li>
+
+            <li  class="item item-divider">
+              <div style="text-align:center;">Device ID <b>{{ x.mac }}</b></div>
+            </li>
+            <li  class="item item-divider">
+              <div style="text-align:center;">Local <b>{{ x.local_ip }}</b></div>     
+            </li>
+             <li class="item item-divider">
+              <div style="text-align:center;">Public <b>{{ x.public_ip }}</b></div>
+            </li>
+
+
+        <!--<div style="border-style:solid;border-width:1px;border-color:#888" class="item item-text-wrap">     
+          Mac Address <b>{{ x.mac }}</b><br>   
+          IP Address <b>{{ x.public_ip }}</b>
+          <div data-ng-repeat="gateway in gateways">
+	    <div data-ng-repeat="device in gateway.devices">{{device.device_type}}</div>
+          </div>
+          <button class="button button-small button-block button-assertive" ng-click="remove_device(x)">Remove</i></button>  
+        </div> -->
+            <button style="margin:15px;float:left" class="button button-small button-balanced" ng-click="update_device(x)"><b>Update</b></i></button>
+          <button style="margin:15px;float:right" class="button button-small button-assertive" ng-click="remove_device(x)" ><b>Remove</b></button>
+      </div>
+    </div> 
+    <div class="item item-divider">  
+      <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">
+        <div id="room_sensor_form" style="display:none" >
+          <div style="padding:0px 25px 0px 10px">
+            <input type="hidden" ng-init="new_room_sensor.device_type = 'room_sensor'" />        
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_room_sensor.device_name" placeholder="Name your device" />        
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_room_sensor.mac" placeholder="Enter the Device ID" />
+          </div>
+          <input type="submit"  ng-click="add_device(new_room_sensor,'room_sensor')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+        </div>
+        <input type="submit" id="room_sensor_form_btn" ng-click="show_form('room_sensor_form')" value="Link your room sensor" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+        <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-------------------------------------------------------------->
+<!-------------------  Garage Openers  ------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Garage
+      </h4>
+    </ion-card-header>
+    <div style="padding:0px" class="item item-divider" data-ng-repeat="x in garage_openers" id="{{ x.mac }}_div">
+      <button style="text-align:left;font-size:25px;color:#555;padding:10px" class="button-block fa fa-chevron-right fa-3x col" ng-click="showInfo(x.mac)">
+        {{ x.device_name }}
+      </button>
+      <div id="{{ x.mac }}_account_info" style="background-color:#444;display:none;" >
+        <div style="border-style:solid;border-width:1px;border-color:#888;margin:20px;" class="item item-text-wrap">   
+          <div style="float:left;margin:10px">Mac Address <b>{{ x.mac }}</b></div>
+          <div style="float:right;margin:10px">IP Address <b>{{ x.public_ip }}</b></div>
+          <button style="margin:15px;float:left" class="button button-small button-block button-assertive"  ng-click="update_device(x)">Update</i></button>
+          <button class="button button-small button-block button-assertive" ng-click="remove_device(x)">Remove</i></button>  
+        </div>
+      </div>
+    </div>
+    <div class="item item-divider">  
+      <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">
+        <div id="garage_opener_form" style="display:none" >
+          <div style="padding:0px 25px 0px 10px">
+            <input  class="item" type="hidden" ng-init="new_garage_opener.device_type = 'garage_opener'" />        
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_garage_opener.device_name" placeholder="Name your device" />        
+            <input style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_garage_opener.mac" placeholder="Enter the Device ID" />
+          </div>
+          <input type="submit"  ng-click="add_device(new_garage_opener,'garage_opener')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+        </div>
+        <input type="submit" id="garage_opener_form_btn" ng-click="show_form('garage_opener_form')" value="Link your garage opener" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+        <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-------------------------------------------------------------->
+<!------------------  Media Controllers  ----------------------->
+<!------------------------------------------------------------
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Media Controllers
+      </h4>
+    </ion-card-header>
+    <div style="padding:0px" class="item item-divider" data-ng-repeat="x in media_controllers" id="{{ x.mac }}_div">
+      <button style="text-align:left;font-size:25px;color:#555;padding:10px" class="button-block fa fa-chevron-right fa-3x col" ng-click="showInfo(x.mac)">
+        {{ x.device_name }}
+      </button>
+      <div id="{{ x.mac }}_account_info" style="display:none" class="card">
+        <div style="border-style:solid;border-width:1px;border-color:#888" class="item item-text-wrap">
+        <meter id="{{ x.mac }}_meter" style="width:100%;height:20px" low="5000" optimum="4000" high="15000" min="0" max="20000"></meter>      
+          Mac Address <b>{{ x.mac }}</b><br>   
+          IP Address <b>{{ x.public_ip }}</b>        
+          <button class="button button-small button-block button-assertive" ng-click="remove_device(x)">Remove</i></button>  
+        </div>
+      </div>
+    </div> 
+    <div class="item item-divider">  
+      <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">
+        <div id="media_controller_form" style="display:none" >
+          <div style="padding:0px 25px 0px 10px">
+            <input type="hidden" ng-init="new_media_controller.device_type = 'media_controller'" />        
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_media_controller.device_name" placeholder="Name your device" />        
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_media_controller.mac" placeholder="Enter the Device ID" />
+          </div>
+          <input type="submit"  ng-click="add_device(new_media_controller,'media_controller')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+        </div>
+        <input type="submit" id="media_controller_form_btn" ng-click="show_form('media_controller')" value="Link your media controller" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+        <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+<!-------------------------------------------------------------->
+<!------------------------- Sirens ----------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Sirens
+      </h4>
+    </ion-card-header>
+    <div style="padding:0px" class="item item-divider" data-ng-repeat="x in sirens" id="{{ x.mac }}_div">
+      <button style="text-align:left;font-size:25px;color:#555;padding:10px" class="button-block fa fa-chevron-right fa-3x col" ng-click="showInfo(x.mac)">
+        {{ x.device_name }}
+      </button>
+      <div id="{{ x.mac }}_account_info" style="background-color:#444;display:none;" >
+        <div style="border-style:solid;border-width:1px;border-color:#888;margin:20px;" class="item item-text-wrap">   
+          <div style="float:left;margin:10px">Mac Address <b>{{ x.mac }}</b></div>
+          <div style="float:right;margin:10px">IP Address <b>{{ x.public_ip }}</b></div>
+          <button class="button button-small button-block button-assertive" ng-click="remove_device(x)">Remove</i></button>  
+        </div>
+      </div>
+    </div>
+    <div class="item item-divider">  
+      <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">
+        <div id="siren_form" style="display:none" >
+          <div style="padding:0px 25px 0px 10px">
+            <input type="hidden" ng-init="new_siren.device_type = 'siren'" />        
+            <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_siren.device_name" placeholder="Name your device" />        
+            <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_siren.mac" placeholder="Enter the Device ID" />
+          </div>
+          <input type="submit"  ng-click="add_device(new_siren,'siren')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+        </div>
+        <input type="submit" id="siren_form_btn" ng-click="show_form('siren_form')" value="Link your siren" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+        <input type="submit" ng-click="redirect('siren')" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-------------------------------------------------------------->
+<!-------------------  Mobile Devices  ------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Mobile Devices
+      </h4>
+    </ion-card-header>
+    <div class="item item-divider" data-ng-repeat="x in mobile">
+      <label style="color:#555;">
+        <h4><b>{{ x.mac }}</b></h4>
+      </label>
+      <button style="margin:0px 5px 0px 5px;width:40px;float:right" ng-click="to_mobile('ping_audio_stop',x.token)"><i class="fa fa-1x fa-volume-off"></i></button>      
+      <button style="margin:0px 5px 0px 5px;width:40px;float:right" ng-click="to_mobile('ping_audio_start',x.token)"><i class="fa fa-1x fa-volume-up"></i></button>  
+    </div>
+  </div>
+</div>
+
+<!-------------------------------------------------------------->
+<!-----------------------  Contacts  --------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:left;">
+    <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Security Contacts
+      </h4>
+    </ion-card-header>
+    <div class="item item-divider" data-ng-repeat="x in alert_contacts">
+      <label style="color:#555;">
+        <h4><b>{{ x.label }}</b></h4>
+        <h4>{{ x.number }}</h4>
+      </label>
+      <button style="float:right" ng-click="remove_contact(x)"><i class="fa fa-remove"></i></button>
+      <button style="float:right" ng-click="test_alert(x)">Test Alert</button>    
+    </div>
+    <div class="item item-divider">  
+      <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      
+        <div id="contacts_form" style="display:none" >
+          <div style="padding:0px 25px 0px 10px">
+            <input class="item" style="border-style:solid;border-width:1px;border-color:#888;margin:5px 0px 0px 0px;width:100%;padding:5px;" ng-model="new_alert_number.label" placeholder="Label for Contact" />        
+            <input class="item" style="border-style:solid;border-width:1px;border-color:#888;margin:5px 0px 0px 0px;width:100%;padding:5px;" ng-model="new_alert_number.number" placeholder="Phone Number"">
+          </div>
+          <input type="submit" ng-click="add_contact(new_alert_number)" value="Add" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+        </div>
+        <input type="submit" id="contacts_form_btn" ng-click="show_form('contacts_form')" value="Add New Contact" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+  </ion-content>
+</ion-view>

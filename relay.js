@@ -41,13 +41,10 @@ passport.serializeUser(function(user, done) {
 passport.use(new LocalStrategy(
   function(username, password, done) {
     var index = find_index(accounts,'username',username);
-    if (index < 0) {
-      console.log("account not found",username);
-      return done(null, false, { message: 'Incorrect username' });
-    }
+    if (index < 0) return console.log("account not found",username);
     var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
     if (token != accounts[index].token) return console.log("passwords do not match");
-    return done(null, token);
+    return done(null, {token:token, user:username});
     /*User.findOne({ username: username }, function (err, user) {
       if (err) { return done(err); }
       if (!user) {
@@ -75,7 +72,7 @@ app.post('/login',
   passport.authenticate('local'),
   function(req, res) {
     console.log("authenticated",req.user);
-    res.json({"token":req.user});
+    res.json(req.user);
   });
 
 app.post('/register', function(req, res) {
@@ -647,6 +644,7 @@ io.on('connection', function (socket) {
   //console.info(socket.id + " | client connected" );
 
   socket.on('get token', function (data) {
+    console.log("get token",data.mac);
     var public_ip = socket.request.connection.remoteAddress;
     public_ip = public_ip.slice(7);
     var device_name = data.device_name;
@@ -1411,33 +1409,20 @@ var STREAM_SECRET = "init",
     WEBSOCKET_PORT = 8084,
     STREAM_MAGIC_BYTES = 'jsmp'; // Must be 4 bytes
 
-var stream_width = 800,
-    stream_height = 600;
-
 // Websocket Server
 var socketServer = new (require('ws').Server)({port: WEBSOCKET_PORT});
 socketServer.on('connection', function(socket) {
-  // Send magic bytes and video size to the newly connected socket
-  // struct { char magic[4]; unsigned short width, height;}
-  var streamHeader = new Buffer(8);
-  streamHeader.write(STREAM_MAGIC_BYTES);
-  streamHeader.writeUInt16BE(stream_width, 4);
-  streamHeader.writeUInt16BE(stream_height, 6);
-  socket.send(streamHeader, {binary:true});
-  console.log( 'new video socket connection ('+socketServer.clients.length+' total)' );
-  socket.on('close', function(code, message){
-    var index = find_index(user_objects,'socket',socket);
-    if (index > -1) user_objects.splice(index,1);
-    console.log( 'video socket closed ('+socketServer.clients.length+' total)' );
-  });
+  console.log( 'video socket opened ('+socketServer.clients.length+' total)' );
   socket.onmessage = function (event) {
     var token = event.data;
     socket.token = token;
-    /*var index = find_index(device_objects,'token',token);
-    if (index < 0) return console.log('token not found');
-    device_objects[index].camera_socket = socket;*/
     console.log("stored video token",socket.token);
   }
+  socket.on('close', function(code, message){
+    //var index = find_index(user_objects,'socket',socket);
+    //if (index > -1) user_objects.splice(index,1);
+    console.log( 'video socket closed ('+socketServer.clients.length+' total)' );
+  });
 });
 
 socketServer.on('disconnect', function(socket) {
@@ -1447,17 +1432,28 @@ socketServer.on('disconnect', function(socket) {
 });
 
 
-socketServer.broadcast = function(data, opts, token) {
+socketServer.broadcast = function(data, opts, settings) {
+  var token = settings.token;
+  var stream_width = settings.stream_width;
+  var stream_height = settings.stream_height;
+  
   for( var i in this.clients ) {
     var client = this.clients[i];
+    if (client.token != token) continue;
     if (client.readyState != 1) {
       console.log("Client not connected ("+i+")");
       continue;
     }
-    if (client.token != token) {
-      //console.log("camera: "+token);
-      //console.log("client:   "+client.token);
-      continue;
+ 
+    if (!this.clients[i].sent_header) {
+      // Send magic bytes and video size to the newly connected socket
+      // struct { char magic[4]; unsigned short width, height;}
+      var streamHeader = new Buffer(8);
+      streamHeader.write(STREAM_MAGIC_BYTES);
+      streamHeader.writeUInt16BE(stream_width, 4);
+      streamHeader.writeUInt16BE(stream_height, 6);
+      this.clients[i].send(streamHeader, {binary:true});
+      this.clients[i].sent_header = true;
     }
     this.clients[i].send(data, opts);
     //console.log("<< !!! SENDING BROADCAST ("+i+") !!! >>>");
@@ -1466,23 +1462,19 @@ socketServer.broadcast = function(data, opts, token) {
 
 // HTTP Server to accept incomming MPEG Stream
 var streamServer = require('http').createServer( function(request, response) {
+  response.connection.setTimeout(0);
   var params = request.url.substr(1).split('/');
   var token = params[0];
+  var stream_width = params[1];
+  var stream_height = params[2];
+  var settings = {token:token, stream_width:stream_width, stream_height:stream_height};
+  
   var index = find_index(device_objects,'token',token);
   if (index < 0) return console.log('device not found');
-  device_objects[index];
-  response.connection.setTimeout(0);
+  
   request.on('data', function(data){
-    socketServer.broadcast(data, {binary:true},token);
+    socketServer.broadcast(data, {binary:true}, settings);
   });
-	//}
-	/*else {
-		console.log(
-			'Failed Stream Connection: '+ request.socket.remoteAddress + 
-			request.socket.remotePort + ' - wrong secret.'
-		);
-		response.end();
-	}*/
 }).listen(STREAM_PORT);
 
 console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/<width>/<height>');
