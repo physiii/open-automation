@@ -9,7 +9,7 @@
   <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;text-align:center;">
     <ion-card-header >
       <h4 style="margin:10px;color:#ccc">
-        Gateway
+        Gateways
       </h4>
     </ion-card-header>
     <div id="{{ gateway.mac }}_div" data-ng-repeat="gateway in gateways">
@@ -65,9 +65,9 @@
 
           <li class="item" style="margin:auto">
             <div style="float:left;margin:20px">
-              Camera<br>
+              Motion<br>
               <label class="toggle toggle-balanced">
-                <input type="checkbox" ng-model="gateway.settings.camera_enabled" value="{{gateway.settings.camera_enabled}}" ng-click="toggle_setting({camera_enabled:gateway.settings.camera_enabled,token:gateway.token})" >
+                <input type="checkbox" ng-model="gateway.settings.camera_enabled" value="{{gateway.settings.motion_enabled}}" ng-click="toggle_setting({camera_enabled:gateway.settings.motion_enabled,token:gateway.token})" >
                 <div class="track">
                   <div class="handle"></div>
                 </div>
@@ -152,21 +152,6 @@
           </div>
             <button style="margin:15px;float:left" class="button button-small button-balanced" ng-click="update_device(gateway)"><b>Update</b></i></button>
           <button style="margin:15px;float:right" class="button button-small button-assertive" ng-click="remove_device(gateway)" ><b>Remove</b></button>
-        </div>
-      </div>
-
-      <div class="item item-divider">
-        <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      
-          <div id="gateway_form" style="display:none" >
-            <div style="padding:0px 25px 0px 10px">
-              <input type="hidden" ng-init="new_gateway.device_type = 'gateway'" />
-              <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_gateway.device_name" placeholder="Name your device" />
-              <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_gateway.mac" placeholder="Enter the Device ID" />
-            </div>
-            <input type="submit" ng-click="add_device(new_gateway)" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />        
-          </div>
-          <input type="submit" id="gateway_form_btn" ng-click="show_form('gateway_form')" value="Link your gateway" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
-          <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
         </div>
       </div>
 
@@ -427,7 +412,7 @@
     </ion-card-header>
     <div class="item item-divider">  
       <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">
-        <div id="siren_form" style="display:none" >
+        <div id="link_device_form" style="display:none" >
           <div style="padding:0px 25px 0px 10px">
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_device.device_name" placeholder="Name your device" />        
             <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_device.mac" placeholder="Enter the Device ID" />

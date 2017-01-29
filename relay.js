@@ -306,7 +306,7 @@ function get_user_objects() {
 
 //-- store things --//
 function store_group(group) {
-  console.log("STORING GROUP",group);
+  //console.log("STORING GROUP",group);
   delete group._id;
   /* store group associations */
   MongoClient.connect('mongodb://127.0.0.1:27017/groups', function (err, db) {
@@ -584,7 +584,7 @@ wss.on('connection', function connection(ws) {
       _socket = device_objects[i].socket;
       _mac = device_objects[i].mac;
       if ( _socket === ws ) {
-        device_objects.slice(i);
+        device_objects.slice(i); //slice or splice??
         console.log(_mac + " | disconnected");
       }
     }
@@ -699,11 +699,18 @@ io.on('connection', function (socket) {
 //----------- ffmpeg ----------//
   socket.on('ffmpeg', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return console.log('device not found',data);
-    if (!device_objects[device_index].socket) return console.log('socket not found',data);
+    if (device_index < 0) return; //console.log('ffmpeg | device not found',data.mac);
+    if (!device_objects[device_index].socket) return; //console.log('ffmpeg | socket not found',data.mac);
     device_objects[device_index].socket.emit('ffmpeg',data);
   });
-
+  
+  socket.on('camera', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log('camera | device not found',data.mac);
+    if (!device_objects[device_index].socket) return console.log('camera | socket not found',data.mac);
+    device_objects[device_index].socket.emit('camera',data);
+  });
+  
   socket.on('ffmpeg started', function (data) {
     var group_index = find_index(groups,'group_id',data.token);
     if (group_index < 0) return console.log("no device found");
@@ -716,6 +723,18 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('camera preview', function (data) {
+    var group_index = find_index(groups,'group_id',data.token);
+    if (group_index < 0) return console.log("no device found");
+    for (var i=0; i < groups[group_index].members.length; i++) {
+      for (var j=0; j < user_objects.length; j++) {
+        if (user_objects[j].token == groups[group_index].members[i]) {
+          user_objects[j].socket.emit('camera preview',data);
+        }
+      }
+    }
+  });
+  
   socket.on('ssh', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index > -1)
@@ -734,14 +753,7 @@ io.on('connection', function (socket) {
       }
     }
   });
-
-  socket.on('camera', function (data) {
-    var device_index = find_index(device_objects,'token',data.token);
-    if (device_index > -1)
-      if (device_objects[device_index].socket)
-        device_objects[device_index].socket.emit('camera',data);
-  });
-
+  
   socket.on('get contacts', function (data) {
     var group_index = find_index(groups,'group_id',data.user_token);
     socket.emit('get contacts',groups[group_index]);
@@ -1219,13 +1231,14 @@ io.on('connection', function (socket) {
 
     var index = find_index(groups,'group_id',user_token);
     var index2 = groups[index].members.indexOf(device_token);
+    groups[index].members.splice(index2,1);
     store_group(groups[index]);
-
+    console.log('unlink device',groups[index]);
+    
     var index = find_index(device_objects,'token',device_token);
     var index2 = device_objects[index].groups.indexOf(user_token);
-    device_objects[index].groups.splice(index,1);
+    device_objects[index].groups.splice(index2,1);
     store_device_object(device_objects[index]);
-    console.log('unlink device',groups[index]);
   });
   
 
@@ -1250,8 +1263,8 @@ io.on('connection', function (socket) {
       } else
       if (device_objects[device_index]) {
         var temp_object = device_objects[device_index];
-        delete temp_object.socket
-        devices.push(temp_object)
+        delete temp_object.socket;
+        devices.push(temp_object);
       } 
     }
     //console.log('get_devices2',devices);
@@ -1297,7 +1310,7 @@ io.on('connection', function (socket) {
         if (groups[index].members[i] == device_objects[j].token) {
           device_objects[j].device_name = data.device_name;
           store_device_object(device_objects[j]);
-          if (device_objects[j].socket) return console.log("rename device, device object undefined",device_objects[j].mac)
+          if (!device_objects[j].socket) return console.log("rename device, device object undefined",device_objects[j].mac)
           device_objects[j].socket.emit('rename device',data);
         }
       }

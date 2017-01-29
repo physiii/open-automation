@@ -22,22 +22,19 @@
   <div class="">
     <div class="flip-container">
       <div class="flipper clearfix" >
-        <div style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;" class="front card item-text-wrapped">
-          <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
-            <ion-card-header ng-click="flip()" >
-              <h4 style="margin:10px;float:right;color:#ccc">
-                {{ x.settings.device_name }}
-              </h4>
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip()" style="width:100%">
+                <h4 style="margin:10px;text-align:right;color:#ccc">{{ x.device_name }}</h4>
+              </div>
             </ion-card-header>
-            <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;">
-              <p>
-                Please use a browser that supports the Canvas Element, like
-  	        <a href="http://www.google.com/chrome">Chrome</a>,
-	        <a href="http://www.mozilla.com/firefox/">Firefox</a>,
-	        <a href="http://www.apple.com/safari/">Safari</a> or Internet Explorer 10
-              </p>
-            </canvas>
-              <button class="button" ng-click="fullscreen('container_' + x.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px"><i class="ion-arrow-expand"></i></button>
+            </ion-card-header>
+            <div id="play-button_{{ x.mac }}" class="" style="position:absolute;top:40%;left:50%" ng-click="start_stream(x.mac)">
+              <i style="" class="fa fa-play fa-4x col"></i>
+	    </div>
+            <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;display:none"></canvas>
+            <canvas id="previewCanvas_{{ x.mac }}" style="width:100%;height:100%"></canvas>
+            <button class="button" ng-click="fullscreen('container_' + x.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px"><i class="ion-arrow-expand"></i></button>
           </div>
         </div>
         <div class="back card success" style="background-color:#444">
@@ -49,11 +46,14 @@
           </ion-card-header>
           <!-- <iframe style="border:2px solid #444;border-radius:0px 0px 3px 3px;height:30vh" width="100%" height="" ng-src="{{ x.settings.cloud_url }}"></iframe>  -->
         </div>
-      </div>
+
     </div>
   </div>
 </div>
 
+
+
+<!--
 <div style="margin:20px;" data-ng-repeat="x in gateways" ng-if="x.settings.camera_enabled && x.settings.dashboard_enabled">
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div ng-click="flip()" class="flip-container">
@@ -81,70 +81,72 @@
     </div>
   </div>
 </div>
-
+-->
 </div>
 <!-------------------------------------------------------------->
 <!----------------------  Thermostat  -------------------------->
 <!-------------------------------------------------------------->
 <div ng-controller="ClimateCtrl" data-ng-repeat="gateway in gateways">
-<div data-ng-repeat="device in gateway.devices" ng-if="device.device_type == 'thermostat' && gateway.settings.dashboard_enabled">
-<div style="margin:20px;">
-  <div class="col-lg-4 col-md-6 col-sm-12">
-    <div class="flip-container">
-      <div class="flipper clearfix" >
-        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
 
-          <ion-card-header >
-            <div ng-click="flip()" style="width:100%">
-              <h4 style="margin:10px;text-align:right;color:#ccc">Thermostat</h4>
+<div data-ng-repeat="device in gateway.devices" ng-if="device.device_type == 'thermostat' && gateway.settings.dashboard_enabled">
+  <div style="margin:20px;">
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="flip-container">
+        <div class="flipper clearfix" >
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip()" style="width:100%">
+                <h4 style="margin:10px;text-align:right;color:#ccc">Thermostat</h4>
+              </div>
+            </ion-card-header>
+            <div class="item item-divider" style="width:100%;height:100px">
+              <div class="row card item item-divider" style="height:80px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
+                <div style="width:100%;text-align:left;font-size:50px;">{{ loading }}{{ device.current_state.temp }}F</div>
+                <div style="padding:10px;width:100%;">
+                  <div style="font-size:15px;text-align:right">Mode: {{ device.current_state.mode }} </div>
+                  <div style="font-size:15px;text-align:right">Fan: {{ device.current_state.fan }} </div>
+                </div>
+              </div>
             </div>
-          </ion-card-header>
-        <div class="item item-divider" style="width:100%;height:100px">
-          <div class="row card item item-divider" style="height:80px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
-            <div style="width:100%;text-align:left;font-size:50px;">{{ loading }}{{ device.current_state.temp }}F</div>
-            <div style="padding:10px;width:100%;">
-              <div style="font-size:15px;text-align:right">Mode: {{ device.current_state.mode }} </div>
-              <div style="font-size:15px;text-align:right">Fan: {{ device.current_state.fan }} </div>
+            <div class="row item item-divider" style="margin:auto">
+              <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_up',device,gateway)" ><i class="fa fa-chevron-up fa-4x col"></i></button>
+              <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_down',device,gateway)"><i class="fa fa-chevron-down fa-4x col"></i></button>
+              <div style="padding:10px;width:250px;">
+                <div style="font-size:15px;text-align:center">Set</div>
+                <div style="font-size:40px;text-align:right">{{ device.set_state.set_temp }}F</div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row item item-divider" style="margin:auto">
-          <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_up',device,gateway)" ><i class="fa fa-chevron-up fa-4x col"></i></button>
-          <button style="height:100px;width:100%;" ng-click="set_thermostat('temp_down',device,gateway)"><i class="fa fa-chevron-down fa-4x col"></i></button>
-          <div style="padding:10px;width:250px;">
-            <div style="font-size:15px;text-align:center">Set</div>
-            <div style="font-size:40px;text-align:right">{{ device.set_state.set_temp }}F</div>
-          </div>
-        </div>
-        <div class="row item item-divider" style="margin:auto">
-          <button style="margin:auto;width:100%;" ng-click="set_thermostat('power',device,gateway)"><i class=" fa fa-power-off fa-5x col"></i></button>
-          <div style="padding:10px;width:150px;">
-            <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('cool',device,gateway)">Cool</button></div>
-            <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('warm',device,gateway)">Warm</button></div>    
-          </div>
-        </div>
-        </div>
-        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
-          <ion-card-header >
-            <div ng-click="flip()" style="width:100%">
-              <h4 style="margin:10px;text-align:right;color:#ccc">History</h4>
-            </div>
-          </ion-card-header>
-          <div class="item item-divider" style="width:100%;height:130px">
-            <div id="{{x.mac}}_screen" class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;background:#222">
-              <div style="width:100%;text-align:center;font-size:45px;">{{ dash.state.label }}</div>
+            <div class="row item item-divider" style="margin:auto">
+              <button style="margin:auto;width:100%;" ng-click="set_thermostat('power',device,gateway)"><i class=" fa fa-power-off fa-5x col"></i></button>
+              <div style="padding:10px;width:150px;">
+                <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('cool',device,gateway)">Cool</button></div>
+                <div style="font-size:15px;text-align:right"><button style="width:100%;height:40px;" ng-click="set_thermostat('warm',device,gateway)">Warm</button></div>    
+              </div>
             </div>
           </div>
-          <div class="row item item-divider" style="margin:auto">
-            <button style="height:100px;width:100%;" ng-click="media_dash('mute')"><i  class="fa fa-lock fa-3x col"></i></button>
-            <button style="height:100px;width:100%;" ng-click="media_dash('volume up')"><i class="fa fa-unlock fa-3x col"></i></button>
+          <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip()" style="width:100%">
+                <h4 style="margin:10px;text-align:right;color:#ccc">History</h4>
+              </div>
+            </ion-card-header>
+            <div class="item item-divider" style="width:100%;height:130px">
+              <div id="{{x.mac}}_screen" class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;background:#222">
+                <div style="width:100%;text-align:center;font-size:45px;">{{ dash.state.label }}</div>
+              </div>
+            </div>
+            <div class="row item item-divider" style="margin:auto">
+              <button style="height:100px;width:100%;" ng-click="media_dash('mute')"><i  class="fa fa-lock fa-3x col"></i></button>
+              <button style="height:100px;width:100%;" ng-click="media_dash('volume up')"><i class="fa fa-unlock fa-3x col"></i></button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-</div>
+
+
 </div>
 
 <!-------------------------------------------------------------->
@@ -200,7 +202,6 @@
 <!------------------------------------------------------------------------>
 <!-----------------------------  Media  ---------------------------------->
 <!------------------------------------------------------------------------>
-
 <div style="margin:20px;" ng-controller="MediaCtrl">
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="flip-container">
@@ -373,28 +374,46 @@
       </div>
     </div>
   </div>
+</div>
 
+<!------------------------------------------------------------------------>
+<!-----------------------------  Locks  ---------------------------------->
+<!------------------------------------------------------------------------>
+<div style="margin:20px;" ng-controller="AccessCtrl">
   <div data-ng-repeat="gateway in gateways">
     <div data-ng-repeat="device in gateway.settings.devices" ng-if="device.device_type == 'Secure Keypad Door Lock'" class="col-lg-4 col-md-6 col-sm-12">
-        <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
           <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
-        Deadbolt
-      </h4>
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">{{ device.device_type }}</h4>
+            </div>
           </ion-card-header>
-        <div class="item item-divider" style="height:130px;">
+          <div class="item item-divider" style="width:100%;height:130px">
           <div ng-if="device.classes['98']['0'].value == true" style="background:#9C0C1B;height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">LOCKED<i class="fa fa-lock fa-4x col"></i></div>
           <div ng-if="device.classes['98']['0'].value == false" style="background:#0B7520;height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">UNLOCKED<i class="fa fa-unlock fa-4x col"></i></div>
-        </div>
+          </div>
         <div class="row item item-divider" style="margin:auto">
           <button style="height:100px" ng-click="lock(device,gateway)" class="fa fa-lock fa-3x col"></button>
           <button style="height:100px" ng-click="unlock(device,gateway)" class="fa fa-unlock fa-3x col"></button>
         </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Access History</h4>
+            </div>
+          </ion-card-header>
+          <div class="row item item-divider" style="margin:auto">
+ 	    
+          </div>
+        </div>
       </div>
     </div>
+  </div>
 </div>
-
-
+</div>
 
 <!------------------------------------------------------------------------>
 <!----------------------------  Alerts  ---------------------------------->
@@ -438,40 +457,64 @@
   </div>
 -->
 
-
 <!------------------------------------------------------------------------>
-<!----------------------------  Beacon  ---------------------------------->
+<!-----------------------------  Beacon  --------------------------------->
 <!------------------------------------------------------------------------>
-<div class="col-lg-4 col-md-6 col-sm-12">
-  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es"></script>
-  <div class="card" ng-controller="MapCtrl" class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
-    <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
-        Beacon
-      </h4>
-    </ion-card-header>
+<div style="margin:20px;" ng-controller="MediaCtrl">
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Beacon</h4>
+            </div>
+          </ion-card-header>
     <div style="padding:10px" class="item item-divider">
       <div style="border:2px solid #555;width:100%;height:500px;" id="map"></div>
+    </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Device List</h4>
+            </div>
+          </ion-card-header>          
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!------------------------------------------------------------------------>
-<!----------------------------  Weather  --------------------------------->
+<!-----------------------------  Weather  --------------------------------->
 <!------------------------------------------------------------------------>
-<div class="col-lg-4 col-md-6 col-sm-12">
-  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
-    <ion-card-header >
-      <h4 style="margin:10px;float:right;color:#ccc">
-        Weather
-      </h4>
-    </ion-card-header>
+<div style="margin:20px;" ng-controller="MediaCtrl">
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Weather</h4>
+            </div>
+          </ion-card-header>
     <div style="padding:10px" class="item item-divider">
       <div style="background:#f8f8f8;border:2px solid #444;">
         <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>
       </div>
       <div style="background:#f8f8f8;border:2px solid #444;border-width:0px 2px 2px 2px">
         <img src='//radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
+      </div>
+    </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Detailed Weather</h4>
+            </div>
+          </ion-card-header>          
+        </div>
       </div>
     </div>
   </div>
