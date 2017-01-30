@@ -226,7 +226,7 @@ function main_loop () {
       }
     }
   }, 60*1000);
-  console.log(Date.now() + " | main loop");
+  //console.log(Date.now() + " | main loop");
 }
 // ---------------------- device info  ------------------- //
 var local_ip = "init";
@@ -939,15 +939,19 @@ io_relay.on('camera', function (data) {
 function get_camera_preview() {
   var settings = {width: 1024, height: 768};
   var command =  [
+  		   '-y',
                    '-loglevel', 'panic',
                    '-s', settings.width+"x"+settings.height,
+                   '-f', 'video4linux2',
                    '-i', '/dev/video11',
+                   'vframes', '1',
                    "/var/tmp/camera_preview_.jpg"
                  ];
   const ffmpeg_preview = spawn('ffmpeg', command);
+  console.log('camera_preview',command);
   setTimeout(function () {
     ffmpeg_preview.kill();
-  }, 1000);
+  }, 2000);
   
   send_camera_preview(settings);
 }
