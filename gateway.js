@@ -944,7 +944,11 @@ function get_camera_preview() {
                    '-i', '/dev/video11',
                    "/var/tmp/camera_preview_.jpg"
                  ];
-  const ffmpeg = spawn('ffmpeg', command);
+  const ffmpeg_preview = spawn('ffmpeg', command);
+  setTimeout(function () {
+    ffmpeg_preview.kill();
+  }, 1000);
+  
   send_camera_preview(settings);
 }
 
