@@ -12,7 +12,7 @@ Adjustable bitrate for low data streaming and timeout functions to save data cos
 Uses motion to trigger recording to local disk and local disk can be proxied (working on streaming from disk but should be similar to streaming from webcam)
 
 1. Angularjs frontend - http://open-automation.org
-2. NodeJS and PHP for tokens, authentication, general processing
+2. NodeJS and MongoDB for tokens, authentication, general processing
 3. websocket relay server to communicate behind firewalls and routers - https://github.com/physiii/node-relay
 4. z-wave compatible - https://github.com/OpenZWave
 5. text alerts
