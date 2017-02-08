@@ -1318,7 +1318,11 @@ io.on('connection', function (socket) {
   });
 
   socket.on('update', function (data) {
-    var devices = [];
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log('update | device not found',data.mac);
+    if (!device_objects[device_index].socket) return console.log('update | socket not found',data.mac);
+    device_objects[device_index].socket.emit('update',data);
+    /*var devices = [];
     var index = find_index(groups,'group_id',data.token);
     console.log("!! update device !!",data.token);
     if (index < 0) return;
@@ -1331,7 +1335,7 @@ io.on('connection', function (socket) {
             device_objects[j].socket.send(JSON.stringify({"update":true}));
         }
       }
-    }
+    }*/
   });
 
 
@@ -1340,12 +1344,6 @@ io.on('connection', function (socket) {
     if (group_index < 0) return;
     for (var i=0; i < groups[group_index].members.length; i++) {
       message_user(groups[group_index].members[i],'load settings',data);
-      /*for (var j=0; j < user_objects.length; j++) {
-        //console.log('load settings3',groups[group_index].members[i]);
-        if (user_objects[j].token == groups[group_index].members[i]) {
-          user_objects[j].socket.emit('load settings',data);
-        }
-      }*/
     }
   });
 

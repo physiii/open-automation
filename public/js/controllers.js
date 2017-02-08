@@ -921,7 +921,10 @@ function disable_update() {
 
   $scope.update_device = function(device) {
     console.log("update_device",device);
-    relay_socket.emit('update',device);
+    var device_obj = {};
+    device_obj.mac = device.mac;
+    device_obj.token = device.token;
+    relay_socket.emit('update',device_obj);
   }
 
   $scope.show_rename_device = function(device,value) {

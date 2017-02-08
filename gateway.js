@@ -937,14 +937,14 @@ io_relay.on('camera', function (data) {
 });
 
 function get_camera_preview() {
-  var settings = {width: 1024, height: 768};
+  var settings = {width: 1280, height: 720};
   var command =  [
   		   '-y',
                    '-loglevel', 'panic',
                    '-s', settings.width+"x"+settings.height,
                    '-f', 'video4linux2',
                    '-i', '/dev/video11',
-                   'vframes', '1',
+                   '-vframes', '1',
                    "/var/tmp/camera_preview_.jpg"
                  ];
   const ffmpeg_preview = spawn('ffmpeg', command);
@@ -977,8 +977,8 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 ffmpeg_started = false;
-var video_width = 1024;
-var video_height = 768;
+var video_width = 1280;
+var video_height = 720;
 const spawn = require('child_process').spawn;
 const ffmpeg = null;
 
@@ -1099,11 +1099,25 @@ var child = exec(CommandArguments.join(" "), function(error, stdout, stderr){
 });
 
 io_relay.on('update', function (data) {
-  exec("sh ./update.sh", (error, stdout, stderr) => {
+  var command =  ['pull'];
+  const git = spawn('git', command);
+
+  git.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  git.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  git.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+  /*exec("sh ./update.sh", (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
-  });
+  });*/
   console.log('update',data);
 });
 
@@ -1195,18 +1209,6 @@ io_relay.on('get settings', function (data) {
   //console.log("get_settings |  ", data);
   //store_settings({'device_name':data.device_name,'device_type':data.device_type});
   get_settings();
-});
-
-io_relay.on('update', function (data) {
-  exec("cd ~/open-automation;git pull;sudo pkill node;sudo /etc/rc.local", (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-        return;
-      }
-    console.log(stdout);
-    console.log(stderr);
-  });
-  console.log("update |  ", data);
 });
 
 io_relay.on('room_sensor', function (data) {
