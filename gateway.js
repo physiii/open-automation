@@ -958,7 +958,7 @@ function get_camera_preview() {
 
 function send_camera_preview (settings) {
   fs.readFile('/var/tmp/camera_preview_.jpg', function(err, data) {
-    if (err) throw err; // Fail if the file can't be read.
+    if (err) return console.log(err); // Fail if the file can't be read.
     data_obj = {mac:settings_obj.mac, token:settings_obj.token, image:data.toString('base64')}
     data_obj.settings = settings; 
     io_relay.emit('camera preview',data_obj);
@@ -1103,7 +1103,7 @@ io_relay.on('update', function (data) {
   const git = spawn('git', command);
 
   git.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+    console.log(`update: ${data}`);
   });
 
   git.stderr.on('data', (data) => {
@@ -1111,14 +1111,13 @@ io_relay.on('update', function (data) {
   });
 
   git.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+    //console.log(`child process exited with code ${code}`);
   });
   /*exec("sh ./update.sh", (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
   });*/
-  console.log('update',data);
 });
 
 io_relay.on('add thermostat', function (data) {
