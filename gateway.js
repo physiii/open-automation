@@ -977,8 +977,8 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 ffmpeg_started = false;
-var video_width = 1280;
-var video_height = 720;
+var video_width = 1024;
+var video_height = 768;
 const spawn = require('child_process').spawn;
 const ffmpeg = null;
 
