@@ -488,7 +488,7 @@ zwave.on('driver ready', function(homeid) {
 
 zwave.on('driver failed', function() {
 	console.log('failed to start driver');
-	zwave.disconnect();
+	//zwave.disconnect();
 	//process.exit();
 });
 
