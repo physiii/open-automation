@@ -1102,22 +1102,14 @@ io_relay.on('update', function (data) {
   var command =  ['pull'];
   const git = spawn('git', command);
 
-  git.stdout.on('data', (data) => {
-    console.log(`update: ${data}`);
-  });
-
-  git.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
-  });
-
-  git.on('close', (code) => {
-    //console.log(`child process exited with code ${code}`);
-  });
-  /*exec("sh ./update.sh", (error, stdout, stderr) => {
+  git.stdout.on('data', (data) => {console.log(`update: ${data}`)});
+  git.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
+  git.on('close', (code) => {});
+  exec("pm2 restart relay gateway", (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
-  });*/
+  });
 });
 
 io_relay.on('add thermostat', function (data) {
