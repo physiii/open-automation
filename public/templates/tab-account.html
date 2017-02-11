@@ -1,6 +1,6 @@
 <ion-view view-title="Account">
   <ion-content overflow-scroll="true">
-    <div style="max-width:2000px;margin:0px auto 50px auto;">
+    <div style="max-width:3000px;margin:0px auto auto auto;">
 
 <!-------------------------------------------------------------->
 <!-----------------------  Gateways  --------------------------->
@@ -46,6 +46,18 @@
               <div style="float:right"><b>{{ gateway.public_ip }}</b></div>
             </li>
 
+
+            <li  class="item item-divider">
+              <label class="item item-input item-select">
+                <div style="float:right;position:relative;z-index:100"  class="input-label">Resolution</div>
+                <select ng-model="gateway.resolution" ng-change="set_resolution(gateway)">
+                    <option value="640x480">640x480</option>
+                    <option value="1024x768" selected>1024x768</option>
+                    <option value="1280x720">1280x720</option>
+                </select>
+              </label>
+            </li>
+
      	     <div class="item item-divider" data-ng-repeat="device in gateway.devices"> 
                <li ng-if="device.device_type != 'lights'" class="item item-divider">
                  <div style="float:left">{{device.device_type}}</div>
@@ -63,6 +75,8 @@
 	     </div>
           </div>
 
+
+
           <li class="item" style="margin:auto">
             <div style="float:left;margin:20px">
               Motion<br>
@@ -75,6 +89,15 @@
             </div>
             <div style="float:left;margin:20px">
               Stream<br>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" ng-model="gateway.settings.stream_enabled" value="{{gateway.settings.stream_enabled}}" ng-click="toggle_setting({stream_enabled:gateway.settings.stream_enabled,token:gateway.token})" >
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+            </div>
+            <div style="float:left;margin:20px">
+              Resolution<br>
               <label class="toggle toggle-balanced">
                 <input type="checkbox" ng-model="gateway.settings.stream_enabled" value="{{gateway.settings.stream_enabled}}" ng-click="toggle_setting({stream_enabled:gateway.settings.stream_enabled,token:gateway.token})" >
                 <div class="track">
@@ -110,6 +133,7 @@
               </label>
             </div>
           </li>
+
 
           <div ng-if="gateway.settings.gateway_enabled" class="item-divider">  
             <div style="max-width:300px;margin:10px auto 10px auto;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      
@@ -428,8 +452,7 @@
 </div>
 
 
-
-
       </div>
+
   </ion-content>
 </ion-view>

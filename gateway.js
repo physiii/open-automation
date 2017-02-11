@@ -276,7 +276,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
                  + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && sudo node gateway >> /var/log/gateway 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && pm2 gateway relay'\n"
                  + "exit 0;\n"
     fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
@@ -937,15 +937,17 @@ io_relay.on('camera', function (data) {
 });
 
 function get_camera_preview() {
-  var settings = {width: 1280, height: 720};
+  var video_width = settings_obj.video_width;
+  var video_height = settings_obj.video_height;
+  var settings = {width:video_width, height:video_height};
   var command =  [
   		   '-y',
                    '-loglevel', 'panic',
-                   '-s', settings.width+"x"+settings.height,
+                   '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
                    '-i', '/dev/video11',
                    '-vframes', '1',
-                   "/var/tmp/camera_preview_.jpg"
+                   "files/camera_preview_.jpg"
                  ];
   const ffmpeg_preview = spawn('ffmpeg', command);
   console.log('camera_preview',command);
@@ -957,7 +959,7 @@ function get_camera_preview() {
 }
 
 function send_camera_preview (settings) {
-  fs.readFile('/var/tmp/camera_preview_.jpg', function(err, data) {
+  fs.readFile('files/camera_preview_.jpg', function(err, data) {
     if (err) return console.log(err); // Fail if the file can't be read.
     data_obj = {mac:settings_obj.mac, token:settings_obj.token, image:data.toString('base64')}
     data_obj.settings = settings; 
@@ -977,13 +979,14 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 ffmpeg_started = false;
-var video_width = 1024;
-var video_height = 768;
+
 const spawn = require('child_process').spawn;
 const ffmpeg = null;
 
 function start_ffmpeg() {
   if (ffmpeg_started) return console.log("ffmpeg already started");
+  video_width = settings_obj.video_width;
+  video_height = settings_obj.video_height;
   var command =  [
                    '-loglevel', 'panic',
                    '-r', '2',
@@ -1155,6 +1158,14 @@ io_relay.on('set settings', function (data) {
   //data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
   store_settings(data);
   console.log("set settings |  ", data);
+});
+
+io_relay.on('set resolution', function (data) {
+  var res = data.resolution.split("x");
+  settings_obj.video_width = res[0];
+  settings_obj.video_height = res[1];
+  store_settings(settings_obj);
+  console.log("set resolution | " + settings_obj.video_width+"x"+settings_obj.video_height);
 });
 
 io_relay.on('set alarm', function (data) {

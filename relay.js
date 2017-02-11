@@ -1338,6 +1338,13 @@ io.on('connection', function (socket) {
     }*/
   });
 
+  socket.on('set resolution', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log('set resolution | device not found',data.mac);
+    if (!device_objects[device_index].socket) return console.log('set resolution | socket not found',data.mac);
+    device_objects[device_index].socket.emit('set resolution',data);
+  });
+
 
   socket.on('load settings', function (data) {
     var group_index = find_index(groups,'group_id',data.token);

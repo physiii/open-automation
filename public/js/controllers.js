@@ -315,8 +315,8 @@ relay_socket.on('room_sensor', function (data) {
   });
 
   relay_socket.on('camera preview', function (data) {
-    var width = data.settings.width;
-    var height = data.settings.height;
+    var width = data.width;
+    var height = data.height;
     var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
@@ -917,7 +917,14 @@ function disable_update() {
     }
   }
   
-
+  $scope.set_resolution = function(device) {
+    console.log("set_resolution",device);
+    var device_obj = {};
+    device_obj.mac = device.mac;
+    device_obj.token = device.token;
+    device_obj.resolution = device.resolution;
+    relay_socket.emit('set resolution',device_obj);
+  }
 
   $scope.update_device = function(device) {
     console.log("update_device",device);
