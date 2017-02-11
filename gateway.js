@@ -130,7 +130,7 @@ function get_settings() {
 	    got_token = true;
 	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
   	  }
-  	//console.log('load settings',settings_obj);	
+  	console.log('load settings',settings_obj);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
@@ -151,9 +151,9 @@ function store_settings(data) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
       var collection = db.collection('settings');
-      //console.log('store_settings',data);
+      console.log('store_settings',data);
       collection.update({}, {$set:data}, {upsert:true}, function(err, item){
-        //console.log("item",item)
+        console.log("item",item)
       });
       db.close();
     }
@@ -1170,10 +1170,11 @@ io_relay.on('set settings', function (data) {
 
 io_relay.on('set resolution', function (data) {
   var res = data.resolution.split("x");
-  settings_obj.video_width = res[0];
-  settings_obj.video_height = res[1];
-  store_settings(settings_obj);
-  console.log("set resolution | " + settings_obj.video_width+"x"+settings_obj.video_height);
+  var resolution = {};
+  resolution.video_width = res[0];
+  resolution.video_height = res[1];
+  store_settings(resolution);
+  console.log("set resolution | " + resolution.video_width+"x"+resolution.video_height);
 });
 
 io_relay.on('set alarm', function (data) {
