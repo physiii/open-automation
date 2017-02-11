@@ -70,6 +70,14 @@ const exec = require('child_process').exec;
 const execFile = require('child_process').execFile;
 var zwave_disabled = true;
 var io_relay_connected = false;
+
+exec("mkdir files", (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  console.log("made files directory");
+});
 // -------------------------------  MangoDB  --------------------------------- //
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
