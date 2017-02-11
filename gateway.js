@@ -130,7 +130,7 @@ function get_settings() {
 	    got_token = true;
 	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
   	  }
-  	console.log('load settings',settings_obj);	
+  	//console.log('load settings',settings_obj);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
@@ -151,9 +151,9 @@ function store_settings(data) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
       var collection = db.collection('settings');
-      console.log('store_settings',data);
+      //console.log('store_settings',data);
       collection.update({}, {$set:data}, {upsert:true}, function(err, item){
-        console.log("item",item)
+        //console.log("item",item)
       });
       db.close();
     }
@@ -958,7 +958,7 @@ function get_camera_preview() {
                    "files/camera_preview_.jpg"
                  ];
   const ffmpeg_preview = spawn('ffmpeg', command);
-  console.log('camera_preview',command);
+  console.log('sending camera_preview');
   setTimeout(function () {
     ffmpeg_preview.kill();
   }, 2000);
