@@ -284,7 +284,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
                  + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
-                 + "su pi -c 'cd ~/open-automation && pm2 gateway relay'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo pm2 start gateway.js relay.js'\n"
                  + "exit 0;\n"
     fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
