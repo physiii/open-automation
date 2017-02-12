@@ -63,10 +63,12 @@ app.use(allowCrossDomain);
 app.use(allowCrossDomain);
 app.use('/', express.static(process.cwd() + '/public'));
 
+
 app.get('/', function (req, res) {
   //res.sendFile(__dirname + '/index.html');
   res.render('pages/index')
 });
+
 
 app.post('/login',
   passport.authenticate('local'),
@@ -917,6 +919,17 @@ io.on('connection', function (socket) {
       console.log("set_mobile.php | ", data);
       socket.emit('token',data);
     });
+  });
+
+  socket.on('login mobile', function (data) {
+    var username = data.username;
+    var password = data.password;
+    var index = find_index(accounts,'username',username);
+    if (index < 0) return console.log("login mobile | account not found",username);
+    var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
+    if (token != accounts[index].token) return console.log("login mobile | passwords do not match");
+    console.log("login mobile | ", data.username);
+    socket.emit('token',{token:token, user:username});
   });
 
   socket.on('set zone', function (data) {

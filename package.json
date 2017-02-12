@@ -56,6 +56,7 @@
     "querystring": "^0.2.0",
     "request": "^2.79.0",
     "rimraf": "^2.5.3",
+    "serve-index": "^1.8.0",
     "simple-ssh": "^0.9.0",
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.4.8",
