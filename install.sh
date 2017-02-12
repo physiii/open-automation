@@ -1,7 +1,7 @@
 #!/bin/sh -e
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get update
-sudo: /usr/bin/sudo must be owned by uid 0 and have the setuid bit set
+sudo apt-get install -y speedtest-cli gstreamer1.0 v4l2loopback-dkms v4l2loopback-utils git nodejs mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat-dev libavcodec-dev libavutil-dev libc6-dev zlib1g-dev libmysqlclient-dev libpq5 libpq-dev tmux xdotool apache2 mysql-server libmysqlclient-dev libcurl4-openssl-dev
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo chmod -R 777 /var
 sudo chmod -R 777 /usr/src
