@@ -1435,25 +1435,36 @@ function timeout() {
 
 
 //-------------- stream ----------------//
+var fs = require('fs'),
+	http = require('http'),
+	WebSocket = require('ws');
+
 var STREAM_SECRET = "init",
     STREAM_PORT = 8082,
     WEBSOCKET_PORT = 8084,
     STREAM_MAGIC_BYTES = 'jsmp'; // Must be 4 bytes
 
 // Websocket Server
-var socketServer = new (require('ws').Server)({port: WEBSOCKET_PORT});
+var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});
+socketServer.connectionCount = 0;
+
 socketServer.on('connection', function(socket) {
-  console.log( 'video socket opened ('+socketServer.clients.length+' total)' );
+  socketServer.connectionCount++;
+  console.log( 'video socket opened ('+socketServer.connectionCount+' total)' );
+
   socket.onmessage = function (event) {
     var token = event.data;
     socket.token = token;
     console.log("stored video token",socket.token);
   }
+
   socket.on('close', function(code, message){
     //var index = find_index(user_objects,'socket',socket);
     //if (index > -1) user_objects.splice(index,1);
-    console.log( 'video socket closed ('+socketServer.clients.length+' total)' );
+    socketServer.connectionCount--;
+    console.log( 'video socket closed ('+socketServer.connectionCount+' total)' );
   });
+
 });
 
 socketServer.on('disconnect', function(socket) {
@@ -1463,7 +1474,7 @@ socketServer.on('disconnect', function(socket) {
 });
 
 
-socketServer.broadcast = function(data, opts, settings) {
+socketServer.broadcast = function(data, settings) {
   var token = settings.token;
   var stream_width = settings.stream_width;
   var stream_height = settings.stream_height;
@@ -1471,7 +1482,7 @@ socketServer.broadcast = function(data, opts, settings) {
   for( var i in this.clients ) {
     var client = this.clients[i];
     if (client.token != token) continue;
-    if (client.readyState != 1) {
+    if (client.readyState !== WebSocket.OPEN) {
       console.log("Client not connected ("+i+")");
       continue;
     }
@@ -1479,14 +1490,14 @@ socketServer.broadcast = function(data, opts, settings) {
     if (!this.clients[i].sent_header) {
       // Send magic bytes and video size to the newly connected socket
       // struct { char magic[4]; unsigned short width, height;}
-      var streamHeader = new Buffer(8);
-      streamHeader.write(STREAM_MAGIC_BYTES);
-      streamHeader.writeUInt16BE(stream_width, 4);
-      streamHeader.writeUInt16BE(stream_height, 6);
-      this.clients[i].send(streamHeader, {binary:true});
-      this.clients[i].sent_header = true;
+      //var streamHeader = new Buffer(8);
+      //streamHeader.write(STREAM_MAGIC_BYTES);
+      //streamHeader.writeUInt16BE(stream_width, 4);
+      //streamHeader.writeUInt16BE(stream_height, 6);
+      //this.clients[i].send(streamHeader, {binary:true});
+      //this.clients[i].sent_header = true;
     }
-    this.clients[i].send(data, opts);
+    this.clients[i].send(data);
     //console.log("<< !!! SENDING BROADCAST ("+i+") !!! >>>");
   }
 };
@@ -1496,15 +1507,16 @@ var streamServer = require('http').createServer( function(request, response) {
   response.connection.setTimeout(0);
   var params = request.url.substr(1).split('/');
   var token = params[0];
-  var stream_width = params[1];
-  var stream_height = params[2];
-  var settings = {token:token, stream_width:stream_width, stream_height:stream_height};
-  
+  //var stream_width = params[1];
+  //var stream_height = params[2];
+  //var settings = {token:token, stream_width:stream_width, stream_height:stream_height};
+  var settings = {token:token};
+
   var index = find_index(device_objects,'token',token);
   if (index < 0) return console.log('device not found');
   
   request.on('data', function(data){
-    socketServer.broadcast(data, {binary:true}, settings);
+    socketServer.broadcast(data, settings);
   });
 }).listen(STREAM_PORT);
 

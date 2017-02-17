@@ -11,78 +11,67 @@
 <div class="background-1" style="width:100%;margin:0px;padding:0px;position:absolute;">
   <div style="margin:auto auto auto auto;max-width:2000px;">
 
+<!-------------------------------------------------------------->
+<!-------------------  Mobile Devices  ------------------------->
+<!-------------------------------------------------------------->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
+    <ion-card-header >
+      <h4 style="margin:10px;color:#ccc">
+        Mobile Devices
+      </h4>
+    </ion-card-header>
+    <li  class="item item-divider">
+      <div style="float:left">Device ID</div>
+      <div style="float:right"><b>test</b></div>
+    </li>
+  </div>
+</div>
+
 <!------------------------------------------------------------------------>
 <!-----------------------------  Video  ---------------------------------->
 <!------------------------------------------------------------------------>
 
-<div ng-controller="VideoCtrl">
-
-<div style="margin:20px;" data-ng-repeat="x in gateways" ng-if="x.settings.stream_enabled && x.settings.dashboard_enabled">
-  <div id="container_{{x.mac}}" class="col-lg-4 col-md-6 col-sm-12">
-  <div class="">
-    <div class="flip-container">
-      <div class="flipper clearfix" >
-          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+<div ng-controller="VideoCtrl" data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="flip-container">
+        <div class="flipper clearfix" >
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
             <ion-card-header >
               <div ng-click="flip()" style="width:100%">
-                <h4 style="margin:10px;text-align:right;color:#ccc">{{ x.device_name }}</h4>
+                <h4 style="margin:10px;text-align:right;color:#ccc">{{ gateway.device_name }}</h4>
               </div>
             </ion-card-header>
-            </ion-card-header>
-            <div id="play-button_{{ x.mac }}" class="" style="position:absolute;top:40%;left:50%" ng-click="start_stream(x.mac)">
+            <div id="play-button_{{ gateway.mac }}" class="" style="position:absolute;top:40%;left:50%" ng-click="start_stream(gateway.mac)">
               <i style="color:black" class="fa fa-play-circle fa-4x col"></i>
 	    </div>
-            <canvas id="videoCanvas_{{ x.mac }}" style="width:100%;display:none"></canvas>
-            <canvas id="previewCanvas_{{ x.mac }}" style="height:100%;"></canvas>
-            <button class="button" ng-click="fullscreen('container_' + x.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px"><i class="ion-arrow-expand"></i></button>
+            <canvas id="videoCanvas_{{ gateway.mac }}" style="width:100%;display:none"></canvas>
+            <canvas id="previewCanvas_{{ gateway.mac }}" style="height:100%;"></canvas>
+            <button class="button" ng-click="fullscreen('container_' + gateway.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px">
+              <i class="ion-arrow-expand"></i>
+            </button>
           </div>
-        </div>
-        <div class="back card success" style="background-color:#444">
-          <ion-card-header >
-            <div ng-click="flip()"  style="padding:0px 10px 0px 10px;width:100%;color:#ccc">
-              <h4 style="float:left;">{{ x.settings.device_name }}</h4>
-              <h5 style="float:right;"><b>{{x.settings.free_space/1000000000 | number:2}} </b> of {{x.settings.total_space/1000000000 | number:2}} GB free </h5>
-            </div>
-          </ion-card-header>
-          <!-- <iframe style="border:2px solid #444;border-radius:0px 0px 3px 3px;height:30vh" width="100%" height="" ng-src="{{ x.settings.cloud_url }}"></iframe>  -->
-        </div>
-
-    </div>
-  </div>
-</div>
-
-
-
-<!--
-<div style="margin:20px;" data-ng-repeat="x in gateways" ng-if="x.settings.camera_enabled && x.settings.dashboard_enabled">
-  <div class="col-lg-4 col-md-6 col-sm-12">
-    <div ng-click="flip()" class="flip-container">
-      <div class="flipper clearfix" >
-        <div style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;" class="front card item-text-wrapped">
-          <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <div class="back card" style="border-style:solid;border-width:2px;border-color:#7E1A1A;background-color:#7E1A1A;color:#eee;text-align:center;">
             <ion-card-header >
-              <h4 style="margin:10px;float:right;color:#ccc">
-                {{ x.settings.device_name }}
-              </h4>
+              <div ng-click="flip()" style="">   
+                <h4 style="float:left;">{{ gateway.settings.device_name }}</h4>
+                <h5 style="float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
+              </div>
             </ion-card-header>
-            <img style="" id="mainUrl" width="100%" ng-src="http://{{x.settings.public_ip}}:{{x.settings.port}}/session/{{x.token}}" scrolling="no" frameborder="0" allowTransparency="true"></img>
+<div style="float:left">testtt</div>
+    <li  class="item item-divider">
+      <div style="float:left">Device ID</div>
+      <div style="float:right"><b>test</b></div>
+    </li>
+
           </div>
-        </div>
-        <div class="back card success" style="background-color:#444">
-          <ion-card-header >
-            <div style="padding:0px 10px 0px 10px;width:100%;color:#ccc">
-              <h4 style="float:left;">{{ x.settings.device_name }}</h4>
-              <h5 style="float:right;"><b>{{x.settings.free_space/1000000000 | number:2}} </b> of {{x.settings.total_space/1000000000 | number:2}} GB free </h5>
-            </div>
-          </ion-card-header>
-          <iframe style="border:2px solid #444;border-radius:0px 0px 3px 3px;height:30vh" width="100%" height="" ng-src="{{ x.settings.cloud_url }}"></iframe> 
         </div>
       </div>
     </div>
-  </div>
+
 </div>
--->
-</div>
+
+
 <!-------------------------------------------------------------->
 <!----------------------  Thermostat  -------------------------->
 <!-------------------------------------------------------------->
@@ -145,7 +134,6 @@
     </div>
   </div>
 </div>
-
 
 </div>
 

@@ -696,11 +696,14 @@ image.addEventListener('load', function() {
     document.getElementById("previewCanvas_"+mac).style.display = "none";
     document.getElementById("videoCanvas_"+mac).style.display = "inline";
     if (gateways[i].stream_started) return console.log("stream already started");
-    gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
+    gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
     console.log('token for video stream',gateways[i].token);
     gateways[i].stream_started = true;
     gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-    gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+    //var url = 'ws://'+document.location.hostname+':8092/';
+    //var player = new JSMpeg.Player(url, {canvas: canvas});
+    gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+    //gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
   }
   
   $scope.fullscreen = function(div_id) { 

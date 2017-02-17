@@ -995,7 +995,7 @@ function start_ffmpeg() {
   if (ffmpeg_started) return console.log("ffmpeg already started");
   video_width = settings_obj.video_width;
   video_height = settings_obj.video_height;
-  var command =  [
+  /*var command =  [
                    '-loglevel', 'panic',
                    '-r', '2',
                    '-strict', '-1',
@@ -1006,8 +1006,23 @@ function start_ffmpeg() {
                    '-b:v', '1000k',
                    '-r', '2',
                    '-strict', '-1',
+                   "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"*/
+
+  var command =  [
+                   '-loglevel', 'panic',
+                   '-r', '2',
+                   '-strict', '-1',
+                   '-s', video_width+"x"+video_height,
+                   '-f', 'video4linux2',
+                   '-i', '/dev/video11',
+                   '-f', 'mpegts',
+		   '-codec:v', 'mpeg1video',
+                   '-b:v', '10000k',
+                   '-r', '2',
+                   '-strict', '-1',
                    "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"
                  ];
+
   const ffmpeg = spawn('ffmpeg', command);
 
   ffmpeg.stdout.on('data', (data) => {
