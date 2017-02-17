@@ -1020,7 +1020,7 @@ function start_ffmpeg() {
                    '-b:v', '10000k',
                    '-r', '2',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"
+                   "http://"+relay_server+":8082/"+token+"/"
                  ];
 
   const ffmpeg = spawn('ffmpeg', command);
