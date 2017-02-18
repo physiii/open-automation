@@ -10,7 +10,7 @@ var querystring = require('querystring');
 var request = require('request');
 var relay_server = "init";
 var io_relay;
-get_relay_server('development');
+get_relay_server('production');
 function get_relay_server(server_type) {
   if (server_type == 'development') {
     request.get(
@@ -281,7 +281,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "sudo modprobe bcm2835-v4l2\n"
 		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
-		 + "ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
+		 + "#ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
                  + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo pm2 start gateway.js relay.js'\n"
@@ -953,7 +953,7 @@ function get_camera_preview() {
                    '-loglevel', 'panic',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
-                   '-i', '/dev/video11',
+                   '-i', '/dev/video0',
                    '-vframes', '1',
                    "files/camera_preview_.jpg"
                  ];
@@ -1014,7 +1014,7 @@ function start_ffmpeg() {
                    '-strict', '-1',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
-                   '-i', '/dev/video11',
+                   '-i', '/dev/video0',
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
                    '-b:v', '10000k',
