@@ -10,9 +10,9 @@ var querystring = require('querystring');
 var request = require('request');
 var relay_server = "init";
 var io_relay;
-get_relay_server('production');
+get_relay_server('dev');
 function get_relay_server(server_type) {
-  if (server_type == 'development') {
+  if (server_type == 'dev') {
     request.get(
     'http://pyfi.org/php/get_ip.php?server_name=socket_io_dev',
     function (error, response, data) {
@@ -26,7 +26,7 @@ function get_relay_server(server_type) {
       }
     }); 
   }
-  if (server_type == 'production') {
+  if (server_type == 'prod') {
     request.get(
     'http://pyfi.org/php/get_ip.php?server_name=socket_io',
     function (error, response, data) {
