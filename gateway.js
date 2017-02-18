@@ -1,6 +1,16 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
+
+var server_type = "prod";
+process.argv.forEach(function (val, index, array) {
+  console.log(index + ': ' + val);
+  if (val == "dev")
+    server_type = "dev";
+  if (val == "prod")
+    server_type = "prod";
+});
+
 var fs = require('fs');
 var os = require('os');
 var express = require('express');
@@ -10,7 +20,7 @@ var querystring = require('querystring');
 var request = require('request');
 var relay_server = "init";
 var io_relay;
-get_relay_server('dev');
+get_relay_server(server_type);
 function get_relay_server(server_type) {
   if (server_type == 'dev') {
     request.get(
@@ -78,6 +88,7 @@ exec("mkdir files", (error, stdout, stderr) => {
   }
   console.log("made files directory");
 });
+
 // -------------------------------  MangoDB  --------------------------------- //
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
@@ -279,7 +290,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# bits.\n"
 		 + "#\n"
 		 + "# By default this script does nothing.\n"
-		 + "sudo modprobe bcm2835-v4l2\n"
+		 + "#sudo modprobe bcm2835-v4l2\n"
 		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
 		 + "#ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
@@ -290,7 +301,7 @@ Object.keys(ifaces).forEach(function (ifname) {
       if(err) {
         return console.log(err);
       }
-      console.log("writing rc.local");
+      //console.log("writing rc.local");
     });
     settings_obj.local_ip = local_ip;
     store_settings(settings_obj);
@@ -1017,7 +1028,7 @@ function start_ffmpeg() {
                    '-i', '/dev/video0',
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
-                   '-b:v', '10000k',
+                   '-b:v', '2000k',
                    '-r', '2',
                    '-strict', '-1',
                    "http://"+relay_server+":8082/"+token+"/"
