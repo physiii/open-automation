@@ -1028,7 +1028,7 @@ function start_ffmpeg() {
                    '-i', '/dev/video0',
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
-                   '-b:v', '2000k',
+                   '-b:v', '500k',
                    '-r', '2',
                    '-strict', '-1',
                    "http://"+relay_server+":8082/"+token+"/"
