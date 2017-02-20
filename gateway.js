@@ -137,18 +137,17 @@ function get_settings() {
 	    zwave_disabled = false;
   	  }
 	  if (got_token == false && io_relay_connected) {
-	    //console.log("getting token...");
 	    got_token = true;
 	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
   	  }
-  	//console.log('load settings',settings_obj);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }
-        //console.log('!! get_settings !!');
         settings_obj.devices = device_array;
-        if (io_relay_connected)
+        if (io_relay_connected) {     
+          console.log('!! load settings !!');
           io_relay.emit('load settings',settings_obj);
+        }
         db.close();
       });
     }
@@ -1020,7 +1019,7 @@ function start_ffmpeg() {
                    "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"*/
 
   var command =  [
-                   '-loglevel', 'panic',
+                   //'-loglevel', 'panic',
                    '-r', '2',
                    '-strict', '-1',
                    '-s', video_width+"x"+video_height,

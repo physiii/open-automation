@@ -1,0 +1,444 @@
+// -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
+// -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
+
+
+var server_type = "prod";
+process.argv.forEach(function (val, index, array) {
+  console.log(index + ': ' + val);
+  if (val == "dev")
+    server_type = "dev";
+  if (val == "prod")
+    server_type = "prod";
+});
+
+var fs = require('fs');
+var os = require('os');
+var express = require('express');
+var app = express();
+var program_app = express();
+var querystring = require('querystring');
+var request = require('request');
+var relay_server = "init";
+var io_relay;
+get_relay_server(server_type);
+function get_relay_server(server_type) {
+  if (server_type == 'dev') {
+    request.get(
+    'http://pyfi.org/php/get_ip.php?server_name=socket_io_dev',
+    function (error, response, data) {
+      if (!error && response.statusCode == 200) {
+        relay_server = data;
+        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        start_io_relay();
+        if (error !== null) {
+         console.log('error ---> ' + error);
+        }
+      }
+    }); 
+  }
+  if (server_type == 'prod') {
+    request.get(
+    'http://pyfi.org/php/get_ip.php?server_name=socket_io',
+    function (error, response, data) {
+      if (!error && response.statusCode == 200) {
+        relay_server = data;
+        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        start_io_relay();
+        if (error !== null) {
+         console.log('error ---> ' + error);
+        }
+      }
+    });
+  }
+}
+var port = process.env.PORT || 3030;
+var php = require("node-php");
+var spawn = require('child_process').spawn;
+var SSH = require('simple-ssh');
+var EventEmitter = require("events").EventEmitter;
+var omit = require('object.omit');
+var body = new EventEmitter();
+var gb_event = new EventEmitter();
+var token = "init";
+var d = new Date();
+var light_delay = 0; //command delay in ms
+var previous_data = 0;
+var desired_temp = 70;
+var current_therm_state = "";
+var lights = [];
+var devices = [];
+var username = "init";
+var device_name = "init";
+var ip = "init";
+var device_port = "init";
+var count = 0;
+var text_timeout = 0;
+var platform = process.platform;
+var settings_obj = {};
+var device_array = {};
+const exec = require('child_process').exec;
+const execFile = require('child_process').execFile;
+var zwave_disabled = true;
+var io_relay_connected = false;
+
+exec("mkdir files", (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  console.log("made files directory");
+});
+
+// -------------------------------  MangoDB  --------------------------------- //
+var mongodb = require('mongodb');
+var ObjectId = require('mongodb').ObjectID;
+var MongoClient = mongodb.MongoClient;
+
+//-- initialize variables --//
+get_devices();
+function set_wifi_from_db() {
+  console.log("set_wifi_from_db");
+  MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('settings');
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+  	  settings_obj = result[0];
+  	  set_wifi(settings_obj);
+ 	  //console.log('initialize variables | ',settings_obj);
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+        }
+        db.close();
+      });
+    }
+  });
+}
+set_wifi_from_db();
+
+//-- get and send settings object --//
+function get_settings() {
+  MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('settings');
+      collection.find().toArray(function (err, result) {
+        if (err) { 
+	  console.log(err);
+        } else if (result.length) {
+	  settings_obj = result[0];
+	  if (settings_obj.gateway_enabled && zwave_disabled) {
+	    init_zwave();
+	    zwave_disabled = false;
+  	  }
+	  if (got_token == false && io_relay_connected) {
+	    //console.log("getting token...");
+	    got_token = true;
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
+  	  }
+  	//console.log('load settings',settings_obj);	
+        } else {
+	  console.log('No document(s) found with defined "find" criteria!');
+        }
+        //console.log('!! get_settings !!');
+        settings_obj.devices = device_array;
+        if (io_relay_connected)
+          io_relay.emit('load settings',settings_obj);
+        db.close();
+      });
+    }
+  });
+}
+
+//-- store new settings --//
+function store_settings(data) {
+  MongoClient.connect('mongodb://127.0.0.1:27017/settings', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('settings');
+      //console.log('store_settings',data);
+      collection.update({}, {$set:data}, {upsert:true}, function(err, item){
+        //console.log("item",item)
+      });
+      db.close();
+    }
+  });
+  get_settings();
+}
+
+//-- store new device --//
+function store_device(device) {
+  delete device["_id"];
+  MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('devices');
+      collection.update({id:device.id}, {$set:device}, {upsert:true}, function(err, item){
+        //console.log("update device: ",item)
+      });
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+	  device_array = result;
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+        }
+      });
+      db.close();
+    }
+  });
+  get_devices();
+}
+
+//-- load devices from database --//
+function get_devices() {
+  MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      var collection = db.collection('devices');
+      collection.find().toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+	  //device_array = {};
+	  device_array = result;
+          get_settings();
+        } else {
+          console.log('No document(s) found with defined "find" criteria!');
+        }
+        db.close();
+      });
+    }
+  });
+  console.log("!! get_devices !!");
+}
+var ap_time_start;
+main_loop();
+function main_loop () {
+  setTimeout(function () {
+    check_connection();
+    if (ap_mode) {
+      ap_time = Date.now() - ap_time_start;
+      console.log("ap_time",ap_time);
+      if (ap_time > 10*60*1000) {
+        console.log("trying wifi again...");
+        set_wifi_from_db();
+        exec("sudo reboot");
+      }
+    }
+    get_public_ip();
+    scan_wifi();
+    get_therm_state();
+    main_loop();
+    for (var i = 0; i < device_array.length; i++) {
+      if (device_array[i].device_type == 'thermostat') {
+        get_therm_state(device_array[i].local_ip);
+      }
+    }
+  }, 60*1000);
+  //console.log(Date.now() + " | main loop");
+}
+// ---------------------- device info  ------------------- //
+var local_ip = "init";
+var ifaces = os.networkInterfaces();
+var mac = "init";
+var device_type = ["gateway"];
+//var device_name = "Gateway";
+var public_ip = "init";
+get_public_ip();
+get_local_ip();
+get_mac();
+
+function get_local_ip () {
+Object.keys(ifaces).forEach(function (ifname) {
+  var alias = 0;
+  ifaces[ifname].forEach(function (iface) {
+    if ('IPv4' !== iface.family || iface.internal !== false) {
+      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+      return;
+    }
+    if (alias >= 1) {
+      // this single interface has multiple ipv4 addresses
+      //console.log(ifname + ':' + alias, iface.address);
+    } else {
+      // this interface has only one ipv4 adress
+      //console.log(ifname, iface.address);
+    }
+    local_ip = iface.address;
+    ++alias;
+    port = local_ip.split('.');
+    port = "30" + port[3];
+    settings_obj.port = port;
+    var rc_local = "#!/bin/sh -e\n"
+		 + "#\n"
+		 + "# rc.local\n"
+		 + "#\n"
+		 + "# This script is executed at the end of each multiuser runlevel.\n"
+		 + "# Make sure that the script will \"exit 0\" on success or any other\n"
+		 + "# value on error.\n"
+		 + "#\n"
+		 + "# In order to enable or disable this script just change the execution\n"
+		 + "# bits.\n"
+		 + "#\n"
+		 + "# By default this script does nothing.\n"
+		 + "#sudo modprobe bcm2835-v4l2\n"
+		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
+		 + "#ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
+                 + "export DISPLAY=':0.0'\n"
+                 + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
+                 + "su pi -c 'cd ~/open-automation && sudo pm2 start gateway.js relay.js'\n"
+                 + "exit 0;\n"
+    fs.writeFile("/etc/rc.local", rc_local, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      //console.log("writing rc.local");
+    });
+    settings_obj.local_ip = local_ip;
+    store_settings(settings_obj);
+  });
+});
+}
+
+function get_mac () {
+require('getmac').getMac(function(err,macAddress){
+  if (err)  throw err
+  mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
+  store_settings({mac:mac});
+  console.log("Enter device ID (" + mac + ") at http://pyfi.org");
+    var hostapd_file = "interface=wlan0\n"
+		       + "driver=nl80211\n"
+		       + "ssid=Gateway " + mac + "\n"
+		       + "hw_mode=g\n"
+		       + "channel=6\n"
+		       + "ieee80211n=1\n"
+		       + "wmm_enabled=1\n"
+		       + "ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]\n"
+		       + "macaddr_acl=0\n"
+		       + "auth_algs=1\n"
+		       + "ignore_broadcast_ssid=0\n"
+		       + "wpa=2\n"
+		       + "wpa_key_mgmt=WPA-PSK\n"
+		       + "wpa_passphrase=raspberry\n"
+		       + "rsn_pairwise=CCMP\n";
+
+    fs.writeFile("/etc/hostapd/hostapd.conf", hostapd_file, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      //console.log("hostapd_file saved!");
+    });
+});
+}
+
+function get_public_ip() {
+  request.get(
+  'http://pyfi.org/php/get_ip.php',
+  function (error, response, data) {
+    if (!error && response.statusCode == 200) {
+      public_ip = data;
+      settings_obj.public_ip = public_ip;
+      //console.log('public_ip ' + data);
+      store_settings({public_ip:public_ip});
+      if (error !== null) {
+       console.log('error ---> ' + error);
+      }      
+    }
+  });
+}
+
+// -------------------------------  connection  -------------------------------- //
+var router_array = [];
+var router_list = [];
+var ap_mode = false;
+scan_wifi();
+var bad_connection = 0;
+function check_connection() {
+  var ping = require ("ping");
+  host = "8.8.8.8";
+  ping.sys.probe(host, function(isAlive) {
+    var msg = isAlive ? 'alive' : 'dead';
+    if (msg == 'dead') {
+      bad_connection++;
+      console.log('bad_connection',bad_connection);
+      if (!ap_mode && bad_connection > 1) {
+        var interfaces_file = "allow-hotplug wlan0\n"
+                   + "iface wlan0 inet static\n"
+    		   + "address 172.24.1.1\n"
+    		   + "netmask 255.255.255.0\n"
+    		   + "network 172.24.1.0\n"
+    		   + "broadcast 172.24.1.255\n";
+        fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+          if(err) return console.log(err);
+          console.log("Interface file saved, starting AP");
+          exec("sudo ifdown wlan0 && sudo ifup wlan0 && sudo service dnsmasq restart && sudo hostapd /etc/hostapd/hostapd.conf");
+          ap_mode = true;
+          ap_time_start = Date.now();
+        });
+        bad_connection = 0;
+      }
+    }
+    if (msg == 'alive') {
+      bad_connection = 0;
+    }
+  });
+}
+
+function scan_wifi() {
+//if (ap_mode == true) {
+  exec("sudo iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
+    if (error) {
+      //console.error(`exec error: ${error}`);
+      return;
+    }
+    router_array = stdout.split('\n');
+    router_list = [];
+    for(var i = 0; i < router_array.length; i++) {
+      var router_ssid = router_array[i].replace(/^\s*/, "")
+  			             .replace(/\s*$/, "")
+ 			             .replace("ESSID:\"","")
+    			             .replace("\"","");
+      router_list.push({ssid:router_ssid});
+    }
+    settings_obj.router_list = router_list;
+    store_settings(settings_obj);
+    //console.log("router_array | " + settings_obj.router_list);
+  });
+//}
+}
+
+function set_wifi(data) {
+
+    var wpa_supplicant = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
+                       + "update_config=1\n"
+		       + "country=GB\n"
+                       + "network={\n"
+		       + "ssid=\""+data.router_name+"\"\n"
+		       + "psk=\""+data.router_password+"\"\n"
+		       + "key_mgmt=WPA-PSK\n"
+		       + "}\n";
+    var interfaces_file = "source-directory /etc/network/interfaces.d\n"
+			+ "auto lo\n"
+			+ "iface lo inet loopback\n"
+			+ "iface eth0 inet manual\n"
+			+ "allow-hotplug wlan0\n"
+			+ "iface wlan0 inet manual\n"
+		    	+ "    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n";
+
+    fs.writeFile("/etc/wpa_supplicant/wpa_supplicant.conf", wpa_supplicant, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      fs.writeFile("/etc/network/interfaces", interfaces_file, function(err) {
+        if(err) {
+          return console.log(err);
+
