@@ -271,44 +271,40 @@ relay_socket.on('room_sensor', function (data) {
     console.log('get devices',devices);
     for(var i = 0; i < devices.length; i++) {
       if (!devices[i].device_type) continue;
-      
       for (var j=0; j < devices[i].device_type.length; j++) {
 
-        if (devices[i].device_type[j] == "gateway") {
-          var index = $rootScope.find_index(gateways,'mac',devices[i].mac);
-          if (index > -1) continue;
-          console.log("gateways: ",gateways);
-          var command = devices[i];
-          command.mode = "start";
-          devices[i].stream_started = false;
-          relay_socket.emit('ffmpeg',command);
-          gateways.push( devices[i] );
-        }
+      if (devices[i].device_type[j] == "gateway") {
+        var command = devices[i];
+        command.mode = "start";
+        devices[i].stream_started = false;
+        relay_socket.emit('ffmpeg',command);
+        gateways.push( devices[i] );
+      }
 
-        if (devices[i].device_type[j] == "mobile") {
-          mobile.push( devices[i] );              
-        }
+      if (devices[i].device_type[j] == "mobile") {
+        mobile.push( devices[i] );              
+      }
 
-        if (devices[i].device_type[j] == "alarm") {
-          alarms.push( devices[i] );
-        }
+      if (devices[i].device_type[j] == "alarm") {
+        alarms.push( devices[i] );
+      }
 
-        if (devices[i].device_type[j] == "media_controller") {
-          media_controllers.push( devices[i] );
-        }
+      if (devices[i].device_type[j] == "media_controller") {
+        media_controllers.push( devices[i] );
+      }
 
-        if (devices[i].device_type[j] == "room_sensor") {
-          room_sensors.push( devices[i] );        
-        }
+      if (devices[i].device_type[j] == "room_sensor") {
+        room_sensors.push( devices[i] );        
+      }
 
-        if (devices[i].device_type[j] == "siren") {
-  	  //console.log("siren",devices[i]);
-          sirens.push( devices[i] );        
-        }
+      if (devices[i].device_type[j] == "siren") {
+	//console.log("siren",devices[i]);
+        sirens.push( devices[i] );        
+      }
 
-        if (devices[i].device_type[j] == "garage_opener") {
-          garage_openers.push( devices[i] );  
-        }
+      if (devices[i].device_type[j] == "garage_opener") {
+        garage_openers.push( devices[i] );  
+      }
       }
     }
     relay_socket.emit('get settings',{token:$rootScope.token});
@@ -325,16 +321,6 @@ relay_socket.on('room_sensor', function (data) {
     });
   });
 
-  relay_socket.on('camera preview', function (data) {
-    var width = data.width;
-    var height = data.height;
-    var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
-    var img = new Image();
-    img.src = 'data:image/jpeg;base64,' + data.image;
-    console.log("camera preview",width);
-    ctx.drawImage(img, 0, 0, 300, 200);
-  });
-  
   relay_socket.on('from_mobile', function (data) {
     var mac = data.mac;
     var mobile = $rootScope.mobile;
@@ -352,9 +338,6 @@ relay_socket.on('room_sensor', function (data) {
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
     load_settings(data);
-    data.mode = 'preview';
-    var data_obj = {mode:'preview', mac:data.mac, token:data.token}
-    relay_socket.emit('camera',data_obj);
     /*for (var i = 0; i < gateways.length; i++) {
       if (data.mac == gateways[i].mac && !gateways[i].stream_started) {
         gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
@@ -704,17 +687,12 @@ image.addEventListener('load', function() {
     var gateways = $rootScope.gateways;
     var i = $rootScope.find_index(gateways,"mac",mac);
     document.getElementById("play-button_"+mac).style.display = "none";
-    document.getElementById("previewCanvas_"+mac).style.display = "none";
-    document.getElementById("videoCanvas_"+mac).style.display = "inline";
     if (gateways[i].stream_started) return console.log("stream already started");
-    gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
+    gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
     console.log('token for video stream',gateways[i].token);
     gateways[i].stream_started = true;
     gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-    //var url = 'ws://'+document.location.hostname+':8092/';
-    //var player = new JSMpeg.Player(url, {canvas: canvas});
-    gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
-    //gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+    gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
   }
   
   $scope.fullscreen = function(div_id) { 
@@ -931,21 +909,11 @@ function disable_update() {
     }
   }
   
-  $scope.set_resolution = function(device) {
-    console.log("set_resolution",device);
-    var device_obj = {};
-    device_obj.mac = device.mac;
-    device_obj.token = device.token;
-    device_obj.resolution = device.resolution;
-    relay_socket.emit('set resolution',device_obj);
-  }
+
 
   $scope.update_device = function(device) {
     console.log("update_device",device);
-    var device_obj = {};
-    device_obj.mac = device.mac;
-    device_obj.token = device.token;
-    relay_socket.emit('update',device_obj);
+    relay_socket.emit('update',device);
   }
 
   $scope.show_rename_device = function(device,value) {
@@ -968,11 +936,9 @@ function disable_update() {
   }
 
   $scope.remove_device = function(device) {
-    device.user_token = $rootScope.token;  
-    var index = $rootScope.find_index($rootScope.gateways,'token',device.token);
-    $rootScope.gateways.splice(index,1);
+    device.user_token = $rootScope.token;
+    console.log("unlink_device",device);  
     relay_socket.emit('unlink device',device);
-    console.log("unlink_device",device.mac);
   }
 
 

@@ -52,14 +52,18 @@ test{
                 <label for="email"><b style="color:white;font-size:19px">Email</b></label>
               </div>
             </div>
-            <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" onclick="myFunction()" >Submit
+            <button style="margin:10px auto 20px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" onclick="myFunction()" >Submit
               <i class="material-icons right">send</i>
             </button>
+            <div class="row"><b style="margin:10px auto 10px 48%;color:white;font-size:22px">Or</b>
+	    </div>
+            <button style="margin:10px auto 10px 28%;background:#3ec1f9" class="waves-effect waves-light btn" ng-click="show_price_generator ()">Build Your System</button>
           </form>
         </div>
         
         <% include ../partials/login_form.ejs %>
         <% include ../partials/price_generator.ejs %>
+        <% include ../partials/motion_detector_form.ejs %>
       </div>
     </div>
   </div>
