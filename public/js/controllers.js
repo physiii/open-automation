@@ -57,6 +57,12 @@ angular.module('main_site', ['socket-io'])
     document.getElementById("price_generator_form").style.display = "none";
     document.getElementById("motion_detector_form").style.display = "none";
   }
+
+  $scope.download_android = function() {
+    var ifrm = document.getElementById("download_android");
+    ifrm.src = '/downloads/beacon.apk';
+    console.log("downloading android app");
+  }
   
   $scope.show_price_generator = function() {
     document.getElementById("contact_form").style.display = "none";
@@ -162,7 +168,7 @@ angular.module('starter.controllers', ['socket-io'])
     $scope.ipAddress = data.ip;
     $scope.postal = data.postal;
     $rootScope.postal = data.postal;
-    //$rootScope.initialize_map();
+    $rootScope.initialize_map();
   });
   $rootScope.alert_contacts = [];
 
@@ -335,7 +341,8 @@ relay_socket.on('room_sensor', function (data) {
     ctx.drawImage(img, 0, 0, 300, 200);
   });
   
-  relay_socket.on('from_mobile', function (data) {
+  relay_socket.on('set location', function (data) {
+    console.log("set location",data);
     var mac = data.mac;
     var mobile = $rootScope.mobile;
     for (var i = 0; i < mobile.length; i++) {
@@ -349,6 +356,7 @@ relay_socket.on('room_sensor', function (data) {
     $rootScope.mobile = mobile;
     $rootScope.update_map(data);
   });
+
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
     load_settings(data);
@@ -1183,18 +1191,16 @@ function disable_update() {
   console.log("<----- HealthCtrl ----->");
 })
 
-
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
-  var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
+  /*var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
   var mapOptions = {
     center: myLatlng,
     zoom: 10,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
-  $rootScope.map = new google.maps.Map(document.getElementById("map"),mapOptions);
+  $rootScope.map = new google.maps.Map(document.getElementById("map"),mapOptions);*/
   var markers = [];
-
   $rootScope.initialize_map = function () {
     var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
     var marker = new google.maps.Marker({    
@@ -1203,18 +1209,18 @@ function disable_update() {
       });
     var mapOptions = {
       center: new google.maps.LatLng($rootScope.ipLatitude, $rootScope.ipLongitude),  
-      zoom: 10,
+      zoom: 7,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     $rootScope.map = new google.maps.Map(document.getElementById("map"),mapOptions);
-    marker.setMap($rootScope.map);
+    //marker.setMap($rootScope.map);
     console.log("<----- initialize_map -----> Lat: ",$rootScope.ipLatitude);
   }
 
   $rootScope.update_map = function (device) {
     mobile = $rootScope.mobile;
     device_str = JSON.stringify(device);
-    //console.log("!!device!!",device_str);
+    console.log("!!device!!",device_str);
     Latlng = new google.maps.LatLng(device.latitude, device.longitude);
     var contentString = "<div>" + device.mac + "<br>";
         contentString += "<a ng-click=\"to_mobile('ping_audio_start','"+device.token+"')\">Start Ping</a>    |    ";

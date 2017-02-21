@@ -6,7 +6,7 @@ JSMpeg.Decoder.MPEG1Video = (function(){ "use strict";
 var MPEG1 = function(options) {
 	JSMpeg.Decoder.Base.call(this, options);
 
-	var bufferSize = options.videoBufferSize || 512*1024;
+	var bufferSize = options.videoBufferSize || 512*512;
 	var bufferMode = options.streaming
 		? JSMpeg.BitBuffer.MODE.EVICT
 		: JSMpeg.BitBuffer.MODE.EXPAND;

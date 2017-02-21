@@ -861,7 +861,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('link mobile', function (data) {
-    var server = data.server;
+    //var server = data.server;
     var public_ip = socket.request.connection.remoteAddress;
     data.public_ip = public_ip.slice(7);
     var token = data.token;
@@ -964,9 +964,9 @@ io.on('connection', function (socket) {
       data.mode = groups[group_index].mode;
       message_user(device_objects[index].groups[j],'set location',data);
       for (var k=0; k < groups[group_index].members.length; k++) {
-        //message_device(groups[group_index].members[k],data);
-        console.log('member',groups[group_index].members[k]);
+        message_device(groups[group_index].members[k],data);
         message_user(groups[group_index].members[k],'set location',data);
+        //console.log('member',groups[group_index].members[k]);
       }
     }
     
@@ -1025,16 +1025,6 @@ io.on('connection', function (socket) {
       var device_index = find_index(device_objects,'token',data.token);
       device_objects[device_index].socket.emit('add_zwave_device', data);
     }
-
-    /*var token = data.token;
-    console.log("add_zwave_device | " + token);
-    for (var i=0; i < device_objects.length; i++) {
-      var _socket = device_objects[i].socket;
-      var _token = device_objects[i].token;
-      if (token && _token == token) {
-        _socket.emit('add_zwave_device', data);
-      }
-    }*/
   });
 
   socket.on('link lights', function (data) {
@@ -1042,25 +1032,6 @@ io.on('connection', function (socket) {
     if (device_index > -1)
       if (device_objects[device_index].socket)
         device_objects[device_index].socket.emit('link lights',data);
-
-    /*var index = find_index(device_objects,'token',data.token);
-    if (index > -1) {
-       console.log("link lights1",data);
-      if (device_objects[index].socket) {
-        console.log("link lights2",data);
-        device_objects[index].socket.emit('link light',data);
-      }
-    }*/
-    /*var token = data.token;
-    for (var i=0; i < device_objects.length; i++) {
-      var _socket = device_objects[i].socket;
-      var _token = device_objects[i].token;
-      var _mac = device_objects[i].mac; 
-      if (_token === token) {
-        _socket.emit('link lights', data);
-        console.log("link lights",data);
-      }
-    }*/
   });
 
   socket.on('store_schedule', function (data) {
@@ -1085,26 +1056,6 @@ io.on('connection', function (socket) {
       device_objects[device_index].socket.emit('add thermostat',data);
 
     console.log('add thermostat',data);
-    /*var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return console.log("add thermostat | invalid token",data);
-    if (device_objects[device_index].socket)
-      device_objects[device_index].socket.emit('add thermostat', data);*/
-
-
-
-    /*for (var i = 0; i < groups[group_index].members.length; i++) {
-    }
-
-    var token = data.token;
-    console.log("add thermostat | " + token);
-    for (var i=0; i < device_objects.length; i++) {
-      var _socket = device_objects[i].socket;
-      var _token = device_objects[i].token;
-      if (token && _token === token) {
-        console.log("add thermostat | " + token);      
-        _socket.emit('add thermostat', data);
-      }
-    }*/
   });
 
   socket.on('link_thermostat', function (data) {
@@ -1150,15 +1101,6 @@ io.on('connection', function (socket) {
       var device_index = find_index(device_objects,'token',data.token);
       device_objects[device_index].socket.emit('set_thermostat', data);
     }
-    /*var token = data.token;
-    console.log("set_thermostat | " + token);
-    for (var i=0; i < device_objects.length; i++) {
-      var _socket = device_objects[i].socket;
-      var _token = device_objects[i].token;
-      if (token && _token === token) {
-        _socket.emit('set_thermostat', data);
-      }
-    }*/
   });
 
   socket.on('set lights', function (data) {
@@ -1360,8 +1302,9 @@ io.on('connection', function (socket) {
 
 
   socket.on('load settings', function (data) {
+    //console.log("load settings",data.mac);
     var group_index = find_index(groups,'group_id',data.token);
-    if (group_index < 0) return;
+    if (group_index < 0) return console.log("group_id not found", data.token);
     for (var i=0; i < groups[group_index].members.length; i++) {
       message_user(groups[group_index].members[i],'load settings',data);
     }
