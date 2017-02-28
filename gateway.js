@@ -28,7 +28,7 @@ function get_relay_server(server_type) {
     function (error, response, data) {
       if (!error && response.statusCode == 200) {
         relay_server = data;
-        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
+        io_relay = require('socket.io-client')("http://"+relay_server);
         start_io_relay();
         if (error !== null) {
          console.log('error ---> ' + error);
@@ -83,7 +83,7 @@ var io_relay_connected = false;
 
 exec("mkdir files", (error, stdout, stderr) => {
   if (error) {
-    console.error(`exec error: ${error}`);
+    //console.error(`exec error: ${error}`);
     return;
   }
   console.log("made files directory");
@@ -1019,7 +1019,7 @@ function start_ffmpeg() {
                    "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"*/
 
   var command =  [
-                   //'-loglevel', 'panic',
+                   '-loglevel', 'panic',
                    '-r', '2',
                    '-strict', '-1',
                    '-s', video_width+"x"+video_height,
@@ -1027,7 +1027,7 @@ function start_ffmpeg() {
                    '-i', '/dev/video0',
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
-                   '-b:v', '500k',
+                   '-b:v', '600k',
                    '-r', '2',
                    '-strict', '-1',
                    "http://"+relay_server+":8082/"+token+"/"

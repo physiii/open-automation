@@ -145,7 +145,7 @@ angular.module('starter.controllers', ['socket-io'])
     });*/
   }
  
-    var relay_socket = io.connect('http://'+$rootScope.server_ip+':5000');
+    var relay_socket = io.connect('http://'+$rootScope.server_ip);
     $rootScope.relay_socket = relay_socket;
     var token = $.cookie('token');
     var user = $.cookie('user');
@@ -363,16 +363,7 @@ relay_socket.on('room_sensor', function (data) {
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
     relay_socket.emit('camera',data_obj);
-    /*for (var i = 0; i < gateways.length; i++) {
-      if (data.mac == gateways[i].mac && !gateways[i].stream_started) {
-        gateways[i].camera_socket = new WebSocket( 'ws://'+$rootScope.server_ip+':8084' );
-        console.log('token for video stream',gateways[i].token);
-        gateways[i].stream_started = true;
-        gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-        gateways[i].player = new jsmpeg(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
-      } else console.log('stream already started',gateways[i].mac);
-    }*/
-    console.log('load settings',data);
+    //console.log('load settings',data);
   });
 
   relay_socket.on('load devices', function (data) {
@@ -437,9 +428,9 @@ relay_socket.on('room_sensor', function (data) {
 
   }
 
-  $rootScope.to_mobile = function(command,token) {
-    console.log('to_mobile',command);
-    relay_socket.emit('to_mobile', {token:token, command:command});
+  $rootScope.ping_audio = function(command,token) {
+    console.log('ping audio',command);
+    relay_socket.emit('ping audio', {token:token, command:command});
   }
 
   $rootScope.find_index = function(array, key, value) {
@@ -1193,13 +1184,6 @@ function disable_update() {
 
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
-  /*var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
-  var mapOptions = {
-    center: myLatlng,
-    zoom: 10,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  $rootScope.map = new google.maps.Map(document.getElementById("map"),mapOptions);*/
   var markers = [];
   $rootScope.initialize_map = function () {
     var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
@@ -1216,22 +1200,23 @@ function disable_update() {
     //marker.setMap($rootScope.map);
     console.log("<----- initialize_map -----> Lat: ",$rootScope.ipLatitude);
   }
-
+  $rootScope.initialize_map();
   $rootScope.update_map = function (device) {
     mobile = $rootScope.mobile;
-    device_str = JSON.stringify(device);
-    console.log("!!device!!",device_str);
-    Latlng = new google.maps.LatLng(device.latitude, device.longitude);
+    var location = device.location;
+    //console.log("update_map",location);
+    Latlng = new google.maps.LatLng(location.latitude, location.longitude);
     var contentString = "<div>" + device.mac + "<br>";
-        contentString += "<a ng-click=\"to_mobile('ping_audio_start','"+device.token+"')\">Start Ping</a>    |    ";
-        contentString += "<a ng-click=\"to_mobile('ping_audio_stop','"+device.token+"')\">Stop Ping</a></div>";
+        contentString += "Signal: "+location.cell_signal_level+"<br>";
+        contentString += "<a ng-click=\"ping_audio('start','"+device.token+"')\">Start Ping</a>    |    ";
+        contentString += "<a ng-click=\"ping_audio('stop','"+device.token+"')\">Stop Ping</a></div>";
     var compiled = $compile(contentString)($scope);
     var infowindow = new google.maps.InfoWindow({
       content: compiled[0]
     });      
     var marker = new google.maps.Marker({
       position: Latlng,
-      title: device.mac,
+      title: location.mac,
       map: $rootScope.map
     });
     google.maps.event.addListener(marker, 'click', function() {
@@ -1240,7 +1225,7 @@ function disable_update() {
     
     for (var i = 0; i < markers.length; i++) {
       var title = markers[i].getTitle();
-      if (title === device.mac) {
+      if (title === location.mac) {
         markers[i].setMap(null);
       }
     }

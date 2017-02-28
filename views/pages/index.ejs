@@ -33,11 +33,11 @@ test{
             <div class="row">
               <div class="input-field col s6">
                 <input style="color:white;font-size:18px" id="first_name" type="text" class="validate">
-                <label for="first_name"><b style="color:fff;font-size:19px">First Name</b></label>
+                <label for="first_name"><b style="color:#fff;font-size:19px">First Name</b></label>
               </div>
               <div class="input-field col s6">
                 <input style="color:white;font-size:18px" id="last_name" type="text" class="validate">
-                <label for="last_name"><b style="color:fff;font-size:19px">Last Name</b></label>
+                <label for="last_name"><b style="color:#fff;font-size:19px">Last Name</b></label>
               </div>
             </div>
             <div class="row">
@@ -53,13 +53,13 @@ test{
               </div>
             </div>
 
-            <button style="margin:10px auto 20px 35%;" class="btn waves-effect waves-light animated" type="button" onclick="myFunction()" >
+            <button style="margin:10px auto 20px 35%;" class="btn waves-effect waves-light animated" type="button" ng-click="submit_home_consult()" >
               Submit | <i class="fa fa-paper-plane fa-3x"></i>
             </button>
 
             <hr style="width:100%">
 
-            <button style="margin:20px;width:100%;" class="btn waves-effect waves-light animated" type="button" onclick="show_price_generator()" >
+            <button style="margin:20px;height:50px;width:100%;" class="btn waves-effect waves-light animated" type="button" onclick="show_price_generator()" >
               Build Your System | <i class="fa fa-home fa-3x"></i>
             </button>
 
@@ -75,7 +75,6 @@ test{
 
 <script>
 function myFunction() {
-
   var first_name = document.getElementById("first_name").value;
   var last_name = document.getElementById("last_name").value;
   var phone = document.getElementById("phone_number").value;
