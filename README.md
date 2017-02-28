@@ -29,7 +29,7 @@ Uses motion to trigger recording to local disk and local disk can be proxied (wo
 ## differences
 1. NodeJS with MongoDB for processing
 2. Socket.IO communication
-3. PHP for generating, setting, and retreiving tokens
+3. NodeJS for generating, setting, and retreiving tokens
 4. Websockets on microcontrollers
 
 
