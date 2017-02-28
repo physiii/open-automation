@@ -528,8 +528,8 @@ wss.on('connection', function connection(ws) {
 
     
     // ----------------  garage opener  ------------------- //
-    if (device_type === "garage_opener") {
-      for (var i=0; i < user_objects.length; i++) {
+    if (device_type === "garage_opener") { console.log("garage_opener",msg)
+      /*for (var i=0; i < user_objects.length; i++) {
         _token = device_objects[i].token;
         //console.log("garage_opener | " + token+":"+_token);
         if (_token && _token === token) {
@@ -538,7 +538,7 @@ wss.on('connection', function connection(ws) {
           _socket.emit('garage_opener', msg );  
           console.log(mac + " | sending message to client ");
         }
-      }
+      }*/
     }
 
     // ---------------  media controller  ----------------- //
@@ -1199,6 +1199,7 @@ io.on('connection', function (socket) {
     var user_token = data.user_token;
 
     var index = find_index(groups,'group_id',user_token);
+    if (index < 0) return console.log("unlink device | no group found",data);
     var index2 = groups[index].members.indexOf(device_token);
     groups[index].members.splice(index2,1);
     store_group(groups[index]);
@@ -1218,7 +1219,7 @@ io.on('connection', function (socket) {
   function get_devices(data,socket) {
     var devices = [];
     var group_index = find_index(groups,'group_id',data.token);
-    if (group_index < 0) return console.log("no group found",data);
+    if (group_index < 0) return console.log("get_devices | no group found",data);
     devices.push(groups[group_index]);
     for (var i=0; i < groups[group_index].members.length; i++) {
       //console.log('get_devices1',groups[group_index].members[i]);
@@ -1414,16 +1415,6 @@ socketServer.broadcast = function(data, settings) {
       continue;
     }
  
-    if (!this.clients[i].sent_header) {
-      // Send magic bytes and video size to the newly connected socket
-      // struct { char magic[4]; unsigned short width, height;}
-      //var streamHeader = new Buffer(8);
-      //streamHeader.write(STREAM_MAGIC_BYTES);
-      //streamHeader.writeUInt16BE(stream_width, 4);
-      //streamHeader.writeUInt16BE(stream_height, 6);
-      //this.clients[i].send(streamHeader, {binary:true});
-      //this.clients[i].sent_header = true;
-    }
     this.clients[i].send(data);
     //console.log("<< !!! SENDING BROADCAST ("+i+") !!! >>>");
   }

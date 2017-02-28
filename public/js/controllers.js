@@ -128,24 +128,17 @@ angular.module('starter.controllers', ['socket-io'])
   var sirens = [];
   var alarms = [];
   var smoke_alarms = [];
-  var server_type = "development";
+  var server_type = "local";
+
   console.log("<< ------  userinfo  ------ >> ");
-  if (server_type == "development") {
+  if (server_type == "local")
+    $rootScope.server_ip = location.host;
+  if (server_type == "dev")
     $rootScope.server_ip = "98.168.142.41";
-    /*$.get( "http://pyfi.org/php/get_ip.php?server_name=socket_io_dev").success(function(data){
-      init_socket(data);
-      console.log(server_type + " server: " + data);
-    });*/
-  }
-  if (server_type == "production") {
+  if (server_type == "prod")
     $rootScope.server_ip = "24.253.223.242";
-    /*$.get( "http://pyfi.org/php/get_ip.php?server_name=socket_io").success(function(data){
-      init_socket(data);
-      console.log(server_type + " server: " + data);
-    });*/
-  }
  
-    var relay_socket = io.connect('http://'+$rootScope.server_ip);
+    var relay_socket = io.connect("http://" + $rootScope.server_ip);
     $rootScope.relay_socket = relay_socket;
     var token = $.cookie('token');
     var user = $.cookie('user');
@@ -706,6 +699,7 @@ image.addEventListener('load', function() {
     document.getElementById("previewCanvas_"+mac).style.display = "none";
     document.getElementById("videoCanvas_"+mac).style.display = "inline";
     if (gateways[i].stream_started) return console.log("stream already started");
+    //gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
     gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
     console.log('token for video stream',gateways[i].token);
     gateways[i].stream_started = true;
