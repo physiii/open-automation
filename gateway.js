@@ -1,8 +1,7 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
-
-var server_type = "dev";
+var server_type = "prod";
 process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
   if (val == "dev")

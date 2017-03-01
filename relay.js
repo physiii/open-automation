@@ -29,6 +29,8 @@ var groups = [];
 var accounts = [];
 
 // -------------------------------  web stuff  --------------------------------- //
+
+
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
   
@@ -45,16 +47,6 @@ passport.use(new LocalStrategy(
     var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
     if (token != accounts[index].token) return console.log("passwords do not match");
     return done(null, {token:token, user:username});
-    /*User.findOne({ username: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        //return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.validPassword(password)) {
-        //return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, user);
-    });*/
   }
 ));
 
