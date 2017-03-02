@@ -4,7 +4,7 @@ var WebSocketServer = require("ws").Server;
 var express = require('express');
 var url = require('url');
 var app = express();
-var port = 80;
+var port = 8080;
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
@@ -27,6 +27,12 @@ var device_objects = [];
 var user_objects = [];
 var groups = [];
 var accounts = [];
+
+
+// Arguments passed to the program
+var index = process.argv.indexOf('-p');
+if (index > -1) port = process.argv[index+1];
+console.log('port ',port);
 
 // -------------------------------  web stuff  --------------------------------- //
 
@@ -87,7 +93,7 @@ app.post('/register', function(req, res) {
   
   var index = find_index(groups,'group_id',token);
   if (index < 0) {
-    var group = {group_id:token, mode:'init', user:username, device_type:['human'], contacts:[], members:[token]};    
+    var group = {group_id:username, mode:'init', user:username, device_type:['human'], contacts:[], members:[username]};    
     store_group(group);
   } else {
     res.json({error:"group already exists"});
@@ -644,10 +650,12 @@ function message_device(token,msg) {
       device_objects[device_index].socket.emit(msg.device_type,msg);
 }
 
-function message_user(token,event,msg) {
+function message_user(user,event,msg) {
+  //var user_index = find_index(user_objects,'user',user);
   for (var j=0; j < user_objects.length; j++) {
     //console.log(event,user_objects[j].token);
-    if (user_objects[j].token == token) {
+    if (user_objects[j].user == user) {
+      console.log("message_user",user_objects[j].user);
       user_objects[j].socket.emit(event,msg);
     }
   }
@@ -900,35 +908,38 @@ io.on('connection', function (socket) {
     public_ip = public_ip.slice(7);
     var username = data.username;
     var password = data.password;
+    delete data.password;
     var mac = data.mac;
     var device_name = data.device_name;
     var index = find_index(accounts,'username',username);
     if (index < 0) return console.log("login | account not found",username);
-    var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
-    if (token != accounts[index].token) return console.log("login | passwords do not match");
-    console.log("login | ", data.username);
+    var user_token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
+    if (user_token != accounts[index].token) return console.log("login | passwords do not match");
+    var token = crypto.createHash('sha512').update(mac).digest('hex');
     //var salt = data.salt //some random value
-    var temp_object = Object.assign({}, data);
-    temp_object.token = token;
-    temp_object.public_ip = public_ip;
-    socket.emit('login',temp_object);
-    store_device_object(temp_object);
-    temp_object.socket = socket;
-    var index = find_index(device_objects,'token',token);
-    if (index > -1) {
-      device_objects[index] = temp_object;
-      console.log('updated device',temp_object.mac);
+    data.public_ip = public_ip;
+    data.token = token;
+    data.user_token = user_token;
+    socket.emit('login',data);
+    delete data.username;
+    delete data.user_token;
+    console.log("login |", data);
+    var device_index = find_index(device_objects,'token',token);
+    if (device_index > -1) {
+      store_device_object(data);
+      device_objects[device_index].socket = socket;
+      console.log('updated device',mac);
     } else {
-      if (!temp_object.groups) temp_object.groups = [temp_object.mac];
-      device_objects.push(temp_object);
-      store_device_object(temp_object);
-      console.log('added device',temp_object.mac);
+      data.groups = [mac];
+      store_device_object(data);
+      data.socket = socket;
+      device_objects.push(data);      
+      console.log('added device',mac);
     }
-    
-    var index = find_index(groups,'group_id',data.mac);
-    console.log("INDEX FOR "+data.mac+" is "+index );
+
+    var index = find_index(groups,'group_id',mac);
     if (index < 0) {
-      var group = {group_id:data.mac, mode:'init', device_type:['alarm'], members:[data.mac]};
+      var group = {group_id:mac, mode:'init', device_type:['alarm'], members:[mac]};
       groups.push(group);
       store_group(group);
     }
@@ -963,7 +974,8 @@ io.on('connection', function (socket) {
     }
     store_location_object(data.mac,data.location);
 
-
+    if (!device_objects[index]) return console.log("no groups array in device object");
+    
     for (var j = 0; j < device_objects[index].groups.length; j++) {
       var group_index = find_index(groups,'group_id',device_objects[index].groups[j]);
       //console.log("group",device_objects[index].groups[j]);
@@ -1150,68 +1162,76 @@ io.on('connection', function (socket) {
       console.log("trying to link lights?");
       return;
     }
-    var device_token = crypto.createHash('sha512').update(data.mac).digest('hex');
-    var user_token = data.user_token;
+    var token = crypto.createHash('sha512').update(data.mac).digest('hex'); //user entered
+    //var token = data.token;
     var device_name = data.device_name;
+    var user_token = data.user_token;
 
+    console.log("link device",data);
+    var device_index = find_index(device_objects,'token',token);    
+    if (device_index < 0) return console.log('link device | device not found',token);
+    var mac = device_objects[device_index].mac;
+
+   
+    var user_index = find_index(accounts,'token',user_token);
+    if (!accounts[user_index]) return console.log("link device | no account found");
+    var username = accounts[user_index].username;
 
     //add user to device for incoming messages
-    var device_index = find_index(device_objects,'token',device_token);
-    if (device_objects[device_index].groups.indexOf(user_token) < 0) {
-      device_objects[device_index].groups.push(user_token);
+    if (device_objects[device_index].groups.indexOf(username) < 0) {
+      device_objects[device_index].groups.push(username);
       store_device_object(device_objects[device_index]);
-    } else return console.log("live device | no device found");
-    var mac = device_objects[device_index].mac
+    } //else return console.log("link device | no device found");
 
     //add device to user group
-    var index = find_index(groups,'group_id',user);
-    if (!groups[index]) return console.log("link device | no user group found ",device_objects[device_index].mac);
-    if (groups[index].members.indexOf(device_token) < 0) {
-      groups[index].members.push(device_token);
-      store_group(groups[index]);
+    var group_index = find_index(groups,'group_id',username);
+    if (!groups[group_index]) return console.log("link device | no user group found ",username);
+    if (groups[group_index].members.indexOf(mac) < 0) {
+      groups[group_index].members.push(mac);
+      store_group(groups[group_index]);
     }
 
     //add user to device group
-    var index = find_index(groups,'group_id',device_token);
-    if (groups[index].members.indexOf(user_token) < 0) {
-      groups[index].members.push(user_token);
-      store_group(groups[index]);
+    var group_index = find_index(groups,'group_id',mac);
+    if (groups[group_index].members.indexOf(username) < 0) {
+      groups[group_index].members.push(username);
+      store_group(groups[group_index]);
     }
-
-
-
-    console.log('link device',groups[index]);
-    data.token = user_token;
+    data.res = "success";
+    console.log('link device',mac);
     socket.emit('link device',data);
     //get_devices(data,socket);
   });
 
   socket.on('unlink device', function (data) {
-    var device_token = crypto.createHash('sha512').update(data.mac).digest('hex');
+    var token = data.token;
     var user_token = data.user_token;
+    
+    var account_index = find_index(accounts,'token',user_token);
+    if (account_index < 0) return console.log("unlink device | account not found");
 
     var index = find_index(groups,'group_id',user_token);
     if (index < 0) return console.log("unlink device | no group found",data);
-    var index2 = groups[index].members.indexOf(device_token);
+    var index2 = groups[index].members.indexOf(token);
     groups[index].members.splice(index2,1);
     store_group(groups[index]);
     console.log('unlink device',groups[index]);
     
-    var index = find_index(device_objects,'token',device_token);
-    var index2 = device_objects[index].groups.indexOf(user_token);
+    var index = find_index(device_objects,'token',token);
+    var index2 = device_objects[index].groups.indexOf(username);
     device_objects[index].groups.splice(index2,1);
     store_device_object(device_objects[index]);
   });
   
 
   socket.on('get devices', function (data) {
-    get_devices(data,socket);
-  });
-
-  function get_devices(data,socket) {
+    var index = find_index(accounts,'token',data.token);
+    if (index < 0) return console.log("get devices | account not found");
+    
+    var username = accounts[index].username;
     var devices = [];
-    var group_index = find_index(groups,'group_id',data.token);
-    if (group_index < 0) return console.log("get_devices | no group found",data);
+    var group_index = find_index(groups,'group_id',username);
+    if (group_index < 0) return console.log("get_devices | no group found",username);
     devices.push(groups[group_index]);
     for (var i=0; i < groups[group_index].members.length; i++) {
       //console.log('get_devices1',groups[group_index].members[i]);
@@ -1231,7 +1251,7 @@ io.on('connection', function (socket) {
     }
     //console.log('get_devices2',devices);
     socket.emit('get devices',{devices:devices});
-  }
+  });
 
   socket.on('load devices', function (data) {
     var devices = [];
@@ -1295,10 +1315,10 @@ io.on('connection', function (socket) {
 
 
   socket.on('load settings', function (data) {
-    //console.log("load settings",data.mac);
-    var group_index = find_index(groups,'group_id',data.token);
+    var group_index = find_index(groups,'group_id',data.mac);
     if (group_index < 0) return console.log("group_id not found", data.token);
     for (var i=0; i < groups[group_index].members.length; i++) {
+      console.log("load settings",data.mac);
       message_user(groups[group_index].members[i],'load settings',data);
     }
   });
@@ -1315,9 +1335,13 @@ io.on('connection', function (socket) {
   });
 
   socket.on('get settings', function (data) {
-    var index = find_index(groups,'group_id',data.token);
-    if (index < 0) return;
-
+    var index = find_index(device_objects,'token',data.token);
+    if (index < 0) return console.log("get settings | device not found", data.token);
+    if (!device_objects[index].socket) return console.log("get settings | no socket found",device_objects[index].mac)
+    device_objects[index].socket.emit('get settings',data);
+    /*var index = find_index(groups,'group_id',mac);
+    if (index < 0) return console.log("get settings | group_id not found",mac);
+console.log('hit');
     for (var i=0; i < groups[index].members.length; i++) {
       socket.emit('set alarm',groups[index]);
       var index2 = find_index(device_objects,'token',groups[index].members[i]);
@@ -1326,7 +1350,7 @@ io.on('connection', function (socket) {
           device_objects[index2].socket.emit('get settings',data);
         }
       }
-    }
+    }*/
   });
 
   /*socket.on('gateway', function (data) {

@@ -251,16 +251,16 @@ relay_socket.on('room_sensor', function (data) {
     }
   });
 
-  relay_socket.on('get token', function (data) {
-    $rootScope.token = data.token;
+  /*relay_socket.on('get token', function (data) {
+    $rootcope.token = data.token;
     console.log(data.token);
     relay_socket.emit('get devices',data);
     data.mode = "start";
     relay_socket.emit('get contacts',{user_token:$rootScope.token});
-  });
+  });*/
 
   relay_socket.on('get contacts', function (data) {
-    $rootScope.alert_contacts = data.contacts;
+    //$rootScope.alert_contacts = data.contacts;
     console.log(data);
   });
 
@@ -270,12 +270,12 @@ relay_socket.on('room_sensor', function (data) {
     console.log('get devices',devices);
     for(var i = 0; i < devices.length; i++) {
       if (!devices[i].device_type) continue;
-      
       for (var j=0; j < devices[i].device_type.length; j++) {
 
         if (devices[i].device_type[j] == "gateway") {
           var index = $rootScope.find_index(gateways,'mac',devices[i].mac);
           if (index > -1) continue;
+          relay_socket.emit('get settings',{token:devices[i].token});
           console.log("gateways: ",gateways);
           var command = devices[i];
           command.mode = "start";
@@ -310,7 +310,6 @@ relay_socket.on('room_sensor', function (data) {
         }
       }
     }
-    relay_socket.emit('get settings',{token:$rootScope.token});
     $scope.$apply(function () {
       $rootScope.gateways = gateways;
       $rootScope.cameras = cameras;
@@ -356,7 +355,7 @@ relay_socket.on('room_sensor', function (data) {
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
     relay_socket.emit('camera',data_obj);
-    //console.log('load settings',data);
+    console.log('load settings',data);
   });
 
   relay_socket.on('load devices', function (data) {
@@ -979,68 +978,6 @@ function disable_update() {
     device.user_token = $rootScope.token;
     console.log("add_device",device);  
     relay_socket.emit('link device',device);
-
-    /*if (device.device_type === "garage_opener") {
-        $.post( "php/add_device.php",{ device_type:device.device_type, user:$rootScope.username, mac:device.mac, device_name:device.device_name }).success(function(data){
-          console.log("add_device.php ",data);
-          device_obj = JSON.parse(data);
-          //$scope.$apply(function () {
-            $rootScope.garage_openers.push( device_obj );
-          //});
-        });
-    }
-
-    if (device.device_type === "room_sensor") {
-        $.post( "php/add_device.php",{ device_type:device.device_type, user:$rootScope.username, mac:device.mac, device_name:device.device_name }).success(function(data){
-          console.log("add_device.php ",data);
-          device_obj = JSON.parse(data);
-          $scope.$apply(function () {
-            $rootScope.room_sensors.push( device_obj );
-          });
-        });
-    }
-
-    if (device.device_type === "media_controller") {
-        $.post( "php/add_device.php",{ device_type:device.device_type, user:$rootScope.username, mac:device.mac, device_name:device.device_name }).success(function(data){
-          console.log("add_device.php ",data);
-          device_obj = JSON.parse(data);
-          $scope.$apply(function () {
-            $rootScope.media_controllers.push( device_obj );
-          });
-        });
-    }
-
-    if (device.device_type === "siren") {
-        $.post( "php/add_device.php",{ device_type:device.device_type, user:$rootScope.username, mac:device.mac, device_name:device.device_name }).success(function(data){
-          console.log("add_device.php ",data);
-          device_obj = JSON.parse(data);
-          $scope.$apply(function () {
-            $rootScope.sirens.push( device_obj );
-          });
-        });
-    }
-
-    if (device.device_type === "thermostat") {
-      console.log('thermostat | ' + device.ip);
-      relay_socket.emit('add thermostat',{ mac:device.mac, token:device.token, local_ip:device.local_ip, device_name:device.device_name });
-      return;
-    }
-
-    if (device.device_type === "gateway") 
-    {
-        var device_obj = { device_type:device.device_type, user:$rootScope.username, mac:device.mac, device_name:device.device_name };
-        $.post( "php/add_device.php",device_obj).success(function(data){console.log(data);
-          data = JSON.parse(data);
-          device_obj.public_ip = data.public_ip;
-          device_obj.local_ip = data.local_ip;
-          device_obj.port = data.port;
-          device_obj.token = data.token;
-          console.log("device_obj | " + device_obj.token);
-          $scope.$apply(function () {
-            $scope.gateways.push( device_obj );
-          });
-        }); 
-    }*/
   }  
   $scope.show_form = function(form) {
     //console.log("FORM: " + form);

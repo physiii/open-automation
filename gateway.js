@@ -295,12 +295,12 @@ Object.keys(ifaces).forEach(function (ifname) {
                  + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo pm2 start gateway.js relay.js'\n"
                  + "exit 0;\n"
-    fs.writeFile("/etc/rc.local", rc_local, function(err) {
+    /*fs.writeFile("/etc/rc.local", rc_local, function(err) {
       if(err) {
         return console.log(err);
       }
       //console.log("writing rc.local");
-    });
+    });*/
     settings_obj.local_ip = local_ip;
     store_settings(settings_obj);
   });
@@ -924,22 +924,7 @@ function start_motion() {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
-  });
-  /*if (motion_started) return console.log("motion already started");
-  var command =  [
-                   '-c', 'motion/motion.conf'
-                 ];
-  const motion = spawn('motion/motion', command);
-
-  motion.stdout.on('data', (data) => {console.log(`stdout: ${data}`)});
-
-  motion.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
-
-  motion.on('close', (code) => { 
-    motion_started = false;
-    console.log(`child process exited with code ${code}`);
-  });*/
-  
+  });  
   
   motion_started = true;
   io_relay.emit('motion started',settings_obj);
@@ -962,7 +947,7 @@ function get_camera_preview() {
                    '-loglevel', 'panic',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
-                   '-i', '/dev/video0',
+                   '-i', '/dev/video10',
                    '-vframes', '1',
                    "files/camera_preview_.jpg"
                  ];
@@ -1023,7 +1008,7 @@ function start_ffmpeg() {
                    '-strict', '-1',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
-                   '-i', '/dev/video0',
+                   '-i', '/dev/video10',
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
                    '-b:v', '600k',

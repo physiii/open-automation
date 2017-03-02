@@ -153,7 +153,7 @@
               <input type="hidden" ng-init="new_light.device_type = 'lights'" />
               <input type="hidden" ng-init="new_light.token = gateway.token" />
               <input type="hidden" ng-model="new_light.mac" value="{{ gateway.mac }}" />
-              <input type="hidden" ng-init="add_device(new_light)" />
+              <!-- <input type="hidden" ng-click="add_device(new_light)" /> -->
               <input type="submit" id="{{ gateway.mac }}_add_thermostat_form_btn" ng-click="show_form(gateway.mac+'_add_thermostat_form')" value="Add thermostat" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
               <div id="lights_scan_form" style="display:none" >
                 <div style="max-width:300px;margin:auto;padding:10px 25px 0px 25px;">
