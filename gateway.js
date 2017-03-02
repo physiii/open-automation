@@ -223,7 +223,7 @@ var ap_time_start;
 main_loop();
 function main_loop () {
   setTimeout(function () {
-    check_connection();
+    //check_connection();
     if (ap_mode) {
       ap_time = Date.now() - ap_time_start;
       console.log("ap_time",ap_time);
@@ -449,7 +449,7 @@ function set_wifi(data) {
           console.log(stderr);
           ap_mode = false;
           setTimeout(function () {
-            check_connection();
+            //check_connection();
           }, 30*1000);
         });
       });
