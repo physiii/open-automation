@@ -1,7 +1,7 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
-var server_type = "prod";
+var server_type = "dev";
 process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
   if (val == "dev")
@@ -1048,21 +1048,37 @@ function stop_ffmpeg(ffmpeg) {
     console.log('ffmpeg stop');
 }
 
-var ssh = new SSH({
+/*var ssh = new SSH({
     host: 'localhost',
     user: 'pi',
     pass: 'raspberry'
-});
-io_relay.on('ssh', function (data) {
+});*/
+io_relay.on('command', function (data) {
 var command = data.command;
-console.log('ssh',command);
-ssh.exec(command, {
+
+exec(command, (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    data.error = error;
+    io_relay.emit('command result',data);
+    return;
+  }
+
+  console.log(`stdout: ${stdout}`);
+  console.log(`stderr: ${stderr}`);
+  data.stdout = stdout;
+  data.stderr = stderr;
+ io_relay.emit('command result',data);
+});
+
+console.log('command',command);
+/*ssh.exec(command, {
     out: function(stdout) {
         stdout_obj = {token:token,stdout:stdout};
         io_relay.emit('ssh_out',stdout_obj);
         console.log(stdout);
     }
-}).start();
+}).start();*/
 
   /*var pwd = data.ssh_pwd;
   var server_ip = data.ssh_server_ip;

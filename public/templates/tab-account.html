@@ -163,15 +163,15 @@
               <input type="submit" id="lights_scan_btn" ng-click="link_lights(gateway)" value="Scan for lights" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
               <input type="submit" id="add_zwave_device" ng-click="add_zwave_device(gateway)" value="Scan for Z-Wave" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
 
-              <div id="ssh_form_{{ gateway.mac }}" style="display:none" >
+              <div id="command_form_{{ gateway.mac }}" style="display:none" >
                 <div style="max-width:300px;margin:auto;padding:10px 25px 0px 25px;">
-                  <div style="width:100%;height100%;color:#fff;background:#222;border-style:solid;border-width:1px;border-radius:2px;">{{ gateway.ssh_out }}</div>
+                  <div style="width:100%;height100%;color:#fff;background:#222;border-style:solid;border-width:1px;border-radius:2px;">{{ gateway.command_result }}</div>
                   <input style="font-size:100%;" ng-model="gateway.command" placeholder="Command" />
-                  <input type="submit" ng-click="ssh(gateway)" value="Send" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />  
+                  <input type="submit" ng-click="command(gateway)" value="Send" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />  
                 </div>
               </div>
 
-              <input type="submit" id="add_ssh" ng-click="show_form('ssh_form_' + gateway.mac)" value="Command" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+              <input type="submit" ng-click="show_form('command_form_' + gateway.mac)" value="Command" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
             </div>
           </div>
             <button style="margin:15px;float:left" class="button button-small button-balanced" ng-click="update_device(gateway)"><b>Update</b></i></button>

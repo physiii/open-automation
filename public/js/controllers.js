@@ -186,13 +186,13 @@ relay_socket.on('room_sensor', function (data) {
     });
   });
 
-  relay_socket.on('ssh_out', function (data) {
-    ssh_out = data.stdout;
+  relay_socket.on('command result', function (data) {
+    var command_result = data.stdout;
     var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
     $scope.$apply(function () {
-      $rootScope.gateways[index].ssh_out = ssh_out;
+      $rootScope.gateways[index].command_result = command_result;
     });
-    console.log("ssh_out",ssh_out);
+    console.log("command result",command_result);
   });
 
   relay_socket.on('motion_sensor', function (state) {
@@ -898,10 +898,10 @@ function disable_update() {
     relay_socket.emit('lights',light);
   }
 
-  $scope.ssh = function(gateway) {
-    ssh_obj = {token:gateway.token, command:gateway.command}
-    console.log("connect_ssh",gateway);
-    relay_socket.emit('ssh',gateway);
+  $scope.command = function(gateway) {
+    command_obj = {token:gateway.token, command:gateway.command}
+    console.log("command",gateway);
+    relay_socket.emit('command',gateway);
   }
 
   $scope.add_zwave_device = function(gateway) {

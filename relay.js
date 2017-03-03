@@ -720,7 +720,7 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('get user token', function (data) {
+  /*socket.on('get user token', function (data) {
     var public_ip = socket.request.connection.remoteAddress;
     public_ip = public_ip.slice(7);
     var device_name = data.device_name;
@@ -740,7 +740,7 @@ io.on('connection', function (socket) {
       groups.push(group);
       store_group(group);
     }
-  });
+  });*/
 
 //----------- ffmpeg ----------//
   socket.on('ffmpeg', function (data) {
@@ -781,20 +781,23 @@ io.on('connection', function (socket) {
     }
   });
   
-  socket.on('ssh', function (data) {
+  socket.on('command', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index > -1)
       if (device_objects[device_index].socket)
-        device_objects[device_index].socket.emit('ssh',data);
+        device_objects[device_index].socket.emit('command',data);
   });
 
-  socket.on('ssh_out', function (data) {
-    var group_index = find_index(groups,'group_id',data.token);
-    if (group_index < 0) return console.log("no device for ssh_out");
+  socket.on('command result', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    var mac = device_objects[device_index].mac;
+    var group_index = find_index(groups,'group_id',mac);
+    if (group_index < 0) return console.log("command result | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {
-        if (user_objects[j].token == groups[group_index].members[i]) {
-          user_objects[j].socket.emit('ssh_out',data);
+      console.log('command result',user_objects[j].user);
+        if (user_objects[j].user == groups[group_index].members[i]) {
+          user_objects[j].socket.emit('command result',data);
         }
       }
     }
