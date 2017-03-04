@@ -18,6 +18,8 @@ var program_app = express();
 var querystring = require('querystring');
 var request = require('request');
 var relay_server = "init";
+var server_ip = "init";
+var server_port = "init";
 var io_relay;
 get_relay_server(server_type);
 function get_relay_server(server_type) {
@@ -27,6 +29,9 @@ function get_relay_server(server_type) {
     function (error, response, data) {
       if (!error && response.statusCode == 200) {
         relay_server = data;
+        var parts = relay_server.split(":");
+        server_ip = parts[0];
+        server_port = parts[1];
         io_relay = require('socket.io-client')("http://"+relay_server);
         start_io_relay();
         if (error !== null) {
@@ -41,6 +46,9 @@ function get_relay_server(server_type) {
     function (error, response, data) {
       if (!error && response.statusCode == 200) {
         relay_server = data;
+        var parts = relay_server.split(":");
+        server_ip = parts[0];
+        server_port = parts[1];
         io_relay = require('socket.io-client')('http://'+relay_server+":5000");
         start_io_relay();
         if (error !== null) {
@@ -290,7 +298,7 @@ Object.keys(ifaces).forEach(function (ifname) {
 		 + "# By default this script does nothing.\n"
 		 + "#sudo modprobe bcm2835-v4l2\n"
 		 + "sudo modprobe v4l2loopback video_nr=10,11,1\n"
-		 + "#ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
+		 + "ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &\n"
                  + "export DISPLAY=':0.0'\n"
                  + "#su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> /var/log/motion 2>&1 &'\n"
                  + "su pi -c 'cd ~/open-automation && sudo pm2 start gateway.js relay.js'\n"
@@ -1014,7 +1022,7 @@ function start_ffmpeg() {
                    '-b:v', '600k',
                    '-r', '2',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+token+"/"
+                   "http://"+server_ip+":8082/"+token+"/"
                  ];
 
   const ffmpeg = spawn('ffmpeg', command);

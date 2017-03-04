@@ -132,25 +132,25 @@ angular.module('starter.controllers', ['socket-io'])
 
   console.log("<< ------  userinfo  ------ >> ");
   if (server_type == "local")
-    $rootScope.server_ip = location.host;
+    $rootScope.server_address = location.host;
   if (server_type == "dev")
-    $rootScope.server_ip = "98.168.142.41";
+    $rootScope.server_address = "98.168.142.41";
   if (server_type == "prod")
-    $rootScope.server_ip = "24.253.223.242";
- 
-    var relay_socket = io.connect("http://" + $rootScope.server_ip);
-    $rootScope.relay_socket = relay_socket;
-    var token = $.cookie('token');
-    var user = $.cookie('user');
-    $rootScope.token = token;
-    $rootScope.user = user;
-    relay_socket.emit('link user',{token:token, user:user});
-    relay_socket.emit('get devices',{token:token});
-    relay_socket.emit('get contacts',{user_token:token});  
-    relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
-  //relay_socket.emit('get devices',data);
-  //relay_socket.emit('get contacts',{user_token:$rootScope.token});
-  //$rootScope.username = username;
+    $rootScope.server_address = "24.253.223.242";
+  
+  var parts = $rootScope.server_address.split(":");
+  $rootScope.server_ip = parts[0];
+  $rootScope.port = parts[1];
+  var relay_socket = io.connect("http://" + $rootScope.server_address);
+  $rootScope.relay_socket = relay_socket;
+  var token = $.cookie('token');
+  var user = $.cookie('user');
+  $rootScope.token = token;
+  $rootScope.user = user;
+  relay_socket.emit('link user',{token:token, user:user});
+  relay_socket.emit('get devices',{token:token});
+  relay_socket.emit('get contacts',{user_token:token});  
+  relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
   $.getJSON("http://ipinfo.io", function (data) {
     var lat = data.loc.substring(0,7);
     var lng = data.loc.substring(8,16);
@@ -165,9 +165,7 @@ angular.module('starter.controllers', ['socket-io'])
   });
   $rootScope.alert_contacts = [];
 
-  //relay_socket.emit('get user token',{mac:$rootScope.username,user:$rootScope.username});
-relay_socket.on('room_sensor', function (data) {
-
+  relay_socket.on('room_sensor', function (data) {
     if (data.status = 'alert') {
       $rootScope.alarm_status = data.status;
     }
