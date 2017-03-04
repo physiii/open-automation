@@ -1149,7 +1149,7 @@ io_relay.on('update', function (data) {
   git.stdout.on('data', (data) => {console.log(`update: ${data}`)});
   git.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
   git.on('close', (code) => {});
-  exec("sudo pm2 restart relay gateway", (error, stdout, stderr) => {
+  exec("pm2 restart relay gateway", (error, stdout, stderr) => {
     if (error) {return console.error(`exec error: ${error}`)}
     console.log(stdout);
     console.log(stderr);
