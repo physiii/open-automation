@@ -706,7 +706,7 @@ io.on('connection', function (socket) {
     } else {
       data.groups = [mac];
       store_device_object(data);
-      device_objects[index].socket = socket;
+      data.socket = socket;
       device_objects.push(data);
       console.log('get token | added device',mac);
     }
