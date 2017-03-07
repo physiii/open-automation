@@ -34,7 +34,7 @@ Uses motion to trigger recording to local disk and local disk can be proxied (wo
 
 
 ##System Overview
-![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.jpg?raw=true "system overview")
+![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system%20overview.png?raw=true "system overview")
 
 ##Dashboard
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dash.png "Dashboard")
