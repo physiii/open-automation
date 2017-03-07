@@ -19,15 +19,15 @@
     <div id="container_{{ gateway.mac }}" class="col-lg-4 col-md-6 col-sm-12" style="">
       <div class="flip-container">
         <div class="flipper clearfix" >
-          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;">
             <ion-card-header >
               <div ng-click="flip()" style="width:100%">
                 <h4 style="margin:10px;text-align:right;color:#ccc">{{ gateway.device_name }}</h4>
               </div>
             </ion-card-header>
-            <div id="play-button_{{ gateway.mac }}" ng-click="start_stream(gateway.mac)">
+            <div id="play-button_{{ gateway.mac }}" ng-click="start_webcam(gateway)">
               <canvas id="previewCanvas_{{ gateway.mac }}" style="height:100%;"></canvas>
-              <div style="background:#fff;position:absolute;bottom:35%;left:47%;width:30px;height:30px"></div>
+              <div style="background:#fff;position:absolute;bottom:35%;left:48%;width:30px;height:30px"></div>
               <div class="fa fa-play-circle fa-4x col" style="position:absolute;bottom:26%;color:#444"></div>
             </div>
             <div id="loading_videoCanvas_{{ gateway.mac }}" style="position:absolute;left:48%;top:50%;display:none">
@@ -38,21 +38,31 @@
               <i class="ion-arrow-expand"></i>
             </button>
           </div>
-          <div class="back card" style="height:200px;width:100%;border-style:solid;border-width:2px;border-color:#7E1A1A;background-color:#7E1A1A;color:#eee;">
-            <div ng-click="flip()">
-              <h4 style="float:left;">{{ gateway.settings.device_name }}</h4>
-              <h5 style="float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
+          <div class="back card" style="height:400px;width:100%;border-style:solid;border-width:2px;border-color:#9E1A1A;background-color:#6E1A1A;color:#fff;">
+
+
+            <li data-ng-repeat="month in gateway.motion_list.months" ng-click="flip()" class="item item-divider" style="background-color:#6E1A1A;color:#eee">
+              <h4 style="color:#eee;float:left;">{{ gateway.settings.device_name }}     </h4>
+              <b>{{ gateway.motion_list.selected_month.month }} {{ gateway.motion_list.selected_day.day }}</b>
+              <h5 style="color:#eee;float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
+            </li>
+
+            <li id="motion_list_months" data-ng-repeat="month in gateway.motion_list.months" ng-click="select_month(month, gateway)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
+             <div style="float:left">{{ month.month }}, 2017</div>
+             <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
+            </li>
+
+            <li id="motion_list_days" data-ng-repeat="day in gateway.motion_list.selected_month.days" ng-click="select_day(day, selected_month.month, gateway)" class="item item-divider" style="width:100%">
+             <div style="float:left">{{ gateway.motion_list.selected_month.month }}, {{ day }}</div>
+             <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
+            </li>
+            
+            <div style="overflow-y:scroll;max-height:500px;">
+            <li id="motion_list_day" data-ng-repeat="file in gateway.motion_list.selected_day.files" ng-click="play_file(file, gateway)" class="item item-divider" style="width:100%">
+             <div style="float:left">{{ file[6][0] }}:{{ file[6][1] }} | {{ file[4] }}</div>
+             <div style="float:right" class="fa fa-play fa-1x"></div>
+            </li>
             </div>
-            <li class="row item item-divider">
-            <div style="width:100%">
-             <div style="float:left">Device ID</div>
-             <div style="right:0px;"><b>test</b></div>
-            </div>
-           </li>
-            <li class="row item item-divider" style="">
-             <div style="float:left">Device ID</div>
-             <div style="float:right"><b>test</b></div>
-           </li>
           </div>
         </div>
       </div>

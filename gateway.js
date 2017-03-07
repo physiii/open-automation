@@ -145,7 +145,7 @@ function get_settings() {
   	  }
 	  if (got_token == false && io_relay_connected) {
 	    got_token = true;
-	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, port:camera_port, device_type:["gateway"], device_name:settings_obj.device_name,groups:[token] });
+	    io_relay.emit('get token',{ mac:mac, local_ip:local_ip, device_type:["gateway"], device_name:settings_obj.device_name });
   	  }
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
@@ -924,7 +924,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
 });
 
 
-var motion_started = false;
+/*var motion_started = false;
 start_motion();
 function start_motion() {
   var command = "sudo pkill motion;sudo motion/motion -c motion/motion.conf";
@@ -937,7 +937,7 @@ function start_motion() {
   motion_started = true;
   io_relay.emit('motion started',settings_obj);
   console.log('motion started | ',command);
-}
+}*/
 
 
 io_relay.on('camera', function (data) {
@@ -979,38 +979,29 @@ function send_camera_preview (settings) {
 
 ffmpeg_timer = setTimeout(function () {}, 1);
 io_relay.on('ffmpeg', function (data) {
-  if (data.mode == "start") {
-    start_ffmpeg();
+  if (data.command == "start_webcam") {
+    start_ffmpeg(data);
   }
-  if (data.mode == "stop") {
+  if (data.command == "stop") {
     console.log("received ffmpeg stop command");
     stop_ffmpeg(ffmpeg);
   }
+  if (data.command == "play_file") {
+    console.log("playing file");
+    start_ffmpeg(data);
+  }
 });
 
+const spawn = require('child_process').spawn;
 ffmpeg_started = false;
 
-const spawn = require('child_process').spawn;
-const ffmpeg = null;
-
-function start_ffmpeg() {
-  if (ffmpeg_started) return console.log("ffmpeg already started");
+function start_ffmpeg(data) {
   video_width = settings_obj.video_width;
   video_height = settings_obj.video_height;
-  /*var command =  [
-                   '-loglevel', 'panic',
-                   '-r', '2',
-                   '-strict', '-1',
-                   '-s', video_width+"x"+video_height,
-                   '-f', 'video4linux2',
-                   '-i', '/dev/video11',
-                   '-f', 'mpeg1video',
-                   '-b:v', '1000k',
-                   '-r', '2',
-                   '-strict', '-1',
-                   "http://"+relay_server+":8082/"+token+"/"+video_width+"/"+video_height+"/"*/
-
-  var command =  [
+  if (data.command == "start_webcam") {
+    if (ffmpeg_started)
+      console.log("ffmpeg already started");
+    var command =  [
                    '-loglevel', 'panic',
                    '-r', '2',
                    '-strict', '-1',
@@ -1024,7 +1015,24 @@ function start_ffmpeg() {
                    '-strict', '-1',
                    "http://"+server_ip+":8082/"+token+"/"
                  ];
-
+  }
+  if (data.command == "play_file") {
+    if (ffmpeg_started) {
+      //ffmpeg.kill();
+      console.log("stopping ffmpeg");
+    }
+    var command =  [
+                   '-loglevel', 'panic',
+                   '-r', '2',
+                   '-strict', '-1',
+                   '-i', data.file,
+                   '-f', 'mpegts',
+		   '-codec:v', 'mpeg1video',
+                   '-r', '2',
+                   '-strict', '-1',
+                   "http://"+server_ip+":8082/"+token+"/"
+                 ];
+   }
   const ffmpeg = spawn('ffmpeg', command);
 
   ffmpeg.stdout.on('data', (data) => {
@@ -1056,90 +1064,40 @@ function stop_ffmpeg(ffmpeg) {
     console.log('ffmpeg stop');
 }
 
-/*var ssh = new SSH({
-    host: 'localhost',
-    user: 'pi',
-    pass: 'raspberry'
-});*/
 io_relay.on('command', function (data) {
-var command = data.command;
-
-exec(command, (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    data.error = error;
-    io_relay.emit('command result',data);
-    return;
-  }
-
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
-  data.stdout = stdout;
-  data.stderr = stderr;
- io_relay.emit('command result',data);
-});
-
-console.log('command',command);
-/*ssh.exec(command, {
-    out: function(stdout) {
-        stdout_obj = {token:token,stdout:stdout};
-        io_relay.emit('ssh_out',stdout_obj);
-        console.log(stdout);
+  var command = data.command;
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      data.error = error;
+      io_relay.emit('command result',data);
+      return;
     }
-}).start();*/
-
-  /*var pwd = data.ssh_pwd;
-  var server_ip = data.ssh_server_ip;
-  var server_port = data.ssh_server_port;
-  var user = data.ssh_user;
-  var reverse_port = "19999";
-
-  var CommandArguments = [
-        '-p',
-        pwd,
-        'ssh',
-        '-o',
-        'StrictHostKeyChecking=no', //tell ssh not to care about RSA key checking
-        '-R',
-        '19999:localhost:22',
-        user+'@'+server_ip,
-        '-p',      
-        server_port
-    ];
-  const ssh = spawn('sshpass', CommandArguments, {shell:true});
-  console.log(CommandArguments.join(" "));
-ssh.stdout.on('data', (data) => {
-  console.log(`stdout: ${data}`);
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+    data.stdout = stdout;
+    data.stderr = stderr;
+   io_relay.emit('command result',data);
+  });
+  console.log('command',command);
 });
 
-ssh.stderr.on('data', (data) => {
-  console.log(`stderr: ${data}`);
-});
-
-ssh.on('close', (code) => {
-  console.log(`child process exited with code ${code}`);
-});
-*/
-  /*var CommandArguments = [
-        'sshpass',
-        '-p',
-        pwd,
-        'ssh',
-        '-o',
-        'StrictHostKeyChecking=no', //tell ssh not to care about RSA key checking
-        '-R',
-        '19999:localhost:22',
-        user+'@'+server_ip,
-        '-p',      
-        server_port
-    ];
-  var command = "sshpass -p "+pwd+" ssh -T -R "+reverse_port+":localhost:22 test@"+server_ip+" -p "+server_port;
-var child = exec(CommandArguments.join(" "), function(error, stdout, stderr){
-    console.log("error: ", error);
-    console.log("stdout: ", stdout);
-    console.log("stderr: ", stderr);
-    });*/
-  //console.log('ssh',data);
+io_relay.on('motion list', function (data) {
+  var command = "ls -lahR --full-time /var/lib/motion/*";
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      data.error = error;
+      io_relay.emit('motion list result',data);
+      return;
+    }
+    //console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+    data.stdout = stdout;
+    data.stderr = stderr;
+   io_relay.emit('motion list result',data);
+  });
+  //console.log('motion list',command);
 });
 
 io_relay.on('update', function (data) {

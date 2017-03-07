@@ -151,18 +151,8 @@ angular.module('starter.controllers', ['socket-io'])
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
   relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
-  $.getJSON("http://ipinfo.io", function (data) {
-    var lat = data.loc.substring(0,7);
-    var lng = data.loc.substring(8,16);
-    $rootScope.ipLatitude = lat;
-    $rootScope.ipLongitude = lng;    
-    url = "http://forecast.io/embed/#lat="+lat+"&lon="+lng+"&name=" + data.city;
-    $('#forecast_embed').attr('src', url);  
-    $scope.ipAddress = data.ip;
-    $scope.postal = data.postal;
-    $rootScope.postal = data.postal;
-    $rootScope.initialize_map();
-  });
+
+
   $rootScope.alert_contacts = [];
 
   relay_socket.on('room_sensor', function (data) {
@@ -186,11 +176,67 @@ angular.module('starter.controllers', ['socket-io'])
 
   relay_socket.on('command result', function (data) {
     var command_result = data.stdout;
+    command_result = command_result.replace(/(?:\r\n|\r|\n)/g, '<br />');
     var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
     $scope.$apply(function () {
       $rootScope.gateways[index].command_result = command_result;
     });
-    console.log("command result",command_result);
+    //console.log("command result",command_result);
+  });
+
+  relay_socket.on('motion list result', function (data) {
+    console.log("motion list result | ",data);
+    var motion_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
+    motion_list.months = [];
+    var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+    $rootScope.gateways[index].motion_list = motion_list;
+    for (var i = 0; i < motion_list.length; i++) {
+      var parts = motion_list[i].split(" ");
+      if (parts.length < 6) continue;
+      if (parts[4].length < 1)
+        parts.splice(4,1);
+      if (parts[4].length < 1)
+        parts.splice(4,1);
+      var j = 5;
+
+
+      //convert month digits to string
+      parts[j] = parts[j].split("-");
+      if (parts[j][1] == "03") {
+        var month = "March";
+        parts[j][1] == month;
+        var index = $rootScope.find_index(motion_list.months, 'month', month);
+        if (index < 0) {      
+          motion_list.months.push({month:month, days:[]});
+          index = 0;
+        } 
+        if (motion_list.months[index].days.indexOf(parts[j][2]) < 0) {
+          console.log("stored day!")
+          motion_list.months[index].days.push(parts[j][2]);
+        }
+      }
+
+      if (parts[j][1] == "04") {
+        var month = "April";
+        parts[j][1] == month;
+        var index = $rootScope.find_index(motion_list.months, 'month', month);
+        if (index < 0) {      
+          motion_list.months.push({month:month, days:[]});
+          index = 0;
+        } 
+        if (motion_list.months[index].days.indexOf(parts[j][2]) < 0) {
+          console.log("stored day!")
+          motion_list.months[index].days.push(parts[j][2]);
+        }
+      }
+
+      //format time
+      parts[j+1] = parts[j+1].split(":");
+
+      //split file exentesion
+      parts[j+3] = parts[j+3].split(".");
+      motion_list[i] = parts;
+    }
   });
 
   relay_socket.on('motion_sensor', function (state) {
@@ -249,17 +295,9 @@ angular.module('starter.controllers', ['socket-io'])
     }
   });
 
-  /*relay_socket.on('get token', function (data) {
-    $rootcope.token = data.token;
-    console.log(data.token);
-    relay_socket.emit('get devices',data);
-    data.mode = "start";
-    relay_socket.emit('get contacts',{user_token:$rootScope.token});
-  });*/
-
   relay_socket.on('get contacts', function (data) {
     //$rootScope.alert_contacts = data.contacts;
-    console.log(data);
+    //console.log('get contacts | ', data);
   });
 
   relay_socket.on('get devices', function (data) {
@@ -274,11 +312,12 @@ angular.module('starter.controllers', ['socket-io'])
           var index = $rootScope.find_index(gateways,'mac',devices[i].mac);
           if (index > -1) continue;
           relay_socket.emit('get settings',{token:devices[i].token});
-          console.log("gateways: ",gateways);
-          var command = devices[i];
-          command.mode = "start";
+          relay_socket.emit('motion list',{token:devices[i].token});
+          //console.log("gateways: ",gateways);
+          //var command = devices[i];
+          //command.mode = "start";
           devices[i].stream_started = false;
-          relay_socket.emit('ffmpeg',command);
+          //relay_socket.emit('ffmpeg',command);
           gateways.push( devices[i] );
         }
 
@@ -353,7 +392,7 @@ angular.module('starter.controllers', ['socket-io'])
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
     relay_socket.emit('camera',data_obj);
-    console.log('load settings',data);
+    //console.log('load settings',data);
   });
 
   relay_socket.on('load devices', function (data) {
@@ -648,6 +687,7 @@ image.addEventListener('load', function() {
         for (var k = 0; k < $rootScope.gateways[i].devices[j].lights.length; k++) {
           $rootScope.gateways[i].devices[j].lights[k].state = set_state;
           light = { 
+		    mac:$rootScope.gateways[i].mac,
 		    device:$rootScope.gateways[i].devices[j],
  		    light:$rootScope.gateways[i].devices[j].lights[k],
 		    token:$rootScope.gateways[i].token
@@ -687,8 +727,10 @@ image.addEventListener('load', function() {
 })
 
 .controller('VideoCtrl', function($scope, $rootScope, $stateParams, socket, $ionicLoading, $compile, $http) {
+  var relay_socket = $rootScope.relay_socket;
   console.log("<< ------  VideoCtrl  ------ >> ");
   
+
   $scope.start_stream = function(mac) {
     var gateways = $rootScope.gateways;
     var i = $rootScope.find_index(gateways,"mac",mac);
@@ -696,17 +738,55 @@ image.addEventListener('load', function() {
     document.getElementById("previewCanvas_"+mac).style.display = "none";
     document.getElementById("videoCanvas_"+mac).style.display = "inline";
     if (gateways[i].stream_started) return console.log("stream already started");
-    //gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
     gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
     console.log('token for video stream',gateways[i].token);
     gateways[i].stream_started = true;
     gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-    //var url = 'ws://'+document.location.hostname+':8092/';
-    //var player = new JSMpeg.Player(url, {canvas: canvas});
     gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
-    //gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
+  }
+
+  $scope.start_webcam = function(gateway) {
+    var command = {token:gateway.token, command:"start_webcam"}
+    relay_socket.emit('ffmpeg',command);
+    $scope.start_stream(gateway.mac);
   }
   
+  $scope.play_file = function(file, gateway) {
+    file = file[8][0] + "." + file[8][1];
+    var file_obj = {file:file, token:gateway.token}
+    //relay_socket.emit('play',file_obj);
+    var command = {file:file, token:gateway.token, command:"play_file"}
+    relay_socket.emit('ffmpeg',command);
+    $scope.flip();
+    console.log("play_file",file_obj);
+    $scope.start_stream(gateway.mac);
+  }
+
+
+  $scope.select_month = function(month, gateway) {
+    var index = $rootScope.find_index($rootScope.gateways,'token',gateway.token);
+    $rootScope.gateways[index].motion_list.selected_month = month;
+    document.getElementById("motion_list_months").style.display = "none";
+  }
+
+  $scope.select_day = function(day, month, gateway) {
+    document.getElementById("motion_list_days").style.display = "none";
+    var motion_list = gateway.motion_list;
+    motion_list.selected_day = {day:day,files:[]};
+    for (var i = 0; i < motion_list.length; i++) {
+      if (motion_list[i].length < 1) continue;
+      if (motion_list[i][8][1] != "avi") continue;
+      if (motion_list[i][5][2] == day)
+        motion_list.selected_day.files.push(motion_list[i]);
+    }
+    console.log("select_day",motion_list.selected_day);
+    var index = $rootScope.find_index($rootScope.gateways,'token',gateway.token);
+    console.log(motion_list.selected_month.days);
+    motion_list.selected_month.days = [];
+    $rootScope.gateways[index].motion_list = motion_list;
+    document.getElementById("motion_list_days").style.display = "none";
+  }
+
   $scope.fullscreen = function(div_id) { 
     console.log("fullscreen",div_id);
     if (document.getElementById(div_id).className == "") {
@@ -898,7 +978,7 @@ function disable_update() {
 
   $scope.command = function(gateway) {
     command_obj = {token:gateway.token, command:gateway.command}
-    console.log("command",gateway);
+    //console.log("command",gateway);
     relay_socket.emit('command',gateway);
   }
 
@@ -977,10 +1057,15 @@ function disable_update() {
     console.log("add_device",device);  
     relay_socket.emit('link device',device);
   }  
-  $scope.show_form = function(form) {
-    //console.log("FORM: " + form);
-    document.getElementById(form).style.display = "inline";
-    document.getElementById(form + "_btn").style.display = "none";
+  $scope.show_form = function(form, mac) {
+    if (mac == null) mac = "";
+    console.log("FORM: " + form + mac);
+    document.getElementById(form + mac).style.display = "inline";
+    document.getElementById(form + mac + "_btn").style.display = "none";
+    if (form == "command_form_") {
+      //document.getElementById("gateways").style.className = "col-lg-4 col-md-6 col-sm-12";
+      document.getElementById("gateways").className = "";
+    }
   }
 
   $scope.test_alert = function(contact) {
@@ -1113,6 +1198,18 @@ function disable_update() {
 
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
+  $.getJSON("http://ipinfo.io", function (data) {
+    var lat = data.loc.substring(0,7);
+    var lng = data.loc.substring(8,16);
+    $rootScope.ipLatitude = lat;
+    $rootScope.ipLongitude = lng;    
+    url = "http://forecast.io/embed/#lat="+lat+"&lon="+lng+"&name=" + data.city;
+    $('#forecast_embed').attr('src', url);  
+    $scope.ipAddress = data.ip;
+    $scope.postal = data.postal;
+    $rootScope.postal = data.postal;
+    $rootScope.initialize_map();
+  });
   var markers = [];
   $rootScope.initialize_map = function () {
     var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
@@ -1129,7 +1226,7 @@ function disable_update() {
     //marker.setMap($rootScope.map);
     console.log("<----- initialize_map -----> Lat: ",$rootScope.ipLatitude);
   }
-  $rootScope.initialize_map();
+
   $rootScope.update_map = function (device) {
     mobile = $rootScope.mobile;
     var location = device.location;
