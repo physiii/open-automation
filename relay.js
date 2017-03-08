@@ -782,23 +782,23 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('motion list', function (data) {
+  socket.on('folder list', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return; //console.log('motion list | device not found',data.mac);
-    if (!device_objects[device_index].socket) return; //console.log('motion list | socket not found',data.mac);
-    device_objects[device_index].socket.emit('motion list',data);
+    if (device_index < 0) return; //console.log('folder list | device not found',data.mac);
+    if (!device_objects[device_index].socket) return; //console.log('folder list | socket not found',data.mac);
+    device_objects[device_index].socket.emit('folder list',data);
   });
 
-  socket.on('motion list result', function (data) {
+  socket.on('folder list result', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     var mac = device_objects[device_index].mac;
     var group_index = find_index(groups,'group_id',mac);
-    if (group_index < 0) return console.log("motion list result | group not found");
+    if (group_index < 0) return console.log("folder list result | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {
-      console.log('motion list result',user_objects[j].user);
+      console.log('folder list result',user_objects[j].user);
         if (user_objects[j].user == groups[group_index].members[i]) {
-          user_objects[j].socket.emit('motion list result',data);
+          user_objects[j].socket.emit('folder list result',data);
         }
       }
     }

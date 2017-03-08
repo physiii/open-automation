@@ -1016,10 +1016,8 @@ function start_ffmpeg(data) {
                  ];
   }
   if (data.command == "play_file") {
-    if (ffmpeg_started) {
-      ffmpeg.kill();
-      console.log("stopping ffmpeg");
-    }
+    if (ffmpeg)
+      stop_ffmpeg(ffmpeg);
     var command =  [
                    '-loglevel', 'panic',
                    '-r', '2',
@@ -1089,8 +1087,29 @@ io_relay.on('motion list', function (data) {
     data.stderr = stderr;
    io_relay.emit('motion list result',data);
   });
-  //console.log('motion list',command);
+  console.log('motion list',command);
 });
+
+
+io_relay.on('folder list', function (data) {
+  var folder = data.folder;
+  var command = "ls -lah --full-time "+folder;
+  console.log('folder list',command);
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      data.error = error;
+      io_relay.emit('folder list result',data);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+    data.stdout = stdout;
+    data.stderr = stderr;
+   io_relay.emit('folder list result',data);
+  });
+});
+
 
 io_relay.on('update', function (data) {
   var command =  ['pull'];

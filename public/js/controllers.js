@@ -184,64 +184,51 @@ angular.module('starter.controllers', ['socket-io'])
     //console.log("command result",command_result);
   });
 
-  relay_socket.on('motion list result', function (data) {
-    var motion_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
-    motion_list.months = [];
-    var root_dir = "";
-    if (motion_list[0][0] == "/") {
-      root_dir = motion_list[0].replace(":","/");
+  relay_socket.on('folder list result', function (data) {
+    var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
+    folder_list.splice(0,1);
+    folder_list.splice(folder_list.length - 1,1);
+    //var root_dir = data.folder;
+    /*if (folder_list[0][0] == "/") {
+      root_dir = folder_list[0].replace(":","/");
       console.log("adding!",root_dir);
-    }
-    var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
-    $rootScope.gateways[index].motion_list = motion_list;
-    for (var i = 0; i < motion_list.length; i++) {
-      var parts = motion_list[i].split(" ");
-      if (parts.length < 6) continue;
-      if (parts[4].length < 1)
-        parts.splice(4,1);
-      if (parts[4].length < 1)
-        parts.splice(4,1);
-      var j = 5;
-      
-      parts[parts.length-1] = root_dir + parts[parts.length-1];
-      //convert month digits to string
-      parts[j] = parts[j].split("-");
-      if (parts[j][1] == "03") {
-        var month = "March";
-        parts[j][1] == month;
-        var index = $rootScope.find_index(motion_list.months, 'month', month);
-        if (index < 0) {      
-          motion_list.months.push({month:month, days:[]});
-          index = 0;
-        } 
-        if (motion_list.months[index].days.indexOf(parts[j][2]) < 0) {
-          console.log("stored day!")
-          motion_list.months[index].days.push(parts[j][2]);
+    }*/
+    for (var i = 0; i < folder_list.length; i++) {
+      var parts = folder_list[i].split(" ");
+      if (parts.length < 8) continue;
+      parts.folder = data.folder;
+      for (var k = 0; k < parts.length; k++) {
+        if (parts[k].length < 1) {
+          parts.splice(k,1);
+          k--;
         }
       }
-
-      if (parts[j][1] == "04") {
-        var month = "April";
-        parts[j][1] == month;
-        var index = $rootScope.find_index(motion_list.months, 'month', month);
-        if (index < 0) {      
-          motion_list.months.push({month:month, days:[]});
-          index = 0;
-        } 
-        if (motion_list.months[index].days.indexOf(parts[j][2]) < 0) {
-          console.log("stored day!")
-          motion_list.months[index].days.push(parts[j][2]);
-        }
-      }
+      //parts[8] = data.folder  + "/"  + parts[8];
+      //format date
+      parts[5] = parts[5].split("-");
 
       //format time
-      parts[j+1] = parts[j+1].split(":");
+      parts[6] = parts[6].split(":");
+      
 
+      if (parts[8].charCodeAt(0) == 46) {
+        if (parts[8].charCodeAt(1) == 46) {
+        } else if (parts[8].length < 2) {
+          folder_list.splice(i,1);
+          i--;
+          continue;
+        }
+      }
       //split file exentesion
-      parts[j+3] = parts[j+3].split(".");
-      motion_list[i] = parts;
+      //if (parts[8][parts[8].length -1] != ".")
+      //  parts[8] = parts[8].split(".");
+      folder_list[i] = parts;
     }
-    console.log("motion list result | ",motion_list);
+    $scope.$apply(function () {
+      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+      $rootScope.gateways[index].folder_list = folder_list;
+    });
+    console.log("folder list result | ",folder_list);
   });
 
   relay_socket.on('motion_sensor', function (state) {
@@ -317,7 +304,6 @@ angular.module('starter.controllers', ['socket-io'])
           var index = $rootScope.find_index(gateways,'mac',devices[i].mac);
           if (index > -1) continue;
           relay_socket.emit('get settings',{token:devices[i].token});
-          relay_socket.emit('motion list',{token:devices[i].token});
           //console.log("gateways: ",gateways);
           //var command = devices[i];
           //command.mode = "start";
@@ -756,9 +742,8 @@ image.addEventListener('load', function() {
   }
   
   $scope.play_file = function(file, gateway) {
-    file = file[8][0] + "." + file[8][1];
+    file = file.folder + "/" + file[8];
     var file_obj = {file:file, token:gateway.token}
-    //relay_socket.emit('play',file_obj);
     var command = {file:file, token:gateway.token, command:"play_file"}
     relay_socket.emit('ffmpeg',command);
     $scope.flip();
@@ -766,6 +751,20 @@ image.addEventListener('load', function() {
     $scope.start_stream(gateway.mac);
   }
 
+  $scope.list_folder = function (gateway) {
+    $scope.flip();
+    relay_socket.emit('folder list',{token:gateway.token,folder:"/var/lib/motion"});
+  }
+
+  $scope.select_item = function (item, gateway) {
+    if (item[8].indexOf(".avi") > -1) {
+      $scope.play_file(item, gateway);
+      return;
+    }
+    var folder = item.folder + "/" + item[8];
+    console.log("item: ",item.folder);
+    relay_socket.emit('folder list',{token:gateway.token,folder:folder});
+  }
 
   $scope.select_month = function(month, gateway) {
     var index = $rootScope.find_index($rootScope.gateways,'token',gateway.token);

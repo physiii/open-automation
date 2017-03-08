@@ -21,7 +21,7 @@
         <div class="flipper clearfix" >
           <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;">
             <ion-card-header >
-              <div ng-click="flip()" style="width:100%">
+              <div ng-click="list_folder(gateway)" style="width:100%">
                 <h4 style="margin:10px;text-align:right;color:#ccc">{{ gateway.device_name }}</h4>
               </div>
             </ion-card-header>
@@ -41,14 +41,14 @@
           <div class="back card" style="height:400px;width:100%;border-style:solid;border-width:2px;border-color:#9E1A1A;background-color:#6E1A1A;color:#fff;">
 
 
-            <li data-ng-repeat="month in gateway.motion_list.months" ng-click="flip()" class="item item-divider" style="background-color:#6E1A1A;color:#eee">
+            <li ng-click="flip()" class="item item-divider" style="background-color:#6E1A1A;color:#eee">
               <h4 style="color:#eee;float:left;">{{ gateway.settings.device_name }}     </h4>
               <b>{{ gateway.motion_list.selected_month.month }} {{ gateway.motion_list.selected_day.day }}</b>
               <h5 style="color:#eee;float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
             </li>
 
-            <li id="motion_list_months" data-ng-repeat="month in gateway.motion_list.months" ng-click="select_month(month, gateway)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
-             <div style="float:left">{{ month.month }}, 2017</div>
+            <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
+             <div style="float:left">{{ item[8] }} {{ item[4] }}</div>
              <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
             </li>
 
