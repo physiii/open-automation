@@ -185,9 +185,13 @@ angular.module('starter.controllers', ['socket-io'])
   });
 
   relay_socket.on('motion list result', function (data) {
-    console.log("motion list result | ",data);
     var motion_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
     motion_list.months = [];
+    var root_dir = "";
+    if (motion_list[0][0] == "/") {
+      root_dir = motion_list[0].replace(":","/");
+      console.log("adding!",root_dir);
+    }
     var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
     $rootScope.gateways[index].motion_list = motion_list;
     for (var i = 0; i < motion_list.length; i++) {
@@ -198,8 +202,8 @@ angular.module('starter.controllers', ['socket-io'])
       if (parts[4].length < 1)
         parts.splice(4,1);
       var j = 5;
-
-
+      
+      parts[parts.length-1] = root_dir + parts[parts.length-1];
       //convert month digits to string
       parts[j] = parts[j].split("-");
       if (parts[j][1] == "03") {
@@ -237,6 +241,7 @@ angular.module('starter.controllers', ['socket-io'])
       parts[j+3] = parts[j+3].split(".");
       motion_list[i] = parts;
     }
+    console.log("motion list result | ",motion_list);
   });
 
   relay_socket.on('motion_sensor', function (state) {
@@ -730,7 +735,6 @@ image.addEventListener('load', function() {
   var relay_socket = $rootScope.relay_socket;
   console.log("<< ------  VideoCtrl  ------ >> ");
   
-
   $scope.start_stream = function(mac) {
     var gateways = $rootScope.gateways;
     var i = $rootScope.find_index(gateways,"mac",mac);

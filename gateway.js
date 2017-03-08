@@ -993,14 +993,13 @@ io_relay.on('ffmpeg', function (data) {
 });
 
 const spawn = require('child_process').spawn;
-ffmpeg_started = false;
-
+var ffmpeg;
 function start_ffmpeg(data) {
+  if (ffmpeg)
+    stop_ffmpeg(ffmpeg)
   video_width = settings_obj.video_width;
   video_height = settings_obj.video_height;
   if (data.command == "start_webcam") {
-    if (ffmpeg_started)
-      console.log("ffmpeg already started");
     var command =  [
                    '-loglevel', 'panic',
                    '-r', '2',
@@ -1018,7 +1017,7 @@ function start_ffmpeg(data) {
   }
   if (data.command == "play_file") {
     if (ffmpeg_started) {
-      //ffmpeg.kill();
+      ffmpeg.kill();
       console.log("stopping ffmpeg");
     }
     var command =  [
@@ -1033,18 +1032,11 @@ function start_ffmpeg(data) {
                    "http://"+server_ip+":8082/"+token+"/"
                  ];
    }
-  const ffmpeg = spawn('ffmpeg', command);
-
-  ffmpeg.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  ffmpeg.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
-  });
-
+  ffmpeg = spawn('ffmpeg', command);
+  ffmpeg.stdout.on('data', (data) => {console.log(`stdout: ${data}`)});
+  ffmpeg.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
   ffmpeg.on('close', (code) => {
-    stop_ffmpeg(ffmpeg);
+    //stop_ffmpeg(ffmpeg);
     console.log(`child process exited with code ${code}`);
   });
   
