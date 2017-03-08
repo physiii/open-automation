@@ -5,7 +5,7 @@ sudo apt-get install -y nmap npm motion speedtest-cli gstreamer1.0 v4l2loopback-
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo chmod -R 777 /var
 sudo chmod -R 777 /usr/src
-chmod a+rwxt /var/run/motion
+sudo chmod a+rwxt /var/run/motion
 sudo cp motion/motion.conf /etc/motion/motion.conf
 #rm files/Audio files/Videos files/Documents files/motion
 #mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
