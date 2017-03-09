@@ -1020,12 +1020,12 @@ function start_ffmpeg(data) {
       stop_ffmpeg(ffmpeg);
     var command =  [
                    '-loglevel', 'panic',
-                   '-r', '2',
+                   '-r', '24',
                    '-strict', '-1',
                    '-i', data.file,
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
-                   '-r', '2',
+                   '-r', '24',
                    '-strict', '-1',
                    "http://"+server_ip+":8082/"+token+"/"
                  ];

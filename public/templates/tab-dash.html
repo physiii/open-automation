@@ -38,7 +38,7 @@
               <i class="ion-arrow-expand"></i>
             </button>
           </div>
-          <div class="back card" style="height:400px;width:100%;border-style:solid;border-width:2px;border-color:#9E1A1A;background-color:#6E1A1A;color:#fff;">
+          <div class="back card" style="overflow-y:scroll;height:400px;width:100%;border-style:solid;border-width:2px;border-color:#9E1A1A;background-color:#6E1A1A;color:#fff;">
 
 
             <li ng-click="flip()" class="item item-divider" style="background-color:#6E1A1A;color:#eee">
@@ -52,17 +52,6 @@
              <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
             </li>
 
-            <li id="motion_list_days" data-ng-repeat="day in gateway.motion_list.selected_month.days" ng-click="select_day(day, selected_month.month, gateway)" class="item item-divider" style="width:100%">
-             <div style="float:left">{{ gateway.motion_list.selected_month.month }}, {{ day }}</div>
-             <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
-            </li>
-            
-            <div style="overflow-y:scroll;max-height:500px;">
-            <li id="motion_list_day" data-ng-repeat="file in gateway.motion_list.selected_day.files" ng-click="play_file(file, gateway)" class="item item-divider" style="width:100%">
-             <div style="float:left">{{ file[6][0] }}:{{ file[6][1] }} | {{ file[4] }}</div>
-             <div style="float:right" class="fa fa-play fa-1x"></div>
-            </li>
-            </div>
           </div>
         </div>
       </div>
