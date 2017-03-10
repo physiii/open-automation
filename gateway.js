@@ -943,36 +943,47 @@ function start_motion() {
 io_relay.on('camera', function (data) {
   //if (data.command == 'snapshot')
   //if (data.command == 'preview')
+  //get_camera_preview();
+});
+
+io_relay.on('get camera preview', function (data) {
+  //if (data.command == 'snapshot')
+  //if (data.command == 'preview')
   get_camera_preview();
 });
 
 function get_camera_preview() {
-  var video_width = settings_obj.video_width;
-  var video_height = settings_obj.video_height;
-  var settings = {width:video_width, height:video_height};
-  var command =  [
-  		   '-y',
-                   '-loglevel', 'panic',
-                   '-s', video_width+"x"+video_height,
-                   '-f', 'video4linux2',
-                   '-i', '/dev/video10',
-                   '-vframes', '1',
-                   "files/camera_preview_.jpg"
-                 ];
-  const ffmpeg_preview = spawn('ffmpeg', command);
-  console.log('sending camera_preview');
-  setTimeout(function () {
-    ffmpeg_preview.kill();
-  }, 2000);
-  
-  send_camera_preview(settings);
+  var root_dir = "/var/lib/motion";
+  var command = "ls -lahRt --full-time "+root_dir+" | head -100";
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      console.log(`error: ${error}`);
+      return;
+    }
+    stdout = stdout.split(/(?:\r\n|\r|\n)/g);
+    var cur_dir = "";
+    for (var i =0; i < stdout.length; i++) {
+      stdout[i] = stdout[i].split(" ");
+      if (stdout[i][0].indexOf("/") > -1) {
+        stdout[i][0] = stdout[i][0].replace(":","/");
+        cur_dir = stdout[i][0];
+      }
+      stdout[i][9] = cur_dir + stdout[i][9];
+      if (!stdout[i][9]) continue;
+      if (stdout[i][9].indexOf(".jpg") > -1) {
+        send_camera_preview(stdout[i][9]);
+        return console.log("get_camera_preview",stdout[i][9]);
+      }
+      
+    }
+  });
 }
 
-function send_camera_preview (settings) {
-  fs.readFile('files/camera_preview_.jpg', function(err, data) {
+function send_camera_preview (path) {
+  fs.readFile(path, function(err, data) {
     if (err) return console.log(err); // Fail if the file can't be read.
     data_obj = {mac:settings_obj.mac, token:settings_obj.token, image:data.toString('base64')}
-    data_obj.settings = settings; 
     io_relay.emit('camera preview',data_obj);
   });
 }

@@ -188,11 +188,7 @@ angular.module('starter.controllers', ['socket-io'])
     var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
     folder_list.splice(0,1);
     folder_list.splice(folder_list.length - 1,1);
-    //var root_dir = data.folder;
-    /*if (folder_list[0][0] == "/") {
-      root_dir = folder_list[0].replace(":","/");
-      console.log("adding!",root_dir);
-    }*/
+
     for (var i = 0; i < folder_list.length; i++) {
       var parts = folder_list[i].split(" ");
       if (parts.length < 8) continue;
@@ -203,14 +199,14 @@ angular.module('starter.controllers', ['socket-io'])
           k--;
         }
       }
-      //parts[8] = data.folder  + "/"  + parts[8];
+
       //format date
       parts[5] = parts[5].split("-");
 
       //format time
       parts[6] = parts[6].split(":");
       
-
+      
       if (parts[8].charCodeAt(0) == 46) {
         if (parts[8].charCodeAt(1) == 46) {
         } else if (parts[8].length < 2) {
@@ -219,9 +215,6 @@ angular.module('starter.controllers', ['socket-io'])
           continue;
         }
       }
-      //split file exentesion
-      //if (parts[8][parts[8].length -1] != ".")
-      //  parts[8] = parts[8].split(".");
       folder_list[i] = parts;
     }
     $scope.$apply(function () {
@@ -352,13 +345,13 @@ angular.module('starter.controllers', ['socket-io'])
   });
 
   relay_socket.on('camera preview', function (data) {
-    var width = data.width;
-    var height = data.height;
+    //var width = data.width;
+    //var height = data.height;
     var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
-    console.log("camera preview",width);
-    ctx.drawImage(img, 0, 0, 300, 200);
+    console.log("camera preview",data);
+    ctx.drawImage(img, 0, 0, 600, 400);
   });
   
   relay_socket.on('set location', function (data) {
@@ -382,7 +375,7 @@ angular.module('starter.controllers', ['socket-io'])
     load_settings(data);
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
-    relay_socket.emit('camera',data_obj);
+    relay_socket.emit('get camera preview',data_obj);
     //console.log('load settings',data);
   });
 

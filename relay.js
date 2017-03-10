@@ -805,11 +805,14 @@ io.on('connection', function (socket) {
   });
 
   socket.on('camera preview', function (data) {
-    var group_index = find_index(groups,'group_id',data.token);
-    if (group_index < 0) return console.log("no device found");
+    var device_index = find_index(device_objects,'token',data.token);
+    var mac = device_objects[device_index].mac;
+    var group_index = find_index(groups,'group_id',mac);
+    if (group_index < 0) return console.log("camera preview | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {
-        if (user_objects[j].token == groups[group_index].members[i]) {
+      console.log('camera preview',user_objects[j].user);
+        if (user_objects[j].user == groups[group_index].members[i]) {
           user_objects[j].socket.emit('camera preview',data);
         }
       }
@@ -821,6 +824,13 @@ io.on('connection', function (socket) {
     if (device_index > -1)
       if (device_objects[device_index].socket)
         device_objects[device_index].socket.emit('command',data);
+  });
+
+  socket.on('get camera preview', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index > -1)
+      if (device_objects[device_index].socket)
+        device_objects[device_index].socket.emit('get camera preview',data);
   });
 
   socket.on('play', function (data) {
