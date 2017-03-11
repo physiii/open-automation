@@ -351,7 +351,7 @@ angular.module('starter.controllers', ['socket-io'])
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
     console.log("camera preview",data);
-    ctx.drawImage(img, 0, 0, 600, 400);
+    ctx.drawImage(img, 0, 0, 300, 200);
   });
   
   relay_socket.on('set location', function (data) {
