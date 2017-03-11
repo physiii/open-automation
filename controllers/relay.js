@@ -1431,5 +1431,3 @@ var streamServer = require('http').createServer( function(request, response) {
 console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/<width>/<height>');
 console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT+'/');
 //------------------------------//
-
-}
