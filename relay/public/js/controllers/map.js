@@ -1,3 +1,5 @@
+angular.module('starter.controllers')
+
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
   $.getJSON("http://ipinfo.io", function (data) {

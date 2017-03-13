@@ -1,3 +1,5 @@
+angular.module('starter.controllers')
+
 .controller('AccountCtrl', function($scope, $rootScope, $stateParams, Categories, socket,$ionicLoading, $compile, $http) {
 
   console.log('<< ------  AccountCtrl  ------ >>');

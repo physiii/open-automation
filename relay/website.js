@@ -45,7 +45,6 @@ passport.use(new LocalStrategy(
 
 app.set('view engine', 'ejs');
 app.use(allowCrossDomain);
-app.use(allowCrossDomain);
 app.use('/', express.static(process.cwd() + '/public'));
 
 

@@ -1,3 +1,5 @@
+angular.module('starter.controllers')
+
 .controller('MediaCtrl', function($rootScope, $scope, $stateParams, Categories, socket, $ionicLoading, $compile, $http) {
   console.log("<< -------  MediaCtrl  ------- >>");
   //$scope.chat = Categories.get($stateParams.chatId);

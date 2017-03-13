@@ -1,3 +1,5 @@
+angular.module('starter.controllers')
+
 .controller('AlertsCtrl', function($rootScope, $scope, $stateParams, Categories, socket, $ionicLoading, $compile, $http) {
   console.log('<< ------  AlertsCtrl  ------ >>');
   //var relay_socket = io.connect('http://68.12.126.213:5000');

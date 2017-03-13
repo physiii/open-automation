@@ -1,3 +1,4 @@
+angular.module('starter.controllers')
 .controller('VideoCtrl', function($scope, $rootScope, $stateParams, socket, $ionicLoading, $compile, $http) {
   var relay_socket = $rootScope.relay_socket;
   console.log("<< ------  VideoCtrl  ------ >> ");

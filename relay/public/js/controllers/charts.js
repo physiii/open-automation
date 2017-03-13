@@ -1,3 +1,5 @@
+angular.module('starter.controllers')
+
             // Directive for generic chart, pass in chart options
             .directive('hcChart', function () {
                 return {
