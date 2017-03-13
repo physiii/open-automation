@@ -86,7 +86,7 @@ function start_ffmpeg(data) {
   video_height = database.settings.video_height;
   if (data.command == "start_webcam") {
     var command =  [
-                   //'-loglevel', 'panic',
+                   '-loglevel', 'panic',
                    '-r', '2',
                    '-strict', '-1',
                    '-s', video_width+"x"+video_height,
@@ -104,7 +104,7 @@ function start_ffmpeg(data) {
     if (ffmpeg)
       stop_ffmpeg(ffmpeg);
     var command =  [
-                   //'-loglevel', 'panic',
+                   '-loglevel', 'panic',
                    '-r', '24',
                    '-strict', '-1',
                    '-i', data.file,
