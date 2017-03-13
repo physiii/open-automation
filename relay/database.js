@@ -134,7 +134,7 @@ function get_accounts() {
 	  console.log("get_account_objects",err);
         } else if (result.length) {
 	  accounts = result;
-  	  //console.log('get_device_objects',client_objects);	
+  	  console.log('get_accounts',accounts);	
         } else {
 	  console.log('No document(s) found with defined "find" criteria!');
         }

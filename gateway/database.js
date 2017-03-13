@@ -7,10 +7,13 @@ module.exports = {
   store_device: store_device
 }
 
-//module.exports.relay_server = "98.168.142.41";
-//module.exports.video_relay_server = "98.168.142.41";
-module.exports.relay_server = "24.253.223.242";
-module.exports.video_relay_server = "24.253.223.242";
+//module.exports.relay_server = "127.0.0.1";
+
+module.exports.relay_server = "98.168.142.41:5000";
+module.exports.video_relay_server = "98.168.142.41";
+
+//module.exports.relay_server = "24.253.223.242:5000";
+//module.exports.video_relay_server = "24.253.223.242";
 
 var connection = require('./connection.js');
 var socket = require('./socket.js');

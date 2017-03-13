@@ -835,7 +835,7 @@ io.on('connection', function (socket) {
   socket.on('get devices', function (data) {
     var index = find_index(accounts,'token',data.token);
     if (index < 0) return console.log("get devices | account not found");
-    
+    console.log("accounts",accounts)
     var username = accounts[index].username;
     var devices = [];
     var group_index = find_index(database.groups,'group_id',username);

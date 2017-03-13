@@ -1,13 +1,12 @@
 module.exports = {
   relay: relay
 }
+var database = require('./database');
 
-var relay_server = "127.0.0.1";
-//relay_server = "24.253.223.242";
-relay_server = "98.168.142.41:5000";
-var relay = require('socket.io-client')("http://"+relay_server);
+//relay_server = "98.168.142.41:5000";
+var relay = require('socket.io-client')("http://"+database.relay_server);
 module.exports.relay = relay;
-console.log('socket io:',relay_server);
+console.log('socket io:',database.relay_server);
 /*function start_relay() {
   relay_connected = true;
 }*/
