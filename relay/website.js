@@ -44,8 +44,11 @@ passport.use(new LocalStrategy(
 ));
 
 app.set('view engine', 'ejs');
+
+console.log("__dirname", __dirname);
+app.set('views', __dirname + '/views');
 app.use(allowCrossDomain);
-app.use('/', express.static(process.cwd() + '/public'));
+app.use('/', express.static(__dirname + '/public'));
 
 
 app.get('/', function (req, res) {
