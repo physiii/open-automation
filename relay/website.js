@@ -70,7 +70,7 @@ app.post('/register', function(req, res) {
     var token = crypto.createHash('sha512').update(req.body.password + account_obj.salt).digest('hex');
     account_obj.token = token;
     account_obj.timestamp = Date.now();
-    store_account(account_obj);
+    database.store_account(account_obj);
     accounts.push(account_obj);
   } else {
     res.json({error:"account already exists"});
@@ -80,7 +80,7 @@ app.post('/register', function(req, res) {
   var index = utils.find_index(groups,'group_id',username);
   if (index < 0) {
     var group = {group_id:username, mode:'init', user:username, device_type:['alarm'], contacts:[], members:[username]};    
-    store_group(group);
+    database.store_group(group);
   } else {
     res.json({error:"group already exists"});
     return console.log("group already exist!");

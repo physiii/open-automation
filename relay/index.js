@@ -2,6 +2,12 @@
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
 console.log("starting relay...");
+
+accounts = [];
+groups = [];
+device_objects = [];
+user_objects = [];
+
 var utils = require('../utils.js');
 var stream = require('./stream.js');
 var website = require('./website.js');

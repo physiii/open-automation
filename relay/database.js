@@ -18,10 +18,13 @@ module.exports = {
   get_device_objects: get_device_objects,
   get_user_objects: get_user_objects,
   get_location_objects: get_location_objects,
+  store_account: store_account,
   store_settings: store_settings,
+  store_user_object: store_user_object,
   store_device_object: store_device_object,
   store_group: store_group,
-  store_location_object: store_location_object
+  store_location_object: store_location_object,
+  make_location_object: make_location_object
 }
 
 //-- initialize variables --//
@@ -91,9 +94,9 @@ MongoClient.connect('mongodb://127.0.0.1:27017/groups', function (err, db) {
     var collection = db.collection('groups');
     collection.find().toArray(function (err, result) {
       if (err) return err;
+      console.log("!! get_groups !!");
       if (result.length) {  
-	console.log("get_groups");
-        module.exports.groups = result;
+         module.exports.groups = result;
       }
       return 'No document(s) found with defined "find" criteria!';
     });
