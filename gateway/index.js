@@ -3,7 +3,9 @@
 
 console.log("starting gateway...");
 
-const utils = require('../utils.js');
+
+local_ip = "127.0.0.1";
+var utils = require('../utils.js');
 const admin = require('./admin.js');
 var database = require('./database.js');
 const connection = require('./connection.js');
@@ -11,7 +13,6 @@ var socket = require('./socket.js');
 var devices = require('./devices');
 var io_connected = false;
 var server_type = "dev";
-
 
 process.argv.forEach(function (val, index, array) {
   //console.log(index + ': ' + val);

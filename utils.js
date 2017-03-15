@@ -5,6 +5,7 @@
 module.exports = {
   find_index: find_index,
   get_mac: get_mac,
+  get_local_ip: get_local_ip,
   get_public_ip: get_public_ip
 }
 

@@ -1,4 +1,5 @@
 var socket = require('../socket.js');
+var socket = require('../socket.js');
 
 var red = {"on":true,"rgb":[255,0,0],"bri":"255"};
 var blue = {"on":true,"rgb":[0,0,255],"bri":"255"};

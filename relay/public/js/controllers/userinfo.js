@@ -45,7 +45,7 @@ angular.module('starter.controllers')
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
-  relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
+  //relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
 
 
   $rootScope.alert_contacts = [];
