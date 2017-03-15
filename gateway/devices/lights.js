@@ -64,7 +64,7 @@ function find_hue_bridge() {
     if (found_bridge == false) {
       console.log("new bridge, creating user...");
       device_array.push(result[0]);
-      store_device_object(result[0])
+      database.store_device_object(result[0])
       create_user(result[0]);
     }
   });
@@ -81,7 +81,7 @@ function create_user(device) {
 	device_array[i].local_ip = local_ip;
  	//device_array[i].token = token;
   	//device_array[i].mac = mac;
-	//store_device(device_array[i]);
+	//database.store_device(device_array[i]);
 	find_lights(device_array[i]);
         console.log("created user",device_array[i]);
      }
@@ -95,9 +95,9 @@ function find_lights(device) {
   hue.lights(function(err, lights) {
     if (err) console.log(err);
     for (var i = 0; i < device_array.length; i++) {
-      if (device_array[i].id == device.id) {
+      if (device_array[i].id == device.id) { console.log("find_light |",lights);
 	device_array[i].lights = lights.lights;
-        store_device(device_array[i]);
+        database.store_device(device_array[i]);
         console.log("storing lights");
       }
    }
