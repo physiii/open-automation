@@ -1,5 +1,5 @@
 var socket = require('../socket.js');
-var socket = require('../socket.js');
+var database = require('../database.js');
 
 var red = {"on":true,"rgb":[255,0,0],"bri":"255"};
 var blue = {"on":true,"rgb":[0,0,255],"bri":"255"};
@@ -95,7 +95,8 @@ function find_lights(device) {
   hue.lights(function(err, lights) {
     if (err) console.log(err);
     for (var i = 0; i < device_array.length; i++) {
-      if (device_array[i].id == device.id) { console.log("find_light |",lights);
+      if (device_array[i].id == device.id) { 
+        if (!lights) return console.log("find_lights | ",lights); 
 	device_array[i].lights = lights.lights;
         database.store_device(device_array[i]);
         console.log("storing lights");
