@@ -260,7 +260,7 @@ io.on('connection', function (socket) {
     var mac = data.mac;
     var public_ip = socket.request.connection.remoteAddress;
     public_ip = public_ip.slice(7);
-    var device_name = data.device_name;
+    //var device_name = data.device_name;
     //var salt = data.salt //some random value
     var token = crypto.createHash('sha512').update(mac).digest('hex');
     data.token = token;
@@ -282,7 +282,6 @@ io.on('connection', function (socket) {
 
     if (!database.groups) database.groups = [];
     index = find_index(database.groups,'group_id',mac);
-    //console.log("INDEX FOR "+data.mac+" is "+index );
     if (index < 0) {
       var group = {group_id:mac, mode:'init', device_type:['alarm'], members:[mac]};
       database.groups.push(group);
@@ -300,14 +299,10 @@ io.on('connection', function (socket) {
   });
 
   socket.on('set settings', function (data) {
-    for (var i=0; i < device_objects.length; i++) {
-      var _socket = device_objects[i].socket;
-      var _token = device_objects[i].token;
-      if (_token && _token === data.token) {
-        _socket.emit('set settings', data);
-        console.log(data.mac + " | set settings " + data);
-      }
-    }
+    var index = find_index(device_objects,'token',data.token);
+    if (index < 0) return console.log("set settings | device not found",data.mac);
+    if (device_objects[index].socket) device_objects[index].socket.emit('set settings',data);
+    console.log("set settings",device_objects[index].mac);
   });
 
   socket.on('get settings', function (data) {

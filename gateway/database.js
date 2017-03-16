@@ -63,11 +63,11 @@ function get_settings() {
       if (result[0]) settings = result[0]
       module.exports.settings = settings;
       if (!got_token) {
-        if (settings.token) {
+        //if (settings.token) {
           console.log("fetching token...");
-          socket.relay.emit('get token',settings);
+          socket.relay.emit('get token',{mac:utils.mac});
           store_settings(settings);
-        }
+        //}
       }
       //need to add device_array and send to client
       settings.devices = device_array;
@@ -131,8 +131,7 @@ function get_devices() {
       device_array = result;
       var devices_obj = settings;
       devices_obj.devices = device_array;
-      console.log("get_devices | sending devices");
-      socket.relay.emit('load settings',devices_obj);
+      //console.log("get_devices | sending devices");
     });
     db.close();
   });
