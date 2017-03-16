@@ -279,61 +279,57 @@ angular.module('starter.controllers')
   });
 
   function load_settings(data) {
-    var mac = data.mac;
-    var devices = data.devices;
+    var settings = data;
+    var mac = settings.mac;
+    var devices = settings.devices;
     var gateways = $rootScope.gateways;
+    var find_index = $rootScope.find_index;
 
-    for (var i = 0; i < gateways.length; i++) {
-      if (mac === gateways[i].mac) {
-	var settings = data;
-        //var cloud_url = 'http://'+settings.public_ip+':'+settings.port+'/'+settings.token+'/#/';
-        settings.cloud_url = $sce.trustAsResourceUrl('http://'+settings.public_ip+':'+settings.port+'/'+settings.token+'/#/');
-        gateways[i].settings = settings;
-
-	key = 'thermostat';
-        for (key in devices) {
-	  if (devices[key].device_type == 'thermostat') {
-            current_state = devices[key].current_state;
-            if (current_state.tmode === 0) {
-              current_state['mode'] = "off";
-              current_state['set_temp'] = "O";   
-            } 
-            if (current_state.tmode === 1) {
-              current_state['mode'] = "heat";
-              current_state['set_temp'] = current_state.t_heat;
-            }  
-            if (current_state.tmode === 2) {
-              current_state['mode'] = "cool";
-              current_state['set_temp'] = current_state.t_cool;   
-            }
-            if (current_state.tmode === 3) {
-              current_state['mode'] = "auto";
-              current_state['set_temp'] = current_state.auto;
-            }        
-            if (current_state.fmode == 0) {
-              current_state['fan'] = "auto";
-            } 
-	    if (current_state.fmode == 1) {
-              current_state['fan'] = "on";
-            }
-    	    if (current_state.fmode == 2) {
-              current_state['fan'] = "on2";
-            }
-    	    if (current_state.fmode == 3) {
-              current_state['fan'] = "off";
-            }
-	    set_state = current_state;
-            devices[key].set_state = set_state;
-            devices[key].current_state = current_state;
-            //console.log('load thermostat',devices[key]);
-	  }
+    var i = find_index(gateways,'mac',mac);
+    if (i < 0) return console.log("load_settings | mac not found",mac);
+    gateways[i].settings = settings;
+    console.log("load_settings |",settings);
+    /*key = 'thermostat';
+    for (key in devices) {
+      if (devices[key].device_type == 'thermostat') {
+        current_state = devices[key].current_state;
+        if (current_state.tmode === 0) {
+          current_state['mode'] = "off";
+          current_state['set_temp'] = "O";   
+        } 
+        if (current_state.tmode === 1) {
+          current_state['mode'] = "heat";
+          current_state['set_temp'] = current_state.t_heat;
+        }  
+        if (current_state.tmode === 2) {
+          current_state['mode'] = "cool";
+          current_state['set_temp'] = current_state.t_cool;   
         }
-        $scope.$apply(function () {
-          $rootScope.gateways[i].devices = devices;
-        });
+        if (current_state.tmode === 3) {
+          current_state['mode'] = "auto";
+          current_state['set_temp'] = current_state.auto;
+        }        
+        if (current_state.fmode == 0) {
+          current_state['fan'] = "auto";
+        } 
+	if (current_state.fmode == 1) {
+          current_state['fan'] = "on";
+        }
+    	if (current_state.fmode == 2) {
+          current_state['fan'] = "on2";
+        }
+    	if (current_state.fmode == 3) {
+          current_state['fan'] = "off";
+        }
+	set_state = current_state;
+        devices[key].set_state = set_state;
+        devices[key].current_state = current_state;
+        //console.log('load thermostat',devices[key]);
       }
-    }
-
+    }*/
+    $scope.$apply(function () {
+      $rootScope.gateways[i].devices = devices;
+    });
   }
 
   $rootScope.ping_audio = function(command,token) {

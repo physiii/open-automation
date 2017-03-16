@@ -87,8 +87,8 @@ function start_ffmpeg(data) {
   if (data.command == "start_webcam") {
     var command =  [
                    '-loglevel', 'panic',
-                   '-r', '2',
-                   '-strict', '-1',
+                   //'-r', '2',
+                   //'-strict', '-1',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
                    '-i', '/dev/video10',

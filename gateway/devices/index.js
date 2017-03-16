@@ -1,13 +1,14 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
-console.log("loading devices...");
+console.log("loading devices...",device_array);
+
 var thermostat = require('./thermostat.js');
-const zwave = require('./zwave.js');
-const lights = require('./lights.js');
-const media = require('./media.js');
-const alarm = require('./alarm.js');
-const camera = require('./camera.js');
+var zwave = require('./zwave.js');
+var lights = require('./lights.js');
+var media = require('./media.js');
+var alarm = require('./alarm.js');
+var camera = require('./camera.js');
 var socket = require('../socket.js');
 
 module.exports.thermostat = thermostat;

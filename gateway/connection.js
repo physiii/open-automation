@@ -43,7 +43,7 @@ function check_connection() {
 }
 
 function scan_wifi() {
-  console.log("scanning wifi...");
+  //console.log("scanning wifi...");
   exec("iwlist wlan0 scan | grep 'ESSID'", (error, stdout, stderr) => {
     if (error) {
       //console.error(`exec error: ${error}`);

@@ -835,21 +835,23 @@ io.on('connection', function (socket) {
   
 
   socket.on('get devices', function (data) {
+    var groups = database.groups;
     var index = find_index(accounts,'token',data.token);
     if (index < 0) return console.log("get devices | account not found");
     console.log("accounts",accounts)
     var username = accounts[index].username;
     var devices = [];
-    var group_index = find_index(database.groups,'group_id',username);
+    var group_index = find_index(groups,'group_id',username);
     if (group_index < 0) return console.log("get_devices | no group found",username);
-    devices.push(database.groups[group_index]);
-    for (var i=0; i < database.groups[group_index].members.length; i++) {
-      //console.log('get_devices1',database.groups[group_index].members[i]);
-      var member_index = find_index(device_objects,'mac',database.groups[group_index].members[i]);
+    devices.push(groups[group_index]);
+    for (var i=0; i < groups[group_index].members.length; i++) {
+      var member_index = find_index(device_objects,'mac',groups[group_index].members[i]);
       if (member_index < 0) {
-        console.log("get devices | member not found",database.groups[group_index].members[i]);
+        console.log("get devices | member not found",groups[group_index].members[i]);
         continue;
       }
+      if (device_objects[member_index].socket)
+        device_objects[member_index].socket.emit('get devices',{username:username});
       var temp_object = Object.assign({}, device_objects[member_index]);
       delete temp_object.socket;
       devices.push(temp_object);

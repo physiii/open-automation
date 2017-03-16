@@ -64,7 +64,7 @@ function find_hue_bridge() {
     if (found_bridge == false) {
       console.log("new bridge, creating user...");
       device_array.push(result[0]);
-      database.store_device_object(result[0])
+      database.store_device(result[0])
       create_user(result[0]);
     }
   });
@@ -107,7 +107,7 @@ function find_lights(device) {
 
 // --------------------  setting light state  ----------------- //
 function set_light(device_id,state) {
-  //console.log("set_light",state);
+  console.log("set_light",state);
   for (var i = 0; i < device_array.length; i++) {
     if (device_array[i].device_type == "lights") {
   
