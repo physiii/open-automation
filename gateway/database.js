@@ -64,9 +64,9 @@ function get_settings() {
       module.exports.settings = settings;
       if (!got_token) {
         //if (settings.token) {
-          console.log("fetching token...");
-          socket.relay.emit('get token',{mac:utils.mac});
-          store_settings(settings);
+        console.log("fetching token...");
+        socket.relay.emit('get token',{mac:utils.mac, device_type:['gateway']});          
+        store_settings(settings);
         //}
       }
       //need to add device_array and send to client

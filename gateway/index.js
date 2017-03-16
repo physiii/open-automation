@@ -106,6 +106,8 @@ var ap_time_start;
 main_loop();
 function main_loop () {
   setTimeout(function () {
+    var settings_obj = {public_ip:utils.public_ip, local_ip:utils.local_ip, mac:utils.mac}
+    database.store_settings(settings_obj);
     if (database.got_token == false) {
       console.log("fetching token...");
       socket.relay.emit('get token',database.settings);

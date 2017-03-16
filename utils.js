@@ -10,6 +10,7 @@ module.exports = {
 }
 
 
+
 const crypto = require('crypto');
 var os = require('os');
 var request = require('request');
@@ -25,6 +26,8 @@ var device_type = ["gateway"];
 var public_ip = "init";
 get_public_ip();
 get_local_ip();
+get_mac();
+main_loop();
 
 function get_local_ip() {
 Object.keys(ifaces).forEach(function (ifname) {
@@ -55,9 +58,7 @@ function get_public_ip() {
     if (!error && response.statusCode == 200) {
       public_ip = data;
       module.exports.public_ip = public_ip;
-      if (error !== null) {
-       console.log('error ---> ' + error);
-      }      
+      if (error !== null) console.log(error);
     }
   });
 }
@@ -111,30 +112,6 @@ rimraf('/var/lib/motion/' + oldest_dir, function(error) {
 }
 
 // -------------------------------------------------------------- //
-
-
-
-function getMostRecentFileName(dir) {
-  var files = fs.readdirSync(dir);
-  return _.min(files, function (f) {
-    var fullpath = path.join(dir, f);
-    return fs.statSync(fullpath).ctime;
-  });
-}
-
-
-
-function find_index(array, key, value) {
-  for (var i=0; i < array.length; i++) {
-    if (array[i][key] == value) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-
-get_mac();
 function get_mac () {
   require('getmac').getMac(function(err,macAddress){
     if (err)  throw err
@@ -145,7 +122,6 @@ function get_mac () {
   });
 }
 
-main_loop();
 function main_loop () {
 setTimeout(function () {
   get_public_ip();
@@ -154,17 +130,19 @@ setTimeout(function () {
 }, 60*1000);
 }
 
-function get_public_ip() {
-  request.get(
-  'http://pyfi.org/php/get_ip.php',
-  function (error, response, data) {
-    if (!error && response.statusCode == 200) {
-      public_ip = data;
-      //console.log('public_ip ' + data);
-      return public_ip;
-      if (error !== null) {
-       console.log('error ---> ' + error);
-      }      
+function find_index(array, key, value) {
+  for (var i=0; i < array.length; i++) {
+    if (array[i][key] == value) {
+      return i;
     }
+  }
+  return -1;
+}
+
+function getMostRecentFileName(dir) {
+  var files = fs.readdirSync(dir);
+  return _.min(files, function (f) {
+    var fullpath = path.join(dir, f);
+    return fs.statSync(fullpath).ctime;
   });
 }
