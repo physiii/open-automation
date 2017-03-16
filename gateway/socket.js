@@ -2,7 +2,7 @@ module.exports = {
   relay: relay
 }
 var database = require('./database');
-
+var exec = require('child_process').exec;
 //relay_server = "98.168.142.41:5000";
 var relay = require('socket.io-client')("http://"+database.relay_server);
 module.exports.relay = relay;
