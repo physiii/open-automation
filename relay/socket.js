@@ -443,7 +443,7 @@ io.on('connection', function (socket) {
 
   socket.on('media', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return console.log('media | invalid token',data);
+    if (device_index < 0) return; //console.log('media | token not found');
     if (device_objects[device_index].socket)
       device_objects[device_index].socket.emit('media',data);
   });
@@ -885,11 +885,17 @@ io.on('connection', function (socket) {
   });
 
   socket.on('rename device', function (data) {
-    var devices = [];
-    var index = find_index(database.groups,'group_id',data.token);
-    console.log("!! rename device !!",data.token);
-    if (index < 0) return;
+    var index = find_index(device_objects,'token',data.token);
+    if (index < 0) return console.log("rename device | token not found");
+    device_objects[index].device_name = data.device_name;
+    database.store_device_object(device_objects[index]);
+    device_objects[index].socket.emit('rename device',data.device_name);
+    /*index = find_index(database.groups,'group_id',device_objects[index].mac);
+    if (index < 0) return console.log("rename device | group not found");
+    group[index].device_name = data.device_name;
+    database.store_group(group[index]);
     for (var i=0; i < database.groups[index].members.length; i++) {
+      var j = find_index(device_object, database.groups[index].members[i]);
       for (var j=0; j < device_objects.length; j++) {
         if (database.groups[index].members[i] == device_objects[j].token) {
           device_objects[j].device_name = data.device_name;
@@ -898,7 +904,7 @@ io.on('connection', function (socket) {
           device_objects[j].socket.emit('rename device',data);
         }
       }
-    }
+    }*/
   });
 
 

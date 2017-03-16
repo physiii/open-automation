@@ -34,9 +34,9 @@ function set_theme(theme) {
 }
 
 socket.relay.on('set lights', function (data) {
-  data.light = omit(data.light,"$$hashKey"); //bad angularjs array
+  //data.light = omit(data.light,"$$hashKey"); //bad angularjs array
   set_light(data.light.id,data.light.state);
-  //console.log('lights',data);
+  //console.log("set lights", data.light);
 });
 
 socket.relay.on('link lights', function (data) {

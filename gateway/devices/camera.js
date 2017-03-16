@@ -75,7 +75,7 @@ socket.relay.on('ffmpeg', function (data) {
   }
 });
 
-const spawn = require('child_process').spawn;
+var spawn = require('child_process').spawn;
 var ffmpeg;
 function start_ffmpeg(data) {
   var settings = database.settings;

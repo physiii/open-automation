@@ -1,8 +1,10 @@
 var socket = require('../socket.js');
+var platform = require('platform');
+var spawn = require('child_process').spawn;
 
 socket.relay.on('media', function (data) {
   var command = data.cmd;
-  if ( platform === "win32" ) {
+  if ( platform.os.family == "Win32" ) {
     if (command == "volume down"){
       spawn('nircmd.exe', ['mutesysvolume', '0']);        
       spawn('nircmd.exe', ['changesysvolume', '-5000']);
@@ -14,7 +16,7 @@ socket.relay.on('media', function (data) {
     if (command == "mute"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
     if (command == "play"){ spawn('nircmd.exe', ['mutesysvolume', '1']) }
   } else
-  if ( platform === "linux" ) {  
+  if ( platform.os.family == "Linux" ) {  
     if ( command === "volume down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
     if ( command === "volume up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
     if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }

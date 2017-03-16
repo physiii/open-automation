@@ -81,16 +81,13 @@ function get_settings() {
 //-- store new settings --//
 function store_settings(data) {
   MongoClient.connect('mongodb://127.0.0.1:27017/gateway', function (err, db) {
-    if (err) {
-      console.log('Unable to connect to the mongoDB server. Error:', err);
-    } else {
-      var collection = db.collection('settings');
-      console.log('store_settings',data);
-      collection.update({}, {$set:data}, {upsert:true}, function(err, item){
+    if (err) return console.log(err);
+    var collection = db.collection('settings');
+    console.log('store_settings',data);
+    collection.update({}, {$set:data}, {upsert:true}, function(err, item){
         //console.log("item",item)
-      });
-      db.close();
-    }
+    });
+    db.close();
   });
 }
 
