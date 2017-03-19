@@ -1,7 +1,7 @@
 #!/bin/sh -e
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get update
-sudo apt-get install -y bc libudev-dev nmap npm motion speedtest-cli gstreamer1.0 v4l2loopback-dkms v4l2loopback-utils git nodejs npm mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat-dev libavcodec-dev libavutil-dev libc6-dev zlib1g-dev libpq5 libpq-dev tmux xdotool
+sudo apt-get install -y bc libudev-dev nmap motion speedtest-cli gstreamer1.0 v4l2loopback-dkms v4l2loopback-utils git nodejs npm mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat-dev libavcodec-dev libavutil-dev libc6-dev zlib1g-dev libpq5 libpq-dev tmux xdotool
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo chmod -R 777 /var/log /var/lib /usr/src
 sudo chmod a+rwxt /var/run/motion
