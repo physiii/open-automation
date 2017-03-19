@@ -6,14 +6,6 @@ sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo chmod -R 777 /var/log /var/lib /usr/src
 sudo chmod a+rwxt /var/run/motion
 sudo cp files/motion.conf /etc/motion/motion.conf
-#rm files/Audio files/Videos files/Documents files/motion
-#mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
-#mkdir ~/Audio ~/Videos ~/Documents files
-#ln -s /var/lib/motion files
-#ln -s ~/Audio files/
-#ln -s ~/Videos files/
-#ln -s ~/Documents files/
-#echo "enable raspicam!"
 
 #TODO: just include the binary
 cd /usr/src
