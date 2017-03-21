@@ -1,8 +1,7 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
-var fs = require('fs'),
-	http = require('http'),
+var 	http = require('http'),
 	WebSocket = require('ws');
 
 var STREAM_SECRET = "init",
@@ -25,8 +24,8 @@ socketServer.on('connection', function(socket) {
   }
 
   socket.on('close', function(code, message){
-    //var index = find_index(user_objects,'socket',socket);
-    //if (index > -1) user_objects.splice(index,1);
+    var index = find_index(user_objects,'socket',socket);
+    if (index > -1) user_objects.splice(index,1);
     socketServer.connectionCount--;
     console.log( 'video socket closed ('+socketServer.connectionCount+' total)' );
   });
@@ -63,9 +62,6 @@ var streamServer = require('http').createServer( function(request, response) {
   response.connection.setTimeout(0);
   var params = request.url.substr(1).split('/');
   var token = params[0];
-  //var stream_width = params[1];
-  //var stream_height = params[2];
-  //var settings = {token:token, stream_width:stream_width, stream_height:stream_height};
   var settings = {token:token};
 
   var index = find_index(device_objects,'token',token);

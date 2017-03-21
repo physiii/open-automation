@@ -9,20 +9,19 @@ module.exports = {
 
 //module.exports.relay_server = "127.0.0.1";
 
-module.exports.relay_server = "98.168.142.41:5000";
-module.exports.video_relay_server = "98.168.142.41";
-var settings = {};
+//module.exports.relay_server = "98.168.142.41:5000";
+//module.exports.video_relay_server = "98.168.142.41";
 
-//module.exports.relay_server = "24.253.223.242:5000";
-//module.exports.video_relay_server = "24.253.223.242";
+module.exports.relay_server = "70.175.160.122";
+module.exports.video_relay_server = "70.175.160.122";
 
 var connection = require('./connection.js');
 var socket = require('./socket.js');
 var utils = require('../utils.js');
-// -------------------------------  MangoDB  --------------------------------- //
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
+var settings = {};
 
 get_devices();
 get_settings();
