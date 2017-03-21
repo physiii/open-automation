@@ -1,20 +1,12 @@
 #!/bin/sh -e
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+#wget -qO- https://github.com/physiii/open-automation/master/install.sh | bash
+curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get update
-sudo apt-get install -y nmap npm motion speedtest-cli gstreamer1.0 v4l2loopback-dkms v4l2loopback-utils git nodejs mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat-dev libavcodec-dev libavutil-dev libc6-dev zlib1g-dev libmysqlclient-dev libpq5 libpq-dev tmux xdotool apache2 mysql-server libmysqlclient-dev libcurl4-openssl-dev
+sudo apt-get install -y lua5.2 raspberrypi-kernel-headers bc libudev-dev nmap motion speedtest-cli gstreamer1.0 v4l2loopback-dkms v4l2loopback-utils git nodejs mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat-dev libavcodec-dev libavutil-dev libc6-dev zlib1g-dev libpq5 libpq-dev tmux xdotool
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo chmod -R 777 /var
-sudo chmod -R 777 /usr/src
+sudo chmod -R 777 /var/log /var/lib /usr/src
 sudo chmod a+rwxt /var/run/motion
-sudo cp motion/motion.conf /etc/motion/motion.conf
-#rm files/Audio files/Videos files/Documents files/motion
-#mkdir ~/Audio ~/Videos ~/Documents /var/lib/motion/video /var/lib/motion/images
-#mkdir ~/Audio ~/Videos ~/Documents files
-#ln -s /var/lib/motion files
-#ln -s ~/Audio files/
-#ln -s ~/Videos files/
-#ln -s ~/Documents files/
-echo "enable raspicam!"
+sudo cp files/motion.conf /etc/motion/motion.conf
 
 #TODO: just include the binary
 cd /usr/src
@@ -28,12 +20,16 @@ sudo sed -i '$a LD_LIBRARY_PATH=/usr/local/lib' /etc/environment
 sudo ln -s /usr/local/lib64/libopenzwave.so.1.4 /usr/local/lib/
 
 ## create loop back devices for video
+sudo wget https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source -O /usr/bin/rpi-source
+sudo chmod +x /usr/bin/rpi-source
+/usr/bin/rpi-source -q --tag-update
+rpi-source
 
 cd /usr/src
 git clone https://github.com/umlaeute/v4l2loopback
 cd v4l2loopback
 make && sudo make install
-modprobe v4l2loopback video_nr=1,10,11
+sudo modprobe v4l2loopback video_nr=1,10,11
 
 ##ffmpeg
 cd /usr/src
