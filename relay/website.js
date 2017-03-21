@@ -23,10 +23,11 @@ var allowCrossDomain = function(req, res, next) {
       next();
     }
 };
+app.use(allowCrossDomain);
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
-  
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(function(user, done) {
@@ -47,7 +48,6 @@ app.set('view engine', 'ejs');
 
 console.log("__dirname", __dirname);
 app.set('views', __dirname + '/views');
-app.use(allowCrossDomain);
 app.use('/', express.static(__dirname + '/public'));
 
 

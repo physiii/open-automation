@@ -253,6 +253,8 @@ function start(server)  {
 // -------------  socket.io server  ---------------- //
 
 var io = require('socket.io').listen(server);
+
+//io.set('origins', '*');
 io.on('connection', function (socket) {
   //console.info(socket.id + " | client connected" );
 
@@ -832,7 +834,7 @@ io.on('connection', function (socket) {
   socket.on('get devices', function (data) {
     var groups = database.groups;
     var index = find_index(accounts,'token',data.token);
-    if (index < 0) return console.log("get devices | account not found");
+    if (index < 0) return console.log("get devices | account not found", data);
     console.log("accounts",accounts)
     var username = accounts[index].username;
     var devices = [];
