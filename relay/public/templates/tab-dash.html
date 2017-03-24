@@ -21,8 +21,9 @@
         <div class="flipper clearfix" >
           <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;">
             <ion-card-header >
-              <div ng-click="list_folder(gateway)" style="width:100%">
-                <h4 style="margin:10px;text-align:right;color:#ccc">{{ gateway.device_name }}</h4>
+              <div ng-click="list_folder(gateway)" style="width:100%" class="">
+                <h4 style="margin:10px;text-align:left;float:left;color:#ccc">{{ gateway.device_name }}</h4>
+                <button class="btn btn-sm" style="float:right;height:30px;margin:5px;color:#444"><i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
               </div>
             </ion-card-header>
 
@@ -34,9 +35,8 @@
               <i style="color:#eee" class="fa fa-spinner fa-spin fa-5x fa-fw"></i>
             </div>
             <canvas id="videoCanvas_{{ gateway.mac }}" style="width:100%;display:none"></canvas>
-            <button class="button" ng-click="fullscreen('container_' + gateway.mac)" style="height:20px;font-size:30px;position:absolute;bottom:15px;right:10px">
-              <i class="ion-arrow-expand"></i>
-            </button>
+            <i class="ion-arrow-expand" ng-click="fullscreen('container_' + gateway.mac)" style="height:20px;font-size:40px;position:absolute;bottom:25px;right:10px">
+            </i>
           </div>
 
           <div class="back card" style="overflow-y:scroll;max-height:400px;width:100%;border-style:solid;border-width:2px;border-color:#9E1A1A;background-color:#6E1A1A;color:#fff;">
