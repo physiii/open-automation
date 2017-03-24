@@ -324,9 +324,10 @@ io.on('connection', function (socket) {
 
 //----------- ffmpeg ----------//
   socket.on('ffmpeg', function (data) {
+    console.log("hit ffmpeg",data);
     var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return; //console.log('ffmpeg | device not found',data.mac);
-    if (!device_objects[device_index].socket) return; //console.log('ffmpeg | socket not found',data.mac);
+    if (device_index < 0) return console.log('ffmpeg | device not found',data.mac);
+    if (!device_objects[device_index].socket) return console.log('ffmpeg | socket not found',data.mac);
     device_objects[device_index].socket.emit('ffmpeg',data);
   });
   
