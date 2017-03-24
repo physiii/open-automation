@@ -8,7 +8,7 @@ Software for controlling cameras, dead bolts, garage openers, lights, thermostat
 Send and receive messages w wifi and zwave devices.
 ### Solar Powered Security Camera
 Adjustable bitrate for low data streaming and timeout functions to save data cost.
-###Motion Detection w Recording
+### Motion Detection w Recording
 Uses motion to trigger recording to local disk and local disk can be proxied (working on streaming from disk but should be similar to streaming from webcam)
 
 1. Angularjs frontend - http://open-automation.org
@@ -33,7 +33,7 @@ Uses motion to trigger recording to local disk and local disk can be proxied (wo
 4. Websockets on microcontrollers
 
 
-##System Overview
+## System Overview
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system_overview.png?raw=true "system overview")
 
 ##Dashboard
@@ -45,8 +45,8 @@ Uses motion to trigger recording to local disk and local disk can be proxied (wo
 ##Device List
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile_device_list.png "Device List")
 
-#installation
-##install node 4.x from source
+# installation
+## install node 4.x from source
 1. wget https://nodejs.org/dist/v4.2.6/node-v4.2.6.tar.gz && tar -zxvf node-v4.2.6.tar.gz && cd node-v4.2.6 && ./configure && make && sudo make install
 2. git clone https://github.com/physiii/open-automation.git && cd open-automation && sh install.sh
 
