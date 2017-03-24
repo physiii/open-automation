@@ -332,7 +332,7 @@
 <!------------------------------------------------------------------------>
 <!-----------------------------  Video  ---------------------------------->
 <!------------------------------------------------------------------------>
-<div ng-if="chat.name == 'Video'" style="margin:20px;" ng-controller="VideoCtrl" data-ng-repeat="x in gateways" ng-if="x.settings.camera_enabled && x.settings.dashboard_enabled">
+<div ng-if="chat.name == 'Video'" style="margin:20px;" ng-controller="CameraCtrl" data-ng-repeat="x in gateways" ng-if="x.settings.camera_enabled && x.settings.dashboard_enabled">
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div ng-click="flip()" class="flip-container">
       <div class="flipper clearfix" >
@@ -361,7 +361,7 @@
 </div>
 
 <!----------------------------  Files  --------------------------------
-<div ng-if="chat.name == 'Files'" ng-controller="VideoCtrl">
+<div ng-if="chat.name == 'Files'" ng-controller="CameraCtrl">
 
   <div data-ng-repeat="x in cameras">
     <div id="{{ x.mac }}_div" class="card" style="margin:20px;border-style:solid;border-width:1px;border-color:#444">

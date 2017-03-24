@@ -1,4 +1,4 @@
-angular.module('starter.controllers')
+angular.module('starter.controllers', ['socket-io'])
 
 .directive('flipContainer', function() {
   return {
@@ -11,7 +11,7 @@ angular.module('starter.controllers')
   };
 })
 
-.controller('userinfo', function($document, $scope, $stateParams, Categories, socket,$ionicLoading, $compile, $http, $sce, $rootScope) {
+.controller('userinfo', function($document, $scope, $stateParams, Categories, socket, $ionicLoading, $compile, $http, $sce, $rootScope) {
   var gateways = [];
   var mobile = []; 
   var garage_openers = [];
@@ -23,6 +23,7 @@ angular.module('starter.controllers')
   var sirens = [];
   var alarms = [];
   var smoke_alarms = [];
+  $rootScope.alert_contacts = [];
   var server_type = "local";
 
   console.log("<< ------  userinfo  ------ >> ");
@@ -45,10 +46,6 @@ angular.module('starter.controllers')
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
-  //relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
-
-
-  $rootScope.alert_contacts = [];
 
   relay_socket.on('room_sensor', function (data) {
     if (data.status = 'alert') {
@@ -237,16 +234,6 @@ angular.module('starter.controllers')
       $rootScope.room_sensors = room_sensors;
       $rootScope.sirens = sirens;
     });
-  });
-
-  relay_socket.on('camera preview', function (data) {
-    //var width = data.width;
-    //var height = data.height;
-    var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
-    var img = new Image();
-    img.src = 'data:image/jpeg;base64,' + data.image;
-    console.log("camera preview",data);
-    ctx.drawImage(img, 0, 0, 600, 400);
   });
   
   relay_socket.on('set location', function (data) {

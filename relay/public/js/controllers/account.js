@@ -19,7 +19,7 @@ angular.module('starter.controllers')
 
   $scope.command = function(gateway) {
     command_obj = {token:gateway.token, command:gateway.command}
-    //console.log("command",gateway);
+    console.log("command",gateway);
     relay_socket.emit('command',gateway);
   }
 

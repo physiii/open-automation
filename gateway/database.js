@@ -2,7 +2,7 @@
 module.exports = {
   set_wifi_from_db: set_wifi_from_db,
   get_devices: get_devices,
-  get_settings: get_settings,
+  get_settings: get_settings,  
   store_settings: store_settings,
   store_device: store_device
 }
@@ -69,7 +69,7 @@ function get_settings() {
       //need to add device_array and send to client
       settings.devices = device_array;
       socket.relay.emit('load settings',settings);
-      console.log("get_settings",result[0]);
+      //console.log("get_settings",result[0]);
     });
   db.close();
 });
@@ -80,7 +80,7 @@ function store_settings(data) {
   MongoClient.connect('mongodb://127.0.0.1:27017/gateway', function (err, db) {
     if (err) return console.log(err);
     var collection = db.collection('settings');
-    console.log('store_settings',data);
+    //console.log('store_settings',data);
     collection.update({}, {$set:data}, {upsert:true}, function(err, item){
         //console.log("item",item)
     });
