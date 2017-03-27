@@ -84,7 +84,7 @@ angular.module('starter.controllers')
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
     console.log("camera preview",data);
-    ctx.drawImage(img, 0, 0, 200, 150);
+    ctx.drawImage(img, 0, 0, 250, 150);
   });
 
 })
