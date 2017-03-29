@@ -1,5 +1,5 @@
 #!/bin/sh -e
-#wget -qO- https://github.com/physiii/open-automation/master/install.sh | bash
+#wget -qO- https://raw.githubusercontent.com/physiii/open-automation/master/install.sh | bash
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get update
 #sudo apt-get install -y g++ lua5.2 raspberrypi-kernel-headers bc sshpass libudev-dev nmap motion speedtest-cli gstreamer1.0 v4l2loopback-dkms v4l2loopback-utils git nodejs mongodb dnsmasq hostapd pkg-config libudev-dev libjpeg-dev libavformat-dev libavcodec-dev libavutil-dev libc6-dev zlib1g-dev libpq5 libpq-dev tmux xdotool
