@@ -12,8 +12,8 @@ module.exports = {
 module.exports.relay_server = "98.168.142.41:5000";
 module.exports.video_relay_server = "98.168.142.41";
 
-module.exports.relay_server = "70.175.160.122:80";
-module.exports.video_relay_server = "70.175.160.122";
+//module.exports.relay_server = "70.175.160.122:80";
+//module.exports.video_relay_server = "70.175.160.122";
 
 var connection = require('./connection.js');
 var socket = require('./socket.js');
