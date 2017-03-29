@@ -2,6 +2,7 @@ angular.module('starter.controllers')
 
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
+  var relay_socket = $rootScope.relay_socket;
   $.getJSON("http://ipinfo.io", function (data) {
     var lat = data.loc.substring(0,7);
     var lng = data.loc.substring(8,16);
@@ -14,6 +15,23 @@ angular.module('starter.controllers')
     $rootScope.postal = data.postal;
     $rootScope.initialize_map();
   });
+
+  relay_socket.on('set location', function (data) {
+    console.log("set location",data.mac);
+    var mac = data.mac;
+    var mobile = $rootScope.mobile;
+    for (var i = 0; i < mobile.length; i++) {
+      if (mac === mobile[i].mac) {
+        mobile[i].latitude = data.latitude;
+        mobile[i].longitude = data.longitude;
+        mobile[i].speed = data.speed;
+        mobile[i].accuracy = data.accuracy;
+      }
+    }
+    $rootScope.mobile = mobile;
+    $rootScope.update_map(data);
+  });
+
   var markers = [];
   $rootScope.initialize_map = function () {
     var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
@@ -38,6 +56,8 @@ angular.module('starter.controllers')
     Latlng = new google.maps.LatLng(location.latitude, location.longitude);
     var contentString = "<div>" + device.mac + "<br>";
         contentString += "Signal: "+location.cell_signal_level+"<br>";
+        contentString += "Speed: "+location.speed+"<br>";
+        contentString += "Wifi: "+location.connected_wifi+"<br>";
         contentString += "<a ng-click=\"ping_audio('start','"+device.token+"')\">Start Ping</a>    |    ";
         contentString += "<a ng-click=\"ping_audio('stop','"+device.token+"')\">Stop Ping</a></div>";
     var compiled = $compile(contentString)($scope);

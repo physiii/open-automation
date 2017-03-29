@@ -76,46 +76,6 @@ angular.module('starter.controllers', ['socket-io'])
     //console.log("command result",command_result);
   });
 
-  relay_socket.on('folder list result', function (data) {
-    var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
-    folder_list.splice(0,1);
-    folder_list.splice(folder_list.length - 1,1);
-
-    for (var i = 0; i < folder_list.length; i++) {
-      var parts = folder_list[i].split(" ");
-      if (parts.length < 8) continue;
-      parts.folder = data.folder;
-      for (var k = 0; k < parts.length; k++) {
-        if (parts[k].length < 1) {
-          parts.splice(k,1);
-          k--;
-        }
-      }
-
-      //format date
-      parts[5] = parts[5].split("-");
-
-      //format time
-      parts[6] = parts[6].split(":");
-      
-      
-      if (parts[8].charCodeAt(0) == 46) {
-        if (parts[8].charCodeAt(1) == 46) {
-        } else if (parts[8].length < 2) {
-          folder_list.splice(i,1);
-          i--;
-          continue;
-        }
-      }
-      folder_list[i] = parts;
-    }
-    $scope.$apply(function () {
-      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
-      $rootScope.gateways[index].folder_list = folder_list;
-    });
-    console.log("folder list result | ",folder_list);
-  });
-
   relay_socket.on('motion_sensor', function (state) {
     console.log("motion_sensor",state);
     if (state.status = 'alert') {
@@ -236,22 +196,6 @@ angular.module('starter.controllers', ['socket-io'])
     });
   });
   
-  relay_socket.on('set location', function (data) {
-    console.log("set location",data);
-    var mac = data.mac;
-    var mobile = $rootScope.mobile;
-    for (var i = 0; i < mobile.length; i++) {
-      if (mac === mobile[i].mac) {
-        mobile[i].latitude = data.latitude;
-        mobile[i].longitude = data.longitude;
-        mobile[i].speed = data.speed;
-        mobile[i].accuracy = data.accuracy;
-      }
-    }
-    $rootScope.mobile = mobile;
-    $rootScope.update_map(data);
-  });
-
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
     load_settings(data);
@@ -275,7 +219,7 @@ angular.module('starter.controllers', ['socket-io'])
     var i = find_index(gateways,'mac',mac);
     if (i < 0) return console.log("load_settings | mac not found",mac);
     gateways[i].settings = settings;
-    console.log("load_settings |",settings);
+    console.log("load_settings |",settings.device_name);
     /*key = 'thermostat';
     for (key in devices) {
       if (devices[key].device_type == 'thermostat') {

@@ -6,6 +6,7 @@ console.log("starting relay...");
 accounts = [];
 groups = [];
 device_objects = [];
+location_objects = [];
 user_objects = [];
 
 var port = 5000;

@@ -33,18 +33,36 @@ angular.module('starter.controllers')
     $scope.start_stream(gateway.mac);
   }
 
+  $scope.play_folder = function(folder, gateway) {
+    /*for (var i =1; i < folder_list.length; i++) {
+      if (folder_list[i].name == "images") continue;
+      if (folder_list[i].name == "play all") continue;
+      folder_list[i] = "file '" + folder_list[i].folder + "/" + folder_list[i].name +"'";
+    }*/
+    var command = {folder:folder, token:gateway.token, command:"play_folder"};
+    console.log("play_folder",command);
+    relay_socket.emit('ffmpeg',command);
+    $scope.flip();
+    $scope.start_stream(gateway.mac);
+  }
+
   $scope.list_folder = function (gateway) {
     $scope.flip();
     relay_socket.emit('folder list',{token:gateway.token,folder:"/var/lib/motion"});
   }
 
   $scope.select_item = function (item, gateway) {
-    if (item[8].indexOf(".avi") > -1) {
-      $scope.play_file(item, gateway);
-      return;
+    if (item[8])
+      if (item[8].indexOf(".avi") > -1) {
+        $scope.play_file(item, gateway);
+        return;
     }
+
     var folder = item.folder + "/" + item[8];
-    console.log("item: ",item.folder);
+    if (item.name == "play all" ) {
+      $scope.play_folder(item.folder, gateway);
+      return console.log("play all | " + item);
+    }
     relay_socket.emit('folder list',{token:gateway.token,folder:folder});
   }
 
@@ -83,8 +101,54 @@ angular.module('starter.controllers')
     var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
-    console.log("camera preview",data);
+    console.log("camera preview",data.mac);
     ctx.drawImage(img, 0, 0, 250, 150);
+  });
+
+  relay_socket.on('folder list result', function (data) {
+    var play_all_btn = false;
+    var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
+    folder_list.splice(0,1);
+    folder_list.splice(folder_list.length - 1,1);
+
+    for (var i = 0; i < folder_list.length; i++) {
+      var parts = folder_list[i].split(" ");
+      if (parts.length < 8) continue;
+      parts.folder = data.folder;
+      for (var k = 0; k < parts.length; k++) {
+        if (parts[k].length < 1) {
+          parts.splice(k,1);
+          k--;
+        }
+      }
+
+      //format date
+      parts[5] = parts[5].split("-");
+
+      //format time
+      parts[6] = parts[6].split(":");
+      
+      
+      if (parts[8].charCodeAt(0) == 46) {
+        if (parts[8].charCodeAt(1) == 46) {
+        } else if (parts[8].length < 2) {
+          folder_list.splice(i,1);
+          i--;
+          continue;
+        }
+      }
+      parts.name = parts[8];
+      folder_list[i] = parts;
+      if (folder_list[i][8].indexOf(".avi") > -1) play_all_btn = true;
+      console.log("folder list result | ",data.mac);
+    }
+    if (play_all_btn) {
+      folder_list.push({name:"play all", folder:parts.folder})
+    }
+    $scope.$apply(function () {
+      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+      $rootScope.gateways[index].folder_list = folder_list;
+    });
   });
 
 })

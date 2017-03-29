@@ -25,7 +25,7 @@ var settings = {};
 
 get_devices();
 get_settings();
-var got_token = false;
+module.exports.got_token = false;
 //-- initialize variables --//
 
 function set_wifi_from_db() {
@@ -61,12 +61,11 @@ function get_settings() {
       if (err) return console.log(err);
       if (result[0]) settings = result[0]
       module.exports.settings = settings;
-      if (!got_token) {
+      if (!module.exports.got_token) {
         console.log("fetching token...");
         socket.relay.emit('get token',{mac:utils.mac, device_type:['gateway']});          
         store_settings(settings);
       }
-      //need to add device_array and send to client
       settings.devices = device_array;
       socket.relay.emit('load settings',settings);
       //console.log("get_settings",result[0]);

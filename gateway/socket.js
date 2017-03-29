@@ -3,7 +3,7 @@ module.exports = {
 }
 var database = require('./database');
 var exec = require('child_process').exec;
-//relay_server = "98.168.142.41:5000";
+
 var relay = require('socket.io-client')("http://"+database.relay_server);
 module.exports.relay = relay;
 console.log('socket io:',database.relay_server);
@@ -89,27 +89,6 @@ relay.on('command', function (data) {
   console.log('motion list',command);
 });*/
 
-
-relay.on('folder list', function (data) {
-  var folder = data.folder;
-  var command = "ls -lah --full-time "+folder;
-  console.log('folder list',command);
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      data.error = error;
-      relay.emit('folder list result',data);
-      return;
-    }
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-    data.stdout = stdout;
-    data.stderr = stderr;
-   relay.emit('folder list result',data);
-  });
-});
-
-
 relay.on('update', function (data) {
   var command =  ['pull'];
   var git = spawn('git', command);
@@ -126,9 +105,10 @@ relay.on('update', function (data) {
 
 
 relay.on('get settings', function (data) {
-  console.log("!! get_settings |  ", data);
-  database.store_settings({'device_name':data.device_name,'device_type':data.device_type});
-  database.get_settings();
+  //database.store_settings({'device_name':data.device_name,'device_type':data.device_type});
+  var settings = database.settings;
+  relay.emit('load settings', settings);
+  console.log("load settings |", settings);
 });
 
 relay.on('get devices', function (data) {

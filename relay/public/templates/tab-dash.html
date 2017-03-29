@@ -46,7 +46,7 @@
               <h5 style="color:#eee;float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
             </li>
             <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
-             <div style="float:left">{{ item[8] }} {{ item[4] }}</div>
+             <div style="float:left">{{ item.name }} {{ item[4] }}</div>
              <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
             </li>
           </div>
