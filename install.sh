@@ -10,6 +10,7 @@ sudo chmod -R 777 /var/log /var/lib /usr/src
 sudo chmod a+rwxt /var/run/motion
 sudo cp files/motion.conf /etc/motion/motion.conf
 sudo cp files/default.motion /etc/default/motion
+sudo service motion restart
 
 #TODO: just include the binary
 cd /usr/src
