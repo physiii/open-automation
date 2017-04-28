@@ -25,6 +25,11 @@ socket.relay.on('media', function (data) {
     //for volume slider use: xodotool amixer -c 0 sset Master,0 80%
   } else {
     console.log("platform not supported " + platform);
+    if ( command === "volume down" ) { spawn('xdotool', ['key', 'XF86AudioLowerVolume']) }
+    if ( command === "volume up" ) { spawn('xdotool', ['key', 'XF86AudioRaiseVolume']) }
+    if ( command === "mute" ) { spawn('xdotool', ['key', 'XF86AudioMute']) }
+    if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
+    if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
   }
 
   console.log("media | " + command);

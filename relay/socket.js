@@ -16,11 +16,12 @@ var WebSocketServer = require('ws').Server
 console.log('devices on port %d', ws_port);
 
 wss.on('connection', function connection(ws) {
-
+  console.log("<< ---- incoming connection ---- >>");
   try { ws.send('Hello from relay server!') }
   catch (e) { console.log("error: " + e) };
   
   ws.on('message', function incoming(message) {
+    console.log("<< ---- incoming message ---- >>",message);
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -217,7 +218,7 @@ function message_device(token,msg) {
 function message_user(user,event,msg) {
   console.log("message user |",user);
   for (var j=0; j < user_objects.length; j++) {
-    console.log("message_user | " + event,user_objects[j].user);
+    //console.log("message_user | " + event,user_objects[j].user);
     if (user_objects[j].user == user) {
       console.log("message_user",user_objects[j].user);
       user_objects[j].socket.emit(event,msg);
@@ -595,7 +596,7 @@ io.on('connection', function (socket) {
       console.log('new location_object',data.mac);
       database.make_location_object(data);
     } else {
-      console.log("added location",location_objects[index]);
+      console.log("added location",location_objects[index].mac);
       location_objects[index].locations.push(data.location);
     }
     database.store_location_object(data.mac,data.location);
