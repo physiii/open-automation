@@ -10,14 +10,10 @@
 # bits.
 #
 # By default this script does nothing.
-
-# Print the IP address
-_IP=$(hostname -I) || true
-if [ "$_IP" ]; then
-  printf "My IP address is %s\n" "$_IP"
-fi
-sudo modprobe bcm2835-v4l2
+#sudo modprobe bcm2835-v4l2
+sudo modprobe v4l2loopback video_nr=10,11,1
+ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &
 export DISPLAY=':0.0'
-su pi -c 'cd ~/open-automation/motion && ./motion -c motion-mmalcam-both.conf >> motion.log 2>&1 &'
-su pi -c 'cd ~/open-automation && sudo node gateway -p 3041 >> gateway.log 2>&1 &'
-exit 0
+su physiii -c 'pm2 start ~/code/open-automation/gateway/ --name gateway'
+su physiii -c 'pm2 start ~/code/open-automation/relay/ --name relay'
+exit 0;

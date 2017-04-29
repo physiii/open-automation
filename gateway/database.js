@@ -7,10 +7,13 @@ module.exports = {
   store_device: store_device
 }
 
-//module.exports.relay_server = "127.0.0.1";
+module.exports.relay_server = "127.0.0.1";
 
-module.exports.relay_server = "98.168.142.41:5000";
-module.exports.video_relay_server = "98.168.142.41";
+module.exports.relay_server = "pyfi.org";
+module.exports.video_relay_server = "pyfi.org";
+
+//module.exports.relay_server = "98.168.142.41:5000";
+//module.exports.video_relay_server = "98.168.142.41";
 
 //module.exports.relay_server = "70.175.160.122:80";
 //module.exports.video_relay_server = "70.175.160.122";
