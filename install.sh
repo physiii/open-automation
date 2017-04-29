@@ -13,7 +13,7 @@ libc6-dev zlib1g-dev libpq5 libpq-dev tmux xdotool
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo chmod a+rwxt /var/run/motion
 
-## make/install openzwave
+## make and install openzwave
 cd /usr/src
 wget http://old.openzwave.com/downloads/openzwave-1.4.1.tar.gz
 tar zxvf openzwave-1.4.1.tar.gz
@@ -30,13 +30,15 @@ sudo chmod +x /usr/bin/rpi-source
 /usr/bin/rpi-source -q --tag-update
 rpi-source
 
+## v4l2loopback
+sudo chmod -R 777 /usr/src
 cd /usr/src
 git clone https://github.com/umlaeute/v4l2loopback
 cd v4l2loopback
 make && sudo make install
 sudo modprobe v4l2loopback video_nr=1,10,11
 
-##ffmpeg
+## ffmpeg
 cd /usr/src
 git clone git://git.videolan.org/x264
 cd x264
@@ -51,15 +53,15 @@ sudo ./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 --
 make
 sudo make install
 
-##install open-automation
+## install open-automation
 cd ~
 git clone https://github.com/physiii/open-automation
 cd open-automation
 sudo npm install -g pm2
 npm install
 
-
+## copy files and set permissions
 sudo cp files/motion.conf /etc/motion/motion.conf
 sudo cp files/default.motion /etc/default/motion
 sudo service motion restart
-sudo chmod -R 777 /var/log /var/lib /usr/src
+sudo chmod -R 777 /var/log /var/lib
