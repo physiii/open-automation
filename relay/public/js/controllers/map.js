@@ -22,10 +22,11 @@ angular.module('starter.controllers')
     var mobile = $rootScope.mobile;
     for (var i = 0; i < mobile.length; i++) {
       if (mac === mobile[i].mac) {
-        mobile[i].latitude = data.latitude;
+        mobile[i] = data;
+        /*mobile[i].latitude = data.latitude;
         mobile[i].longitude = data.longitude;
         mobile[i].speed = data.speed;
-        mobile[i].accuracy = data.accuracy;
+        mobile[i].accuracy = data.accuracy;*/
       }
     }
     $rootScope.mobile = mobile;
@@ -76,7 +77,7 @@ angular.module('starter.controllers')
     for (var i = 0; i < markers.length; i++) {
       var title = markers[i].getTitle();
       if (title === location.mac) {
-        markers[i].setMap(null);
+        //markers[i].setMap(null);
       }
     }
     markers.push(marker);

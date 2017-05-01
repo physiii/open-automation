@@ -9,7 +9,7 @@ device_objects = [];
 location_objects = [];
 user_objects = [];
 
-var port = 5000;
+var port = 80;
 // Arguments passed to the program
 var index = process.argv.indexOf('-p');
 if (index > -1) port = process.argv[index+1];

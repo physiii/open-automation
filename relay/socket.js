@@ -216,7 +216,7 @@ function message_device(token,msg) {
 }
 
 function message_user(user,event,msg) {
-  console.log("message user |",user);
+  //console.log("message user |",user);
   for (var j=0; j < user_objects.length; j++) {
     //console.log("message_user | " + event,user_objects[j].user);
     if (user_objects[j].user == user) {
@@ -272,7 +272,7 @@ io.on('connection', function (socket) {
     if (index > -1) {
       //database.store_device_object(data);
       device_objects[index].socket = socket;
-      console.log('get token | updated socket',mac);
+      //console.log('get token | updated socket',mac);
     } else {
       data.groups = [mac];
       database.store_device_object(data);
@@ -596,7 +596,7 @@ io.on('connection', function (socket) {
       console.log('new location_object',data.mac);
       database.make_location_object(data);
     } else {
-      console.log("added location",location_objects[index].mac);
+      //console.log("added location",location_objects[index].mac);
       location_objects[index].locations.push(data.location);
     }
     database.store_location_object(data.mac,data.location);
