@@ -124,6 +124,6 @@ relay.on('rename device', function (data) {
 
 relay.on('disconnect', function() {
   console.log("disconnected, setting got_token false");
-  got_token = false;
+  database.got_token = false;
 });
 
