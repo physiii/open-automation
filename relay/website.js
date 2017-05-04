@@ -98,6 +98,14 @@ app.get('/home', function(req, res) {
     res.render('pages/home');
 });
 
+app.get('/get_ip', function(req, res) {
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  ip = ip.split(":");
+  ip = ip[ip.length - 1];
+  console.log(ip);
+  res.send(ip);
+});
+
 
 server.listen(port);
 console.log('clients on port ' + port);
