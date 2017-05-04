@@ -7,16 +7,13 @@ module.exports = {
   store_device: store_device
 }
 
-module.exports.relay_server = "127.0.0.1";
+module.exports.got_token = false;
 
 module.exports.relay_server = "pyfi.org";
 module.exports.video_relay_server = "pyfi.org";
 
-//module.exports.relay_server = "98.168.142.41:5000";
-//module.exports.video_relay_server = "98.168.142.41";
-
-//module.exports.relay_server = "70.175.160.122:80";
-//module.exports.video_relay_server = "70.175.160.122";
+//module.exports.relay_server = "127.0.0.1";
+//module.exports.video_relay_server = "127.0.0.1";
 
 var connection = require('./connection.js');
 var socket = require('./socket.js');
@@ -28,7 +25,7 @@ var settings = {};
 
 get_devices();
 get_settings();
-module.exports.got_token = false;
+
 //-- initialize variables --//
 
 function set_wifi_from_db() {

@@ -2,7 +2,7 @@
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
 console.log("starting gateway...");
-
+var TAG = "[index.js]";
 local_ip = "127.0.0.1";
 device_array = [];
 var utils = require('../utils.js');
@@ -66,7 +66,7 @@ var server_port = "init";
   }
 }*/
 
-var got_token = false;
+//var got_token = false;
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var spawn = require('child_process').spawn;
@@ -108,10 +108,10 @@ function main_loop () {
   setTimeout(function () {
     var settings_obj = {public_ip:utils.public_ip, local_ip:utils.local_ip, mac:utils.mac}
     database.store_settings(settings_obj);
-      if (!got_token) {
-        console.log("fetching token...");
-        socket.relay.emit('get token',{mac:utils.mac, device_type:['gateway']});
-      }
+    if (!database.got_token) {
+      console.log("fetching token...");
+      socket.relay.emit('get token',{mac:utils.mac, device_type:['gateway']});
+    }
     var settings = database.settings;
     //check_connection();
     if (database.settings.ap_mode) {
