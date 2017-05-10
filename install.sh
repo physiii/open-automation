@@ -1,5 +1,14 @@
 #!/bin/sh -e
 #wget -qO- https://raw.githubusercontent.com/physiii/open-automation/master/install.sh | bash
+
+## speed up sd card on pi
+# https://www.jeffgeerling.com/blog/2016/how-overclock-microsd-card-reader-on-raspberry-pi-3
+# sudo bash -c 'printf "dtoverlay=sdhost,overclock_50=100\n" >> /boot/config.txt'
+# Installs and run hdparm, dd, and iozone benchmarks.
+# curl https://raw.githubusercontent.com/geerlingguy/raspberry-pi-dramble/master/setup/benchmarks/microsd-benchmarks.sh | sudo bash
+# Run hdparm and some large file read/write benchmarks.
+# curl http://www.nmacleod.com/public/sdbench.sh | sudo bash
+
 sudo apt-get install -y curl
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get update
