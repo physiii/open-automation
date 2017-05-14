@@ -1,0 +1,14 @@
+{
+   "local": {
+        "relay_port" : 5000,
+	"relay_server" : "127.0.0.1"
+   },
+   "dev": {
+        "relay_port" : 5000,
+	"relay_server" : "98.168.142.41"
+   },
+   "production": {
+        "relay_port" : 80,
+	"relay_server" : "pyfi.org"
+   }
+}

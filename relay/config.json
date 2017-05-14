@@ -1,0 +1,11 @@
+{
+   "local": {
+        "port" : 5000
+   },
+   "dev": {
+        "port" : 5000
+   },
+   "production": {
+        "port" : 80
+   }
+}

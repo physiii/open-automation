@@ -3,10 +3,9 @@ module.exports = {
 }
 var database = require('./database');
 var exec = require('child_process').exec;
-
-var relay = require('socket.io-client')("http://"+database.relay_server);
+var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
 module.exports.relay = relay;
-console.log('socket io:',database.relay_server);
+console.log('Connected to:',relay_server+":"+relay_port);
 /*function start_relay() {
   relay_connected = true;
 }*/

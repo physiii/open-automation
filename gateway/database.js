@@ -9,12 +9,6 @@ module.exports = {
 
 module.exports.got_token = false;
 
-module.exports.relay_server = "pyfi.org";
-module.exports.video_relay_server = "pyfi.org";
-
-//module.exports.relay_server = "127.0.0.1";
-//module.exports.video_relay_server = "127.0.0.1";
-
 var connection = require('./connection.js');
 var socket = require('./socket.js');
 var utils = require('../utils.js');

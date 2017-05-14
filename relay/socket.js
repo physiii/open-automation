@@ -599,7 +599,7 @@ io.on('connection', function (socket) {
       //console.log("added location",location_objects[index].mac);
       location_objects[index].locations.push(data.location);
     }
-    database.store_location_object(data.mac,data.location);
+    //database.store_location_object(data.mac,data.location);
 
     if (!device_objects[index]) return console.log("no groups array in device object");
     

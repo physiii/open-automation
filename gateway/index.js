@@ -1,9 +1,17 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
-console.log("starting gateway...");
+
+
+relay_port = 5000;
+var index = process.argv.indexOf('-p');
+if (index > -1) relay_port = process.argv[index+1];
+
+relay_server = "127.0.0.1";
+var index = process.argv.indexOf('-s');
+if (index > -1) relay_server = process.argv[index+1];
+
 var TAG = "[index.js]";
-local_ip = "127.0.0.1";
 device_array = [];
 var utils = require('../utils.js');
 const admin = require('./admin.js');
@@ -11,23 +19,9 @@ var database = require('./database.js');
 const connection = require('./connection.js');
 var socket = require('./socket.js');
 var devices = require('./devices');
-var io_connected = false;
-var server_type = "dev";
-
-process.argv.forEach(function (val, index, array) {
-  //console.log(index + ': ' + val);
-  if (val == "dev")
-    server_type = "dev";
-  if (val == "prod")
-    server_type = "prod";
-});
-
-
 var querystring = require('querystring');
-
-var relay_server = "init";
+var io_connected = false;
 //var server_ip = "init";
-var server_port = "init";
 //get_relay_server(server_type);
 /*function get_relay_server(server_type) {
   if (server_type == 'dev') {
