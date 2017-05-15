@@ -139,7 +139,6 @@ var spawn = require('child_process').spawn;
 var ffmpeg;
 function start_ffmpeg(data) {
   var settings = database.settings;
-  var video_relay_server = database.video_relay_server;
   if (ffmpeg)
     stop_ffmpeg(ffmpeg)
   video_width = database.settings.video_width;
@@ -157,7 +156,7 @@ function start_ffmpeg(data) {
                    '-b:v', '600k',
                    '-r', '2',
                    '-strict', '-1',
-                   "http://"+video_relay_server+":8082/"+settings.token+"/"
+                   "http://"+relay_server+":8082/"+settings.token+"/"
                  ];
   }
   if (data.command == "play_file") {
@@ -172,7 +171,7 @@ function start_ffmpeg(data) {
 		   '-codec:v', 'mpeg1video',
                    '-r', '24',
                    '-strict', '-1',
-                   "http://"+video_relay_server+":8082/"+settings.token+"/"
+                   "http://"+relay_server+":8082/"+settings.token+"/"
                  ];
    }
 
@@ -190,7 +189,7 @@ function start_ffmpeg(data) {
 		   '-codec:v', 'mpeg1video',
                    '-r', '24',
                    '-strict', '-1',
-                   "http://"+video_relay_server+":8082/"+settings.token+"/"
+                   "http://"+relay_server+":8082/"+settings.token+"/"
                  ];
    }
   ffmpeg = spawn('ffmpeg', command);
