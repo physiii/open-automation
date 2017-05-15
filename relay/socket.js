@@ -115,7 +115,8 @@ wss.on('connection', function connection(ws) {
           message_user(groups[group_index].members[k],'media_controller',msg);
         }
       }
-      var index = find_index(groups,'group_id',token);
+      var index = find_index(groups,'group_id',mac);
+      if (index < 0) return console.log("media_controller | group not found", mac);
       if (groups[index].record_mode.value == true) {
         var ir_index = find_index(groups[index].IR,'command',groups[index].record_mode.command);
         if (ir_index > -1) {
@@ -597,9 +598,9 @@ io.on('connection', function (socket) {
       database.make_location_object(data);
     } else {
       //console.log("added location",location_objects[index].mac);
-      location_objects[index].locations.push(data.location);
+      //location_objects[index].locations.push(data.location);
     }
-    //database.store_location_object(data.mac,data.location);
+    database.store_location_object(data.mac,data.location);
 
     if (!device_objects[index]) return console.log("no groups array in device object");
     

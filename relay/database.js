@@ -297,7 +297,7 @@ function store_location_object(mac, location) {
     else {
       var collection = db.collection('locations');
       //console.log('store_location_object',location);
-      collection.update({mac:mac}, {$push:{locations:location}},{upsert:true}, function(err, item){
+      collection.update({mac:mac}, {$set:{locations:location}},{upsert:true}, function(err, item){
 	if (err) console.log("store_location_object",err);
 	//console.log('item',item);
       });
