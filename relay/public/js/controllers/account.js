@@ -95,9 +95,11 @@ angular.module('starter.controllers')
 
   $scope.add_device = function(device) {
     device.user_token = $rootScope.token;
-    console.log("add_device",device);  
+    console.log("add_device",device);
+    $rootScope.devices.push(device);
     relay_socket.emit('link device',device);
-  }  
+  }
+
   $scope.show_form = function(form, mac) {
     if (mac == null) mac = "";
     console.log("FORM: " + form + mac);
