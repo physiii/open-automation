@@ -3,6 +3,10 @@ var utils = require('../utils.js');
 var crypto = require('crypto');
 var express = require('express');
 var url = require('url');
+var fs = require('fs');
+var https = require('https');
+var app = express();
+var router = express.Router();
 
 module.exports = {
  start: start
@@ -106,7 +110,28 @@ app.get('/get_ip', function(req, res) {
   res.send(ip);
 });
 
+// Self Signed CA reads for SSL traffic
+
+var options = {
+  key: fs.readFileSync('/home/jeremy/open-automation/relay/private.key'),
+  cert: fs.readFileSync('/home/jeremy/open-automation/relay/certificate.pem'),
+  //ca: fs.readFileSync()
+};
+
+if (use_ssl) {
+  var secure_port = 443;
+  var secure_server = https.createServer(options, app);
+  secure_server.listen(secure_port);
+  console.log('Secure Server listening on port ' + secure_port);
+}
 
 server.listen(port);
-console.log('clients on port ' + port);
+console.log('Insecure Server listening on port ' + port);
+
+
+
+///////////////////////End of Code. Do not write below this line.
 }
+
+
+

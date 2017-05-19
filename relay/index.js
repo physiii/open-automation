@@ -9,16 +9,40 @@ device_objects = [];
 location_objects = [];
 user_objects = [];
 
-// Arguments passed to the program
-var port = 5000;
-var index = process.argv.indexOf('-p');
-if (index > -1) port = process.argv[index+1];
-
 var stream = require('./stream.js');
 var website = require('./website.js');
 var socket = require('./socket.js');
 var express = require('express');
+var http = require('http');
 var app = express();
-var server = require('http').createServer(app);
+
+// Arguments passed to the program
+
+var port = 80;
+
+var index = process.argv.indexOf('-p');
+if (index > -1) port = process.argv[index+1];
+
+use_ssl = false;
+var index = process.argv.indexOf('--use_ssl');
+if (index > -1) use_ssl = true;
+
+// Reroute Client request to SSL
+
+app.all('*', securedirect);
+
+function securedirect(req, res, next){
+  if(req.secure){
+    return next();
+}
+    res.redirect('https://'+ req.headers.host + req.url);
+}
+
+// Create and start servers
+
+var server = http.createServer(app);
+
 socket.start(server);
 website.start(app,server,port);
+
+
