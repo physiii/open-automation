@@ -293,6 +293,7 @@ io.on('connection', function (socket) {
 
   socket.on('load settings', function (data) {
     var device_index = find_index(device_objects, 'token', data.token);
+    if (device_index < 0) return console.log("device not found", data.mac);
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
     for (var i=0; i < groups[group_index].members.length; i++) {
