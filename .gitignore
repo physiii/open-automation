@@ -21,6 +21,7 @@
 *.zip
 *.key
 *.pem
+*.csr
 
 # Logs and databases #
 ######################
