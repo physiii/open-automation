@@ -113,8 +113,8 @@ app.get('/get_ip', function(req, res) {
 // Self Signed CA reads for SSL traffic
 
 var options = {
-  key: fs.readFileSync('/home/jeremy/open-automation/relay/private.key'),
-  cert: fs.readFileSync('/home/jeremy/open-automation/relay/certificate.pem'),
+  key: fs.readFileSync('./private.key'),
+  cert: fs.readFileSync('./certificate.pem'),
   //ca: fs.readFileSync()
 };
 
