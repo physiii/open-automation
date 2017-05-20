@@ -15,5 +15,5 @@ sudo modprobe v4l2loopback video_nr=10,11,1
 ffmpeg -loglevel panic -f video4linux2 -i /dev/video0 -vcodec copy -f v4l2 /dev/video10 -vcodec copy -f v4l2 /dev/video11 2>&1 &
 export DISPLAY=':0.0'
 #su pi -c 'sudo pm2 start ~/open-automation/relay/ --name relay -- -p 80'
-su physiii -c 'pm2 start ~/code/open-automation/gateway/ --name gateway -s pyfi.org'
+su pi -c 'pm2 start ~/open-automation/gateway/ --name gateway -- -s pyfi.org'
 exit 0;
