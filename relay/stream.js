@@ -1,12 +1,18 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
+var STREAM_PORT = 8082;
+var index = process.argv.indexOf('-vsp');
+if (index > -1) secure_port = process.argv[index+1];
+
+var WEBSOCKET_PORT = 8084;
+var index = process.argv.indexOf('-vwp');
+if (index > -1) secure_port = process.argv[index+1];
+
 var 	http = require('http'),
 	WebSocket = require('ws');
 
 var STREAM_SECRET = "init",
-    STREAM_PORT = 8082,
-    WEBSOCKET_PORT = 8084,
     STREAM_MAGIC_BYTES = 'jsmp'; // Must be 4 bytes
 
 // Websocket Server
