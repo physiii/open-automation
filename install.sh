@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# make it so it will install in back ground and output to log so you can tail -f if you want
 #wget -qO- https://raw.githubusercontent.com/physiii/open-automation/master/install.sh | bash
 
 ## speed up sd card on pi
