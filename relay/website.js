@@ -110,16 +110,43 @@ app.get('/get_ip', function(req, res) {
   res.send(ip);
 });
 
+
+var port = 80;
+var index = process.argv.indexOf('-p');
+if (index > -1) port = process.argv[index+1];
+
+
+var secure_port = 443;
+var index = process.argv.indexOf('-sp');
+if (index > -1) secure_port = process.argv[index+1];
+
+use_ssl = false;
+var index = process.argv.indexOf('--use_ssl');
+if (index > -1) {
+  use_ssl = true;
+}
+
+// Reroute Client request to SSL
+
+/*app.all('*', securedirect);
+function securedirect(req, res, next){
+  if(req.secure){
+    return next();
+}
+    res.redirect('https://'+ req.headers.host + req.url);
+}*/
+
+
 // Self Signed CA reads for SSL traffic
 
 var options = {
-  key: fs.readFileSync('./private.key'),
-  cert: fs.readFileSync('./certificate.pem'),
+  key: fs.readFileSync(__dirname + '/private.key'),
+  cert: fs.readFileSync(__dirname + '/certificate.pem'),
   //ca: fs.readFileSync()
 };
 
 if (use_ssl) {
-  var secure_port = 443;
+  //var secure_port = 443;
   var secure_server = https.createServer(options, app);
   secure_server.listen(secure_port);
   console.log('Secure Server listening on port ' + secure_port);
