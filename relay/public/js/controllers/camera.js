@@ -3,6 +3,16 @@ angular.module('starter.controllers')
   var relay_socket = $rootScope.relay_socket;
   console.log("<< ------  CameraCtrl  ------ >> ");
   
+  get_camera_list();
+  function get_camera_list() {
+    var gateways = $rootScope.gateways;
+    for (var i = 0; i < gateways.length; i++) {
+      relay_socket.emit('get camera list',gateways[i].token);
+      console.log('get_camera_list',gateways[i].token);
+    }
+    var i = $rootScope.find_index(gateways,"mac",mac);
+  }
+
   $scope.start_stream = function(mac) {
     var gateways = $rootScope.gateways;
     var i = $rootScope.find_index(gateways,"mac",mac);
@@ -18,7 +28,7 @@ angular.module('starter.controllers')
   }
 
   $scope.start_webcam = function(gateway) {
-    var command = {token:gateway.token, command:"start_webcam"}
+    var command = {token:gateway.token, command:"start_webcam", camera_number:"20"}
     relay_socket.emit('ffmpeg',command);
     $scope.start_stream(gateway.mac);
   }
@@ -103,6 +113,10 @@ angular.module('starter.controllers')
     img.src = 'data:image/jpeg;base64,' + data.image;
     console.log("camera preview",data.mac);
     ctx.drawImage(img, 0, 0, 250, 150);
+  });
+
+  relay_socket.on('camera list', function (data) {
+    console.log("camera list",data);
   });
 
   relay_socket.on('folder list result', function (data) {

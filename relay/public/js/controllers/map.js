@@ -16,23 +16,6 @@ angular.module('starter.controllers')
     $rootScope.initialize_map();
   });
 
-  relay_socket.on('set location', function (data) {
-    console.log("set location",data.mac);
-    var mac = data.mac;
-    var mobile = $rootScope.mobile;
-    for (var i = 0; i < mobile.length; i++) {
-      if (mac === mobile[i].mac) {
-        mobile[i] = data;
-        /*mobile[i].latitude = data.latitude;
-        mobile[i].longitude = data.longitude;
-        mobile[i].speed = data.speed;
-        mobile[i].accuracy = data.accuracy;*/
-      }
-    }
-    $rootScope.mobile = mobile;
-    $rootScope.update_map(data);
-  });
-
   var markers = [];
   $rootScope.initialize_map = function () {
     var myLatlng = new google.maps.LatLng($rootScope.ipLatitude,$rootScope.ipLongitude);
@@ -52,7 +35,7 @@ angular.module('starter.controllers')
 
   $rootScope.update_map = function (device) {
     mobile = $rootScope.mobile;
-    var location = device.location;
+    var location = device.status;
     //console.log("update_map",location);
     Latlng = new google.maps.LatLng(location.latitude, location.longitude);
     var contentString = "<div>" + device.mac + "<br>";

@@ -8,7 +8,7 @@ get_accounts();
 get_groups();
 get_device_objects();
 //get_user_objects();
-get_location_objects();
+get_status_objects();
 
 
 module.exports = {
@@ -17,14 +17,14 @@ module.exports = {
   get_groups: get_groups,
   get_device_objects: get_device_objects,
   //get_user_objects: get_user_objects,
-  get_location_objects: get_location_objects,
+  get_status_objects: get_status_objects,
   store_account: store_account,
   store_settings: store_settings,
   //store_user_object: store_user_object,
   store_device_object: store_device_object,
   store_group: store_group,
-  store_location_object: store_location_object,
-  make_location_object: make_location_object
+  store_status_object: store_status_object,
+  make_status_object: make_status_object
 }
 
 //-- initialize variables --//
@@ -165,16 +165,16 @@ function get_accounts() {
   });
 }*/
 
-function get_location_objects() {
+function get_status_objects() {
   MongoClient.connect('mongodb://127.0.0.1:27017/relay', function (err, db) {
     if (err) console.log('Unable to connect to the mongoDB server. Error:', err);
     else {
-      var collection = db.collection('locations');
+      var collection = db.collection('states');
       collection.find().toArray(function (err, result) {
-        if (err) console.log("get_location_objects",err);
+        if (err) console.log("get_status_objects",err);
         else if (result.length) {
-	  location_objects = result;
-  	  //console.log('get_location_objects',location_objects);	
+	  status_objects = result;
+  	  //console.log('get_status_objects',status_objects);	
         } 
         else console.log('No document(s) found with defined "find" criteria!');
         db.close();
@@ -275,14 +275,14 @@ function store_account(account) {
   });
 }
 
-function make_location_object(location_obj) {
+function make_status_object(status_obj) {
   MongoClient.connect('mongodb://127.0.0.1:27017/relay', function (err, db) {
     if (err) console.log('Unable to connect to the mongoDB server. Error:', err);
     else {
-      var collection = db.collection('locations');
-      console.log('make_location_object',location_obj);
-      collection.update({mac:location_obj.mac}, {$set:location_obj},{upsert:true}, function(err, item){
-	if (err) console.log("make_location_object",err);
+      var collection = db.collection('states');
+      console.log('make_status_object',status_obj);
+      collection.update({mac:status_obj.mac}, {$set:status_obj},{upsert:true}, function(err, item){
+	if (err) console.log("make_status_object",err);
 	//console.log('item',item);
       });
       db.close();
@@ -290,15 +290,15 @@ function make_location_object(location_obj) {
   });
 }
 
-function store_location_object(mac, location) {
-  if (!location) return console.log("no location data");
+function store_status_object(mac, status) {
+  if (!status) return console.log("no status data");
   MongoClient.connect('mongodb://127.0.0.1:27017/relay', function (err, db) {
     if (err) console.log('Unable to connect to the mongoDB server. Error:', err);
     else {
-      var collection = db.collection('locations');
-      //console.log('store_location_object',location);
-      collection.update({mac:mac}, {$set:{locations:location}},{upsert:true}, function(err, item){
-	if (err) console.log("store_location_object",err);
+      var collection = db.collection('states');
+      //console.log('store_status_object',status);
+      collection.insert({mac:mac, status:status}, function(err, item){
+	if (err) console.log("store_status_object",err);
 	//console.log('item',item);
       });
       db.close();
