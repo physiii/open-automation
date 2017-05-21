@@ -67,7 +67,7 @@ sudo make install
 cd ~
 git clone https://github.com/physiii/open-automation
 cd open-automation
-sudo npm install -g pm2
+sudo npm install -g pm2 openzwave-shared
 npm install
 
 ## copy files and set permissions
