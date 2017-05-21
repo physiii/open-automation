@@ -29,6 +29,26 @@ socket.relay.on('camera', function (data) {
   //get_camera_preview();
 });
 
+socket.relay.on('get camera list', function (data) {
+  var folder = "/dev/video*";
+  var command = "ls -lah --full-time "+folder;
+  console.log('camera list',command);
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      data.error = error;
+      relay.emit('camera list result',data);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+    data.stdout = stdout;
+    data.stderr = stderr;
+    console.log("camera list |",data);
+    socket.relay.emit('camera list',data);
+  });
+});
+
 socket.relay.on('get camera preview', function (data) {
   //if (data.command == 'snapshot')
   //if (data.command == 'preview')
@@ -143,6 +163,10 @@ function start_ffmpeg(data) {
     stop_ffmpeg(ffmpeg)
   video_width = database.settings.video_width;
   video_height = database.settings.video_height;
+  var camera_number = 10;
+  if (data.camera_number) camera_number = data.camera_number;
+  console.log("camera number: ",data.camera_number);
+
   if (data.command == "start_webcam") {
     var command =  [
                    '-loglevel', 'panic',
@@ -150,7 +174,7 @@ function start_ffmpeg(data) {
                    //'-strict', '-1',
                    '-s', video_width+"x"+video_height,
                    '-f', 'video4linux2',
-                   '-i', '/dev/video10',
+                   '-i', '/dev/video'+camera_number,
                    '-f', 'mpegts',
 		   '-codec:v', 'mpeg1video',
                    '-b:v', '600k',
