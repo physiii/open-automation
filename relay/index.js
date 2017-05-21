@@ -35,14 +35,14 @@ if (index > -1) {
 */
 // Reroute Client request to SSL
 
-app.all('*', securedirect);
+/*app.all('*', securedirect);
 
 function securedirect(req, res, next){
   if(req.secure){
     return next();
 }
     res.redirect('https://'+ req.headers.host + req.url);
-}
+}*/
 
 // Create and start servers
 

@@ -7,11 +7,58 @@ angular.module('starter.controllers')
   function get_camera_list() {
     var gateways = $rootScope.gateways;
     for (var i = 0; i < gateways.length; i++) {
-      relay_socket.emit('get camera list',gateways[i].token);
-      console.log('get_camera_list',gateways[i].token);
+      relay_socket.emit('get camera list',gateways[i]);
+      //console.log('get_camera_list',gateways[i].mac);
     }
-    var i = $rootScope.find_index(gateways,"mac",mac);
   }
+
+  relay_socket.on('camera list', function (data) {
+    var camera_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
+    camera_list.splice(0,1);
+    camera_list.splice(camera_list.length - 1,1);
+
+    for (var i = 0; i < camera_list.length; i++) {
+      var parts = camera_list[i].split(" ");
+      parts = parts[9].replace("/dev/video","");
+      if (parts.length <= 1) {
+        camera_list.splice(i,1);
+        i--;
+        continue;
+      }
+      if (parts[parts.length - 1] != '0') {
+        camera_list.splice(i,1);
+        i--;
+        continue;
+      }
+      camera_list[i] = parts;
+
+      /*for (var k = 0; k < parts.length; k++) {
+        if (parts[k].length < 1) {
+          parts.splice(k,1);
+          k--;
+        }
+      }*/
+
+
+      /*
+      //format date
+      parts[5] = parts[5].split("-");
+
+      //format time
+      parts[6] = parts[6].split(":");
+      
+      
+
+      parts.name = parts[8];
+      camera_list[i] = parts;
+      if (camera_list[i][8].indexOf(".avi") > -1) play_all_btn = true;*/
+    }
+    $scope.$apply(function () {
+      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+      $rootScope.gateways[index].camera_list = camera_list;
+      console.log("camera list | ",camera_list);
+    });
+  });
 
   $scope.start_stream = function(mac) {
     var gateways = $rootScope.gateways;
@@ -27,8 +74,9 @@ angular.module('starter.controllers')
     gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
   }
 
-  $scope.start_webcam = function(gateway) {
-    var command = {token:gateway.token, command:"start_webcam", camera_number:"20"}
+  $scope.start_webcam = function(gateway, camera_number) {
+    if (!camera_number) camera_number = "20";
+    var command = {token:gateway.token, command:"start_webcam", camera_number:camera_number}
     relay_socket.emit('ffmpeg',command);
     $scope.start_stream(gateway.mac);
   }
@@ -113,10 +161,6 @@ angular.module('starter.controllers')
     img.src = 'data:image/jpeg;base64,' + data.image;
     console.log("camera preview",data.mac);
     ctx.drawImage(img, 0, 0, 250, 150);
-  });
-
-  relay_socket.on('camera list', function (data) {
-    console.log("camera list",data);
   });
 
   relay_socket.on('folder list result', function (data) {

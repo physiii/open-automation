@@ -47,8 +47,8 @@ socketServer.on('disconnect', function(socket) {
 
 socketServer.broadcast = function(data, settings) {
   var token = settings.token;
-  var stream_width = settings.stream_width;
-  var stream_height = settings.stream_height;
+  //var stream_width = settings.stream_width;
+  //var stream_height = settings.stream_height;
   
   for( var i in this.clients ) {
     var client = this.clients[i];
@@ -78,7 +78,7 @@ var streamServer = require('http').createServer( function(request, response) {
   });
 }).listen(STREAM_PORT);
 
-console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/<width>/<height>');
+console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/');
 console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT+'/');
 //------------------------------//
 

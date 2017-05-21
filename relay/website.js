@@ -122,20 +122,18 @@ if (index > -1) secure_port = process.argv[index+1];
 
 use_ssl = false;
 var index = process.argv.indexOf('--use_ssl');
-if (index > -1) {
-  use_ssl = true;
-}
+if (index > -1) use_ssl = true;
 
 // Reroute Client request to SSL
-
-/*app.all('*', securedirect);
-function securedirect(req, res, next){
-  if(req.secure){
-    return next();
+if (use_ssl) {
+  app.all('*', securedirect);
+  function securedirect(req, res, next){
+    if(req.secure){
+      return next();
+  }
+      res.redirect('https://'+ req.headers.host + req.url);
+  }
 }
-    res.redirect('https://'+ req.headers.host + req.url);
-}*/
-
 
 // Self Signed CA reads for SSL traffic
 

@@ -333,6 +333,29 @@ io.on('connection', function (socket) {
     device_objects[device_index].socket.emit('ffmpeg',data);
   });
   
+  socket.on('get camera list', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return; //console.log('get camera list | device not found',data.mac);
+    if (!device_objects[device_index].socket) return; //console.log('get camera list | socket not found',data.mac);
+    device_objects[device_index].socket.emit('get camera list',data);
+    //console.log("get camera list",data.mac);
+  });
+
+  socket.on('camera list', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    var mac = device_objects[device_index].mac;
+    var group_index = find_index(groups,'group_id',mac);
+    if (group_index < 0) return console.log("camera list | group not found");
+    for (var i=0; i < groups[group_index].members.length; i++) {
+      for (var j=0; j < user_objects.length; j++) {
+      console.log('camera list',user_objects[j].user);
+        if (user_objects[j].user == groups[group_index].members[i]) {
+          user_objects[j].socket.emit('camera list',data);
+        }
+      }
+    }
+  });
+
   socket.on('camera', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index < 0) return console.log('camera | device not found',data.mac);
@@ -587,7 +610,7 @@ io.on('connection', function (socket) {
     console.log('!! set zone !!',data.mac);
   });
 
-  socket.on('set location', function (data) {
+  socket.on('set status', function (data) {
     if (!data.mac) return;
     var index = find_index(device_objects,'token',data.token);
     if (!device_objects[index]) return;// console.log("device not found");
@@ -596,12 +619,12 @@ io.on('connection', function (socket) {
       location_object = {mac:data.mac,locations:[data.location]};
       location_objects.push(location_object);
       console.log('new location_object',data.mac);
-      database.make_location_object(data);
+      database.make_status_object(data);
     } else {
       //console.log("added location",location_objects[index].mac);
       //location_objects[index].locations.push(data.location);
     }
-    database.store_location_object(data.mac,data.location);
+    database.store_status_object(data.mac,data.location);
 
     if (!device_objects[index]) return console.log("no groups array in device object");
     
