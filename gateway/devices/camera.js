@@ -228,14 +228,26 @@ function start_ffmpeg(data) {
   ffmpeg_proc_list.push(ffmpeg);
   ffmpeg.on('close', (code) => {
     //stop_ffmpeg(ffmpeg);
-    //var i = find_index(ffmpeg_proc_list,'camera')
-    //ffmpeg_proc_list.slice(data);
+    for (var i = 0; i < ffmpeg_proc_list.length; i++) {
+      console.log("closed: ", ffmpeg_proc_list[i].tag.camera_number);
+      if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
+        stop_ffmpeg(ffmpeg_proc_list[i]);
+        ffmpeg_proc_list.splice(i,1);
+        console.log("ffmpeg closed");
+      }
+    }
     console.log(`child process exited with code ${code}`);
   });
   
   clearTimeout(ffmpeg_timer);
   setTimeout(function () {
-    stop_ffmpeg(ffmpeg);
+    for (var i = 0; i < ffmpeg_proc_list.length; i++) {
+      console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
+      if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
+        stop_ffmpeg(ffmpeg_proc_list[i]);
+        console.log("ffmpeg timeout");
+      }
+    }
   }, 5*60*1000);
   
   ffmpeg_started = true;
