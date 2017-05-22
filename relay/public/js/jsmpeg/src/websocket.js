@@ -4,6 +4,7 @@ var WSSource = function(url, options) {
 	this.url = url;
 	this.socket = null;	
         this.token = options.token;
+        this.camera = options.camera;
 
 	this.callbacks = {connect: [], data: []};
 	this.destination = null;
@@ -45,8 +46,9 @@ WSSource.prototype.resume = function(secondsHeadroom) {
 WSSource.prototype.onOpen = function() {
 	this.progress = 1;
 	this.established = true;
-        this.socket.send(this.token);
-        console.log('!!! TOKEN !!!',this.token);
+        var data = {token:this.token, camera:this.camera};
+        this.socket.send(JSON.stringify(data));
+        console.log('!!! VIDEO WS DATA !!!',data);
 };
 
 WSSource.prototype.onClose = function() {

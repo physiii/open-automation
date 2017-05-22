@@ -16,6 +16,7 @@
 <!------------------------------------------------------------------------>
 
   <div ng-controller="CameraCtrl" data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
+  <div data-ng-repeat="camera in gateway.camera_list"> 
     <div id="container_{{ gateway.mac }}" class="col-lg-4 col-md-6 col-sm-12" style="">
       <div class="flip-container">
         <div class="flipper clearfix" >
@@ -27,14 +28,14 @@
               </div>
             </ion-card-header>
 
-            <div id="play-button_{{ gateway.mac }}" ng-click="start_webcam(gateway)">
-              <canvas id="previewCanvas_{{ gateway.mac }}" style="height:300px;"></canvas>
+            <div id="play-button_{{ gateway.mac }}_{{ camera.camera_number }}" ng-click="start_webcam(gateway, camera.camera_number)">
+              <canvas id="previewCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="height:300px;"></canvas>
               <div class="play-button"></div>
             </div>
-            <div id="loading_videoCanvas_{{ gateway.mac }}" style="position:absolute;left:48%;top:50%;display:none">
+            <div id="loading_videoCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="position:absolute;left:48%;top:50%;display:none">
               <i style="color:#eee" class="fa fa-spinner fa-spin fa-5x fa-fw"></i>
             </div>
-            <canvas id="videoCanvas_{{ gateway.mac }}" style="width:100%;display:none"></canvas>
+            <canvas id="videoCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="width:100%;display:none"></canvas>
             <i class="ion-arrow-expand" ng-click="fullscreen('container_' + gateway.mac)" style="height:20px;font-size:40px;position:absolute;bottom:25px;right:10px">
             </i>
           </div>
@@ -53,6 +54,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
 

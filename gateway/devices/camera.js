@@ -32,7 +32,6 @@ socket.relay.on('camera', function (data) {
 socket.relay.on('get camera list', function (data) {
   var folder = "/dev/video*";
   var command = "ls -lah --full-time "+folder;
-  console.log('camera list',command);
   exec(command, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
@@ -40,11 +39,9 @@ socket.relay.on('get camera list', function (data) {
       relay.emit('camera list result',data);
       return;
     }
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
     data.stdout = stdout;
     data.stderr = stderr;
-    console.log("camera list |",data);
+    //console.log("camera list |",data);
     socket.relay.emit('camera list',data);
   });
 });
@@ -156,13 +153,21 @@ socket.relay.on('ffmpeg', function (data) {
 });
 
 var spawn = require('child_process').spawn;
-var ffmpeg;
+var ffmpeg_proc_list = [];
 function start_ffmpeg(data) {
   var settings = database.settings;
-  if (ffmpeg)
-    stop_ffmpeg(ffmpeg)
+  for (var i = 0; i < ffmpeg_proc_list.length; i++) {
+    console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
+    if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
+      return console.log("stream already started");
+    }
+  }
+  /*if (ffmpeg)
+    stop_ffmpeg(ffmpeg)*/
   video_width = database.settings.video_width;
   video_height = database.settings.video_height;
+  if (!video_width) video_width = "640";
+  if (!video_height) video_height = "480";
   var camera_number = 10;
   if (data.camera_number) camera_number = data.camera_number;
   console.log("camera number: ",data.camera_number);
@@ -180,12 +185,12 @@ function start_ffmpeg(data) {
                    '-b:v', '600k',
                    '-r', '2',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+settings.token+"/"
+                   "http://"+relay_server+":8082/"+settings.token+"/"+camera_number+"/"
                  ];
   }
   if (data.command == "play_file") {
-    if (ffmpeg)
-      stop_ffmpeg(ffmpeg);
+    /*if (ffmpeg)
+      stop_ffmpeg(ffmpeg);*/
     var command =  [
                    '-loglevel', 'panic',
                    '-r', '24',
@@ -200,8 +205,8 @@ function start_ffmpeg(data) {
    }
 
   if (data.command == "play_folder") {
-    if (ffmpeg)
-      stop_ffmpeg(ffmpeg);
+    /*if (ffmpeg)
+      stop_ffmpeg(ffmpeg);*/
 
 
     var command =  [
@@ -217,10 +222,14 @@ function start_ffmpeg(data) {
                  ];
    }
   ffmpeg = spawn('ffmpeg', command);
+  ffmpeg.tag = data;
   ffmpeg.stdout.on('data', (data) => {console.log(`stdout: ${data}`)});
   ffmpeg.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
+  ffmpeg_proc_list.push(ffmpeg);
   ffmpeg.on('close', (code) => {
     //stop_ffmpeg(ffmpeg);
+    //var i = find_index(ffmpeg_proc_list,'camera')
+    //ffmpeg_proc_list.slice(data);
     console.log(`child process exited with code ${code}`);
   });
   

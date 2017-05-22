@@ -30,7 +30,7 @@ angular.module('starter.controllers')
         i--;
         continue;
       }
-      camera_list[i] = parts;
+      camera_list[i] = {camera_number:parts};
 
       /*for (var k = 0; k < parts.length; k++) {
         if (parts[k].length < 1) {
@@ -56,29 +56,41 @@ angular.module('starter.controllers')
     $scope.$apply(function () {
       var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
       $rootScope.gateways[index].camera_list = camera_list;
-      console.log("camera list | ",camera_list);
+      //console.log("camera list | ",camera_list);
     });
   });
 
-  $scope.start_stream = function(mac) {
-    var gateways = $rootScope.gateways;
-    var i = $rootScope.find_index(gateways,"mac",mac);
-    document.getElementById("play-button_"+mac).style.display = "none";
-    document.getElementById("previewCanvas_"+mac).style.display = "none";
-    document.getElementById("videoCanvas_"+mac).style.display = "inline";
-    if (gateways[i].stream_started) return console.log("stream already started");
-    gateways[i].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
-    console.log('token for video stream',gateways[i].token);
-    gateways[i].stream_started = true;
-    gateways[i].canvas = document.getElementById('videoCanvas_'+gateways[i].mac);
-    gateways[i].player = new JSMpeg.Player(gateways[i].camera_socket, {canvas:gateways[i].canvas,token:gateways[i].token});
-  }
+  relay_socket.on('camera preview', function (data) {
+    if (!data.camera_number) camera_number = "10";
+    var ctx = document.getElementById('previewCanvas_'+data.mac+'_'+camera_number).getContext('2d');
+    var img = new Image();
+    img.src = 'data:image/jpeg;base64,' + data.image;
+    console.log("camera preview",data.mac);
+    ctx.drawImage(img, 0, 0, 250, 150);
+  });
 
   $scope.start_webcam = function(gateway, camera_number) {
     if (!camera_number) camera_number = "20";
     var command = {token:gateway.token, command:"start_webcam", camera_number:camera_number}
     relay_socket.emit('ffmpeg',command);
-    $scope.start_stream(gateway.mac);
+    $scope.start_stream(gateway.mac, camera_number);
+  }
+
+  $scope.start_stream = function(mac, camera_number) {
+    var gateways = $rootScope.gateways;
+    var i = $rootScope.find_index(gateways,"mac",mac);
+    var j = $rootScope.find_index(gateways[i].camera_list,"camera_number",camera_number);
+
+    if (gateways[i].camera_list[j].stream_started) return console.log("stream already started");
+    gateways[i].camera_list[j].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
+    gateways[i].camera_list[j].stream_started = true;
+    gateways[i].camera_list[j].canvas = document.getElementById('videoCanvas_'+mac+'_'+camera_number);
+    gateways[i].camera_list[j].player = new JSMpeg.Player(gateways[i].camera_list[j].camera_socket, {canvas:gateways[i].camera_list[j].canvas,token:gateways[i].token, camera:camera_number});
+    console.log("camera_list: ",gateways[i].camera_list[j]);
+
+    document.getElementById("play-button_"+mac+'_'+camera_number).style.display = "none";
+    document.getElementById("previewCanvas_"+mac+'_'+camera_number).style.display = "none";
+    document.getElementById("videoCanvas_"+mac+'_'+camera_number).style.display = "inline";
   }
   
   $scope.play_file = function(file, gateway) {
@@ -154,14 +166,6 @@ angular.module('starter.controllers')
       document.getElementById(div_id).className = "col-lg-4 col-md-6 col-sm-12";
     } else document.getElementById(div_id).className = "";
   }
-
-  relay_socket.on('camera preview', function (data) {
-    var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
-    var img = new Image();
-    img.src = 'data:image/jpeg;base64,' + data.image;
-    console.log("camera preview",data.mac);
-    ctx.drawImage(img, 0, 0, 250, 150);
-  });
 
   relay_socket.on('folder list result', function (data) {
     var play_all_btn = false;

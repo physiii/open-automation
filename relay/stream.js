@@ -24,9 +24,11 @@ socketServer.on('connection', function(socket) {
   console.log( 'video socket opened ('+socketServer.connectionCount+' total)' );
 
   socket.onmessage = function (event) {
-    var token = event.data;
-    socket.token = token;
+    var data = JSON.parse(event.data);
+    socket.token = data.token;
+    socket.camera = data.camera;
     console.log("stored video token",socket.token);
+    console.log("stored camera number",socket.camera);
   }
 
   socket.on('close', function(code, message){
@@ -47,12 +49,20 @@ socketServer.on('disconnect', function(socket) {
 
 socketServer.broadcast = function(data, settings) {
   var token = settings.token;
+  var camera = settings.camera;
   //var stream_width = settings.stream_width;
   //var stream_height = settings.stream_height;
   
   for( var i in this.clients ) {
     var client = this.clients[i];
-    if (client.token != token) continue;
+    if (client.token != token) {
+      //console.log("wrong token");
+      continue;
+    }
+    if (client.camera != camera) {
+      //console.log("wrong camera");
+      continue;
+    }
     if (client.readyState !== WebSocket.OPEN) {
       console.log("Client not connected ("+i+")");
       continue;
@@ -68,17 +78,17 @@ var streamServer = require('http').createServer( function(request, response) {
   response.connection.setTimeout(0);
   var params = request.url.substr(1).split('/');
   var token = params[0];
-  var settings = {token:token};
-
+  var camera = params[1];
+  var settings = {token:token, camera:camera};
   var index = find_index(device_objects,'token',token);
-  if (index < 0) return console.log('device not found');
+  if (index < 0) return console.log('streamServer | device not found');
   
   request.on('data', function(data){
     socketServer.broadcast(data, settings);
   });
 }).listen(STREAM_PORT);
 
-console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/');
+console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/<camera>/');
 console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT+'/');
 //------------------------------//
 

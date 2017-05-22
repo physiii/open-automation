@@ -348,7 +348,6 @@ io.on('connection', function (socket) {
     if (group_index < 0) return console.log("camera list | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {
-      console.log('camera list',user_objects[j].user);
         if (user_objects[j].user == groups[group_index].members[i]) {
           user_objects[j].socket.emit('camera list',data);
         }
@@ -364,8 +363,9 @@ io.on('connection', function (socket) {
   });
   
   socket.on('ffmpeg started', function (data) {
-    var group_index = find_index(groups,'group_id',data.token);
-    if (group_index < 0) return console.log("no device found");
+    var device_index = find_index(device_objects,'token',data.token);
+    var group_index = find_index(groups,'group_id',data.mac);
+    if (group_index < 0) return console.log("ffmpeg started | no device found",data.token);
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {
         if (user_objects[j].token == groups[group_index].members[i]) {
