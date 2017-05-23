@@ -140,7 +140,7 @@ if (use_ssl) {
 var options = {
   key: fs.readFileSync(__dirname + '/private.key'),
   cert: fs.readFileSync(__dirname + '/certificate.pem'),
-  //ca: fs.readFileSync()
+  ca: fs.readFileSync(__dirname + '/chain.pem')
 };
 
 if (use_ssl) {

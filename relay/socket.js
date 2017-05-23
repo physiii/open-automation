@@ -9,11 +9,14 @@ module.exports = {
 
 var find_index = utils.find_index;
 
+var DEVICE_PORT = 4000;
+var index = process.argv.indexOf('-dp');
+if (index > -1) DEVICE_PORT = process.argv[index+1];
+
 /* --------------  websocket server for devices  ----------------- */
-var ws_port = 4000;
 var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: ws_port });
-console.log('devices on port %d', ws_port);
+  , wss = new WebSocketServer({ port: DEVICE_PORT });
+console.log('devices on port %d', DEVICE_PORT);
 
 wss.on('connection', function connection(ws) {
   console.log("<< ---- incoming connection ---- >>");

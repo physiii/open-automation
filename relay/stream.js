@@ -3,11 +3,11 @@
 
 var STREAM_PORT = 8082;
 var index = process.argv.indexOf('-vsp');
-if (index > -1) secure_port = process.argv[index+1];
+if (index > -1) STREAM_PORT = process.argv[index+1];
 
 var WEBSOCKET_PORT = 8084;
 var index = process.argv.indexOf('-vwp');
-if (index > -1) secure_port = process.argv[index+1];
+if (index > -1) WEBSOCKET_PORT = process.argv[index+1];
 
 var 	http = require('http'),
 	WebSocket = require('ws');
