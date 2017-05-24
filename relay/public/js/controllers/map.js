@@ -3,12 +3,12 @@ angular.module('starter.controllers')
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
   var relay_socket = $rootScope.relay_socket;
-  $.getJSON("http://ipinfo.io", function (data) {
+  $.getJSON("https://ipinfo.io", function (data) {
     var lat = data.loc.substring(0,7);
     var lng = data.loc.substring(8,16);
     $rootScope.ipLatitude = lat;
     $rootScope.ipLongitude = lng;    
-    url = "http://forecast.io/embed/#lat="+lat+"&lon="+lng+"&name=" + data.city;
+    url = "https://forecast.io/embed/#lat="+lat+"&lon="+lng+"&name=" + data.city;
     $('#forecast_embed').attr('src', url);  
     $scope.ipAddress = data.ip;
     $scope.postal = data.postal;
