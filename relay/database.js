@@ -60,7 +60,7 @@ function get_settings() {
 	  settings_obj = result[0];
   	//console.log('load settings',settings_obj);	
         } else {
-	  console.log('No document(s) found with defined "find" criteria!');
+	  console.log('get_settings | No document(s) found with defined "find" criteria!');
         }
         //console.log('!! get_settings !!');
         db.close();
