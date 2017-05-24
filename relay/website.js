@@ -122,11 +122,11 @@ var secure_port = 443;
 var index = process.argv.indexOf('-sp');
 if (index > -1) secure_port = process.argv[index+1];
 
-var use_ssl = false;
+use_ssl = false;
 var index = process.argv.indexOf('--use_ssl');
 if (index > -1) use_ssl = true;
 
-var use_domain_ssl = false;
+use_domain_ssl = false;
 var index = process.argv.indexOf('--use_domain_ssl');
 if (index > -1) use_domain_ssl = true;
 
