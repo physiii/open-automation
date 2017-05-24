@@ -2,16 +2,18 @@ var database = require('./database.js');
 var utils = require('../utils.js');
 var crypto = require('crypto');
 var express = require('express');
+var socket = require('./socket.js');
 var url = require('url');
 var fs = require('fs');
 var https = require('https');
+var http = require('http');
 var app = express();
 var router = express.Router();
 
 module.exports = {
  start: start
 }
-function start(app,server,port) {
+function start(app) {
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
@@ -124,6 +126,10 @@ use_ssl = false;
 var index = process.argv.indexOf('--use_ssl');
 if (index > -1) use_ssl = true;
 
+use_domain_ssl = false;
+var index = process.argv.indexOf('--use_domain_ssl');
+if (index > -1) use_domain_ssl = true;
+
 // Reroute Client request to SSL
 if (use_ssl) {
   app.all('*', securedirect);
@@ -135,16 +141,34 @@ if (use_ssl) {
   }
 }
 
+
+// Create and start servers
+
+var server = http.createServer(app);
+
 // Self Signed CA reads for SSL traffic
 
-var options = {
-  key: fs.readFileSync(__dirname + '/private.key'),
-  cert: fs.readFileSync(__dirname + '/certificate.pem'),
-  //ca: fs.readFileSync()
-};
-
 if (use_ssl) {
-  //var secure_port = 443;
+
+  var options = {
+    key: fs.readFileSync(__dirname + '/private.key'),
+    cert: fs.readFileSync(__dirname + '/certificate.pem')
+  };
+
+  var secure_server = https.createServer(options, app);
+  secure_server.listen(secure_port);
+  console.log('Secure Server listening on port ' + secure_port);
+}
+
+
+if (use_domain_ssl) {
+
+  var options = {
+    key: fs.readFileSync(__dirname + '/private.key'),
+    cert: fs.readFileSync(__dirname + '/certificate.pem'),
+    ca: fs.readFileSync(__dirname + '/chain.pem')
+  };
+
   var secure_server = https.createServer(options, app);
   secure_server.listen(secure_port);
   console.log('Secure Server listening on port ' + secure_port);
@@ -153,10 +177,12 @@ if (use_ssl) {
 server.listen(port);
 console.log('Insecure Server listening on port ' + port);
 
-
+if (use_ssl){
+  socket.start(secure_server);
+} else {
+  socket.start(server);
+}
 
 ///////////////////////End of Code. Do not write below this line.
 }
-
-
 

@@ -2,7 +2,7 @@
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
 
-
+software_version = "0.1";
 relay_port = 5000;
 var index = process.argv.indexOf('-p');
 if (index > -1) relay_port = process.argv[index+1];
@@ -13,7 +13,7 @@ if (index > -1) relay_server = process.argv[index+1];
 
 var TAG = "[index.js]";
 device_array = [];
-var utils = require('../utils.js');
+var utils = require('./utils.js');
 const admin = require('./admin.js');
 var database = require('./database.js');
 const connection = require('./connection.js');
@@ -21,46 +21,6 @@ var socket = require('./socket.js');
 var devices = require('./devices');
 var querystring = require('querystring');
 var io_connected = false;
-//var server_ip = "init";
-//get_relay_server(server_type);
-/*function get_relay_server(server_type) {
-  if (server_type == 'dev') {
-    request.get(
-    'http://pyfi.org/php/get_ip.php?server_name=socket_io_dev',
-    function (error, response, data) {
-      if (!error && response.statusCode == 200) {
-        relay_server = data;
-        var parts = relay_server.split(":");
-        server_ip = parts[0];
-        server_port = parts[1];
-        io_relay = require('socket.io-client')("http://"+relay_server);
-        start_io_relay();
-        if (error !== null) {
-         console.log('error ---> ' + error);
-        }
-      }
-    }); 
-  }
-  if (server_type == 'prod') {
-    request.get(
-    'http://pyfi.org/php/get_ip.php?server_name=socket_io',
-    function (error, response, data) {
-      if (!error && response.statusCode == 200) {
-        relay_server = data;
-        var parts = relay_server.split(":");
-        server_ip = parts[0];
-        server_port = parts[1];
-        io_relay = require('socket.io-client')('http://'+relay_server+":5000");
-        start_io_relay();
-        if (error !== null) {
-         console.log('error ---> ' + error);
-        }
-      }
-    });
-  }
-}*/
-
-//var got_token = false;
 var port = process.env.PORT || 3030;
 var php = require("node-php");
 var spawn = require('child_process').spawn;

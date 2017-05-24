@@ -9,11 +9,14 @@ module.exports = {
 
 var find_index = utils.find_index;
 
+var DEVICE_PORT = 4000;
+var index = process.argv.indexOf('-dp');
+if (index > -1) DEVICE_PORT = process.argv[index+1];
+
 /* --------------  websocket server for devices  ----------------- */
-var ws_port = 4000;
 var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: ws_port });
-console.log('devices on port %d', ws_port);
+  , wss = new WebSocketServer({ port: DEVICE_PORT });
+console.log('devices on port %d', DEVICE_PORT);
 
 wss.on('connection', function connection(ws) {
   console.log("<< ---- incoming connection ---- >>");
@@ -612,45 +615,45 @@ io.on('connection', function (socket) {
 
   socket.on('set status', function (data) {
     if (!data.mac) return;
-    var index = find_index(device_objects,'token',data.token);
-    if (!device_objects[index]) return;// console.log("device not found");
-    var index = find_index(location_objects,'mac',data.mac);
+    var device_index = find_index(device_objects,'token',data.token);
+    if (!device_objects[device_index]) return;// console.log("device not found");
+    var index = find_index(status_objects,'mac',data.mac);
     if (index < 0) {
-      location_object = {mac:data.mac,locations:[data.location]};
-      location_objects.push(location_object);
-      console.log('new location_object',data.mac);
+      status_object = {mac:data.mac,locations:[data.location]};
+      status_objects.push(status_object);
+      console.log('new status_object',data.mac);
       database.make_status_object(data);
     } else {
-      //console.log("added location",location_objects[index].mac);
-      //location_objects[index].locations.push(data.location);
+      //console.log("added location",status_objects[device_index].mac);
+      //status_objects[device_index].locations.push(data.location);
     }
     database.store_status_object(data.mac,data.location);
 
-    if (!device_objects[index]) return console.log("no groups array in device object");
+    //if (!device_objects[device_index]) return console.log("no groups array in device object");
     
-    for (var j = 0; j < device_objects[index].groups.length; j++) {
-      var group_index = find_index(groups,'group_id',device_objects[index].groups[j]);
-      //console.log("group",device_objects[index].groups[j]);
+    for (var j = 0; j < device_objects[device_index].groups.length; j++) {
+      var group_index = find_index(groups,'group_id',device_objects[device_index].groups[j]);
+      //console.log("group",device_objects[device_index].groups[j]);
       data.mode = groups[group_index].mode;
-      message_user(device_objects[index].groups[j],'set location',data);
+      message_user(device_objects[device_index].groups[j],'set status',data);
       for (var k=0; k < groups[group_index].members.length; k++) {
         message_device(groups[group_index].members[k],data);
-        message_user(groups[group_index].members[k],'set location',data);
+        message_user(groups[group_index].members[k],'set status',data);
         //console.log('member',groups[group_index].members[k]);
       }
     }
 
     var group_index = find_index(groups,'group_id',data.mac);
-    if (group_index < 0) return console.log("set location | group_id not found",data.mac);
+    if (group_index < 0) return console.log("set status | group_id not found",data.mac);
     if (!groups[group_index].zones) groups[group_index].zones = []
     for (var i = 0; i < groups[group_index].zones.length; i++) {
       if (groups[group_index].zones[i].wifi) {
-        if (data.location.connected_wifi != groups[group_index].zones[i].wifi) continue;
+        if (data.status.connected_wifi != groups[group_index].zones[i].wifi) continue;
         for (var k=0; k < groups[group_index].members.length; k++) {
           message_device(groups[group_index].members[k],data);
           message_user(groups[group_index].members[k],'active zone',data);
         }
-        console.log("!! inside zone !!",data.location.connected_wifi);
+        console.log("!! inside zone !!",data.status.connected_wifi);
       }
     }
   });
@@ -852,7 +855,7 @@ io.on('connection', function (socket) {
     console.log('unlink device',groups[index]);
     
     var index = find_index(device_objects,'token',token);
-    var index2 = device_objects[index].groups.indexOf(username);
+    var index2 = device_objects[index].groups.indexOf(accounts[account_index].username);
     device_objects[index].groups.splice(index2,1);
     database.store_device_object(device_objects[index]);
   });

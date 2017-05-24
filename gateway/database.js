@@ -11,7 +11,7 @@ module.exports.got_token = false;
 
 var connection = require('./connection.js');
 var socket = require('./socket.js');
-var utils = require('../utils.js');
+var utils = require('./utils.js');
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;

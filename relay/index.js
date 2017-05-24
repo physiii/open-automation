@@ -6,7 +6,7 @@ console.log("starting relay...");
 accounts = [];
 groups = [];
 device_objects = [];
-location_objects = [];
+status_objects = [];
 user_objects = [];
 
 var stream = require('./stream.js');
@@ -46,9 +46,15 @@ function securedirect(req, res, next){
 
 // Create and start servers
 
-var server = http.createServer(app);
+//var server = http.createServer(app);
 
+//socket.start(server);
+/*if (use_ssl){
+socket.start(secure_server);
+} else {
 socket.start(server);
-website.start(app, server);
+}*/
+
+website.start(app);
 
 
