@@ -37,13 +37,18 @@
               <div style="float:right"><b>{{ gateway.mac }}</b></div>
             </li>
             <li class="item item-divider">
+              <div style="float:left">Software Version</div>
+              <div style="float:right"><b>{{ gateway.settings.software_version }}</b></div>
+            </li>
+            <li class="item item-divider">
               <div style="float:left">Local</div>
-              <div style="float:right"><b>{{ gateway.local_ip }}</b></div>
+              <div style="float:right"><b>{{ gateway.settings.local_ip }}</b></div>
             </li>
             <li class="item item-divider">
               <div style="float:left">Public</div>
-              <div style="float:right"><b>{{ gateway.public_ip }}</b></div>
+              <div style="float:right"><b>{{ gateway.settings.public_ip }}</b></div>
             </li>
+
             <div ng-controller="CameraCtrl">
             <li class="item item-divider" data-ng-repeat="camera in gateway.camera_list">
               <div style="float:left">Camera {{ camera.camera_number.substring(0,1)}}</div>
