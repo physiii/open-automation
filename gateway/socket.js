@@ -2,6 +2,7 @@ module.exports = {
   relay: relay
 }
 var database = require('./database');
+var utils = require('./utils');
 var exec = require('child_process').exec;
 var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
 module.exports.relay = relay;
@@ -15,6 +16,7 @@ relay.on('get token', function (data) {
   settings.token = data.token;
   database.store_settings(settings);
   database.got_token = true;
+  settings.software_version = software_version;
   console.log("token received, sending settings");
   relay.emit('load settings',settings);
 });
@@ -89,17 +91,7 @@ relay.on('command', function (data) {
 });*/
 
 relay.on('update', function (data) {
-  var command =  ['pull'];
-  var git = spawn('git', command);
-
-  git.stdout.on('data', (data) => {console.log(`update: ${data}`)});
-  git.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
-  git.on('close', (code) => {});
-  exec("pm2 restart relay gateway", (error, stdout, stderr) => {
-    if (error) {return console.error(`exec error: ${error}`)}
-    console.log(stdout);
-    console.log(stderr);
-  });
+  utils.update();
 });
 
 

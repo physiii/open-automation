@@ -855,7 +855,7 @@ io.on('connection', function (socket) {
     console.log('unlink device',groups[index]);
     
     var index = find_index(device_objects,'token',token);
-    var index2 = device_objects[index].groups.indexOf(username);
+    var index2 = device_objects[index].groups.indexOf(accounts[account_index].username);
     device_objects[index].groups.splice(index2,1);
     database.store_device_object(device_objects[index]);
   });
