@@ -1,5 +1,6 @@
-const exec = require('child_process').exec;
+var exec = require('child_process').exec;
 var fs = require('fs');
+var ping = require ("ping");
 
 module.exports = {
   set_wifi: set_wifi,
@@ -11,8 +12,8 @@ var router_list = [];
 var ap_mode = false;
 scan_wifi();
 var bad_connection = 0;
+
 function check_connection() {
-  var ping = require ("ping");
   host = "8.8.8.8";
   ping.sys.probe(host, function(isAlive) {
     var msg = isAlive ? 'alive' : 'dead';
