@@ -60,6 +60,7 @@ function get_public_ip() {
       public_ip = data;
       module.exports.public_ip = public_ip;
       database.store_settings({"public_ip":public_ip});
+      console.log("stored public_ip",public_ip);
       if (error !== null) console.log(error);
     }
   });
@@ -113,7 +114,6 @@ rimraf('/var/lib/motion/' + oldest_dir, function(error) {
       }
 }
 
-// ----------------------  update  --------------------- //
 
 function get_mac () {
   require('getmac').getMac(function(err,macAddress){
@@ -125,8 +125,12 @@ function get_mac () {
   });
 }
 
+// ----------------------  update  --------------------- //
+
 function update () {
-  var command =  ['pull'];
+  var path = __dirname.replace("/gateway","");
+  console.log("pull from ", path)
+  var command =  ['-C', path, 'pull'];
   var git = spawn('git', command);
   git.stdout.on('data', (data) => {console.log(`update: ${data}`)});
   git.stderr.on('data', (data) => {console.log(`stderr: ${data}`)});
