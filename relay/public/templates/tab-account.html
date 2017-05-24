@@ -21,8 +21,7 @@
 
              <li class="item item-divider">
                <div id="{{ gateway.mac }}_show_rename_device" >
-               <div style="float:left">Device Name</div>
-                   <button style="padding:2px;float:right" class="fa fa-pencil-square-o fa-1x" ng-click="show_rename_device(gateway,true)"></button>
+                 <button style="padding:2px;float:right" class="fa fa-pencil-square-o fa-1x" ng-click="show_rename_device(gateway,true)"></button>
                  <div style="text-align:center;text-size:25px">
                    <b>{{ gateway.device_name }}</b>
                  </div>
@@ -33,29 +32,29 @@
                </div>              
              </li>
 
-            <li  class="item item-divider">
+            <li class="item item-divider">
               <div style="float:left">Device ID</div>
               <div style="float:right"><b>{{ gateway.mac }}</b></div>
             </li>
-            <li  class="item item-divider">
+            <li class="item item-divider">
               <div style="float:left">Local</div>
               <div style="float:right"><b>{{ gateway.local_ip }}</b></div>
             </li>
-            <li  class="item item-divider">
+            <li class="item item-divider">
               <div style="float:left">Public</div>
               <div style="float:right"><b>{{ gateway.public_ip }}</b></div>
             </li>
+            <div ng-controller="CameraCtrl">
+            <li class="item item-divider" data-ng-repeat="camera in gateway.camera_list">
+              <div style="float:left">Camera {{ camera.camera_number.substring(0,1)}}</div>
+              <select style="float:right" ng-model="gateway.resolution" ng-change="set_resolution(gateway)">
+                <option value="640x480">640x480</option>
+                <option value="1024x768" selected>1024x768</option>
+                <option value="1280x720">1280x720</option>
+              </select>
+            </li>
+            </div>
 
-
-            <li  class="item item-divider">
-              <label class="item item-input item-select">
-                <div style="float:right;position:relative;z-index:100"  class="input-label">Resolution</div>
-                <select ng-model="gateway.resolution" ng-change="set_resolution(gateway)">
-                    <option value="640x480">640x480</option>
-                    <option value="1024x768" selected>1024x768</option>
-                    <option value="1280x720">1280x720</option>
-                </select>
-              </label>
             </li>
 
      	     <div class="item item-divider" data-ng-repeat="device in gateway.devices"> 
@@ -74,8 +73,6 @@
                </li>
 	     </div>
           </div>
-
-
 
           <li class="item" style="margin:auto">
             <div style="float:left;margin:20px">
@@ -133,7 +130,6 @@
               </label>
             </div>
           </li>
-
 
           <div ng-if="gateway.settings.gateway_enabled" class="item-divider">  
             <div style="margin:10px 20px 10px 20px;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      

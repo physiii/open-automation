@@ -6,7 +6,7 @@ console.log("starting relay...");
 accounts = [];
 groups = [];
 device_objects = [];
-location_objects = [];
+status_objects = [];
 user_objects = [];
 
 var stream = require('./stream.js');

@@ -291,7 +291,7 @@ function make_status_object(status_obj) {
 }
 
 function store_status_object(mac, status) {
-  if (!status) return console.log("no status data");
+  if (!status) return console.log("no status data",mac);
   MongoClient.connect('mongodb://127.0.0.1:27017/relay', function (err, db) {
     if (err) console.log('Unable to connect to the mongoDB server. Error:', err);
     else {
