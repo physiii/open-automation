@@ -7,9 +7,11 @@ module.exports = {
   get_devices: get_devices,
   get_settings: get_settings,  
   store_settings: store_settings,
-  store_device: store_device
+  store_device: store_device,
+  device_array: device_array
 }
 
+var device_array = {};
 module.exports.got_token = false;
 
 var connection = require('./connection.js');
@@ -127,4 +129,3 @@ function get_devices() {
   });
   console.log("!! get_devices !!");
 }
-
