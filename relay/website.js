@@ -119,15 +119,8 @@ app.get('/get_ip', function(req, res) {
 });
 
 // Reroute Client request to SSL
-if (use_ssl) {
-  app.all('*', securedirect);
-  function securedirect(req, res, next){
-    if(req.secure){
-      return next();
-  }
-      res.redirect('https://'+ req.headers.host + req.url);
-  }
-}
+
+
 
 
 // Create and start servers
@@ -139,8 +132,9 @@ var server = http.createServer(app);
 if (use_ssl) {
 
   var options = {
-    key: fs.readFileSync(__dirname + '/private.key'),
-    cert: fs.readFileSync(__dirname + '/certificate.pem')
+    key: fs.readFileSync(__dirname + '/server.key'),
+    cert: fs.readFileSync(__dirname + '/server.crt'),
+    ca: fs.readFileSync(__dirname + '/ca.crt')
   };
 
   var secure_server = https.createServer(options, app);
@@ -166,6 +160,8 @@ server.listen(port);
 console.log('Insecure Server listening on port ' + port);
 
 if (use_ssl){
+  socket.start(secure_server);
+} else if (use_domain_ssl){
   socket.start(secure_server);
 } else {
   socket.start(server);
