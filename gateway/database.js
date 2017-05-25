@@ -1,3 +1,6 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// --------------------------------- database.js ------------------------------------- //
 
 module.exports = {
   set_wifi_from_db: set_wifi_from_db,
@@ -15,12 +18,12 @@ var utils = require('./utils.js');
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
-var settings = {};
 
 get_devices();
 get_settings();
 
 //-- initialize variables --//
+var settings = {};
 
 function set_wifi_from_db() {
   console.log("set_wifi_from_db");
@@ -37,7 +40,7 @@ function set_wifi_from_db() {
   	  connection.set_wifi(settings_obj);
  	  //console.log('initialize variables | ',settings_obj);
         } else {
-          console.log('No document(s) found with defined "find" criteria!');
+          console.log(TAG,'set_wifi_from_db | no results');
         }
         db.close();
       });
@@ -56,7 +59,7 @@ function get_settings() {
       if (result[0]) settings = result[0]
       module.exports.settings = settings;
       if (!module.exports.got_token) {
-        console.log("fetching token...");
+        console.log("fetching token");
         socket.relay.emit('get token',{mac:utils.mac, device_type:['gateway']});          
         store_settings(settings);
       }
@@ -98,7 +101,7 @@ function store_device(device) {
         } else if (result.length) {
 	  device_array = result;
         } else {
-          console.log('No document(s) found with defined "find" criteria!');
+          console.log(TAG,'store_device | no results');
         }
       });
       db.close();

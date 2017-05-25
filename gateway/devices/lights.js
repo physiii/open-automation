@@ -1,4 +1,7 @@
-var socket = require('../socket.js');
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- lights.js -------------------------------------- //
+
 var database = require('../database.js');
 
 var red = {"on":true,"rgb":[255,0,0],"bri":"255"};
@@ -32,18 +35,6 @@ function set_theme(theme) {
     }
   }
 }
-
-socket.relay.on('set lights', function (data) {
-  //data.light = omit(data.light,"$$hashKey"); //bad angularjs array
-  set_light(data.light.id,data.light.state);
-  //console.log("set lights", data.light);
-});
-
-socket.relay.on('link lights', function (data) {
-  find_hue_bridge();
-  console.log("link lights");
-});
-
 
 // ----------------------  link bridge  ------------------- //
 var HueApi = require("node-hue-api").HueApi;

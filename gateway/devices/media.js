@@ -1,8 +1,11 @@
-var socket = require('../socket.js');
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- media.js --------------------------------------- //
+
 var platform = require('platform');
 var spawn = require('child_process').spawn;
 
-socket.relay.on('media', function (data) {
+function command(data) {
   var command = data.cmd;
   if ( platform.os.family == "Win32" ) {
     if (command == "volume down"){
@@ -31,6 +34,6 @@ socket.relay.on('media', function (data) {
     if ( command === "play" ) { spawn('xdotool', ['key', 'XF86AudioPlay']) }
     if ( command === "next" ) { spawn('xdotool', ['key', 'XF86AudioNext']) }  
   }
-
   console.log("media | " + command);
-});
+
+}

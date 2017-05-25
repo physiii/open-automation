@@ -1,6 +1,6 @@
-// -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
-// -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
-
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- utils.js -------------------------------------- //
 
 module.exports = {
   find_index: find_index,
@@ -117,7 +117,7 @@ function get_mac () {
     if (err)  throw err
     mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
     var token = crypto.createHash('sha512').update(mac).digest('hex');
-    console.log("Mac: (" + mac + ")");
+    //console.log("Mac: (" + mac + ")");
     module.exports.mac = mac;
   });
 }

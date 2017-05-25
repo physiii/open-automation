@@ -1,6 +1,8 @@
-var socket = require('../socket.js');
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- alarm.js --------------------------------------- //
 
-socket.relay.on('set alarm', function (data) {
+function set_alarm(data) {
   settings_obj.mode = data.mode;
   store_settings(settings_obj);
   if (data.mode == "armed") {
@@ -36,4 +38,4 @@ socket.relay.on('set alarm', function (data) {
     }
   }
   console.log("set alarm",data.mode);
-});
+}

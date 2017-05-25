@@ -1,12 +1,16 @@
-var exec = require('child_process').exec;
-var fs = require('fs');
-var ping = require ("ping");
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// -------------------------------- connection.js ------------------------------------ //
 
 module.exports = {
   set_wifi: set_wifi,
   scan_wifi: scan_wifi,
   check_connection: check_connection,
 }
+
+var exec = require('child_process').exec;
+var fs = require('fs');
+var ping = require ("ping");
 var router_array = [];
 var router_list = [];
 var ap_mode = false;

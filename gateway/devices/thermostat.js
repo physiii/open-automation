@@ -1,10 +1,13 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// --------------------------------- thermostat.js ----------------------------------- //
+
 module.exports = {
   add_thermostat: add_thermostat,
   set_thermostat: set_thermostat,
   get_therm_state: get_therm_state
 }
 
-var socket = require('../socket.js');
 var request = require('request');
 
 var ping_time = Date.now();
@@ -13,22 +16,6 @@ function send_ping(){
   console.log('sending ping...');
   socket.relay.emit('png_test');
 }
-
-
-socket.relay.on('add thermostat', function (data) {
-  console.log("add thermostat",data);
-  add_thermostat(data);
-});
-
-socket.relay.on('get thermostat', function (data) {
-  device = data.device;
-  get_therm_state(device.local_ip);
-  //console.log("get thermostat",data);  
-});
-
-socket.relay.on('set_thermostat', function (data) {
-  set_thermostat(data);
-});
 
 var data_obj = {};
 function add_thermostat(data) {

@@ -1,5 +1,6 @@
-// -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
-// -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// --------------------------------- utils.js --------------------------------------- //
 
 module.exports = {
   find_index: find_index,
@@ -16,6 +17,40 @@ var request = require('request');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
+
+
+main_loop();
+function main_loop () {
+  setTimeout(function () {
+    var settings_obj = {public_ip:utils.public_ip, local_ip:utils.local_ip, mac:utils.mac}
+    database.store_settings(settings_obj);
+    if (!database.got_token) {
+      console.log("fetching token...");
+      socket.relay.emit('get token',{mac:utils.mac, device_type:['gateway']});
+    }
+    var settings = database.settings;
+    //check_connection();
+    if (database.settings.ap_mode) {
+      ap_time = Date.now() - ap_time_start;
+      console.log("ap_time",ap_time);
+      if (ap_time > 10*60*1000) {
+        console.log("trying wifi again...");
+        set_wifi_from_db();
+        exec("sudo reboot");
+      }
+    }
+    utils.get_public_ip();
+    connection.scan_wifi();
+    devices.thermostat.get_therm_state();
+    for (var i = 0; i < device_array.length; i++) {
+      if (device_array[i].device_type == 'thermostat') {
+        get_therm_state(device_array[i].local_ip);
+      }
+    }
+    main_loop();
+  }, 60*1000);
+  //console.log(Date.now() + " | main loop");
+}
 
 // ---------------------- device info  ------------------- //
 var local_ip = "init";
@@ -60,7 +95,7 @@ function get_public_ip() {
       public_ip = data;
       module.exports.public_ip = public_ip;
       database.store_settings({"public_ip":public_ip});
-      console.log("stored public_ip",public_ip);
+      //console.log("stored public_ip",public_ip);
       if (error !== null) console.log(error);
     }
   });
@@ -120,7 +155,7 @@ function get_mac () {
     if (err)  throw err
     mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
     var token = crypto.createHash('sha512').update(mac).digest('hex');
-    console.log("Mac: (" + mac + ")");
+    console.log("Device ID: " + mac);
     module.exports.mac = mac;
   });
 }

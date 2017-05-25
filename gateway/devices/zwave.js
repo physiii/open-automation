@@ -1,27 +1,11 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- zwave.js --------------------------------------- //
+
 var socket = require('../socket.js');
 
-socket.relay.on('add_zwave_device', function (data) {
-    //var secure_device = data.secure_device;
-    var secure_device = true;
-    if (zwave.hasOwnProperty('beginControllerCommand')) {
-      console.log("searching for nodes");
-      zwave.beginControllerCommand('AddDevice', secure_device);
-    } else {
-      console.log("searching for nodes!");
-      zwave.addNode(secure_device);
-    }
-});
+function start() {
 
-socket.relay.on('set zwave', function (data) {
-  console.log("set zwave",data);
-  try {
-    //zwave.setValue(data.node_id, 98, 1, 0, data.value);
-    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
-    zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
-  } catch (e) { console.log(e) }
-});
-
-// -------------------------  zwave  ---------------------- //
 var nodes = [];
 var OpenZWave = require('openzwave-shared');
 var zwave = new OpenZWave({
@@ -168,4 +152,6 @@ process.on('SIGINT', function() {
 	zwave.disconnect();
 	process.exit();
 });
+}
+
 }

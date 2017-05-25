@@ -1,3 +1,7 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- website.js -------------------------------------- //
+
 var database = require('./database.js');
 var utils = require('../utils.js');
 var crypto = require('crypto');
@@ -16,10 +20,10 @@ module.exports = {
 
 function start(app) {
 
-var port = settings.website_port || 5000;
-var secure_port = settings.website_secure_port || 4443;
-var use_ssl = settings.use_ssl || false;
-var use_domain_ssl = settings.use_domain_ssl || false;
+var port = config.website_port || 5000;
+var secure_port = config.website_secure_port || 4443;
+var use_ssl = config.use_ssl || false;
+var use_domain_ssl = config.use_domain_ssl || false;
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
@@ -57,8 +61,6 @@ passport.use(new LocalStrategy(
 ));
 
 app.set('view engine', 'ejs');
-
-console.log("__dirname", __dirname);
 app.set('views', __dirname + '/views');
 app.use('/', express.static(__dirname + '/public'));
 

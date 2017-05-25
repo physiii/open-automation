@@ -1,11 +1,12 @@
-// -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
-// -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- stream.js -------------------------------------- //
 
 var http = require('http');
 var WebSocket = require('ws');
 
-var STREAM_PORT = settings.video_stream_port || 8082;
-var WEBSOCKET_PORT = settings.video_websocket_port || 8084;
+var STREAM_PORT = config.video_stream_port || 8082;
+var WEBSOCKET_PORT = config.video_websocket_port || 8084;
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});

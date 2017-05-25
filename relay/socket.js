@@ -1,13 +1,16 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- socket.js -------------------------------------- //
+
 var database = require('./database.js');
 var utils = require('../utils.js');
 var crypto = require('crypto');
-
 
 module.exports = {
   start: start
 }
 
-var DEVICE_PORT = settings.device_port || 4000;
+var DEVICE_PORT = config.device_port || 4000;
 var find_index = utils.find_index;
 
 /* --------------  websocket server for devices  ----------------- */

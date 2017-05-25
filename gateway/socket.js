@@ -1,15 +1,17 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// --------------------------------- socket.js --------------------------------------- //
+
+var relay_server = config.relay_server;
+var relay_port = config.relay_port;
+var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
+
 module.exports = {
   relay: relay
 }
-var database = require('./database');
-var utils = require('./utils');
+
 var exec = require('child_process').exec;
-var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
-module.exports.relay = relay;
 console.log('Connected to:',relay_server+":"+relay_port);
-/*function start_relay() {
-  relay_connected = true;
-}*/
 
 relay.on('get token', function (data) {
   var settings = database.settings;
@@ -29,29 +31,41 @@ relay.on('set settings', function (data) {
 
 
 relay.on('store_schedule', function (data) {
-
-/*MongoClient.connect('mongodb://127.0.0.1:27017/devices', function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    var collection = db.collection('schedules');
-    collection.find({'local_ip':data.local_ip}).toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-        console.log('Found:', result);
-	var time = data.time;
-        var schedule_obj = {};
-	schedule_obj[time] = data.temperature;
-	collection.update({'local_ip':data.local_ip},{$set:schedule_obj});
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-      }
-      db.close();
-    });
-  }
-});*/
   console.log("store_schedule |  " + data);  
+});
+
+relay.on('room_sensor', function (data) {
+  //console.log("room_sensor", data);
+  if (data.mode == 'armed' && data.motion == 'Motion Detected') {
+    alert = true;
+    set_theme('alert');
+  }
+  if (data.status == 'disarmed') {
+    alert = false;
+    set_theme('presence');
+  }
+});
+
+relay.on('motion_sensor', function (data) {
+  console.log("motion_sensor", data);
+  if (data.mode == 'armed') {
+    alert = true;
+    set_theme('alert');
+  }
+  if (data.status == 'disarmed') {
+    alert = false;
+    set_theme('presence');
+  }
+});
+
+relay.on('window_sensor', function (data) {
+  var _mac = data.mac;
+  var _magnitude = data.magnitude;
+  console.log( _mac + " | window_sensor data " + _magnitude);
+});
+
+relay.on('gateway', function (data) {
+  console.log(mac + " | " + data.command);
 });
 
 relay.on('command', function (data) {
@@ -72,34 +86,14 @@ relay.on('command', function (data) {
   console.log('command',command);
 });
 
-/*relay.on('motion list', function (data) {
-  var command = "ls -lahR --full-time /var/lib/motion/*";
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      data.error = error;
-      relay.emit('motion list result',data);
-      return;
-    }
-    //console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-    data.stdout = stdout;
-    data.stderr = stderr;
-   relay.emit('motion list result',data);
-  });
-  console.log('motion list',command);
-});*/
-
 relay.on('update', function (data) {
   utils.update();
 });
 
-
 relay.on('get settings', function (data) {
-  //database.store_settings({'device_name':data.device_name,'device_type':data.device_type});
   var settings = database.settings;
   relay.emit('load settings', settings);
-  console.log("load settings |", settings);
+  //console.log("load settings |", settings);
 });
 
 relay.on('get devices', function (data) {
@@ -112,9 +106,67 @@ relay.on('rename device', function (data) {
   database.store_settings(data);
 });
 
+relay.on('media', function (data) {
+  media.command(data);
+});
 
-relay.on('disconnect', function() {
-  console.log("disconnected, setting got_token false");
+relay.on('set alarm', function (data) {
+  alarm.set_alarm(data);
+});
+
+relay.on('add_zwave_device', function (data) {
+    //var secure_device = data.secure_device;
+    var secure_device = true;
+    if (zwave.hasOwnProperty('beginControllerCommand')) {
+      console.log("searching for nodes");
+      zwave.beginControllerCommand('AddDevice', secure_device);
+    } else {
+      console.log("searching for nodes!");
+      zwave.addNode(secure_device);
+    }
+});
+
+relay.on('set zwave', function (data) {
+  console.log("set zwave",data);
+  try {
+    //zwave.setValue(data.node_id, 98, 1, 0, data.value);
+    //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
+    zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
+  } catch (e) { console.log(e) }
+});
+
+relay.on('media', function (data) {
+  media.command(data);
+});
+
+relay.on('add thermostat', function (data) {
+  console.log("add thermostat",data);
+  add_thermostat(data);
+});
+
+relay.on('get thermostat', function (data) {
+  device = data.device;
+  get_therm_state(device.local_ip);
+  //console.log("get thermostat",data);  
+});
+
+relay.on('set_thermostat', function (data) {
+  set_thermostat(data);
+});
+
+relay.on('set lights', function (data) {
+  //data.light = omit(data.light,"$$hashKey"); //bad angularjs array
+  set_light(data.light.id,data.light.state);
+  //console.log("set lights", data.light);
+});
+
+relay.on('link lights', function (data) {
+  find_hue_bridge();
+  console.log("link lights");
+});
+
+relay.on('disconnect', function(data) {
+  console.log("disconnected, setting got_token false",data);
   database.got_token = false;
 });
 

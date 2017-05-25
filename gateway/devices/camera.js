@@ -1,7 +1,10 @@
-var socket = require('../socket.js');
-var database = require('../database');
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- camera.js --------------------------------------- //
+
 var exec = require('child_process').exec;
 var fs = require('fs');
+
 
 
 socket.relay.on('folder list', function (data) {
@@ -155,7 +158,7 @@ socket.relay.on('ffmpeg', function (data) {
 var spawn = require('child_process').spawn;
 var ffmpeg_proc_list = [];
 function start_ffmpeg(data) {
-  var settings = database.settings;
+  var relay_server = config.relay_server;
   for (var i = 0; i < ffmpeg_proc_list.length; i++) {
     console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
     if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
@@ -164,8 +167,9 @@ function start_ffmpeg(data) {
   }
   /*if (ffmpeg)
     stop_ffmpeg(ffmpeg)*/
-  video_width = database.settings.video_width;
-  video_height = database.settings.video_height;
+  var settings = database.settings;
+  var video_width = settings.video_width;
+  var video_height =settings.video_height;
   if (!video_width) video_width = "640";
   if (!video_height) video_height = "480";
   var camera_number = 10;
@@ -248,7 +252,7 @@ function start_ffmpeg(data) {
         console.log("ffmpeg timeout");
       }
     }
-  }, 5*60*1000);
+  }, 4*60*1000);
   
   ffmpeg_started = true;
   socket.relay.emit('ffmpeg started',settings);
