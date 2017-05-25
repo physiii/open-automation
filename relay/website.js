@@ -13,7 +13,13 @@ var router = express.Router();
 module.exports = {
  start: start
 }
+
 function start(app) {
+
+var port = settings.website_port || 5000;
+var secure_port = settings.website_secure_port || 4443;
+var use_ssl = settings.use_ssl || false;
+var use_domain_ssl = settings.use_domain_ssl || false;
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
@@ -111,24 +117,6 @@ app.get('/get_ip', function(req, res) {
   console.log(ip);
   res.send(ip);
 });
-
-
-var port = 80;
-var index = process.argv.indexOf('-p');
-if (index > -1) port = process.argv[index+1];
-
-
-var secure_port = 443;
-var index = process.argv.indexOf('-sp');
-if (index > -1) secure_port = process.argv[index+1];
-
-use_ssl = false;
-var index = process.argv.indexOf('--use_ssl');
-if (index > -1) use_ssl = true;
-
-use_domain_ssl = false;
-var index = process.argv.indexOf('--use_domain_ssl');
-if (index > -1) use_domain_ssl = true;
 
 // Reroute Client request to SSL
 if (use_ssl) {

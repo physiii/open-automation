@@ -7,11 +7,8 @@ module.exports = {
   start: start
 }
 
+var DEVICE_PORT = settings.device_port || 4000;
 var find_index = utils.find_index;
-
-var DEVICE_PORT = 4000;
-var index = process.argv.indexOf('-dp');
-if (index > -1) DEVICE_PORT = process.argv[index+1];
 
 /* --------------  websocket server for devices  ----------------- */
 var WebSocketServer = require('ws').Server

@@ -1,0 +1,9 @@
+{
+  "use_ssl": false,
+  "use_domain_ssl": false,
+  "website_port": 5000,
+  "website_secure_port": 443,
+  "video_websocket_port": 8084,
+  "video_stream_port": 8082,
+  "device_port": 4000
+}

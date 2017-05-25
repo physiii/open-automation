@@ -8,6 +8,7 @@ groups = [];
 device_objects = [];
 status_objects = [];
 user_objects = [];
+settings = require('./settings.json');
 
 var stream = require('./stream.js');
 var website = require('./website.js');

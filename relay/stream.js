@@ -1,19 +1,11 @@
 // -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
 // -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
 
-var STREAM_PORT = 8082;
-var index = process.argv.indexOf('-vsp');
-if (index > -1) STREAM_PORT = process.argv[index+1];
+var http = require('http');
+var WebSocket = require('ws');
 
-var WEBSOCKET_PORT = 8084;
-var index = process.argv.indexOf('-vwp');
-if (index > -1) WEBSOCKET_PORT = process.argv[index+1];
-
-var 	http = require('http'),
-	WebSocket = require('ws');
-
-var STREAM_SECRET = "init",
-    STREAM_MAGIC_BYTES = 'jsmp'; // Must be 4 bytes
+var STREAM_PORT = settings.video_stream_port || 8082;
+var WEBSOCKET_PORT = settings.video_websocket_port || 8084;
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});
