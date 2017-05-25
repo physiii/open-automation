@@ -3,7 +3,7 @@
 // ----------------------------- physiphile@gmail.com -------------------------------- //
 
 var TAG = "[index.js]";
-software_version = "0.1";
+software_version = "0.2";
 
 // --------------------------------------------------------- //
 // import config or create new config.json with defaults //
