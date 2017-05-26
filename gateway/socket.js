@@ -18,7 +18,9 @@ relay.on('get token', function (data) {
   settings.token = data.token;
   database.store_settings(settings);
   database.got_token = true;
-  settings.software_version = software_version;
+  if (software_version)
+   settings.software_version = software_version;
+  else settings.software_version = "NA";
   console.log("token received, sending settings");
   relay.emit('load settings',settings);
 });
