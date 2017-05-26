@@ -1,3 +1,8 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- userinfo.js ------------------------------------ //
+
+
 angular.module('starter.controllers', ['socket-io'])
 
 .directive('flipContainer', function() {
