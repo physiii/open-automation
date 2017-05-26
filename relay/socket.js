@@ -841,23 +841,26 @@ io.on('connection', function (socket) {
   });
 
   socket.on('unlink device', function (data) {
-    var token = data.token;
+    var device_token = data.token;
     var user_token = data.user_token;
     
     var account_index = find_index(accounts,'token',user_token);
     if (account_index < 0) return console.log("unlink device | account not found");
 
-    var index = find_index(groups,'group_id',user_token);
-    if (index < 0) return console.log("unlink device | no group found",data);
-    var index2 = groups[index].members.indexOf(token);
-    groups[index].members.splice(index2,1);
-    database.store_group(groups[index]);
-    console.log('unlink device',groups[index]);
+    var device_index = find_index(device_objects,'token',device_token);
+    if (device_index < 0) return console.log("unlink device | no device found",data);
+
+    var group_index = find_index(groups,'group_id',accounts[account_index].username);
+    if (group_index < 0) return console.log("unlink device | no group found",data);
+
+    var member_index = groups[group_index].members.indexOf(device_objects[device_index].mac);
+    groups[group_index].members.splice(member_index,1);
+    database.store_group(groups[group_index]);
+    console.log('unlink device',groups[group_index]);
     
-    var index = find_index(device_objects,'token',token);
-    var index2 = device_objects[index].groups.indexOf(accounts[account_index].username);
-    device_objects[index].groups.splice(index2,1);
-    database.store_device_object(device_objects[index]);
+    var user_index = device_objects[device_index].groups.indexOf(accounts[account_index].username);
+    device_objects[device_index].groups.splice(user_index,1);
+    database.store_device_object(device_objects[device_index]);
   });
   
 
