@@ -811,6 +811,7 @@ io.on('connection', function (socket) {
     //add user to device for incoming messages
     if (device_objects[device_index].groups.indexOf(username) < 0) {
       device_objects[device_index].groups.push(username);
+      device_objects[device_index].device_name = device_name;
       database.store_device_object(device_objects[device_index]);
     } //else return console.log("link device | no device found");
 
@@ -834,9 +835,11 @@ io.on('connection', function (socket) {
       database.store_group(groups[group_index]);
     }
     data.res = "success";
-    console.log('link device',data.mac);
     if (data.username == "Please enter a username") return console.log("link device | unregistered device");
-    socket.emit('link device',data);
+    var temp_object = Object.assign({}, device_objects[device_index]);
+    delete temp_object.socket;
+    console.log('link device',temp_object);
+    socket.emit('link device',temp_object);
     //get_devices(data,socket);
   });
 
@@ -861,6 +864,7 @@ io.on('connection', function (socket) {
     var user_index = device_objects[device_index].groups.indexOf(accounts[account_index].username);
     device_objects[device_index].groups.splice(user_index,1);
     database.store_device_object(device_objects[device_index]);
+    socket.emit('unlink device', data);
   });
   
 

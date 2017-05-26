@@ -24,15 +24,10 @@ angular.module('starter.controllers', ['socket-io'])
   var alarms = [];
   var smoke_alarms = [];
   $rootScope.alert_contacts = [];
-  var server_type = "local";
+  $rootScope.server_address = location.host;
 
   console.log("<< ------  userinfo  ------ >> ");
-  if (server_type == "local")
-    $rootScope.server_address = location.host;
-  if (server_type == "dev")
-    $rootScope.server_address = "dev.domain.com";
-  if (server_type == "prod")
-    $rootScope.server_address = "domain.com";
+
   
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];

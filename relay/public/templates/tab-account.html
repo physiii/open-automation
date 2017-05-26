@@ -149,12 +149,12 @@
                   <input type="hidden" ng-init="new_thermostat.device_type = 'thermostat'" />
                   <input type="hidden" ng-init="new_thermostat.token = gateway.token" />
                   <input type="hidden" ng-model="new_thermostat.mac" value="{{ gateway.mac }}" />
-                  <input type="submit" ng-click="add_device(new_thermostat)" value="Add" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />                  </div>        
+                  <input type="submit" ng-click="link_device(new_thermostat)" value="Add" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />                  </div>        
               </div>
               <input type="hidden" ng-init="new_light.device_type = 'lights'" />
               <input type="hidden" ng-init="new_light.token = gateway.token" />
               <input type="hidden" ng-model="new_light.mac" value="{{ gateway.mac }}" />
-              <!-- <input type="hidden" ng-click="add_device(new_light)" /> -->
+              <!-- <input type="hidden" ng-click="link_device(new_light)" /> -->
               <input type="submit" id="{{ gateway.mac }}_add_thermostat_form_btn" ng-click="show_form('_add_thermostat_form', gateway.mac)" value="Add thermostat" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
               <div id="lights_scan_form" style="display:none" >
                 <div style="max-width:300px;margin:auto;padding:10px 25px 0px 25px;">
@@ -176,7 +176,7 @@
             </div>
           </div>
             <button style="margin:15px;float:left" class="button button-small button-balanced" ng-click="update_device(gateway)"><b>Update</b></i></button>
-          <button style="margin:15px;float:right" class="button button-small button-assertive" ng-click="remove_device(gateway)" ><b>Remove</b></button>
+          <button style="margin:15px;float:right" class="button button-small button-assertive" ng-click="unlink_device(gateway)" ><b>Remove</b></button>
         </div>
       </div>
 
@@ -243,7 +243,7 @@
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_room_sensor.device_name" placeholder="Name your device" />        
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_room_sensor.mac" placeholder="Enter the Device ID" />
           </div>
-          <input type="submit"  ng-click="add_device(new_room_sensor,'room_sensor')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+          <input type="submit"  ng-click="link_device(new_room_sensor,'room_sensor')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
         </div>
         <input type="submit" id="room_sensor_form_btn" ng-click="show_form('room_sensor_form')" value="Link your room sensor" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
         <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
@@ -283,7 +283,7 @@
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_garage_opener.device_name" placeholder="Name your device" />        
             <input style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_garage_opener.mac" placeholder="Enter the Device ID" />
           </div>
-          <input type="submit"  ng-click="add_device(new_garage_opener,'garage_opener')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+          <input type="submit"  ng-click="link_device(new_garage_opener,'garage_opener')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
         </div>
         <input type="submit" id="garage_opener_form_btn" ng-click="show_form('garage_opener_form')" value="Link your garage opener" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
         <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
@@ -323,7 +323,7 @@
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_media_controller.device_name" placeholder="Name your device" />        
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_media_controller.mac" placeholder="Enter the Device ID" />
           </div>
-          <input type="submit"  ng-click="add_device(new_media_controller,'media_controller')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+          <input type="submit"  ng-click="link_device(new_media_controller,'media_controller')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
         </div>
         <input type="submit" id="media_controller_form_btn" ng-click="show_form('media_controller')" value="Link your media controller" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
         <input type="submit" ng-click="redirect()" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
@@ -363,7 +363,7 @@
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_siren.device_name" placeholder="Name your device" />        
             <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_siren.mac" placeholder="Enter the Device ID" />
           </div>
-          <input type="submit"  ng-click="add_device(new_siren,'siren')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+          <input type="submit"  ng-click="link_device(new_siren,'siren')" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
         </div>
         <input type="submit" id="siren_form_btn" ng-click="show_form('siren_form')" value="Link your siren" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
         <input type="submit" ng-click="redirect('siren')" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>
@@ -442,7 +442,7 @@
             <input  class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" style="padding:5px;" ng-model="new_device.device_name" placeholder="Name your device" />        
             <input class="item" style="margin:5px;border-style:solid;border-width:1px;border-color:#888;padding:5px;" ng-model="new_device.mac" placeholder="Enter the Device ID" />
           </div>
-          <input type="submit"  ng-click="add_device(new_device)" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
+          <input type="submit"  ng-click="link_device(new_device)" value="Link" style="width:100%;border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />      
         </div>
         <input type="submit" id="link_device_form_btn" ng-click="show_form('link_device_form')" value="Link your device" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
         <input type="submit" ng-click="redirect('store.pyfi.org')" value="Buy from our store!" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable"/>

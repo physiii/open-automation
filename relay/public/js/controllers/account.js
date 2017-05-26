@@ -1,3 +1,7 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- account.js -------------------------------------- //
+
 angular.module('starter.controllers')
 
 .controller('AccountCtrl', function($scope, $rootScope, $stateParams, Categories, socket,$ionicLoading, $compile, $http) {
@@ -5,29 +9,53 @@ angular.module('starter.controllers')
   console.log('<< ------  AccountCtrl  ------ >>');
   var relay_socket = $rootScope.relay_socket;
   var alert_contacts = $rootScope.alert_contacts;
-      relay_socket.emit('link lights',{ mac:"TESTMAC!!", token:"!!TESTTOK" });
+
+  // ---------------------------- //
+  // add or remove gateway device //
+  // ---------------------------- //
   $scope.link_lights = function(gateway) {
     relay_socket.emit('link lights',{ mac:gateway.mac, token:gateway.token });
     console.log('link lights',gateway);
-  }
-
-  $scope.light_command = function(gateway,device,light) {
-    console.log("light_command",light);
-    light = {device:device, light:light, token:gateway.token};
-    relay_socket.emit('lights',light);
-  }
-
-  $scope.command = function(gateway) {
-    command_obj = {token:gateway.token, command:gateway.command}
-    console.log("command",gateway);
-    relay_socket.emit('command',gateway);
   }
 
   $scope.add_zwave_device = function(gateway) {
     relay_socket.emit('add_zwave_device',gateway);
     console.log('add_zwave_device');
   }
+
+  // --------------------- //
+  // add or remove devices //
+  // --------------------- //
+  $scope.link_device = function(device) {
+    device.user_token = $rootScope.token;
+    //console.log("link_device",device);
+    relay_socket.emit('link device',device);
+  }
   
+  relay_socket.on('link device', function (data) {
+    if (data.device_type == "gateway") {
+      $rootScope.gateways.push(data);
+    }
+    relay_socket.emit('get settings',{token:data.token});
+    //console.log("get device settings",data);
+    $scope.$apply(function () {});
+  });
+
+  $scope.unlink_device = function(device) {
+    device.user_token = $rootScope.token;  
+    relay_socket.emit('unlink device',device);
+    console.log("unlink_device",device.mac);
+  }
+
+  relay_socket.on('unlink device', function (data) {
+    var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+    $rootScope.gateways.splice(index,1);
+    $scope.$apply(function () {});
+  });
+
+  // ---- //
+  // show //
+  // ---- //
   $scope.show_div = function(div_id) { 
     console.log(div_id);
     document.getElementById(div_id + "_div").style.display = "inline";    
@@ -42,6 +70,19 @@ angular.module('starter.controllers')
     }
   }
   
+
+  $scope.light_command = function(gateway,device,light) {
+    console.log("light_command",light);
+    light = {device:device, light:light, token:gateway.token};
+    relay_socket.emit('lights',light);
+  }
+
+  $scope.command = function(gateway) {
+    command_obj = {token:gateway.token, command:gateway.command}
+    console.log("command",gateway);
+    relay_socket.emit('command',gateway);
+  }
+
   $scope.set_resolution = function(device) {
     console.log("set_resolution",device);
     var device_obj = {};
@@ -78,26 +119,9 @@ angular.module('starter.controllers')
     relay_socket.emit('rename device',device_obj);
   }
 
-  $scope.remove_device = function(device) {
-    device.user_token = $rootScope.token;  
-    var index = $rootScope.find_index($rootScope.gateways,'token',device.token);
-    $rootScope.gateways.splice(index,1);
-    relay_socket.emit('unlink device',device);
-    console.log("unlink_device",device.mac);
-  }
-
-
   $scope.add_thermostat = function(device) {
     console.log("add_thermostat",device);  
     relay_socket.emit('add thermostat',device);
-  }
-
-
-  $scope.add_device = function(device) {
-    device.user_token = $rootScope.token;
-    console.log("add_device",device);
-    $rootScope.devices.push(device);
-    relay_socket.emit('link device',device);
   }
 
   $scope.show_form = function(form, mac) {
