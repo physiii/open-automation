@@ -95,7 +95,7 @@ relay.on('update', function (data) {
 relay.on('get settings', function (data) {
   var settings = database.settings;
   relay.emit('load settings', settings);
-  //console.log("load settings |", settings);
+  console.log("load settings |", settings);
 });
 
 relay.on('get devices', function (data) {
