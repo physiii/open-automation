@@ -116,7 +116,7 @@ relay.on('set alarm', function (data) {
   alarm.set_alarm(data);
 });
 
-relay.on('add_zwave_device', function (data) {
+relay.on('add zwave', function (data) {
     //var secure_device = data.secure_device;
     var secure_device = true;
     if (zwave.hasOwnProperty('beginControllerCommand')) {
