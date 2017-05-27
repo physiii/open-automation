@@ -143,17 +143,17 @@ relay.on('media', function (data) {
 
 relay.on('add thermostat', function (data) {
   console.log("add thermostat",data);
-  add_thermostat(data);
+  thermostat.add_thermostat(data);
 });
 
 relay.on('get thermostat', function (data) {
   device = data.device;
-  get_therm_state(device.local_ip);
+  thermostat.get_therm_state(device.local_ip);
   //console.log("get thermostat",data);  
 });
 
-relay.on('set_thermostat', function (data) {
-  set_thermostat(data);
+relay.on('set thermostat', function (data) {
+  thermostat.set_thermostat(data);
 });
 
 relay.on('set lights', function (data) {

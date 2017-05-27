@@ -5,6 +5,10 @@
 var platform = require('platform');
 var spawn = require('child_process').spawn;
 
+module.exports = {
+  command: command
+}
+
 function command(data) {
   var command = data.cmd;
   if ( platform.os.family == "Win32" ) {

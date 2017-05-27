@@ -1,4 +1,4 @@
 {
-  "relay_server":"pyfi.org",
-  "relay_port":80
+  "relay_server":"127.0.0.1",
+  "relay_port":5000
 }

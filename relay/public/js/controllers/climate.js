@@ -130,7 +130,8 @@ console.log(new_schedule);
     }
   }
   device.set_state.hold = 1;
-  relay_socket.emit('set_thermostat',device);
+  device.token = gateway.token;
+  relay_socket.emit('set thermostat',device);
 
   var gateways = $rootScope.gateways;
   for (var i = 0; i < gateways.length; i++) {

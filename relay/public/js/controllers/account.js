@@ -29,7 +29,7 @@ angular.module('starter.controllers')
   // --------------------- //
   $scope.link_device = function(device) {
     device.user_token = $rootScope.token;
-    //console.log("link_device",device);
+    console.log("link_device",device);
     relay_socket.emit('link device',device);
   }
   
@@ -54,6 +54,11 @@ angular.module('starter.controllers')
     $scope.$apply(function () {});
   });
 
+  $scope.add_thermostat = function(device) {
+    console.log("add_thermostat",device);  
+    relay_socket.emit('add thermostat',device);
+  }
+
   // ---- //
   // show //
   // ---- //
@@ -71,6 +76,16 @@ angular.module('starter.controllers')
     }
   }
   
+  $scope.show_form = function(form, mac) {
+    if (mac == null) mac = "";
+    console.log("show_form: " + mac + form);
+    document.getElementById(mac + form).style.display = "inline";
+    document.getElementById(mac + form + "_btn").style.display = "none";
+    if (form == "command_form_") {
+      //document.getElementById("gateways").style.className = "col-lg-4 col-md-6 col-sm-12";
+      document.getElementById("gateways").className = "";
+    }
+  }
 
   $scope.light_command = function(gateway,device,light) {
     console.log("light_command",light);
@@ -118,22 +133,6 @@ angular.module('starter.controllers')
     device_obj = { token:device.token,
                    device_name:device.device_name };
     relay_socket.emit('rename device',device_obj);
-  }
-
-  $scope.add_thermostat = function(device) {
-    console.log("add_thermostat",device);  
-    relay_socket.emit('add thermostat',device);
-  }
-
-  $scope.show_form = function(form, mac) {
-    if (mac == null) mac = "";
-    console.log("FORM: " + form + mac);
-    document.getElementById(form + mac).style.display = "inline";
-    document.getElementById(form + mac + "_btn").style.display = "none";
-    if (form == "command_form_") {
-      //document.getElementById("gateways").style.className = "col-lg-4 col-md-6 col-sm-12";
-      document.getElementById("gateways").className = "";
-    }
   }
 
   $scope.test_alert = function(contact) {

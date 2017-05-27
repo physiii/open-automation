@@ -696,12 +696,10 @@ io.on('connection', function (socket) {
 
 
   socket.on('add thermostat', function (data) {
-
     var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return console.log('media | invalid token',data);
+    if (device_index < 0) return console.log('add thermostat | invalid token',data);
     if (device_objects[device_index].socket)
       device_objects[device_index].socket.emit('add thermostat',data);
-
     console.log('add thermostat',data);
   });
 
@@ -742,12 +740,15 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('set_thermostat', function (data) {
-    var group_index = find_index(groups,'group_id',data.token);
-    for (var i = 0; i < groups[group_index].members.length; i++) {
+  socket.on('set thermostat', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    //var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
+    if (device_index < 0) return console.log('set thermostat | device not found',data);
+    device_objects[device_index].socket.emit('set thermostat', data);
+    /*for (var i = 0; i < groups[group_index].members.length; i++) {
       var device_index = find_index(device_objects,'token',data.token);
       device_objects[device_index].socket.emit('set_thermostat', data);
-    }
+    }*/
   });
 
   socket.on('set lights', function (data) {

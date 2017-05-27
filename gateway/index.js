@@ -99,7 +99,7 @@ function main_loop () {
     thermostat.get_therm_state();
     for (var i = 0; i < device_array.length; i++) {
       if (device_array[i].device_type == 'thermostat') {
-        get_therm_state(device_array[i].local_ip);
+        thermostat.get_therm_state(device_array[i].local_ip);
       }
     }
     main_loop();

@@ -61,7 +61,7 @@ angular.module('starter.controllers', ['socket-io'])
       }
     }
     $rootScope.mobile = mobile;
-    console.log("set status",data);
+    //console.log("set status",data);
     $rootScope.update_map(data);
   });
 
