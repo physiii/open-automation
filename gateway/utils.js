@@ -1,13 +1,11 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// --------------------------------- utils.js --------------------------------------- //
+// -----------------------------  OPEN-AUTOMATION ------------------------ //
+// ------------  https://github.com/physiii/open-automation -------------- //
+// --------------------------------- utils.js ---------------------------- //
 
 module.exports = {
   find_index: find_index,
   get_mac: get_mac,
-  get_local_ip: get_local_ip,
-  update: update,
-  get_public_ip: get_public_ip
+  update: update
 }
 
 const crypto = require('crypto');
@@ -19,56 +17,13 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
 // ---------------------- device info  ------------------- //
-var local_ip = "init";
 var ifaces = os.networkInterfaces();
 var mac = "init";
 var device_type = ["gateway"];
 //var device_name = "Gateway";
-var public_ip = "init";
-get_public_ip();
-get_local_ip();
 get_mac();
-main_loop();
 
-
-function get_local_ip() {
-Object.keys(ifaces).forEach(function (ifname) {
-  var alias = 0;
-  ifaces[ifname].forEach(function (iface) {
-    if ('IPv4' !== iface.family || iface.internal !== false) {
-      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-      return;
-    }
-    if (alias >= 1) {
-      // this single interface has multiple ipv4 addresses
-      //console.log(ifname + ':' + alias, iface.address);
-    } else {
-      // this interface has only one ipv4 adress
-      //console.log(ifname, iface.address);
-    }
-    local_ip = iface.address;
-    ++alias;
-    module.exports.local_ip = local_ip;
-  });
-});
-}
-
-function get_public_ip() {
-  request.get(
-  'https://pyfi.org/get_ip',
-  function (error, response, data) {
-    if (!error && response.statusCode == 200) {
-      public_ip = data;
-      module.exports.public_ip = public_ip;
-      database.store_settings({"public_ip":public_ip});
-      //console.log("stored public_ip",public_ip);
-      if (error !== null) console.log(error);
-    }
-  });
-}
-
-
-// ----------------------  disk management --------------------- //
+// ----------------------  disk management -------------- //
 var diskspace = require('diskspace');
 var findRemoveSync = require('find-remove');
 var _ = require('underscore');
@@ -115,7 +70,6 @@ rimraf('/var/lib/motion/' + oldest_dir, function(error) {
       }
 }
 
-
 function get_mac () {
   require('getmac').getMac(function(err,macAddress){
     if (err)  throw err
@@ -141,14 +95,6 @@ function update () {
     console.log(stdout);
     console.log(stderr);
   });
-}
-
-function main_loop () {
-setTimeout(function () {
-  get_public_ip();
-  main_loop();
-  //console.log("main loop");
-}, 60*1000);
 }
 
 function find_index(array, key, value) {

@@ -1,10 +1,11 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// --------------------------------- socket.js --------------------------------------- //
+// -----------------------------  OPEN-AUTOMATION ------------------------- //
+// ------------  https://github.com/physiii/open-automation --------------- //
+// --------------------------------- socket.js ----------------------------- //
 
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
 var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
+var zwave = require('./devices/zwave.js');
 
 module.exports = {
   relay: relay
@@ -95,7 +96,7 @@ relay.on('update', function (data) {
 relay.on('get settings', function (data) {
   var settings = database.settings;
   relay.emit('load settings', settings);
-  console.log("load settings |", settings);
+  //console.log("load settings |", settings);
 });
 
 relay.on('get devices', function (data) {
@@ -119,13 +120,13 @@ relay.on('set alarm', function (data) {
 relay.on('add zwave', function (data) {
     //var secure_device = data.secure_device;
     var secure_device = true;
-    if (zwave.hasOwnProperty('beginControllerCommand')) {
+    /*if (zwave.hasOwnProperty('beginControllerCommand')) {
       console.log("searching for nodes");
       zwave.beginControllerCommand('AddDevice', secure_device);
-    } else {
+    } else {*/
       console.log("searching for nodes!");
-      zwave.addNode(secure_device);
-    }
+      zwave.add_node(secure_device);
+    //}
 });
 
 relay.on('set zwave', function (data) {

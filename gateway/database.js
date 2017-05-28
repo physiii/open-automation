@@ -1,18 +1,7 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// --------------------------------- database.js ------------------------------------- //
+// -----------------------------  OPEN-AUTOMATION ------------------------- //
+// ------------  https://github.com/physiii/open-automation --------------- //
+// -------------------------------- database.js --------------------------- //
 
-module.exports = {
-  set_wifi_from_db: set_wifi_from_db,
-  get_devices: get_devices,
-  get_settings: get_settings,  
-  store_settings: store_settings,
-  store_device: store_device,
-  device_array: device_array
-}
-
-var device_array = {};
-module.exports.got_token = false;
 
 var connection = require('./connection.js');
 var socket = require('./socket.js');
@@ -20,6 +9,15 @@ var utils = require('./utils.js');
 var mongodb = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
+
+module.exports = {
+  got_token: false,
+  set_wifi_from_db: set_wifi_from_db,
+  get_devices: get_devices,
+  get_settings: get_settings,  
+  store_settings: store_settings,
+  store_device: store_device
+}
 
 get_devices();
 get_settings();
@@ -78,7 +76,8 @@ function store_settings(data) {
   MongoClient.connect('mongodb://127.0.0.1:27017/gateway', function (err, db) {
     if (err) return console.log(err);
     var collection = db.collection('settings');
-    //console.log('store_settings',data);
+    settings[Object.keys(data)[0]] = data[Object.keys(data)[0]];
+   //console.log('store_settings',settings);
     collection.update({}, {$set:data}, {upsert:true}, function(err, item){
         //console.log("item",item)
     });
@@ -123,7 +122,7 @@ function get_devices() {
       device_array = result;
       var devices_obj = settings;
       devices_obj.devices = device_array;
-      //console.log("get_devices | sending devices");
+      //console.log("get_devices", device_array);
     });
     db.close();
   });

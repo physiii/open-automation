@@ -1,13 +1,13 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ----------------------------- physiphile@gmail.com -------------------------------- //
+// -----------------------------  OPEN-AUTOMATION ------------------------- //
+// ------------  https://github.com/physiii/open-automation --------------- //
+// --------------------------------- Gateway ------------------------------ //
 
 var TAG = "[index.js]";
 software_version = "0.2";
 
-// --------------------------------------------------------- //
+// ----------------------------------------------------- //
 // import config or create new config.json with defaults //
-// --------------------------------------------------------- //
+// ----------------------------------------------------- //
 var fs = require('fs');
 config = {
   "relay_server": "127.0.0.1",
@@ -77,7 +77,7 @@ var ap_time_start;
 main_loop();
 function main_loop () {
   setTimeout(function () {
-    var settings_obj = {public_ip:utils.public_ip, local_ip:utils.local_ip, mac:utils.mac}
+    var settings_obj = {public_ip:connection.public_ip, local_ip:connection.local_ip, mac:utils.mac}
     database.store_settings(settings_obj);
     if (!database.got_token) {
       console.log("fetching token...");
@@ -94,7 +94,7 @@ function main_loop () {
         exec("sudo reboot");
       }
     }
-    utils.get_public_ip();
+    connection.get_public_ip();
     connection.scan_wifi();
     thermostat.get_therm_state();
     for (var i = 0; i < device_array.length; i++) {

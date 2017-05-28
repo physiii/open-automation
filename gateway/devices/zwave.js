@@ -1,10 +1,18 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ---------------------------------- zwave.js --------------------------------------- //
+// -----------------------------  OPEN-AUTOMATION ------------------------- //
+// ------------  https://github.com/physiii/open-automation --------------- //
+// --------------------------------- zwave.js ----------------------------- //
 
 var socket = require('../socket.js');
+var os = require('os');
 
-function start() {
+module.exports = {
+  add_node: add_node,
+  remove_node: remove_node,
+  hard_reset: hard_reset,
+  set_value: set_value
+}
+
+//function start() {
 
 var nodes = [];
 var OpenZWave = require('openzwave-shared');
@@ -18,7 +26,30 @@ var zwave = new OpenZWave({
 	NetworkKey: "0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10"
 });
 
-function init_zwave() {
+setTimeout(function () {
+  //hard_reset();
+  //remove_node();
+}, 30*1000);
+
+function set_value(nodeid, commandclass, index, value) {
+  zwave.setValue(nodeid, commandclass, index, value);
+}
+
+function add_node(secure) {
+  zwave.addNode();
+}
+
+function remove_node() {
+  console.log("remove node...");
+  zwave.removeNode();
+}
+
+function hard_reset() {
+  console.log("hard reset...");
+  zwave.hardReset();
+}
+
+//function init_zwave() {
 zwave.on('connected', function(homeid) {
 	//console.log('=================== CONNECTED! ====================');
 });
@@ -58,21 +89,6 @@ zwave.on('value added', function(nodeid, comclass, value) {
   nodes[nodeid]['classes'][comclass][value.index] = value;
 });
 
-setTimeout(function () {
-  //hard_reset();
-  //remove_node();
-}, 30*1000);
-
-function remove_node() {
-  console.log("remove node...");
-  zwave.removeNode();
-}
-
-function hard_reset() {
-  console.log("hard reset...");
-  zwave.hardReset();
-}
-
 zwave.on('value changed', function(nodeid, comclass, value) {
 
   if (nodes[nodeid]['ready']) {
@@ -82,7 +98,7 @@ zwave.on('value changed', function(nodeid, comclass, value) {
       value['value']);
    
     console.log("value changed",nodes[nodeid].product);
-    store_device(nodes[nodeid]);
+    database.store_device(nodes[nodeid]);
   }
   nodes[nodeid]['classes'][comclass][value.index] = value;
 });
@@ -104,7 +120,7 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 	nodes[nodeid]['ready'] = true;
 	nodes[nodeid]['id'] = nodeid;
 	nodes[nodeid]['device_type'] = nodeinfo.type;
-	nodes[nodeid]['local_ip'] = local_ip;
+	nodes[nodeid]['local_ip'] = connection.local_ip;
 
 	console.log('node%d: %s, %s', nodeid,
 		    nodeinfo.manufacturer ? nodeinfo.manufacturer
@@ -116,7 +132,7 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 		    nodeinfo.name,
 		    nodeinfo.type,
 		    nodeinfo.loc);
-   	store_device(nodes[nodeid]);
+   	database.store_device(nodes[nodeid]);
 	for (var comclass in nodes[nodeid]['classes']) {
 		switch (comclass) {
 		case 0x25: // COMMAND_CLASS_SWITCH_BINARY
@@ -152,6 +168,6 @@ process.on('SIGINT', function() {
 	zwave.disconnect();
 	process.exit();
 });
-}
+//}
 
-}
+//}

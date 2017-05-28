@@ -1,14 +1,16 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// -------------------------------- connection.js ------------------------------------ //
+// -----------------------------  OPEN-AUTOMATION ------------------------- //
+// ------------  https://github.com/physiii/open-automation --------------- //
+// ------------------------------- connection.js -------------------------- //
 
 module.exports = {
   set_wifi: set_wifi,
   scan_wifi: scan_wifi,
   check_connection: check_connection,
+  public_ip: public_ip
 }
 
 var exec = require('child_process').exec;
+var request = require('request');
 var fs = require('fs');
 var ping = require ("ping");
 var router_array = [];
@@ -16,6 +18,52 @@ var router_list = [];
 var ap_mode = false;
 scan_wifi();
 var bad_connection = 0;
+var local_ip = "init";
+var public_ip = "init";
+
+module.exports = {
+  get_local_ip: get_local_ip,
+  get_public_ip: get_public_ip,
+  check_connection: check_connection,
+  scan_wifi: scan_wifi
+}
+
+function get_local_ip() {
+Object.keys(ifaces).forEach(function (ifname) {
+  var alias = 0;
+  ifaces[ifname].forEach(function (iface) {
+    if ('IPv4' !== iface.family || iface.internal !== false) {
+      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+      return;
+    }
+    if (alias >= 1) {
+      // this single interface has multiple ipv4 addresses
+      //console.log(ifname + ':' + alias, iface.address);
+    } else {
+      // this interface has only one ipv4 adress
+      //console.log(ifname, iface.address);
+    }
+    local_ip = iface.address;
+    ++alias;
+    module.exports.local_ip = local_ip;
+  });
+});
+}
+
+function get_public_ip() {
+  request.get(
+  'https://pyfi.org/get_ip',
+  function (error, response, data) {
+    if (!error && response.statusCode == 200) {
+      public_ip = data;
+      module.exports.public_ip = public_ip;
+      database.store_settings({"public_ip":public_ip});
+      //console.log("stored public_ip",public_ip);
+      if (error !== null) console.log(error);
+    }
+  });
+}
+
 
 function check_connection() {
   host = "8.8.8.8";
