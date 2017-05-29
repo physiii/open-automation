@@ -159,7 +159,7 @@ relay.on('set thermostat', function (data) {
 
 relay.on('set lights', function (data) {
   //data.light = omit(data.light,"$$hashKey"); //bad angularjs array
-  set_light(data.light.id,data.light.state);
+  lights.set_light(data.light.id,data.light.state);
   //console.log("set lights", data.light);
 });
 
