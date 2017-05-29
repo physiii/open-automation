@@ -664,15 +664,6 @@ io.on('connection', function (socket) {
     if (!device_objects[device_index].socket) return console.log('ping audio | socket not found',data.mac);
     device_objects[device_index].socket.emit('ping audio',data);
   });
-  
-  socket.on('add_zwave_device', function (data) {
-
-    var group_index = find_index(groups,'group_id',data.token);
-    for (var i = 0; i < groups[group_index].members.length; i++) {
-      var device_index = find_index(device_objects,'token',data.token);
-      device_objects[device_index].socket.emit('add_zwave_device', data);
-    }
-  });
 
   socket.on('link lights', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
@@ -694,6 +685,13 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('add zwave', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log('add zwave | invalid token',data);
+    if (device_objects[device_index].socket)
+      device_objects[device_index].socket.emit('add zwave',data);
+    console.log('add zwave',data);
+  });
 
   socket.on('add thermostat', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
