@@ -5,7 +5,6 @@
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
 var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
-var zwave = require('./devices/zwave.js');
 
 module.exports = {
   relay: relay
