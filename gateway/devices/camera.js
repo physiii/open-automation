@@ -252,7 +252,7 @@ function start_ffmpeg(data) {
         console.log("ffmpeg timeout");
       }
     }
-  }, 1*20*1000);
+  }, 2*60*1000);
   
   ffmpeg_started = true;
   socket.relay.emit('ffmpeg started',settings);
