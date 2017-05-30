@@ -131,11 +131,11 @@ relay.on('add zwave', function (data) {
 
 relay.on('set zwave', function (data) {
   console.log("set zwave",data);
-  try {
+  //try {
     //zwave.setValue(data.node_id, 98, 1, 0, data.value);
     //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
-    zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
-  } catch (e) { console.log(e) }
+    zwave.set_value(data.node_id, data.class_id, data.instance, data.index, data.value);
+  //} catch (e) { console.log(e) }
 });
 
 relay.on('media', function (data) {
