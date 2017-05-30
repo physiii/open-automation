@@ -30,15 +30,15 @@ angular.module('starter.controllers', ['socket-io'])
   var smoke_alarms = [];
   $rootScope.alert_contacts = [];
   $rootScope.server_address = location.host;
-
-  console.log("<< ------  userinfo  ------ >> ");
-
   
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
   $rootScope.port = parts[1];
-  var relay_socket = io.connect("http://" + $rootScope.server_address);
+  $rootScope.port = parts[1] || 80;
+  var relay_socket = io.connect("http://" + $rootScope.server_address + ":" + $rootScope.port);
   $rootScope.relay_socket = relay_socket;
+  console.log("Connected to: " + "http://" + $rootScope.server_address + ":" + $rootScope.port);
+
   var token = $.cookie('token');
   var user = $.cookie('user');
   $rootScope.token = token;

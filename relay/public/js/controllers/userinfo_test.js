@@ -31,13 +31,14 @@ angular.module('starter.controllers', ['socket-io'])
   $rootScope.alert_contacts = [];
   $rootScope.server_address = location.host;
 
-  console.log("<< ------  userinfo  ------ >> ");
-
   
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
-  $rootScope.port = parts[1];
-  var relay_socket = io.connect("http://" + $rootScope.server_address);
+  $rootScope.port = parts[1] || 80;
+  var relay_socket = io.connect("http://" + $rootScope.server_address + ":" + $rootScope.port);
+  console.log("Connected to: " + "http://" + $rootScope.server_address + ":" + $rootScope.port);
+
+  //var relay_socket = io.connect("http://pyfi.org:80");
   $rootScope.relay_socket = relay_socket;
   var token = $.cookie('token');
   var user = $.cookie('user');
