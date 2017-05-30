@@ -1,3 +1,8 @@
+// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+// -----------------  https://github.com/physiii/open-automation  -------------------- //
+// ---------------------------------- userinfo.js ------------------------------------ //
+
+
 angular.module('starter.controllers', ['socket-io'])
 
 .directive('flipContainer', function() {
@@ -24,15 +29,10 @@ angular.module('starter.controllers', ['socket-io'])
   var alarms = [];
   var smoke_alarms = [];
   $rootScope.alert_contacts = [];
-  var server_type = "local";
+  $rootScope.server_address = location.host;
 
   console.log("<< ------  userinfo  ------ >> ");
-  if (server_type == "local")
-    $rootScope.server_address = location.host;
-  if (server_type == "dev")
-    $rootScope.server_address = "98.168.142.41";
-  if (server_type == "prod")
-    $rootScope.server_address = "24.253.223.242";
+
   
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
@@ -41,13 +41,31 @@ angular.module('starter.controllers', ['socket-io'])
   $rootScope.relay_socket = relay_socket;
   var token = $.cookie('token');
   var user = $.cookie('user');
-  token  = "e7ba376a61fe1e792d7e51a4c7335197f5e1351a9c65d093fae354640444974ae56ffa569a321a1cef3ba6314a4f203d2f06573e505b7681869625da69837253";
+  token  = "cd945f218819ab90171a1d9195832a6bfad40ea9823c9cbfd92690ebea0d318137e3b23d2e7f7e15c542bcfd2ffb94d64969d35919a8045acc7d4f3b33aa23b6";
   user = "scottcolemanhomes@gmail.com";
   $rootScope.token = token;
   $rootScope.user = user;
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
+
+
+  relay_socket.on('set status', function (data) {
+    var mac = data.mac;
+    var mobile = $rootScope.mobile;
+    for (var i = 0; i < mobile.length; i++) {
+      if (mac === mobile[i].mac) {
+        mobile[i] = data;
+        /*mobile[i].latitude = data.latitude;
+        mobile[i].longitude = data.longitude;
+        mobile[i].speed = data.speed;
+        mobile[i].accuracy = data.accuracy;*/
+      }
+    }
+    $rootScope.mobile = mobile;
+    //console.log("set status",data);
+    $rootScope.update_map(data);
+  });
 
   relay_socket.on('room_sensor', function (data) {
     if (data.status = 'alert') {
@@ -221,7 +239,7 @@ angular.module('starter.controllers', ['socket-io'])
     var i = find_index(gateways,'mac',mac);
     if (i < 0) return console.log("load_settings | mac not found",mac);
     gateways[i].settings = settings;
-    console.log("load_settings |",settings.device_name);
+    console.log("load_settings |",settings);
     /*key = 'thermostat';
     for (key in devices) {
       if (devices[key].device_type == 'thermostat') {
