@@ -41,7 +41,7 @@ angular.module('starter.controllers', ['socket-io'])
   $rootScope.relay_socket = relay_socket;
   var token = $.cookie('token');
   var user = $.cookie('user');
-  token  = "cd945f218819ab90171a1d9195832a6bfad40ea9823c9cbfd92690ebea0d318137e3b23d2e7f7e15c542bcfd2ffb94d64969d35919a8045acc7d4f3b33aa23b6";
+  token  = "e7ba376a61fe1e792d7e51a4c7335197f5e1351a9c65d093fae354640444974ae56ffa569a321a1cef3ba6314a4f203d2f06573e505b7681869625da69837253";
   user = "scottcolemanhomes@gmail.com";
   $rootScope.token = token;
   $rootScope.user = user;
