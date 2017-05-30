@@ -4,6 +4,14 @@
 
 var database = require('../database.js');
 
+module.exports = {
+  set_light: set_light,
+  find_lights: find_lights,
+  create_user: create_user,
+  find_hue_bridge: find_hue_bridge,
+  set_theme: set_theme
+}
+
 var red = {"on":true,"rgb":[255,0,0],"bri":"255"};
 var blue = {"on":true,"rgb":[0,0,255],"bri":"255"};
 var state = red;
@@ -69,7 +77,7 @@ function create_user(device) {
       if (device_array[i].id == device.id) {
         device_array[i].user = user;
 	device_array[i].device_type = "lights";
-	device_array[i].local_ip = local_ip;
+	device_array[i].local_ip = utils.local_ip;
  	//device_array[i].token = token;
   	//device_array[i].mac = mac;
 	//database.store_device(device_array[i]);
@@ -101,12 +109,11 @@ function set_light(device_id,state) {
   console.log("set_light",state);
   for (var i = 0; i < device_array.length; i++) {
     if (device_array[i].device_type == "lights") {
-  
       hue = new HueApi(device_array[i].ipaddress,device_array[i].user);
       hue.setLightState(device_id, state, function(err, results) {
         if (err) console.log(err);
       });
-      //find_lights(device_array[i]);
+      find_lights(device_array[i]);
     }
   }
 }

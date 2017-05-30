@@ -5,7 +5,6 @@
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
 var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
-var zwave = require('./devices/zwave.js');
 
 module.exports = {
   relay: relay
@@ -96,7 +95,7 @@ relay.on('update', function (data) {
 relay.on('get settings', function (data) {
   var settings = database.settings;
   relay.emit('load settings', settings);
-  //console.log("load settings |", settings);
+  console.log("load settings |", settings);
 });
 
 relay.on('get devices', function (data) {
@@ -159,7 +158,7 @@ relay.on('set thermostat', function (data) {
 
 relay.on('set lights', function (data) {
   //data.light = omit(data.light,"$$hashKey"); //bad angularjs array
-  set_light(data.light.id,data.light.state);
+  lights.set_light(data.light.id,data.light.state);
   //console.log("set lights", data.light);
 });
 

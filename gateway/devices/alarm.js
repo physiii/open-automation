@@ -2,11 +2,14 @@
 // ------------  https://github.com/physiii/open-automation --------------- //
 // --------------------------------- alarm.js ----------------------------- //
 
+var TAG = "[alarm.js]";
+
 module.exports = {
   set_alarm: set_alarm
 }
 
 function set_alarm(data) {
+  if (!config.zwave) return console.log(TAG,"zwave is disabled");
   database.store_settings(data.mode);
   if (data.mode == "armed") {
     alert = true;

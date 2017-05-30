@@ -20,7 +20,7 @@ angular.module('starter.controllers')
   }
 
   $scope.add_zwave_device = function(gateway) {
-    relay_socket.emit('add_zwave_device',gateway);
+    relay_socket.emit('add zwave',gateway);
     console.log('add_zwave_device');
   }
 
@@ -72,10 +72,10 @@ angular.module('starter.controllers')
     if (document.getElementById(mac_addr+"_account_info").style.display == "inline") {
       document.getElementById(mac_addr+"_account_info").style.display = "none";
     } else {
-      document.getElementById(mac_addr+"_account_info").style.display = "inline";    
+      document.getElementById(mac_addr+"_account_info").style.display = "inline";
     }
   }
-  
+
   $scope.show_form = function(form, mac) {
     if (mac == null) mac = "";
     console.log("show_form: " + mac + form);
