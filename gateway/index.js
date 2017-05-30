@@ -34,12 +34,14 @@ socket = require('./socket.js');
 database = require('./database');
 utils = require('./utils');
 
-zwave = require('./devices/zwave.js');
 thermostat = require('./devices/thermostat.js');
 lights = require('./devices/lights.js');
 media = require('./devices/media.js');
 alarm = require('./devices/alarm.js');
 camera = require('./devices/camera.js');
+if (config.zwave) {
+  zwave = require('./devices/zwave.js');
+}
 
 device_array= [];
 /*

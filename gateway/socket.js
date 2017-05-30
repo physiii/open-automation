@@ -5,7 +5,6 @@
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
 var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
-var zwave = require('./devices/zwave.js');
 
 module.exports = {
   relay: relay
@@ -96,7 +95,7 @@ relay.on('update', function (data) {
 relay.on('get settings', function (data) {
   var settings = database.settings;
   relay.emit('load settings', settings);
-  //console.log("load settings |", settings);
+  console.log("load settings |", settings);
 });
 
 relay.on('get devices', function (data) {
@@ -131,11 +130,11 @@ relay.on('add zwave', function (data) {
 
 relay.on('set zwave', function (data) {
   console.log("set zwave",data);
-  try {
+  //try {
     //zwave.setValue(data.node_id, 98, 1, 0, data.value);
     //zwave.setValue(data.node_id, 112, 1, 7, 'Activity');
-    zwave.setValue(data.node_id, data.class_id, data.instance, data.index, data.value);
-  } catch (e) { console.log(e) }
+    zwave.set_value(data.node_id, data.class_id, data.instance, data.index, data.value);
+  //} catch (e) { console.log(e) }
 });
 
 relay.on('media', function (data) {
