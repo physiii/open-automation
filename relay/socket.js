@@ -109,10 +109,7 @@ wss.on('connection', function connection(ws) {
 
     // ---------------  media controller  ----------------- //
     if (device_type === "media_controller") {
-      for (var j = 0; j < device_objects[device_index].groupvar ws = require('ws').Server;
-var wss = new ws({
-    server: httpsServer
-});s.length; j++) {
+      for (var j = 0; j < device_objects[device_index].groups.length; j++) {
         message_user(device_objects[device_index].groups[j],'media_controller',msg);
         var group_index = find_index(groups,'group_id',device_objects[device_index].groups[j]);
         //console.log("media_controller messing users",device_objects[device_index].groups[j]);
@@ -121,8 +118,7 @@ var wss = new ws({
           message_user(groups[group_index].members[k],'media_controller',msg);
         }
       }
-      var index = find_index(groups,'group_id',mac);
-      if (index < 0) return console.log("media_controller | group not found", mac);
+      var index = find_index(groups,'group_id',token);
       if (groups[index].record_mode.value == true) {
         var ir_index = find_index(groups[index].IR,'command',groups[index].record_mode.command);
         if (ir_index > -1) {
