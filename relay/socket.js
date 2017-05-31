@@ -109,7 +109,10 @@ wss.on('connection', function connection(ws) {
 
     // ---------------  media controller  ----------------- //
     if (device_type === "media_controller") {
-      for (var j = 0; j < device_objects[device_index].groups.length; j++) {
+      for (var j = 0; j < device_objects[device_index].groupvar ws = require('ws').Server;
+var wss = new ws({
+    server: httpsServer
+});s.length; j++) {
         message_user(device_objects[device_index].groups[j],'media_controller',msg);
         var group_index = find_index(groups,'group_id',device_objects[device_index].groups[j]);
         //console.log("media_controller messing users",device_objects[device_index].groups[j]);
@@ -295,12 +298,14 @@ io.on('connection', function (socket) {
   });
 
   socket.on('load settings', function (data) {
+    console.log("load settings |",data.mac);
+    socket.emit('loaded settings',data);
     var device_index = find_index(device_objects, 'token', data.token);
     if (device_index < 0) return console.log("device not found", data.mac);
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
     for (var i=0; i < groups[group_index].members.length; i++) {
-      //console.log("load settings | group",groups[group_index]);
+      //console.log("load settings2 | group",groups[group_index]);
       message_user(groups[group_index].members[i],'load settings',data);
     }
   });
@@ -837,7 +842,7 @@ io.on('connection', function (socket) {
     if (data.username == "Please enter a username") return console.log("link device | unregistered device");
     var temp_object = Object.assign({}, device_objects[device_index]);
     delete temp_object.socket;
-    console.log('link device',temp_object);
+    console.log('link device',temp_object.mac);
     socket.emit('link device',temp_object);
     //get_devices(data,socket);
   });
@@ -879,7 +884,7 @@ io.on('connection', function (socket) {
     for (var i=0; i < groups[group_index].members.length; i++) {
       var member_index = find_index(device_objects,'mac',groups[group_index].members[i]);
       if (member_index < 0) {
-        console.log("get devices | member not found",groups[group_index].members[i]);
+        //console.log("get devices | member not found",groups[group_index].members[i]);
         continue;
       }
       if (device_objects[member_index].socket)

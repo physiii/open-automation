@@ -28,7 +28,8 @@
 
 # config #
 ##########
-config.json
+relay/config.json
+gateway/config.json
 
 # Logs and databases #
 ######################
