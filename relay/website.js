@@ -120,10 +120,18 @@ app.get('/get_ip', function(req, res) {
   res.send(ip);
 });
 
-// Reroute Client request to SSL
+//SSL Redirect
 
+if (use_ssl) || if (use_domain_ssl){
+  app.get('*', securedirect);
 
-
+  function securedirect(req, res, next){
+    if(req.secure){
+      return next();
+  }
+      res.redirect('https://'+ req.headers.host + req.url);
+ }
+}
 
 // Create and start servers
 
