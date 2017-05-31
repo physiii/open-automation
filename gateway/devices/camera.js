@@ -102,6 +102,7 @@ function send_camera_preview (path) {
 
 ffmpeg_timer = setTimeout(function () {}, 1);
 socket.relay.on('ffmpeg', function (data) {
+  console.log("ffmpeg", data);
   if (data.command == "start_webcam") {
     start_ffmpeg(data);
   }

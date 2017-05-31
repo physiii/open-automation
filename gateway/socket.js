@@ -1,16 +1,18 @@
 // -----------------------------  OPEN-AUTOMATION ------------------------- //
 // ------------  https://github.com/physiii/open-automation --------------- //
-// --------------------------------- socket.js ----------------------------- //
+// -------------------------------- socket.js ----------------------------- //
 
+var exec = require('child_process').exec;
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
-var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
+//var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
+var relay = require('socket.io-client')("http://pyfi.org");
+var load_settings_timer;
 
 module.exports = {
   relay: relay
 }
 
-var exec = require('child_process').exec;
 console.log('Connected to:',relay_server+":"+relay_port);
 
 relay.on('get token', function (data) {
@@ -25,12 +27,16 @@ relay.on('get token', function (data) {
   relay.emit('load settings',settings);
 });
 
+relay.on('loaded settings', function (data) {
+  console.log('loaded settings |',data.mac);
+  clearTimeout(load_settings_timer);
+});
+
 relay.on('set settings', function (data) {
   //data = {'device_name':data.device_name,'media_enabled':data.media_enabled,'camera_enabled':data.camera_enabled};
   database.store_settings(data);
-  console.log("set settings |  ", data);
+  console.log("set settings |", data.mac);
 });
-
 
 relay.on('store_schedule', function (data) {
   console.log("store_schedule |  " + data);  
@@ -92,10 +98,26 @@ relay.on('update', function (data) {
   utils.update();
 });
 
+function start_settings_timer() {
+  load_settings_timer = setTimeout(function () {
+    console.log("load_settings_timer | no reply from server");
+    exec("pm2 restart all", (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    });    
+    start_settings_timer();
+  }, 3000);
+}
+
 relay.on('get settings', function (data) {
   var settings = database.settings;
   relay.emit('load settings', settings);
-  console.log("load settings |", settings);
+  console.log("load settings |", settings.mac);
+  //start_settings_timer();
 });
 
 relay.on('get devices', function (data) {
