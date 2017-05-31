@@ -109,7 +109,10 @@ wss.on('connection', function connection(ws) {
 
     // ---------------  media controller  ----------------- //
     if (device_type === "media_controller") {
-      for (var j = 0; j < device_objects[device_index].groups.length; j++) {
+      for (var j = 0; j < device_objects[device_index].groupvar ws = require('ws').Server;
+var wss = new ws({
+    server: httpsServer
+});s.length; j++) {
         message_user(device_objects[device_index].groups[j],'media_controller',msg);
         var group_index = find_index(groups,'group_id',device_objects[device_index].groups[j]);
         //console.log("media_controller messing users",device_objects[device_index].groups[j]);

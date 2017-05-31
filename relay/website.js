@@ -13,12 +13,32 @@ var https = require('https');
 var http = require('http');
 var app = express();
 var router = express.Router();
+var TAG = "[website.js] ";
 
 module.exports = {
  start: start
 }
 
 function start(app) {
+
+// ------------- //
+// SSL Redirect  //
+// ------------- //
+
+/*
+if (config.use_ssl || config.use_domain_ssl){
+  app.get('*', securedirect);
+
+  function securedirect(req, res, next){
+    if(req.secure){
+      return next();
+  }
+  var parts = req.headers.host.split(":");
+  var ssl_url = parts[0] + ":" + config.website_secure_port;
+  res.redirect('https://'+ ssl_url + req.url);
+ }
+}
+*/
 
 var port = config.website_port || 5000;
 var secure_port = config.website_secure_port || 4443;
@@ -120,18 +140,7 @@ app.get('/get_ip', function(req, res) {
   res.send(ip);
 });
 
-//SSL Redirect
 
-if (use_ssl) || if (use_domain_ssl){
-  app.get('*', securedirect);
-
-  function securedirect(req, res, next){
-    if(req.secure){
-      return next();
-  }
-      res.redirect('https://'+ req.headers.host + req.url);
- }
-}
 
 // Create and start servers
 
@@ -148,7 +157,7 @@ if (use_ssl) {
   };
 
   var secure_server = https.createServer(options, app);
-  secure_server.listen(secure_port);
+  secure_server.listen(config.website_secure_port);
   console.log('Secure Server listening on port ' + secure_port);
 }
 
@@ -162,16 +171,15 @@ if (use_domain_ssl) {
   };
 
   var secure_server = https.createServer(options, app);
-  secure_server.listen(secure_port);
-  console.log('Secure Server listening on port ' + secure_port);
+  secure_server.listen(config.website_secure_port);
+  console.log('Secure Server listening on port ' + config.website_secure_port);
 }
 
 server.listen(port);
 console.log('Insecure Server listening on port ' + port);
 
-if (use_ssl){
-  socket.start(secure_server);
-} else if (use_domain_ssl){
+if (use_ssl || use_domain_ssl){
+  console.log(TAG + "Hit secure Port")
   socket.start(secure_server);
 } else {
   socket.start(server);
