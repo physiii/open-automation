@@ -1,8 +1,8 @@
 angular.module('starter.controllers')
 .controller('CameraCtrl', function($scope, $rootScope, $stateParams, socket, $ionicLoading, $compile, $http) {
   var relay_socket = $rootScope.relay_socket;
-  console.log("<< ------  CameraCtrl  ------ >> ", $scope);
-
+  console.log("<< ------  CameraCtrl  ------ >> ");
+  
   get_camera_list();
   function get_camera_list() {
     var gateways = $rootScope.gateways;
@@ -114,11 +114,11 @@ angular.module('starter.controllers')
     $scope.flip();
     $scope.start_stream(gateway.mac);
   }
-
-  $scope.list_folder = function (gateway) {
+    console.log("SCOPE: ",$scope);
+  $scope.list_folder = function (gateway, $scope) {
+    console.log($scope);
     console.log("list folder!!!");
     relay_socket.emit('folder list',{token:gateway.token,folder:"/var/lib/motion"});
-    console.log($scope);
   }
 
   $scope.select_item = function (item, gateway) {

@@ -17,6 +17,7 @@ angular.module('starter.controllers', ['socket-io'])
 })
 
 .controller('userinfo', function($document, $scope, $stateParams, Categories, socket, $ionicLoading, $compile, $http, $sce, $rootScope) {
+  var TAG = "[userinfo] ";
   var gateways = [];
   var mobile = []; 
   var garage_openers = [];
@@ -34,9 +35,10 @@ angular.module('starter.controllers', ['socket-io'])
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
   $rootScope.port = parts[1] || 80;
-  var relay_socket = io.connect("http://" + $rootScope.server_address + ":" + $rootScope.port);
+  var url = "http://" + $rootScope.server_address + ":" + $rootScope.port;
+  var relay_socket = io.connect(url);
   $rootScope.relay_socket = relay_socket;
-  console.log("Connected to: " + "http://" + $rootScope.server_address + ":" + $rootScope.port);
+  console.log(TAG + "Connected to: " + url);
 
   var token = $.cookie('token');
   var user = $.cookie('user');
