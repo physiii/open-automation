@@ -9,8 +9,10 @@ angular.module('starter.controllers')
   function get_camera_list() {
     var gateways = $rootScope.gateways;
     for (var i = 0; i < gateways.length; i++) {
+      if (gateways[i].getting_camera_list) return console.log(TAG,"preview already requested");
       relay_socket.emit('get camera list',gateways[i]);
-      //console.log('get_camera_list',gateways[i].mac);
+      gateways[i].getting_camera_list = true;
+      console.log(TAG,"get camera list",gateways[i].mac)
     }
   }
 
@@ -41,7 +43,6 @@ angular.module('starter.controllers')
 
       var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
       for (var i = 0; i < camera_list.length; i++) {
-        console.log(TAG,"get camera preivew",camera_list[i])
         relay_socket.emit('get camera preview',{token:$rootScope.gateways[index].token, camera_number:camera_list[i].camera_number});
       }
 
@@ -51,8 +52,9 @@ angular.module('starter.controllers')
   relay_socket.on('camera preview', function (data) {
     var camera_number = data.camera_number;
     var mac = data.mac;
-    var ctx = document.getElementById('previewCanvas_'+mac+'_'+camera_number).getContext('2d');
-    console.log(TAG,"context:",ctx)
+    var div_id = document.getElementById('previewCanvas_'+mac+'_'+camera_number);
+    if (!div_id) return console.log(TAG,"camera preview | div not found",mac,camera_number);
+    var ctx = div_id.getContext('2d');
     //document.getElementById("play-button_"+mac+'_'+camera_number).style.display = "none";
     //document.getElementById("previewCanvas_"+mac+'_'+camera_number).style.background = "blue";
     //document.getElementById("videoCanvas_"+mac+'_'+camera_number).style.display = "none";
