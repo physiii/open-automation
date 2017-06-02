@@ -36,7 +36,7 @@ log_type all
 
 # Videodevice to be used for capturing  (default /dev/video0)
 # for FreeBSD default is /dev/bktr0
-videodevice /dev/video11
+# videodevice /dev/video11
 
 # v4l2_palette allows to choose preferable palette to be use by motion
 # to capture from those supported by your videodevice. (default: 17)
@@ -357,7 +357,7 @@ snapshot_interval 0
 # Locate and draw a box around the moving object.
 # Valid values: on, off, preview (default: off)
 # Set to 'preview' will only draw a box in preview_shot pictures.
-locate_motion_mode off
+locate_motion_mode on
 
 # Set the look and style of the locate box if enabled.
 # Valid values: box, redbox, cross, redcross (default: box)
@@ -415,7 +415,7 @@ text_double off
 
 # Target base directory for pictures and films
 # Recommended to use absolute path. (Default: current working directory)
-target_dir /var/lib/motion
+# target_dir /var/lib/motion
 
 # File path for snapshots (jpeg or ppm) relative to target_dir
 # Default: %v-%Y%m%d%H%M%S-snapshot
@@ -433,7 +433,7 @@ snapshot_filename %v-%Y%m%d%H%M%S-snapshot
 # File extension .jpg or .ppm is automatically added so do not include this
 # Set to 'preview' together with best-preview feature enables special naming
 # convention for preview shots. See motion guide for details
-picture_filename %Y/%m/%d/images/%H:%M:%S-%q
+picture_filename %Y/%m/%d/images/%H_%M_%S-%q
 
 # File path for motion triggered ffmpeg films (movies) relative to target_dir
 # Default: %v-%Y%m%d%H%M%S
@@ -441,7 +441,7 @@ picture_filename %Y/%m/%d/images/%H:%M:%S-%q
 # For Motion 3.0 compatible mode choose: %Y/%m/%d/%H%M%S
 # File extension .mpg or .avi is automatically added so do not include this
 # This option was previously called ffmpeg_filename
-movie_filename %Y/%m/%d/%H:%M:%S
+movie_filename %Y/%m/%d/%H_%M_%S
 
 # File path for timelapse movies relative to target_dir
 # Default: %Y%m%d-timelapse
@@ -725,8 +725,7 @@ quiet on
 # This motion.conf file AND thread1.conf and thread2.conf.
 # Only put the options that are unique to each camera in the
 # thread config files.
-; thread /etc/motion/thread1.conf
-; thread /etc/motion/thread2.conf
+thread /etc/motion/thread1.conf
+thread /etc/motion/thread2.conf
 ; thread /etc/motion/thread3.conf
 ; thread /etc/motion/thread4.conf
-
