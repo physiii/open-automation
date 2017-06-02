@@ -72,6 +72,8 @@ npm install
 
 ## copy files and set permissions
 sudo cp files/motion.conf /etc/motion/motion.conf
+sudo cp files/thread1.conf /etc/motion/thread1.conf
+sudo cp files/thread2.conf /etc/motion/thread2.conf
 sudo cp files/default.motion /etc/default/motion
 sudo service motion restart
 sudo chmod -R 777 /var/log /var/lib
