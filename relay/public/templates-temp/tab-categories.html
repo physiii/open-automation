@@ -1,0 +1,18 @@
+<ion-view view-title="Dashboard">
+  <ion-content>
+    <div style="margin:auto;">
+      <ion-list>
+        <ion-item href="#/tab/categories/{{category.id}}" class="item-remove-animate item-icon-right" ng-repeat="category in categories" type="item-text-wrap">
+            <div style="float:left;margin:0px 20px 0px 0px" class="{{category.icon}}"></div>
+            <div style="float:right">
+              <h2>{{category.name}}</h2>
+              <p>{{category.lastText}}</p>
+            </div>
+            <ion-option-button class="button-assertive" ng-click="remove(category)">
+              Delete
+            </ion-option-button>
+        </ion-item>
+      </ion-list>
+    </div>
+  </ion-content>
+</ion-view>

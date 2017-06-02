@@ -5,15 +5,13 @@
 var exec = require('child_process').exec;
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
-//var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
-var relay = require('socket.io-client')("http://pyfi.org");
-var load_settings_timer;
+var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
+console.log('Connected to:',relay_server+":"+relay_port);
+//var load_settings_timer;
 
 module.exports = {
   relay: relay
 }
-
-console.log('Connected to:',relay_server+":"+relay_port);
 
 relay.on('get token', function (data) {
   var settings = database.settings;
@@ -29,7 +27,7 @@ relay.on('get token', function (data) {
 
 relay.on('loaded settings', function (data) {
   console.log('loaded settings |',data.mac);
-  clearTimeout(load_settings_timer);
+  //clearTimeout(load_settings_timer);
 });
 
 relay.on('set settings', function (data) {
@@ -98,7 +96,7 @@ relay.on('update', function (data) {
   utils.update();
 });
 
-function start_settings_timer() {
+/*function start_settings_timer() {
   load_settings_timer = setTimeout(function () {
     console.log("load_settings_timer | no reply from server");
     exec("pm2 restart all", (error, stdout, stderr) => {
@@ -111,7 +109,7 @@ function start_settings_timer() {
     });    
     start_settings_timer();
   }, 3000);
-}
+}*/
 
 relay.on('get settings', function (data) {
   var settings = database.settings;

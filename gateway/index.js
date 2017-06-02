@@ -104,6 +104,10 @@ function main_loop () {
         thermostat.get_therm_state(device_array[i].local_ip);
       }
     }
+    /*var camera_list = database.settings.camera_list;
+    for (var i = 0; i < camera_list.length; i++) {
+      get_camera_preview(camera_list.camera_number);
+    }*/
     main_loop();
   }, 30*1000);
   //console.log(Date.now() + " | main loop");

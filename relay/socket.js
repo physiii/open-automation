@@ -12,7 +12,7 @@ module.exports = {
 
 var DEVICE_PORT = config.device_port || 4000;
 var find_index = utils.find_index;
-
+var TAG = "[socket.js]";
 /* --------------  websocket server for devices  ----------------- */
 var WebSocketServer = require('ws').Server
   , wss = new WebSocketServer({ port: DEVICE_PORT });
@@ -275,7 +275,7 @@ io.on('connection', function (socket) {
     if (index > -1) {
       //database.store_device_object(data);
       device_objects[index].socket = socket;
-      //console.log('get token | updated socket',mac);
+      console.log('get token | updated socket',mac);
     } else {
       data.groups = [mac];
       database.store_device_object(data);
@@ -425,9 +425,10 @@ io.on('connection', function (socket) {
 
   socket.on('get camera preview', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
-    if (device_index > -1)
-      if (device_objects[device_index].socket)
-        device_objects[device_index].socket.emit('get camera preview',data);
+    if (device_index < 0) return console.log(TAG,"device not found",data.mac);
+    if (!device_objects[device_index].socket) return console.log(TAG,"socket not found",data.mac);
+    console.log(TAG,"get_camera_preview",data)
+    device_objects[device_index].socket.emit('get camera preview',data);
   });
 
   socket.on('play', function (data) {

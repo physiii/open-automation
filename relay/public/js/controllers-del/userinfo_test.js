@@ -1,14 +1,8 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ---------------------------------- userinfo.js ------------------------------------ //
-
-
-angular.module('starter.controllers', ['socket-io'])
+angular.module('starter.controllers')
 
 .directive('flipContainer', function() {
   return {
-    restrict: 'AEC',
-    replace:true,
+    restrict: 'C',
     link: function($scope, $elem, $attrs) {
       $scope.flip = function() {
         $elem.toggleClass('flip');
@@ -17,8 +11,7 @@ angular.module('starter.controllers', ['socket-io'])
   };
 })
 
-.controller('userinfo', function($document, $scope, $stateParams, Categories, socket, $ionicLoading, $compile, $http, $sce, $rootScope) {
-  var TAG = "[userinfo]";
+.controller('userinfo', function($document, $scope, $stateParams, Categories, socket,$ionicLoading, $compile, $http, $sce, $rootScope) {
   var gateways = [];
   var mobile = []; 
   var garage_openers = [];
@@ -30,42 +23,34 @@ angular.module('starter.controllers', ['socket-io'])
   var sirens = [];
   var alarms = [];
   var smoke_alarms = [];
-  $rootScope.alert_contacts = [];
+  var server_type = "local";
 
-  $rootScope.server_address = location.host;  
+  console.log("<< ------  userinfo  ------ >> ");
+  if (server_type == "local")
+    $rootScope.server_address = location.host;
+  if (server_type == "dev")
+    $rootScope.server_address = "98.168.142.41";
+  if (server_type == "prod")
+    $rootScope.server_address = "24.253.223.242";
+  
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
-  $rootScope.port = parts[1] || 80;
-  var url = "http://" + $rootScope.server_ip + ":" + $rootScope.port;
-  var relay_socket = io.connect(url);
+  $rootScope.port = parts[1];
+  var relay_socket = io.connect("http://" + $rootScope.server_address);
   $rootScope.relay_socket = relay_socket;
-  console.log(TAG + "Connected to: " + url);
-
   var token = $.cookie('token');
   var user = $.cookie('user');
+  token  = "1043196c34db152b9f734ff3f4b731445b6f740459f8a7175c2452f52dba7498df5f8427427edf97087252bc1e7ae96a8b8eed199e9e0d66e2cb123c357df0fa";
+  user = "scottcolemanhomes@gmail.com";
   $rootScope.token = token;
   $rootScope.user = user;
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
+  //relay_socket.emit('link lights',{ mac:"TESTMAC", token:"TESTTOK" });
 
 
-  relay_socket.on('set status', function (data) {
-    var mac = data.mac;
-    var mobile = $rootScope.mobile;
-    for (var i = 0; i < mobile.length; i++) {
-      if (mac === mobile[i].mac) {
-        mobile[i] = data;
-        /*mobile[i].latitude = data.latitude;
-        mobile[i].longitude = data.longitude;
-        mobile[i].speed = data.speed;
-        mobile[i].accuracy = data.accuracy;*/
-      }
-    }
-    $rootScope.mobile = mobile;
-    //console.log("set status",data);
-    $rootScope.update_map(data);
-  });
+  $rootScope.alert_contacts = [];
 
   relay_socket.on('room_sensor', function (data) {
     if (data.status = 'alert') {
@@ -94,6 +79,46 @@ angular.module('starter.controllers', ['socket-io'])
       $rootScope.gateways[index].command_result = command_result;
     });
     //console.log("command result",command_result);
+  });
+
+  relay_socket.on('folder list result', function (data) {
+    var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
+    folder_list.splice(0,1);
+    folder_list.splice(folder_list.length - 1,1);
+
+    for (var i = 0; i < folder_list.length; i++) {
+      var parts = folder_list[i].split(" ");
+      if (parts.length < 8) continue;
+      parts.folder = data.folder;
+      for (var k = 0; k < parts.length; k++) {
+        if (parts[k].length < 1) {
+          parts.splice(k,1);
+          k--;
+        }
+      }
+
+      //format date
+      parts[5] = parts[5].split("-");
+
+      //format time
+      parts[6] = parts[6].split(":");
+      
+      
+      if (parts[8].charCodeAt(0) == 46) {
+        if (parts[8].charCodeAt(1) == 46) {
+        } else if (parts[8].length < 2) {
+          folder_list.splice(i,1);
+          i--;
+          continue;
+        }
+      }
+      folder_list[i] = parts;
+    }
+    $scope.$apply(function () {
+      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+      $rootScope.gateways[index].folder_list = folder_list;
+    });
+    console.log("folder list result | ",folder_list);
   });
 
   relay_socket.on('motion_sensor', function (state) {
@@ -215,12 +240,39 @@ angular.module('starter.controllers', ['socket-io'])
       $rootScope.sirens = sirens;
     });
   });
+
+  relay_socket.on('camera preview', function (data) {
+    //var width = data.width;
+    //var height = data.height;
+    var ctx = document.getElementById('previewCanvas_'+data.mac).getContext('2d');
+    var img = new Image();
+    img.src = 'data:image/jpeg;base64,' + data.image;
+    console.log("camera preview",data);
+    ctx.drawImage(img, 0, 0, 600, 400);
+  });
   
+  relay_socket.on('set location', function (data) {
+    console.log("set location",data);
+    var mac = data.mac;
+    var mobile = $rootScope.mobile;
+    for (var i = 0; i < mobile.length; i++) {
+      if (mac === mobile[i].mac) {
+        mobile[i].latitude = data.latitude;
+        mobile[i].longitude = data.longitude;
+        mobile[i].speed = data.speed;
+        mobile[i].accuracy = data.accuracy;
+      }
+    }
+    $rootScope.mobile = mobile;
+    $rootScope.update_map(data);
+  });
+
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
     load_settings(data);
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
+    relay_socket.emit('get camera preview',data_obj);
     //console.log('load settings',data);
   });
 

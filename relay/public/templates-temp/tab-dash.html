@@ -9,31 +9,29 @@
  }
 </style>
 <div class="background-1" style="width:100%;padding:0px;">
-  <div style="margin:auto auto auto auto;max-width:2000px;padding:5px">
+  <div style="margin:auto auto auto auto;max-width:2000px;padding:20px">
 
 <!------------------------------------------------------------------------>
 <!-----------------------------  Video  ---------------------------------->
 <!------------------------------------------------------------------------>
 <div ng-controller="CameraCtrl" data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
-  <div data-ng-repeat="camera in gateway.camera_list">
-    <div id="container_{{ gateway.mac }}_{{ camera.camera_number}}" class="col-lg-4 col-md-6 col-sm-12">
+  <div data-ng-repeat="camera in gateway.camera_list"> 
+    <div id="container_{{ gateway.mac }}" class="col-lg-4 col-md-6 col-sm-12">
       <div class="flip-container">
-        <div class="flipper clearfix">
+        <div class="flipper clearfix" >
           <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;">
 
             <ion-card-header >
-              <div ng-click="flip();list_folder(gateway, camera.camera_number)" style="width:100%" class="">
+              <div ng-click="list_folder(gateway)" style="width:100%" class="">
                 <h4 style="margin:10px;text-align:left;float:left;color:#ccc">{{ gateway.device_name }}</h4>
                 <button class="btn btn-sm" style="float:right;height:30px;margin:5px;color:#444"><i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
-<h4 style="margin:10px;text-align:left;float:right;color:#ccc" ng-if="gateway.camera_list.length > 1">Camera {{camera.camera_number[0]}}</h4>
               </div>
             </ion-card-header>
 
-            <div id="play-button_{{ gateway.mac }}_{{ camera.camera_number }}" ng-click="start_webcam(gateway, camera.camera_number)" class="item item-divider" style="width:100%;height:300px;background-color:#ddd;">
+            <div id="play-button_{{ gateway.mac }}_{{ camera.camera_number }}" ng-click="start_webcam(gateway, camera.camera_number)">
               <canvas id="previewCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="height:300px;"></canvas>
               <div class="play-button"></div>
             </div>
-
             <div id="loading_videoCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="position:absolute;left:48%;top:50%;display:none">
               <i style="color:#eee" class="fa fa-spinner fa-spin fa-5x fa-fw"></i>
             </div>
@@ -48,43 +46,16 @@
               <b>{{ gateway.motion_list.selected_month.month }} {{ gateway.motion_list.selected_day.day }}</b>
               <h5 style="color:#eee;float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
             </li>
-
-            <div ng-if="!flip_card">
-              <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway, camera.camera_number);" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
-               <div style="float:left">{{ item.name }} {{ item[4] }}</div>
-               <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
-              </li>
-	    </div>
-
-            <div ng-if="flip_card" ng-click="flip()">
-              <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway, camera.camera_number)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
-               <div style="float:left">{{ item.name }} {{ item[4] }}</div>
-               <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
-              </li>
-	    </div>
+            <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
+             <div style="float:left">{{ item.name }} {{ item[4] }}</div>
+             <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
+            </li>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- <div ng-controller="CameraCtrl" data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
-  <div data-ng-repeat="camera in gateway.camera_list">
-    <div id="container_{{ gateway.mac }}_{{ camera.camera_number}}" class="col-lg-4 col-md-6 col-sm-12">
-      <div class="flip-container">
-        <div class="flipper clearfix">
-          <div ng-click="flip()" class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;">
-	  test1
-          </div>
-          <div class="back card" style="overflow-y:scroll;max-height:400px;width:100%;border-style:solid;border-width:2px;border-color:#9E1A1A;background-color:#6E1A1A;color:#fff;">
-	  test2
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
 
 <!-------------------------------------------------------------->
 <!----------------------  Thermostat  -------------------------->
@@ -503,10 +474,10 @@
           </ion-card-header>
     <div style="padding:10px" class="item item-divider">
       <div style="background:#f8f8f8;border:2px solid #444;">
-        <iframe type="text/html" frameborder="0" height="245" width="" src="http://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>
+        <iframe type="text/html" frameborder="0" height="245" width="" src="https://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>
       </div>
       <div style="background:#f8f8f8;border:2px solid #444;border-width:0px 2px 2px 2px">
-        <img src='//radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
+        <img src='https://radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
       </div>
     </div>
         </div>

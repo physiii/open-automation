@@ -1,11 +1,10 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ---------------------------------- camera.js --------------------------------------- //
+// ---------------------------  OPEN-AUTOMATION -------------------------------- //
+// --------------  https://github.com/physiii/open-automation  ----------------- //
+// ------------------------------- camera.js ----------------------------------- //
 
 var exec = require('child_process').exec;
 var fs = require('fs');
-
-
+var TAG = "[camera.js]";
 
 socket.relay.on('folder list', function (data) {
   var folder = data.folder;
@@ -44,7 +43,8 @@ socket.relay.on('get camera list', function (data) {
     }
     data.stdout = stdout;
     data.stderr = stderr;
-    //console.log("camera list |",data);
+    console.log("camera list |",data);
+    database.settings.camera_list = data;
     socket.relay.emit('camera list',data);
   });
 });
@@ -52,7 +52,9 @@ socket.relay.on('get camera list', function (data) {
 socket.relay.on('get camera preview', function (data) {
   //if (data.command == 'snapshot')
   //if (data.command == 'preview')
-  get_camera_preview();
+  console.log(TAG,"get camera preview",data.camera_number)
+  var camera_number = data.camera_number;
+  get_camera_preview(camera_number);
 });
 
 socket.relay.on('set resolution', function (data) {
@@ -64,8 +66,8 @@ socket.relay.on('set resolution', function (data) {
   console.log("set resolution | " + resolution.video_width+"x"+resolution.video_height);
 });
 
-function get_camera_preview() {
-  var root_dir = "/var/lib/motion";
+function get_camera_preview(camera_number) {
+  var root_dir = "/var/lib/motion/camera"+camera_number[0];
   var command = "ls -lahRt --full-time "+root_dir+" | head -100";
   exec(command, (error, stdout, stderr) => {
     if (error) {
@@ -84,18 +86,18 @@ function get_camera_preview() {
       stdout[i][9] = cur_dir + stdout[i][9];
       if (!stdout[i][9]) continue;
       if (stdout[i][9].indexOf(".jpg") > -1) {
-        send_camera_preview(stdout[i][9]);
+        send_camera_preview(stdout[i][9], camera_number);
         return console.log("get_camera_preview",stdout[i][9]);
       }
     }
   });
 }
 
-function send_camera_preview (path) {
+function send_camera_preview (path, camera_number) {
   fs.readFile(path, function(err, data) {
     if (err) return console.log(err); // Fail if the file can't be read.
     var settings = database.settings;
-    data_obj = {mac:settings.mac, token:settings.token, image:data.toString('base64')}
+    data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:data.toString('base64')}
     socket.relay.emit('camera preview',data_obj);
   });
 }
@@ -205,7 +207,7 @@ function start_ffmpeg(data) {
 		   '-codec:v', 'mpeg1video',
                    '-r', '24',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+settings.token+"/"
+                   "http://"+relay_server+":8082/"+settings.token+"/"+camera_number+"/"
                  ];
    }
 
@@ -223,7 +225,7 @@ function start_ffmpeg(data) {
 		   '-codec:v', 'mpeg1video',
                    '-r', '24',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+settings.token+"/"
+                   "http://"+relay_server+":8082/"+settings.token+"/"+camera_number+"/"
                  ];
    }
   ffmpeg = spawn('ffmpeg', command);

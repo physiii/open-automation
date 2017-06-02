@@ -126,5 +126,5 @@ function get_devices() {
     });
     db.close();
   });
-  console.log("!! get_devices !!");
+  //console.log("!! get_devices !!");
 }
