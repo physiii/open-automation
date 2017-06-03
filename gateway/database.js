@@ -16,7 +16,8 @@ module.exports = {
   get_devices: get_devices,
   get_settings: get_settings,  
   store_settings: store_settings,
-  store_device: store_device
+  store_device: store_device,
+  settings, settings
 }
 
 get_devices();
