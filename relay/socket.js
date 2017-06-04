@@ -223,7 +223,7 @@ function message_user(user,event,msg) {
   for (var j=0; j < user_objects.length; j++) {
     //console.log("message_user | " + event,user_objects[j].user);
     if (user_objects[j].user == user) {
-      console.log("message_user",user_objects[j].user);
+      //console.log("message_user",user_objects[j].user);
       user_objects[j].socket.emit(event,msg);
     }
   }
@@ -400,35 +400,39 @@ io.on('connection', function (socket) {
       }
     }
   });
+  
+  socket.on('get camera preview', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log(TAG,"device not found",data.mac);
+    if (!device_objects[device_index].socket) return console.log(TAG,"socket not found",data.mac);
+    //console.log(TAG,"get_camera_preview",data.mac);
+    device_objects[device_index].socket.emit('get camera preview',data);
+  });
 
   socket.on('camera preview', function (data) {
+    console.log(TAG,'camera preview',data.mac);
     var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log(TAG,"camera preview | token not found",data.mac)
     var mac = device_objects[device_index].mac;
     var group_index = find_index(groups,'group_id',mac);
     if (group_index < 0) return console.log("camera preview | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
+          //console.log(TAG,'camera preview1',mac,groups[group_index].members[i]);
       for (var j=0; j < user_objects.length; j++) {
-      //console.log('camera preview',user_objects[j].user);
+          //console.log(TAG,'camera preview2',mac,user_objects[j].user);
         if (user_objects[j].user == groups[group_index].members[i]) {
           user_objects[j].socket.emit('camera preview',data);
+          //console.log(TAG,'camera preview3',mac,user_objects[j].user);
         }
       }
     }
   });
-  
+
   socket.on('command', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index > -1)
       if (device_objects[device_index].socket)
         device_objects[device_index].socket.emit('command',data);
-  });
-
-  socket.on('get camera preview', function (data) {
-    var device_index = find_index(device_objects,'token',data.token);
-    if (device_index < 0) return console.log(TAG,"device not found",data.mac);
-    if (!device_objects[device_index].socket) return console.log(TAG,"socket not found",data.mac);
-    console.log(TAG,"get_camera_preview",data)
-    device_objects[device_index].socket.emit('get camera preview',data);
   });
 
   socket.on('play', function (data) {

@@ -24,14 +24,14 @@
 
             <ion-card-header >
               <div ng-click="flip();list_folder(gateway, camera.camera_number)" style="width:100%" class="">
-                <h4 style="margin:10px;text-align:left;float:left;color:#ccc">{{ gateway.device_name }}</h4>
-                <button class="btn btn-sm" style="float:right;height:30px;margin:5px;color:#444"><i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
-<h4 style="margin:10px;text-align:left;float:right;color:#ccc" ng-if="gateway.camera_list.length > 1">Camera {{camera.camera_number[0]}}</h4>
+                <h4 style="margin:10px 5px 10px 10px;text-align:left;float:left;color:#ccc">{{ gateway.device_name }}</h4>
+<h4 style="text-align:left;float:left;color:#ccc" ng-if="gateway.camera_list.length > 1">({{camera.camera_number[0]}})</h4>
+                <button class="btn btn-sm" style="float:right;height:30px;margin:5px;color:#444">Recorded <i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
               </div>
             </ion-card-header>
 
-            <div id="play-button_{{ gateway.mac }}_{{ camera.camera_number }}" ng-click="start_webcam(gateway, camera.camera_number)" class="item item-divider" style="width:100%;height:300px;background-color:#ddd;">
-              <canvas id="previewCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="height:300px;"></canvas>
+            <div id="play-button_{{ gateway.mac }}_{{ camera.camera_number }}" ng-click="start_webcam(gateway, camera.camera_number)" class="item item-divider" style="width:100%;background-color:#ddd;padding:0px">
+              <canvas id="previewCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="height:100%;width:100%"></canvas>
               <div class="play-button"></div>
             </div>
 
@@ -47,7 +47,7 @@
             <li ng-click="flip()" class="item item-divider" style="background-color:#6E1A1A;color:#eee">
               <h4 style="color:#eee;float:left;">{{ gateway.settings.device_name }}     </h4>
               <b>{{ gateway.motion_list.selected_month.month }} {{ gateway.motion_list.selected_day.day }}</b>
-              <h5 style="color:#eee;float:right;"><b>{{gateway.settings.free_space/1000000000 | number:2}} </b> of {{ gateway.settings.total_space/1000000000 | number:2}} GB free </h5>
+              <h5 style="color:#eee;float:right;"><b>{{gateway.settings.disk.free/1000000000 | number:2}} </b> of {{ gateway.settings.disk.total/1000000000 | number:2}} GB free </h5>
             </li>
 
             <div ng-if="!flip_card">

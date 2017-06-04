@@ -2,15 +2,9 @@
 // ------------  https://github.com/physiii/open-automation --------------- //
 // ------------------------------- connection.js -------------------------- //
 
-module.exports = {
-  set_wifi: set_wifi,
-  scan_wifi: scan_wifi,
-  check_connection: check_connection,
-  public_ip: public_ip
-}
-
 var exec = require('child_process').exec;
 var request = require('request');
+var os = require('os');
 var fs = require('fs');
 var ping = require ("ping");
 var router_array = [];
@@ -18,8 +12,9 @@ var router_list = [];
 var ap_mode = false;
 scan_wifi();
 var bad_connection = 0;
-var local_ip = "init";
-var public_ip = "init";
+//var local_ip = "init";
+//var public_ip = "init";
+var TAG = "[connection.js]";
 
 module.exports = {
   get_local_ip: get_local_ip,
@@ -28,7 +23,9 @@ module.exports = {
   scan_wifi: scan_wifi
 }
 
+get_local_ip();
 function get_local_ip() {
+var ifaces = os.networkInterfaces();
 Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
   ifaces[ifname].forEach(function (iface) {
@@ -50,16 +47,15 @@ Object.keys(ifaces).forEach(function (ifname) {
 });
 }
 
+get_public_ip();
 function get_public_ip() {
   request.get(
-  'https://pyfi.org/get_ip',
+  'http://pyfi.org/get_ip',
   function (error, response, data) {
     if (!error && response.statusCode == 200) {
-      public_ip = data;
-      module.exports.public_ip = public_ip;
-      database.store_settings({"public_ip":public_ip});
-      //console.log("stored public_ip",public_ip);
       if (error !== null) console.log(error);
+      module.exports.public_ip = data;
+      //console.log("stored public_ip",public_ip);
     }
   });
 }

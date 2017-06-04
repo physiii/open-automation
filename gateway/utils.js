@@ -2,35 +2,35 @@
 // ------------  https://github.com/physiii/open-automation -------------- //
 // --------------------------------- utils.js ---------------------------- //
 
+const crypto = require('crypto');
+var os = require('os');
+var request = require('request');
+var fs = require('fs');
+var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
+var TAG = "[utils.js]";
+
+
 module.exports = {
   find_index: find_index,
   get_mac: get_mac,
   update: update
 }
 
-const crypto = require('crypto');
-var os = require('os');
-var database = require('./database');
-var request = require('request');
-var fs = require('fs');
-var exec = require('child_process').exec;
-var spawn = require('child_process').spawn;
-
 // ---------------------- device info  ------------------- //
-var ifaces = os.networkInterfaces();
 var mac = "init";
 var device_type = ["gateway"];
-//var device_name = "Gateway";
 get_mac();
 
 // ----------------------  disk management -------------- //
+
 var diskspace = require('diskspace');
 var findRemoveSync = require('find-remove');
 var _ = require('underscore');
 var path = require('path');
 var rimraf = require('rimraf');
-var free_space = 0;
 timeout();
+
 check_diskspace();
 function timeout() {
   setTimeout(function () {
@@ -46,8 +46,7 @@ function check_diskspace() {
     if (free < 2000000000) {
       remove_old_files();
     }
-    var info = {free:free, total:total}
-    return info;
+    module.exports.disk = {free:free, total:total};
   });
 }
 
@@ -82,7 +81,7 @@ function get_mac () {
 
 // ----------------------  update  --------------------- //
 
-function update () {
+function update() {
   var path = __dirname.replace("/gateway","");
   console.log("pull from ", path)
   var command =  ['-C', path, 'pull'];
