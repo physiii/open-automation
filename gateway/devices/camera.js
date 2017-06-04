@@ -43,7 +43,7 @@ socket.relay.on('get camera list', function (data) {
     }
     data.stdout = stdout;
     data.stderr = stderr;
-    console.log("camera list |",data);
+    //console.log("camera list |",data);
     database.settings.camera_list = data;
     socket.relay.emit('camera list',data);
   });
@@ -97,8 +97,10 @@ function send_camera_preview (path, camera_number) {
   fs.readFile(path, function(err, data) {
     if (err) return console.log(err); // Fail if the file can't be read.
     var settings = database.settings;
-    data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:data.toString('base64')}
+    var image = data.toString('base64');
+    data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:image}
     socket.relay.emit('camera preview',data_obj);
+    console.log(TAG,'send_camera_preview',path);
   });
 }
 
