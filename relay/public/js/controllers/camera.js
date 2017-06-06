@@ -93,7 +93,7 @@ angular.module('starter.controllers')
   $scope.play_file = function(file, gateway, camera_number) {
     file = file.folder + "/" + file[8];
     var file_obj = {file:file, token:gateway.token}
-    var command = {file:file, token:gateway.token, command:"play_file"}
+    var command = {file:file, token:gateway.token, command:"play_file", camera_number:camera_number}
     relay_socket.emit('ffmpeg',command);
     console.log("play_file",file_obj);
     $scope.start_stream(gateway.mac, camera_number);
@@ -105,7 +105,7 @@ angular.module('starter.controllers')
       if (folder_list[i].name == "play all") continue;
       folder_list[i] = "file '" + folder_list[i].folder + "/" + folder_list[i].name +"'";
     }*/
-    var command = {folder:folder, token:gateway.token, command:"play_folder"};
+    var command = {folder:folder, token:gateway.token, command:"play_folder", camera_number:camera_number};
     console.log("play_folder",command);
     relay_socket.emit('ffmpeg',command);
     $scope.start_stream(gateway.mac, camera_number);
@@ -129,7 +129,7 @@ angular.module('starter.controllers')
       $scope.play_folder(item.folder, gateway, camera_number);
       return console.log("play all | " + item);
     }
-    relay_socket.emit('folder list',{token:gateway.token,folder:folder});
+    relay_socket.emit('folder list',{token:gateway.token,folder:folder, camera_number:camera_number});
   }
 
   $scope.fullscreen = function(div_id) { 

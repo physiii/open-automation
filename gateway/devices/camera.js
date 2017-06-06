@@ -3,9 +3,13 @@
 // ------------------------------- camera.js ----------------------------------- //
 
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var fs = require('fs');
 var TAG = "[camera.js]";
 
+// ------------- //
+// sockets calls //
+// ------------- //
 socket.relay.on('folder list', function (data) {
   var folder = data.folder;
   var command = "ls -lah --full-time "+folder;
@@ -66,6 +70,9 @@ socket.relay.on('set resolution', function (data) {
   console.log("set resolution | " + resolution.video_width+"x"+resolution.video_height);
 });
 
+// ---------------- //
+// camera functions //
+// ---------------- //
 function get_camera_preview(camera_number) {
   var root_dir = "/var/lib/motion/camera"+camera_number[0];
   var command = "ls -lahRt --full-time "+root_dir+" | head -100";
@@ -106,12 +113,11 @@ function send_camera_preview (path, camera_number) {
 
 ffmpeg_timer = setTimeout(function () {}, 1);
 socket.relay.on('ffmpeg', function (data) {
-  console.log("ffmpeg", data);
   if (data.command == "start_webcam") {
     start_ffmpeg(data);
   }
   if (data.command == "stop") {
-    console.log("received ffmpeg stop command");
+    console.log(TAG,"stop command received");
     stop_ffmpeg(ffmpeg);
   }
   if (data.command == "play_file") {
@@ -160,14 +166,17 @@ socket.relay.on('ffmpeg', function (data) {
   }
 });
 
-var spawn = require('child_process').spawn;
 var ffmpeg_proc_list = [];
 function start_ffmpeg(data) {
   var relay_server = config.relay_server;
   for (var i = 0; i < ffmpeg_proc_list.length; i++) {
     console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
     if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
-      return console.log("stream already started");
+      if (data.command == "start_webcam") return console.log("stream already started");
+      if (data.command == "play_file") {
+        stop_ffmpeg(ffmpeg_proc_list[i]);
+        console.log(TAG,"killing current ffmpeg process",ffmpeg_proc_list[i].tag.camera_number);
+      } 
     }
   }
   /*if (ffmpeg)
@@ -179,7 +188,7 @@ function start_ffmpeg(data) {
   if (!video_height) video_height = "480";
   var camera_number = 10;
   if (data.camera_number) camera_number = data.camera_number;
-  console.log("camera number: ",data.camera_number);
+  console.log(TAG,"camera number: ",data.camera_number);
 
   if (data.command == "start_webcam") {
     var command =  [
@@ -242,30 +251,30 @@ function start_ffmpeg(data) {
       if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
         stop_ffmpeg(ffmpeg_proc_list[i]);
         ffmpeg_proc_list.splice(i,1);
-        console.log("ffmpeg closed");
+        //console.log(TAG,"ffmpeg closed");
       }
     }
     console.log(`child process exited with code ${code}`);
   });
   
   clearTimeout(ffmpeg_timer);
-  setTimeout(function () {
+  ffmpeg_timer = setTimeout(function () {
     for (var i = 0; i < ffmpeg_proc_list.length; i++) {
       console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
       if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
         stop_ffmpeg(ffmpeg_proc_list[i]);
-        console.log("ffmpeg timeout");
+        console.log(TAG,"ffmpeg timeout", ffmpeg_proc_list[i].tag.camera_number);
       }
     }
   }, 2*60*1000);
   
   ffmpeg_started = true;
   socket.relay.emit('ffmpeg started',settings);
-  console.log('ffmpeg started | ',command);
+  console.log(TAG,'ffmpeg started | ',command);
 }
 
 function stop_ffmpeg(ffmpeg) {
     ffmpeg.kill();
     ffmpeg_started = false;
-    console.log('ffmpeg stop');
+    console.log(TAG,'ffmpeg stop',ffmpeg.tag.camera_number);
 }
