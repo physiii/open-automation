@@ -3,7 +3,7 @@
 // ---------------------------------- website.js -------------------------------------- //
 
 var database = require('./database.js');
-var utils = require('../utils.js');
+var utils = require('./utils.js');
 var crypto = require('crypto');
 var express = require('express');
 var socket = require('./socket.js');
@@ -13,7 +13,7 @@ var https = require('https');
 var http = require('http');
 var app = express();
 var router = express.Router();
-var TAG = "[website.js] ";
+var TAG = "[website.js]";
 
 module.exports = {
  start: start
@@ -24,7 +24,6 @@ function start(app) {
 // ------------- //
 // SSL Redirect  //
 // ------------- //
-
 /*
 if (config.use_ssl || config.use_domain_ssl){
   app.get('*', securedirect);
@@ -129,14 +128,21 @@ app.post('/register', function(req, res) {
 });
 
 app.get('/home', function(req, res) {
-    res.render('pages/home');
+  res.render('pages/home');
+});
+
+app.get('/test', function(req, res) {
+  var path = __dirname + '/public/test.html';
+  console.log(TAG,path);
+  //res.sendFile(path);
+  //res.sendFile(__dirname + '/test.html');
+  //res.render('public/test.html');
 });
 
 app.get('/get_ip', function(req, res) {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   ip = ip.split(":");
   ip = ip[ip.length - 1];
-  console.log(ip);
   res.send(ip);
 });
 

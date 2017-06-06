@@ -3,7 +3,7 @@
 // ---------------------------------- socket.js -------------------------------------- //
 
 var database = require('./database.js');
-var utils = require('../utils.js');
+var utils = require('./utils.js');
 var crypto = require('crypto');
 
 module.exports = {
