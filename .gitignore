@@ -52,4 +52,5 @@ node_modules/
 bower_components/
 #files/*
 public/downloads/*
-
+relay/config.json
+gateway/config.json
