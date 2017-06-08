@@ -342,7 +342,7 @@ io.on('connection', function (socket) {
     if (device_index < 0) return; //console.log('get camera list | device not found',data.mac);
     if (!device_objects[device_index].socket) return; //console.log('get camera list | socket not found',data.mac);
     device_objects[device_index].socket.emit('get camera list',data);
-    //console.log("get camera list",data.mac);
+    console.log("get camera list",data.mac);
   });
 
   socket.on('camera list', function (data) {
