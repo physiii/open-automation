@@ -14,8 +14,8 @@
 <!------------------------------------------------------------------------>
 <!-----------------------------  Video  ---------------------------------->
 <!------------------------------------------------------------------------>
-
-<div ng-controller="CameraCtrl" data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
+<div ng-controller="CameraCtrl">
+<div data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
   <div data-ng-repeat="camera in gateway.camera_list">
     <div id="container_{{ gateway.mac }}_{{ camera.camera_number}}" class="col-lg-4 col-md-6 col-sm-12">
       <div class="flip-container">
@@ -68,6 +68,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <!-- <div ng-controller="CameraCtrl" data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">

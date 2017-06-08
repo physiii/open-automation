@@ -26,7 +26,7 @@ relay.on('get token', function (data) {
 });
 
 relay.on('loaded settings', function (data) {
-  console.log('loaded settings |',data.mac);
+  //console.log('loaded settings |',data.mac);
   //clearTimeout(load_settings_timer);
 });
 

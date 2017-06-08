@@ -3,6 +3,7 @@ angular.module('starter.controllers')
   console.log("<< ------  CameraCtrl  ------ >> ");
   var TAG = "[camera]";
   var relay_socket = $rootScope.relay_socket;
+  var gateways = $rootScope.gateways;
   $scope.flip_card = false;
   
   // ------------- //
@@ -49,8 +50,10 @@ angular.module('starter.controllers')
     //document.getElementById("videoCanvas_"+mac+'_'+camera_number).style.display = "none";
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
-    ctx.drawImage(img, 0, 0, 250, 150);
-    console.log(TAG,"camera preview",mac,camera_number,div_id);
+    setTimeout(function () { //put at end of main loop so images can load
+      ctx.drawImage(img, 0, 0, 250, 150);
+    },0);
+    console.log(TAG,"camera preview",mac,camera_number);
   });
 
   relay_socket.on('folder list result', function (data) {
@@ -107,16 +110,17 @@ angular.module('starter.controllers')
   // camera functions //
   // ---------------- //
 
-  get_camera_list();
-  function get_camera_list() {
+  //get_camera_list();
+  /*function get_camera_list() {
     var gateways = $rootScope.gateways;
+    //if (!gateways) return console.log(TAG,"get_camera_list",gateways);
     for (var i = 0; i < gateways.length; i++) {
       if (gateways[i].getting_camera_list) return console.log(TAG,"preview already requested");
       relay_socket.emit('get camera list',gateways[i]);
       gateways[i].getting_camera_list = true;
       console.log(TAG,"get camera list",gateways[i].mac)
     }
-  }
+  }*/
 
   $scope.start_webcam = function(gateway, camera_number) {
     var command = {token:gateway.token, command:"start_webcam", camera_number:camera_number}

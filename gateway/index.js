@@ -49,7 +49,7 @@ main_loop();
 function main_loop () {
   setTimeout(function () {
     var settings_obj = {public_ip:connection.public_ip, local_ip:connection.local_ip, mac:utils.mac, disk:utils.disk};
-    console.log(TAG,settings_obj);
+    //console.log(TAG,settings_obj);
     database.store_settings(settings_obj);
     if (!database.got_token) {
       console.log("fetching token...");
