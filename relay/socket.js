@@ -317,7 +317,7 @@ io.on('connection', function (socket) {
     var index = find_index(device_objects,'token',data.token);
     if (index < 0) return console.log("get settings | device not found", data.token);
     if (!device_objects[index].socket) return console.log("get settings | no socket found",device_objects[index].mac);
-    console.log("get settings",device_objects[index].mac);
+    //console.log("get settings",device_objects[index].mac);
     device_objects[index].socket.emit('get settings',data);
   });
 
@@ -342,13 +342,14 @@ io.on('connection', function (socket) {
     if (device_index < 0) return; //console.log('get camera list | device not found',data.mac);
     if (!device_objects[device_index].socket) return; //console.log('get camera list | socket not found',data.mac);
     device_objects[device_index].socket.emit('get camera list',data);
-    console.log("get camera list",data.mac);
+    console.log(TAG,"get camera list",data.mac);
   });
 
   socket.on('camera list', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     var mac = device_objects[device_index].mac;
     var group_index = find_index(groups,'group_id',mac);
+    console.log(TAG,"camera list",mac);
     if (group_index < 0) return console.log("camera list | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {

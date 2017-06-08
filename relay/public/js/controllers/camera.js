@@ -13,7 +13,7 @@ angular.module('starter.controllers')
     var camera_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
     camera_list.splice(0,1);
     camera_list.splice(camera_list.length - 1,1);
-
+    var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
     for (var i = 0; i < camera_list.length; i++) {
       var parts = camera_list[i].split(" ");
       parts = parts[9].replace("/dev/video","");
@@ -28,14 +28,10 @@ angular.module('starter.controllers')
         continue;
       }
       camera_list[i] = {camera_number:parts};
+      relay_socket.emit('get camera preview',{token:$rootScope.gateways[index].token, camera_number:camera_list[i].camera_number});
     }
     $scope.$apply(function () {
-      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
       $rootScope.gateways[index].camera_list = camera_list;
-      for (var i = 0; i < camera_list.length; i++) {
-        //relay_socket.emit('get camera preview',{token:$rootScope.gateways[index].token, camera_number:camera_list[i].camera_number});
-      }
-      //console.log("camera list | ",camera_list);
     });
   });
 
