@@ -106,10 +106,8 @@ function send_camera_preview (path, camera_number) {
     var settings = database.settings;
     var image = data.toString('base64');
     data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:image}
-    //setTimeout(function () {
-      socket.relay.emit('camera preview',data_obj);
-      console.log(TAG,'send_camera_preview',data_obj.camera_number);
-    //}, 1000);
+    socket.relay.emit('camera preview',data_obj);
+    console.log(TAG,'send_camera_preview',data_obj.camera_number);
   });
 }
 
