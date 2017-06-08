@@ -221,7 +221,7 @@ angular.module('starter.controllers', ['socket-io'])
     load_settings(data);
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
-    //console.log('load settings',data);
+    console.log('load settings',data.mac);
   });
 
   relay_socket.on('load devices', function (data) {
@@ -239,7 +239,7 @@ angular.module('starter.controllers', ['socket-io'])
     if (i < 0) return console.log("load_settings | mac not found",mac);
     gateways[i].settings = settings;
     relay_socket.emit('get camera list',gateways[i]);
-    console.log(TAG,"get camera list",settings);
+    //console.log(TAG,"load_settings",mac);
     /*key = 'thermostat';
     for (key in devices) {
       if (devices[key].device_type == 'thermostat') {

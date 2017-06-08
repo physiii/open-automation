@@ -3,6 +3,7 @@
 // -------------------------------- socket.js ----------------------------- //
 
 var exec = require('child_process').exec;
+var TAG = "[socket.js]";
 var relay_server = config.relay_server;
 var relay_port = config.relay_port;
 var relay = require('socket.io-client')("http://"+relay_server+":"+relay_port);
@@ -114,7 +115,7 @@ relay.on('update', function (data) {
 relay.on('get settings', function (data) {
   var settings = database.settings;
   relay.emit('load settings', settings);
-  console.log("load settings |", settings.mac);
+  console.log(TAG,"sending load settings |", settings.mac);
   //start_settings_timer();
 });
 

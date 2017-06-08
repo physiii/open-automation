@@ -65,7 +65,7 @@ function get_settings() {
         store_settings(settings);
       }
       settings.devices = device_array;
-      socket.relay.emit('load settings',settings);
+      //socket.relay.emit('load settings',settings);
       //console.log("get_settings",result[0]);
     });
   db.close();

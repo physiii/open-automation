@@ -294,14 +294,13 @@ io.on('connection', function (socket) {
   });
 
   socket.on('load settings', function (data) {
-    //console.log("load settings |",data.mac);
-    socket.emit('loaded settings',data);
+    console.log(TAG,'loaded settings',data.mac);
     var device_index = find_index(device_objects, 'token', data.token);
     if (device_index < 0) return console.log("device not found", data.mac);
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
     for (var i=0; i < groups[group_index].members.length; i++) {
-      //console.log("load settings2 | group",groups[group_index]);
+      //console.log("load settings2 | member",groups[group_index].members[i]);
       message_user(groups[group_index].members[i],'load settings',data);
     }
   });

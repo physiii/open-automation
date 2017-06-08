@@ -42,12 +42,12 @@ socket.relay.on('get camera list', function (data) {
     if (error) {
       console.error(`exec error: ${error}`);
       data.error = error;
-      relay.emit('camera list result',data);
+      //relay.emit('camera list result',data);
       return;
     }
     data.stdout = stdout;
     data.stderr = stderr;
-    //console.log("camera list |",data);
+    console.log(TAG,"camera list |",data.mac);
     database.settings.camera_list = data;
     socket.relay.emit('camera list',data);
   });
@@ -56,7 +56,7 @@ socket.relay.on('get camera list', function (data) {
 socket.relay.on('get camera preview', function (data) {
   //if (data.command == 'snapshot')
   //if (data.command == 'preview')
-  //console.log(TAG,"get camera preview",data.camera_number)
+  console.log(TAG,"get camera preview",data.camera_number)
   var camera_number = data.camera_number;
   get_camera_preview(camera_number);
 });
