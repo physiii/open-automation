@@ -5,17 +5,9 @@ angular.module('starter.controllers')
   var relay_socket = $rootScope.relay_socket;
   $scope.flip_card = false;
   
-  get_camera_list();
-  function get_camera_list() {
-    var gateways = $rootScope.gateways;
-    for (var i = 0; i < gateways.length; i++) {
-      if (gateways[i].getting_camera_list) return console.log(TAG,"preview already requested");
-      relay_socket.emit('get camera list',gateways[i]);
-      gateways[i].getting_camera_list = true;
-      console.log(TAG,"get camera list",gateways[i].mac)
-    }
-  }
-
+  // ------------- //
+  // sockets calls //
+  // ------------- //
   relay_socket.on('camera list', function (data) {
     var camera_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
     camera_list.splice(0,1);
@@ -39,13 +31,10 @@ angular.module('starter.controllers')
     $scope.$apply(function () {
       var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
       $rootScope.gateways[index].camera_list = camera_list;
-      //console.log("camera list | ",camera_list);
-
-      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
       for (var i = 0; i < camera_list.length; i++) {
         relay_socket.emit('get camera preview',{token:$rootScope.gateways[index].token, camera_number:camera_list[i].camera_number});
       }
-
+      //console.log("camera list | ",camera_list);
     });
   });
 
@@ -61,9 +50,73 @@ angular.module('starter.controllers')
     var img = new Image();
     img.src = 'data:image/jpeg;base64,' + data.image;
     ctx.drawImage(img, 0, 0, 250, 150);
-    console.log(TAG,"camera preview",mac,camera_number);
+    console.log(TAG,"camera preview",mac,camera_number,div_id);
   });
 
+  relay_socket.on('folder list result', function (data) {
+    var play_all_btn = false;
+    $scope.flip_card = false;
+    var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
+    folder_list.splice(0,1);
+    folder_list.splice(folder_list.length - 1,1);
+
+    for (var i = 0; i < folder_list.length; i++) {
+      var parts = folder_list[i].split(" ");
+      if (parts.length < 8) continue;
+      parts.folder = data.folder;
+      for (var k = 0; k < parts.length; k++) {
+        if (parts[k].length < 1) {
+          parts.splice(k,1);
+          k--;
+        }
+      }
+
+      //format date
+      parts[5] = parts[5].split("-");
+
+      //format time
+      parts[6] = parts[6].split(":");
+      
+      
+      if (parts[8].charCodeAt(0) == 46) {
+        if (parts[8].charCodeAt(1) == 46) {
+        } else if (parts[8].length < 2) {
+          folder_list.splice(i,1);
+          i--;
+          continue;
+        }
+      }
+      parts.name = parts[8];
+      folder_list[i] = parts;
+      if (folder_list[i][8].indexOf(".avi") > -1) {
+        play_all_btn = true;
+        $scope.flip_card = true;
+      }
+      console.log("folder list result | ",data.mac);
+    }
+    if (play_all_btn) {
+      folder_list.unshift({name:"play all", folder:parts.folder})
+    }
+    $scope.$apply(function () {
+      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
+      $rootScope.gateways[index].folder_list = folder_list;
+    });
+  });
+
+  // ---------------- //
+  // camera functions //
+  // ---------------- //
+
+  get_camera_list();
+  function get_camera_list() {
+    var gateways = $rootScope.gateways;
+    for (var i = 0; i < gateways.length; i++) {
+      if (gateways[i].getting_camera_list) return console.log(TAG,"preview already requested");
+      relay_socket.emit('get camera list',gateways[i]);
+      gateways[i].getting_camera_list = true;
+      console.log(TAG,"get camera list",gateways[i].mac)
+    }
+  }
 
   $scope.start_webcam = function(gateway, camera_number) {
     var command = {token:gateway.token, command:"start_webcam", camera_number:camera_number}
@@ -138,55 +191,5 @@ angular.module('starter.controllers')
       document.getElementById(div_id).className = "col-lg-4 col-md-6 col-sm-12";
     } else document.getElementById(div_id).className = "";
   }
-
-  relay_socket.on('folder list result', function (data) {
-    var play_all_btn = false;
-    $scope.flip_card = false;
-    var folder_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
-    folder_list.splice(0,1);
-    folder_list.splice(folder_list.length - 1,1);
-
-    for (var i = 0; i < folder_list.length; i++) {
-      var parts = folder_list[i].split(" ");
-      if (parts.length < 8) continue;
-      parts.folder = data.folder;
-      for (var k = 0; k < parts.length; k++) {
-        if (parts[k].length < 1) {
-          parts.splice(k,1);
-          k--;
-        }
-      }
-
-      //format date
-      parts[5] = parts[5].split("-");
-
-      //format time
-      parts[6] = parts[6].split(":");
-      
-      
-      if (parts[8].charCodeAt(0) == 46) {
-        if (parts[8].charCodeAt(1) == 46) {
-        } else if (parts[8].length < 2) {
-          folder_list.splice(i,1);
-          i--;
-          continue;
-        }
-      }
-      parts.name = parts[8];
-      folder_list[i] = parts;
-      if (folder_list[i][8].indexOf(".avi") > -1) {
-        play_all_btn = true;
-        $scope.flip_card = true;
-      }
-      console.log("folder list result | ",data.mac);
-    }
-    if (play_all_btn) {
-      folder_list.unshift({name:"play all", folder:parts.folder})
-    }
-    $scope.$apply(function () {
-      var index = $rootScope.find_index($rootScope.gateways,'token',data.token);
-      $rootScope.gateways[index].folder_list = folder_list;
-    });
-  });
 
 })

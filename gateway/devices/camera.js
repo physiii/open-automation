@@ -94,9 +94,22 @@ function get_camera_preview(camera_number) {
       if (!stdout[i][9]) continue;
       if (stdout[i][9].indexOf(".jpg") > -1) {
         send_camera_preview(stdout[i][9], camera_number);
-        return console.log("get_camera_preview",stdout[i][9]);
+        return; //console.log("get_camera_preview",stdout[i][9]);
       }
     }
+  });
+}
+
+function send_camera_preview (path, camera_number) {
+  fs.readFile(path, function(err, data) {
+    if (err) return console.log(err); // Fail if the file can't be read.
+    var settings = database.settings;
+    var image = data.toString('base64');
+    data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:image}
+    //setTimeout(function () {
+      socket.relay.emit('camera preview',data_obj);
+      console.log(TAG,'send_camera_preview',data_obj.camera_number);
+    //}, 1000);
   });
 }
 
@@ -104,25 +117,13 @@ function get_camera_preview(camera_number) {
   fs.readFile(path, function(err, data) {
     if (err) return console.log(err); // Fail if the file can't be read.
     var settings = database.settings;
-    var image = data.toString('base64');
-    data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:image}
-    socket.relay.emit('camera preview',data_obj);
-    console.log(TAG,'send_camera_preview',path);
-  });
-}*/
-
-function send_camera_preview (path, camera_number) {
-  fs.readFile(path, function(err, data) {
-    if (err) return console.log(err); // Fail if the file can't be read.
-    var settings = database.settings;
     //var data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number};
-    var data2 = "";
-    var image = data2;
+    var image = data.toString('base64');
     var data_obj = {mac:settings.mac, token:settings.token, camera_number:camera_number, image:image};
     socket.relay.emit('camera preview',data_obj);
     console.log(TAG,"send_camera_preview",data_obj.mac,path);
   });
-}
+}*/
 
 ffmpeg_timer = setTimeout(function () {}, 1);
 socket.relay.on('ffmpeg', function (data) {

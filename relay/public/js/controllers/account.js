@@ -11,25 +11,12 @@ angular.module('starter.controllers')
   var relay_socket = $rootScope.relay_socket;
   var alert_contacts = $rootScope.alert_contacts;
 
-  // ---------------------------- //
-  // add or remove gateway device //
-  // ---------------------------- //
-  $scope.link_lights = function(gateway) {
-    relay_socket.emit('link lights',{ mac:gateway.mac, token:gateway.token });
-    console.log('link lights',gateway);
-  }
-
-  $scope.add_zwave_device = function(gateway) {
-    relay_socket.emit('add zwave',gateway);
-    console.log('add_zwave_device');
-  }
-
   // --------------------- //
   // add or remove devices //
   // --------------------- //
-  $scope.link_device = function(device) {
+  $scope.add_device = function(device) {
     device.user_token = $rootScope.token;
-    console.log("link_device",device);
+    console.log("add_device",device);
     relay_socket.emit('link device',device);
   }
   
@@ -42,10 +29,9 @@ angular.module('starter.controllers')
     $scope.$apply(function () {});
   });
 
-  $scope.unlink_device = function(device) {
+  $scope.remove_device = function(device) {
     device.user_token = $rootScope.token;  
     relay_socket.emit('unlink device',device);
-    console.log("unlink_device",device.mac);
   }
 
   relay_socket.on('unlink device', function (data) {
@@ -57,6 +43,43 @@ angular.module('starter.controllers')
   $scope.add_thermostat = function(device) {
     console.log("add_thermostat",device);  
     relay_socket.emit('add thermostat',device);
+  }
+
+
+  $scope.add_contact = function(contact) {
+   contact.user_token = $rootScope.token;
+   relay_socket.emit('add contact', contact);
+   console.log("add_contact | ", contact);
+  }
+  
+  $scope.remove_contact = function(contact) {
+    $.post( "php/remove_alert_contact.php",{user:$rootScope.username, number:contact.number, label:contact.label}).success(function(data){
+      console.log("remove_alert_contact.php | " + data);
+      alert_contacts = $rootScope.alert_contacts;
+      console.log("before: " + alert_contacts);
+      for (i = 0; i < alert_contacts.length; i++) {
+        if (alert_contacts[i].number == contact.number) {
+          $scope.$apply(function () {
+            $rootScope.alert_contacts.splice(i,1);
+          });   
+        }
+      }
+      console.log("after: " + alert_contacts);      
+    });
+  }
+
+
+  // ---------------------------- //
+  // add or remove gateway device //
+  // ---------------------------- //
+  $scope.link_lights = function(gateway) {
+    relay_socket.emit('link lights',{ mac:gateway.mac, token:gateway.token });
+    console.log('link lights',gateway);
+  }
+
+  $scope.add_zwave_device = function(gateway) {
+    relay_socket.emit('add zwave',gateway);
+    console.log('add_zwave_device');
   }
 
   // ---- //
@@ -146,27 +169,4 @@ angular.module('starter.controllers')
    console.log("setting_obj | ", setting);
    relay_socket.emit('set settings', setting);
   }
-
-  $scope.add_contact = function(contact) {
-   contact.user_token = $rootScope.token;
-   relay_socket.emit('add contact', contact);
-   console.log("add_contact | ", contact);
-  }
-  
-  $scope.remove_contact = function(contact) {
-    $.post( "php/remove_alert_contact.php",{user:$rootScope.username, number:contact.number, label:contact.label}).success(function(data){
-      console.log("remove_alert_contact.php | " + data);
-      alert_contacts = $rootScope.alert_contacts;
-      console.log("before: " + alert_contacts);
-      for (i = 0; i < alert_contacts.length; i++) {
-        if (alert_contacts[i].number == contact.number) {
-          $scope.$apply(function () {
-            $rootScope.alert_contacts.splice(i,1);
-          });   
-        }
-      }
-      console.log("after: " + alert_contacts);      
-    });
-  }
-
 })
