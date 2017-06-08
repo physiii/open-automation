@@ -3,6 +3,7 @@ angular.module('starter.controllers')
 .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile) {
   console.log("<----- MapCtrl ----->");
   var relay_socket = $rootScope.relay_socket;
+  var TAG = "[MapCtrl]";
   $.getJSON("https://ipinfo.io", function (data) {
     var lat = data.loc.substring(0,7);
     var lng = data.loc.substring(8,16);
@@ -38,8 +39,10 @@ angular.module('starter.controllers')
     var location = device.status;
     //console.log("update_map",location);
     Latlng = new google.maps.LatLng(location.latitude, location.longitude);
+    console.log(TAG,location);
     var contentString = "<div>" + device.mac + "<br>";
         contentString += "Signal: "+location.cell_signal_level+"<br>";
+        contentString += "Battery: "+(location.battery.toPrecision(2))*100+"%<br>";
         contentString += "Speed: "+location.speed+"<br>";
         contentString += "Wifi: "+location.connected_wifi+"<br>";
         contentString += "<a ng-click=\"ping_audio('start','"+device.token+"')\">Start Ping</a>    |    ";
