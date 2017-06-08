@@ -294,7 +294,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('load settings', function (data) {
-    console.log("load settings |",data.mac);
+    //console.log("load settings |",data.mac);
     socket.emit('loaded settings',data);
     var device_index = find_index(device_objects, 'token', data.token);
     if (device_index < 0) return console.log("device not found", data.mac);
@@ -342,14 +342,14 @@ io.on('connection', function (socket) {
     if (device_index < 0) return; //console.log('get camera list | device not found',data.mac);
     if (!device_objects[device_index].socket) return; //console.log('get camera list | socket not found',data.mac);
     device_objects[device_index].socket.emit('get camera list',data);
-    console.log(TAG,"get camera list",data.mac);
+    //console.log(TAG,"get camera list",data.mac);
   });
 
   socket.on('camera list', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     var mac = device_objects[device_index].mac;
     var group_index = find_index(groups,'group_id',mac);
-    console.log(TAG,"camera list",mac);
+    //console.log(TAG,"camera list",mac);
     if (group_index < 0) return console.log("camera list | group not found");
     for (var i=0; i < groups[group_index].members.length; i++) {
       for (var j=0; j < user_objects.length; j++) {
@@ -411,7 +411,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('camera preview', function (data) {
-    console.log(TAG,'camera preview',data.mac);
+    console.log(TAG,'camera preview',data.mac, data.camera_number);
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index < 0) return console.log(TAG,"camera preview | token not found",data.mac)
     var mac = device_objects[device_index].mac;
@@ -879,7 +879,7 @@ io.on('connection', function (socket) {
     if (index < 0) return console.log("get devices | account not found", data);
     var username = accounts[index].username;
     var devices = [];
-    console.log("get devices",username);
+    //console.log("get devices",username);
     var group_index = find_index(groups,'group_id',username);
     if (group_index < 0) return console.log("get_devices | no group found",username);
     devices.push(groups[group_index]);

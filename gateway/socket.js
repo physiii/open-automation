@@ -119,7 +119,7 @@ relay.on('get settings', function (data) {
 });
 
 relay.on('get devices', function (data) {
-  console.log("get devices",data);
+  //console.log("get devices",data);
   database.get_devices();
 });
 

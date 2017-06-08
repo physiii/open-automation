@@ -56,7 +56,7 @@ socket.relay.on('get camera list', function (data) {
 socket.relay.on('get camera preview', function (data) {
   //if (data.command == 'snapshot')
   //if (data.command == 'preview')
-  console.log(TAG,"get camera preview",data.camera_number)
+  //console.log(TAG,"get camera preview",data.camera_number)
   var camera_number = data.camera_number;
   get_camera_preview(camera_number);
 });
