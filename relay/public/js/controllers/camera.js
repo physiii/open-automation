@@ -2,6 +2,7 @@ angular.module('starter.controllers')
 .controller('CameraCtrl', function($scope, $rootScope, $stateParams, socket, $ionicLoading, $compile, $http) {
   console.log("<< ------  CameraCtrl  ------ >> ");
   var TAG = "[camera]";
+  var stream_port = "8084";
   var relay_socket = $rootScope.relay_socket;
   var gateways = $rootScope.gateways;
   $scope.flip_card = false;
@@ -132,7 +133,7 @@ angular.module('starter.controllers')
     if (j < 0) return console.log("camera not found",camera_number);
 
     if (gateways[i].camera_list[j].stream_started) return console.log("stream already started");
-    gateways[i].camera_list[j].camera_socket = 'ws://'+$rootScope.server_ip+':8084';
+    gateways[i].camera_list[j].camera_socket = 'ws://'+$rootScope.server_ip+':'+stream_port;
     gateways[i].camera_list[j].stream_started = true;
     gateways[i].camera_list[j].canvas = document.getElementById('videoCanvas_'+mac+'_'+camera_number);
     gateways[i].camera_list[j].player = new JSMpeg.Player(gateways[i].camera_list[j].camera_socket, {canvas:gateways[i].camera_list[j].canvas,token:gateways[i].token, camera:camera_number});
