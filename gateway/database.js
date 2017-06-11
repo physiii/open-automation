@@ -50,7 +50,6 @@ function set_wifi_from_db() {
 }
 
 //-- get and send settings object --//
-
 function get_settings() {
   MongoClient.connect('mongodb://127.0.0.1:27017/gateway', function (err, db) {
     if (err) return console.log('Unable to connect to the mongoDB server. Error:', err);

@@ -6,6 +6,7 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 var fs = require('fs');
 var TAG = "[camera.js]";
+var STREAM_PORT = config.video_stream_port || 8084;
 
 // ------------- //
 // sockets calls //
@@ -215,7 +216,7 @@ function start_ffmpeg(data) {
                    '-b:v', '600k',
                    '-r', '2',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+settings.token+"/"+camera_number+"/"
+                   "http://"+relay_server+":"+STREAM_PORT+"/"+settings.token+"/"+camera_number+"/"
                  ];
   }
   if (data.command == "play_file") {
@@ -230,7 +231,7 @@ function start_ffmpeg(data) {
 		   '-codec:v', 'mpeg1video',
                    '-r', '24',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+settings.token+"/"+camera_number+"/"
+                   "http://"+relay_server+":"+STREAM_PORT+"/"+settings.token+"/"+camera_number+"/"
                  ];
    }
 
@@ -248,7 +249,7 @@ function start_ffmpeg(data) {
 		   '-codec:v', 'mpeg1video',
                    '-r', '24',
                    '-strict', '-1',
-                   "http://"+relay_server+":8082/"+settings.token+"/"+camera_number+"/"
+                   "http://"+relay_server+":"+STREAM_PORT+"/"+settings.token+"/"+camera_number+"/"
                  ];
    }
   ffmpeg = spawn('ffmpeg', command);
@@ -268,8 +269,34 @@ function start_ffmpeg(data) {
     }
     console.log(`child process exited with code ${code}`);
   });
-  
-  clearTimeout(ffmpeg_timer);
+
+//var strings = [ "hello", "world" ];
+//var delay = 1000;
+//for(var i=0;i<strings.length;i++) {
+    setTimeout(
+        (function(f) {
+            return function() {
+		stop_ffmpeg(f);
+                console.log(TAG,"timeout",f.tag.camera_number);
+            }
+        })(ffmpeg), 1*60*1000);
+    //delay += 1000;
+//}
+
+  //clearTimeout(ffmpeg_timer);
+  /*setTimeout((function (f) {
+    console.log(TAG,"timeout!",f.tag);
+    //stop_ffmpeg(ffmpeg);
+    for (var i = 0; i < ffmpeg_proc_list.length; i++) {
+      console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
+      if (ffmpeg_proc_list[i].tag.camera_number == data.camera_number) {
+        stop_ffmpeg(ffmpeg_proc_list[i]);
+        console.log(TAG,"ffmpeg timeout", ffmpeg_proc_list[i].tag.camera_number);
+      }
+    }
+  })(ffmpeg), 1*30*1000);*/
+
+  /*clearTimeout(ffmpeg_timer);
   ffmpeg_timer = setTimeout(function () {
     for (var i = 0; i < ffmpeg_proc_list.length; i++) {
       console.log("ffmpeg_proc_list: ", ffmpeg_proc_list[i].tag.camera_number);
@@ -278,7 +305,7 @@ function start_ffmpeg(data) {
         console.log(TAG,"ffmpeg timeout", ffmpeg_proc_list[i].tag.camera_number);
       }
     }
-  }, 2*60*1000);
+  }, 1*20*1000);*/
   
   ffmpeg_started = true;
   socket.relay.emit('ffmpeg started',settings);

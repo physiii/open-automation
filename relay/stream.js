@@ -2,6 +2,7 @@
 // -----------------  https://github.com/physiii/open-automation  -------------------- //
 // ---------------------------------- stream.js -------------------------------------- //
 
+var TAG = "[stream.js]";
 var http = require('http');
 var WebSocket = require('ws');
 
@@ -22,6 +23,7 @@ socketServer.on('connection', function(socket) {
     socket.camera = data.camera;
     console.log("stored video token",socket.token);
     console.log("stored camera number",socket.camera);
+    console.log(TAG,"clients",socketServer.clients);
   }
 
   socket.on('close', function(code, message){
@@ -45,7 +47,7 @@ socketServer.broadcast = function(data, settings) {
   var camera = settings.camera;
   //var stream_width = settings.stream_width;
   //var stream_height = settings.stream_height;
-  
+  //if (!socketServer.clients[0]) return console.log(TAG,"no clients",settings);
   for( var i in this.clients ) {
     var client = this.clients[i];
     if (client.token != token) {
