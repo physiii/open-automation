@@ -261,6 +261,7 @@ io.on('connection', function (socket) {
   //console.info(socket.id + " | client connected" );
 
   socket.on('get token', function (data) {
+    console.log("get token",mac);
     var mac = data.mac;
     var public_ip = socket.request.connection.remoteAddress;
     public_ip = public_ip.slice(7);
@@ -270,7 +271,6 @@ io.on('connection', function (socket) {
     data.token = token;
     data.public_ip = public_ip;
     socket.emit('get token',data);
-    console.log("get token",mac);
     var index = find_index(device_objects,'token',token);
     if (index > -1) {
       //database.store_device_object(data);
