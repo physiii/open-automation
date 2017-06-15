@@ -4,7 +4,6 @@ angular.module('main_site', ['socket-io'])
 
 
   $scope.show_form = function(form) {
-    console.log(form);
     if (form == "register_form") {
       document.getElementById("register_form").style.display = "inline";
       document.getElementById("register_form_btn").style.display = "none";
@@ -43,7 +42,7 @@ angular.module('main_site', ['socket-io'])
   }
   
   $scope.show_login = function() {
-    document.getElementById("contact_form").style.display = "none";
+    document.getElementById("pyfi_logo").style.display = "none";
     document.getElementById("main_login_form").style.display = "inline";
     document.getElementById("main_register_form").style.display = "none";
     document.getElementById("price_generator_form").style.display = "none";
@@ -51,7 +50,7 @@ angular.module('main_site', ['socket-io'])
   }
   
   $scope.show_register = function() {
-    document.getElementById("contact_form").style.display = "none";
+    document.getElementById("pyfi_logo").style.display = "none";
     document.getElementById("main_login_form").style.display = "none";
     document.getElementById("main_register_form").style.display = "inline";
     document.getElementById("price_generator_form").style.display = "none";
