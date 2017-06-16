@@ -1,7 +1,11 @@
 angular.module('main_site', ['socket-io'])
 .controller('index', function($scope,$rootScope) {
-  console.log("<< ------ main_site ------- >>");
+  var TAG = "[index]";
 
+  $scope.goto = function(path) {
+    console.log(TAG,'goto',path);
+    window.location.replace("/"+path);
+  }
 
   $scope.show_form = function(form) {
     if (form == "register_form") {
@@ -60,7 +64,7 @@ angular.module('main_site', ['socket-io'])
   $scope.download_android = function() {
     var ifrm = document.getElementById("download_android");
     ifrm.src = '/downloads/beacon.apk';
-    console.log("downloading android app");
+    console.log(TAG,"downloading android app");
   }
   
   $scope.show_price_generator = function() {
