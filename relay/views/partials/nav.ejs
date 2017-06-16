@@ -15,7 +15,7 @@
 
       <form>
       <ul style="padding:15px;border-right:1px solid #999;" class="side-nav black" id="mobile-demo">
-        <li id="login_form" style="display:none">
+        <li ng-submit="login(user)" id="login_form" style="display:none">
           <input type="email" style="font-size:18px;color:white" class="form-control" ng-model="user.username" placeholder="Email">
           <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="user.password" placeholder="Password">
           <div id="login_message" style="display:none"></div>
@@ -24,12 +24,12 @@
         <li>
           <button id="login_form_btn"  style="width:100%;margin:auto 10px auto auto" type="submit" class="waves-effect waves-light btn" ng-click="show_form('login_form')">Login</button>
         </li>
-        <li id="register_form" style="display:none">
+        <li ng-submit="register(new_user)" id="register_form" style="display:none">
           <input style="font-size:18px;color:white" type="email" class="form-control" ng-model="new_user.username" placeholder="Email">
           <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="new_user.password" placeholder="Password">
           <input type="password" style="font-size:18px;color:white" class="form-control" ng-model="new_user.confirm_password" placeholder="Confirm Password">
           <div id="register_message" style="display:none"></div>
-          <button style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" type="submit" ng-click="register(new_user)">Register</button>
+          <button style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" type="" ng-click="register(new_user)">Register</button>
         </li>        
         <li>
           <button id="register_form_btn" style="width:100%;margin:auto 10px auto auto" class="waves-effect waves-light btn" ng-click="show_form('register_form')">Register</button>
@@ -50,20 +50,3 @@
     $(".button-collapse").sideNav();
   });
 </script>
-<script type="text/javascript">
-// Using jQuery.
-
-$(function() {
-    $('form').each(function() {
-        $(this).find('input').keypress(function(e) {
-            // Enter pressed?
-            if(e.which == 10 || e.which == 13) {
-                this.form.submit();
-            }
-        });
-
-        $(this).find('input[type=submit]').hide();
-    });
-});
-</script>
-

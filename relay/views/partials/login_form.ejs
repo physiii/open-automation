@@ -4,7 +4,7 @@
     <div style="font-size:300%;color:#eee">
       User Login
     </div>
-    <form style="padding:0px 40px 0px 40px;">
+    <form ng-submit="login(user)" style="padding:0px 40px 0px 40px;">
       <div class="row">
         <div class="input-field col s12 m6">
           <i class="material-icons prefix">mail</i>
@@ -28,7 +28,7 @@
 </div>
 
         
-<div id="main_register_form" style="display:none;width:100%">
+<div ng-submit="register(new_user)"  id="main_register_form" style="display:none;width:100%">
   <div style="height:325px;background-color: rgba(2,2,2,0.9);margin:50px 25% auto 25%;padding:25px;border-radius:5px;">
           <div style="width:100%;text-align:center;font-size:300%;color:#3ec1f9;">
             Register New Account
@@ -56,7 +56,7 @@
         </div>
       </div>
       <div style="width:100%;text-align:center;color:white"><h5>{{ register_message }}</h5></div>
-      <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="submit" ng-click="register(new_user)" >register
+      <button style="margin:10px auto 10px 35%;background:#3ec1f9" class="btn waves-effect waves-light animated" type="button" ng-click="register(new_user)" >register
         <i class="material-icons right">send</i>
       </button>
     </form>
