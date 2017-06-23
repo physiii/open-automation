@@ -127,6 +127,14 @@ app.post('/register', function(req, res) {
   console.log("registered account",account_obj);
 });
 
+app.get('/remote_site_monitoring', function(req, res) {
+  res.render('pages/remote_site_monitoring');
+});
+
+app.get('/home_automation_security', function(req, res) {
+  res.render('pages/home_automation_security');
+});
+
 app.get('/home', function(req, res) {
   res.render('pages/home');
 });
