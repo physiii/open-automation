@@ -279,7 +279,7 @@ function start_ffmpeg(data) {
 		stop_ffmpeg(f);
                 console.log(TAG,"timeout",f.tag.camera_number);
             }
-        })(ffmpeg), 1*60*1000);
+        })(ffmpeg), 3*60*1000);
     //delay += 1000;
 //}
 
