@@ -20,11 +20,11 @@ console.log('devices on port %d', DEVICE_PORT);
 
 wss.on('connection', function connection(ws) {
   console.log("<< ---- incoming connection ---- >>");
-  try { ws.send('Hello from relay server!') }
-  catch (e) { console.log("error: " + e) };
+  //try { ws.send('Hello from relay server!') }
+  //catch (e) { console.log("error: " + e) };
   
   ws.on('message', function incoming(message) {
-    console.log("<< ---- incoming message ---- >>",message);
+    console.log("<< ---- incoming message ---- >>\n",message);  
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -64,7 +64,44 @@ wss.on('connection', function connection(ws) {
     }
 
     // --------------  respond to token requests  ----------------- //    
-    if (cmd == "tok_req") {
+    if (cmd == "token_request") {
+      var token = crypto.createHash('sha512').update(mac).digest('hex');
+      //try { ws.send('{\"token\":\"'+token+'\"}') }
+      try { ws.send(token) }
+      catch (e) { console.log("reply error | " + e) };
+
+      var index = find_index(device_objects,'token',token);
+      if (index < 0) {
+        var device_object = { token:token, mac:mac, local_ip:local_ip, public_ip:public_ip, device_type:[device_type], groups:[], socket:ws };
+        database.store_device_object(device_object);
+        device_objects.push(device_object);
+        console.log('added device',device_object.mac);
+      } else {
+        device_objects[index].public_ip = public_ip;
+        device_objects[index].local_ip = local_ip;
+        device_objects[index].device_type = device_type;
+        database.store_device_object(device_objects[index]);
+        device_objects[index].socket = ws;
+        //console.log('updated device',device_objects[index].mac);
+      }
+     
+      var index = find_index(groups,'group_id',mac);
+      if (index < 0) {
+        var group = {group_id:mac, mode:'init', device_type:[device_type], members:[mac],IR:[],record_mode:false};
+        groups.push(group);
+        database.store_group(group);
+      }
+    }
+
+    // --------------  respond to OTA requests  ----------------- //    
+    if (cmd == "init_ota") {
+      try { ws.send('{\"cmd\":\"update\",\"token\":\"'+token+'\"}') }
+      //try { ws.send("TESTING!!!!") }
+      catch (e) { console.log("reply error | " + e) };
+      //console.log(TAG,"init_ota")
+    }
+
+    /*if (cmd == "tok_req") {
       var token = crypto.createHash('sha512').update(mac).digest('hex');
       try { ws.send('{\"token\":\"'+token+'\"}') }            
       catch (e) { console.log("reply error | " + e) };
@@ -90,7 +127,7 @@ wss.on('connection', function connection(ws) {
         groups.push(group);
         database.store_group(group);
       }
-    }
+    }*/
 
     
     // ----------------  garage opener  ------------------- //
