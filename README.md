@@ -1,4 +1,4 @@
-### This repository contains the relay portion of open-automation. Main function is to route and process data from devices and users.
+### This repository contains the relay server portion of open-automation. Main function is to route and process device and user data.
 
 ### open-automation is made from a cohesive set of web languages. NodeJS for general processing, socket.io for bidirectional communication. NodeJS is used for generating, setting, and retreiving model (mongodb) data. Websockets is used for transport on microcontrollers. Live token based streaming with JSMPEG decoding on camera devices. Web interface is angularjs. Android app for location beacons.
 
