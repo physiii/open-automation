@@ -67,25 +67,6 @@ angular.module('starter.controllers', ['socket-io'])
     $rootScope.update_map(data);
   });
 
-  relay_socket.on('room_sensor', function (data) {
-    if (data.status = 'alert') {
-      $rootScope.alarm_status = data.status;
-    }
-    var index = $rootScope.find_index($rootScope.room_sensors,'token',data.token);
-    magnitude_width = data.magnitude /100;
-    if (magnitude_width > 100) magnitude_width = 100;
-    document.getElementById(room_sensors[index].mac+"_magnitude").style.width = magnitude_width + "%";
-    if (data.motion == "No Motion Detected") {
-      document.getElementById(room_sensors[index].mac+"_motion").style.background = "#0B7520";
-    }
-    if (data.motion == "Motion Detected") {
-      document.getElementById(room_sensors[index].mac+"_motion").style.background = "#9C0C1B";
-    }
-    $scope.$apply(function () {
-      $rootScope.room_sensors[index].state = data;
-    });
-  });
-
   relay_socket.on('command result', function (data) {
     var command_result = data.stdout;
     command_result = command_result.replace(/(?:\r\n|\r|\n)/g, '<br />');
@@ -190,6 +171,7 @@ angular.module('starter.controllers', ['socket-io'])
         }
 
         if (devices[i].device_type[j] == "room_sensor") {
+	  devices[i].background_color = "#222";
           room_sensors.push( devices[i] );        
         }
 

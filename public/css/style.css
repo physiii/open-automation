@@ -1,3 +1,8 @@
+-webkit-user-select: text;
+-moz-user-select: text;
+-ms-user-select: text;
+user-select: text;
+
 .fade_in {
   width: 100%;
   height: 100%;

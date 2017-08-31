@@ -1,6 +1,6 @@
 ### **open-automation** is made from a cohesive set of web languages. NodeJS for general processing, socket.io communication, PHP for generating, setting, and retreiving model (mongodb) data, and websockets for transport on microcontrollers to live token based streaming with JSMPEG decoding. Interface is angularjs. Android app for location beacons.
 
-Software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message.
+Software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message. Camera and files are proxied out the port you set with -p [port]. Forward that port on your router to gain access to files and camera using remote tokens. 
 
 ### update: now supports streaming from behind routers, this is done through websockets; so no port forwarding necessary!
 

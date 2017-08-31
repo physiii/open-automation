@@ -45,6 +45,23 @@ angular.module('main_site', ['socket-io'])
   });
   }
   
+  $scope.register = function(user) {
+    $.post( "/register",user).success(function(data){
+      if (data.error) {
+        document.getElementById("register_message").style.display = "inline";
+        $scope.$apply(function () {
+          $rootScope.register_message = data.error;
+        });
+        console.log("error",data.error);
+        return;
+      }
+      console.log("register",data);
+      $.cookie('user',data.username, { path: '/' } );
+      $.cookie('token',data.token, { path: '/' } );
+      window.location.replace("/home");
+    });
+  }
+
   $scope.show_login = function() {
     document.getElementById("pyfi_logo").style.display = "none";
     document.getElementById("main_login_form").style.display = "inline";
@@ -83,20 +100,4 @@ angular.module('main_site', ['socket-io'])
     document.getElementById("motion_detector_form").style.display = "inline";
   }
 
-  $scope.register = function(user) {
-    $.post( "/register",user).success(function(data){
-      if (data.error) {
-        document.getElementById("register_message").style.display = "inline";
-        $scope.$apply(function () {
-          $rootScope.register_message = data.error;
-        });
-        console.log("error",data.error);
-        return;
-      }
-      console.log("register",data);
-      $.cookie('user',data.username, { path: '/' } );
-      $.cookie('token',data.token, { path: '/' } );
-      window.location.replace("/home");
-    });
-  }
 });

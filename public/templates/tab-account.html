@@ -2,6 +2,15 @@
   <ion-content overflow-scroll="true">
     <div style="max-width:3000px;margin:0px auto auto auto;">
 
+
+<style>
+.scroll {
+-webkit-user-select: text;
+-moz-user-select: text;
+-ms-user-select: text;
+user-select: text;
+}
+</style>
 <!-------------------------------------------------------------->
 <!-----------------------  Gateways  --------------------------->
 <!-------------------------------------------------------------->
@@ -164,11 +173,11 @@
               <input type="submit" id="add_zwave_device" ng-click="add_zwave_device(gateway)" value="Scan for Z-Wave" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
 
               <div id="{{ gateway.mac }}_command_form" style="display:none" >
-                <div style="margin:auto;padding:10px 25px 0px 25px;">
+                <form ng-submit="command(gateway)"  style="margin:auto;padding:10px 25px 0px 25px;">
                   <div ng-bind-html="gateway.command_result" style="width:100%;height100%;color:#fff;background:#222;border-style:solid;border-width:1px;border-radius:2px;"></div>
                   <input style="font-size:100%;width:100%;height:40px;margin:10px 10px 10px 10px" ng-model="gateway.command" placeholder="Command" />
                   <input type="submit" ng-click="command(gateway)" value="Send" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />  
-                </div>
+                </form>
               </div>
 
               <input type="submit" id="{{ gateway.mac }}_command_form_btn" ng-click="show_form('_command_form', gateway.mac)" value="Command" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />

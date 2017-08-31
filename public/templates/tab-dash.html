@@ -407,9 +407,9 @@
 </div>
 
 <!------------------------------------------------------------------------>
-<!----------------------------  Alerts  ---------------------------------->
+<!---------------------------  room sensors  ----------------------------->
 <!------------------------------------------------------------------------>
-<div ng-controller="AlertsCtrl">
+<div ng-controller="RoomCtrl">
   <div data-ng-repeat="x in room_sensors" class="col-lg-4 col-md-6 col-sm-12" >
     <div class="card" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
       <ion-card-header >
@@ -418,7 +418,7 @@
       </h4>
       </ion-card-header>
       <div class="item item-divider" style="width:100%;">
-        <div id="{{x.mac}}_motion" class="card item item-divider" style="height:150px;margin:auto;padding:40px 0px 0px 0px;border-style:solid;border-width:1px;border-color:#AAA;color:#222;background:#222"><h1><b>{{ x.state.motion }}</b></h1>
+        <div id="{{x.mac}}_motion" class="card item item-divider" style="height:150px;margin:auto;padding:40px 0px 0px 0px;border-style:solid;border-width:1px;border-color:#AAA;background:{{ x.background_color }}"><h2 style="color:#eee"><b>{{ x.message }}</b></h2>
         </div>
       </div>
 
@@ -428,6 +428,13 @@
           </div>
         </div>
       </div>
+
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor('light_on',x)"><i  class=""></i>on</button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('light_toggle',x)"><i class="fa fa-lightbulb-o fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('light_off',x)"><i class=""></i>off</button>
+          </div>
+
     </div>
   </div>
 </div>

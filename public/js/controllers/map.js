@@ -39,7 +39,7 @@ angular.module('starter.controllers')
     var location = device.status;
     //console.log("update_map",location);
     Latlng = new google.maps.LatLng(location.latitude, location.longitude);
-    console.log(TAG,location);
+    console.log(TAG,device);
     var contentString = "<div>" + device.mac + "<br>";
         contentString += "Signal: "+location.cell_signal_level+"<br>";
         contentString += "Battery: "+(location.battery.toPrecision(2))*100+"%<br>";

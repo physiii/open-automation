@@ -23,7 +23,7 @@ socketServer.on('connection', function(socket) {
     socket.camera = data.camera;
     console.log("stored video token",socket.token);
     console.log("stored camera number",socket.camera);
-    console.log(TAG,"clients",socketServer.clients);
+    //console.log(TAG,"clients",socketServer.clients);
   }
 
   socket.on('close', function(code, message){

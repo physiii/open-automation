@@ -34,8 +34,10 @@ try {
 accounts = [];
 groups = [];
 device_objects = [];
+device_sockets = [];
 status_objects = [];
 user_objects = [];
+user_sockets = [];
 
 var stream = require('./stream.js');
 var website = require('./website.js');
