@@ -1,12 +1,9 @@
-### This repository contains the relay server portion of open-automation. Main function is to route and process device and user data.
+## This repository contains the relay server portion of open-automation. Main function is to route and process device and user data.
 
-### open-automation is made from a cohesive set of web languages. NodeJS for general processing, socket.io for bidirectional communication. NodeJS is used for generating, setting, and retreiving model (mongodb) data. Websockets is used for transport on microcontrollers. Live token based streaming with JSMPEG decoding on camera devices. Web interface is angularjs. Android app for location beacons.
+### open-automation is made from a cohesive set of web languages. NodeJS for general processing, socket.io for bidirectional communication. NodeJS is used for generating, setting, and retreiving model (mongodb) data. Websockets is used for transport on microcontrollers. Live token based streaming with JSMPEG decoding on camera devices. Web interface is angularjs. Android app for location beacons. Now supports streaming from behind routers, this is done through websockets; so no port forwarding necessary!
 
 Software for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and sends alerts via text message.
 
-### update: now supports streaming from behind routers, this is done through websockets; so no port forwarding necessary!
-
-## Uses
 ### Automation Gateway 
 Send and receive messages w wifi and zwave devices.
 ### Solar Powered Security Camera
@@ -39,8 +36,15 @@ Uses motion to trigger recording to local disk and local disk can be proxied (wo
 ## System Overview
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system_overview.png?raw=true "system overview")
 
+
 ##Dashboard
-![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dash.png "Dashboard")
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dashboard.png "Dashboard")
+
+##Dashboard
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/dashboard2.jpg "Dashboard")
+
+##Dashboard
+![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/sidebyside.jpg "Dashboard")
 
 ##Mobile
 ![Alt text](https://github.com/physiii/open-automation/blob/master/screenshots/mobile.png "Mobile")
