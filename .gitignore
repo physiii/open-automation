@@ -48,7 +48,7 @@ ehthumbs.db
 Thumbs.db
 
 ################
-node_modules/
+#node_modules/
 bower_components/
 #files/*
 public/downloads/*
