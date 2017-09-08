@@ -77,13 +77,13 @@ function timeout() {
   setTimeout(function () {
     check_diskspace();
     timeout();
-  }, 60*60*1000);
+  }, 30*1000);
 }
 
 function check_diskspace() {
   diskspace.check('/', function (err, total, free, status)
   {
-    //console.log("free space: " + free);
+    console.log("free space: " + free);
     if (free < 2000000000) {
       remove_old_files();
     }
