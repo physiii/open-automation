@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +30,7 @@
 <script src="/js/jquery-2.2.4.min.js"></script>
 <script src="/js/jquery.cookie.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
-<script src="/js/materialize.min.js"></script>   
+<script src="/materialize/dist/js/materialize.min.js"></script>   
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkp7LaN0aTOl5xN8x5RunDAJsgwWBoYJo"></script> 
 <script src="/js/init.js"></script>
@@ -41,6 +42,7 @@
 <script src="/js/controllers/access.js"></script>
 <script src="/js/controllers/lights.js"></script>
 <script src="/js/controllers/camera.js"></script>
+<script src="/js/controllers/room.js"></script>
 <script src="/js/controllers/climate.js"></script>
 <script src="/js/controllers/account.js"></script>
 <script src="/js/controllers/alerts.js"></script>
@@ -49,19 +51,26 @@
 <script src="/js/controllers/health.js"></script>
 <script src="/js/controllers/map.js"></script>
 <script src="/js/controllers/charts.js"></script>
-<!-- 
-<script src="/js/controllers/controllers.js"></script>
--->
 
 <script src="/js/services.js"></script>
 <script src="/js/ng-socket-io.js"></script>
 <script src="/js/socket.io.js"></script>
-<!-- <script src="/js/jsmpg.js"></script> -->
 <script src="/js/jsmpeg/jsmpeg.min.js"></script>
+
+<style type="text/css">
+@font-face {
+    font-family: "PYFI";
+    src: url(fonts/quickening/Fonts/quickeninglaserital.ttf) format("truetype");
+}
+.quickening { 
+    font-family: "PYFI", Verdana, Tahoma;
+}
+</style>
 
   <link href="css/ionic.css" rel="stylesheet">
   <script src="js/jquery-ui.min.js"></script>
 </head>
+
   <body>
 
 <div ng-app="starter">

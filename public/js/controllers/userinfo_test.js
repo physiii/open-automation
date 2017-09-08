@@ -47,6 +47,7 @@ angular.module('starter.controllers', ['socket-io'])
   $rootScope.user = user;
   token  = "e7ba376a61fe1e792d7e51a4c7335197f5e1351a9c65d093fae354640444974ae56ffa569a321a1cef3ba6314a4f203d2f06573e505b7681869625da69837253";
   user = "scottcolemanhomes@gmail.com";
+
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
@@ -67,25 +68,6 @@ angular.module('starter.controllers', ['socket-io'])
     $rootScope.mobile = mobile;
     //console.log("set status",data);
     $rootScope.update_map(data);
-  });
-
-  relay_socket.on('room_sensor', function (data) {
-    if (data.status = 'alert') {
-      $rootScope.alarm_status = data.status;
-    }
-    var index = $rootScope.find_index($rootScope.room_sensors,'token',data.token);
-    magnitude_width = data.magnitude /100;
-    if (magnitude_width > 100) magnitude_width = 100;
-    document.getElementById(room_sensors[index].mac+"_magnitude").style.width = magnitude_width + "%";
-    if (data.motion == "No Motion Detected") {
-      document.getElementById(room_sensors[index].mac+"_motion").style.background = "#0B7520";
-    }
-    if (data.motion == "Motion Detected") {
-      document.getElementById(room_sensors[index].mac+"_motion").style.background = "#9C0C1B";
-    }
-    $scope.$apply(function () {
-      $rootScope.room_sensors[index].state = data;
-    });
   });
 
   relay_socket.on('command result', function (data) {
@@ -192,6 +174,7 @@ angular.module('starter.controllers', ['socket-io'])
         }
 
         if (devices[i].device_type[j] == "room_sensor") {
+	  devices[i].background_color = "#222";
           room_sensors.push( devices[i] );        
         }
 
@@ -223,7 +206,7 @@ angular.module('starter.controllers', ['socket-io'])
     load_settings(data);
     data.mode = 'preview';
     var data_obj = {mode:'preview', mac:data.mac, token:data.token}
-    //console.log('load settings',data);
+    console.log('load settings',data.mac);
   });
 
   relay_socket.on('load devices', function (data) {
@@ -241,7 +224,7 @@ angular.module('starter.controllers', ['socket-io'])
     if (i < 0) return console.log("load_settings | mac not found",mac);
     gateways[i].settings = settings;
     relay_socket.emit('get camera list',gateways[i]);
-    console.log(TAG,"get camera list",settings);
+    //console.log(TAG,"load_settings",mac);
     /*key = 'thermostat';
     for (key in devices) {
       if (devices[key].device_type == 'thermostat') {
