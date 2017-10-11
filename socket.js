@@ -1,4 +1,4 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
+	// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
 // -----------------  https://github.com/physiii/open-automation  -------------------- //
 // ---------------------------------- socket.js -------------------------------------- //
 
@@ -25,6 +25,7 @@ const wssLED = new WebSocketServer({ noServer: true });
 const wssMicrophone = new WebSocketServer({ noServer: true });
 const wssMotion = new WebSocketServer({ noServer: true });
 const wssUpdate = new WebSocketServer({ noServer: true });
+const wssClimate = new WebSocketServer({ noServer: true });
 const server = http.createServer().listen(DEVICE_PORT);
 
 server.on('upgrade', (request, socket, head) => {
@@ -54,6 +55,10 @@ server.on('upgrade', (request, socket, head) => {
     wssMotion.handleUpgrade(request, socket, head, (ws) => {
       wssMotion.emit('connection', ws);
     });
+  } else if (pathname === '/climate') {
+    wssClimate.handleUpgrade(request, socket, head, (ws) => {
+      wssClimate.emit('connection', ws);
+    });
   } else if (pathname === '/update') {
     wssUpdate.handleUpgrade(request, socket, head, (ws) => {
       wssUpdate.emit('connection', ws);
@@ -62,8 +67,6 @@ server.on('upgrade', (request, socket, head) => {
     socket.destroy();
   }
 });
-
-console.log('buttons on port %d', BUTTONS_PORT);
 
 wssUpdate.on('connection', function connection(ws) {
   console.log(TAG,"<< ---- incoming update connection ---- >>");
@@ -104,11 +107,54 @@ wssUpdate.on('connection', function connection(ws) {
   });
 });
 
+wssClimate.on('connection', function connection(ws) {
+  console.log(TAG,"<< ---- incoming climate connection ---- >>");
+  ws.on('message', function incoming(message) {
+    console.log("<< ---- incoming climate message ---- >>\n",message); 
+    var msg = {};
+    try { msg = JSON.parse(message) }
+    catch (e) { console.log("invalid json", message) };
+    var token = msg.token;
+    var mac = msg.mac;
+    var cmd = msg.cmd;
+    var device_type = msg.device_type;
+    var local_ip = msg.local_ip;
+    var value = msg.value;
+    var public_ip = ws.upgradeReq.connection.remoteAddress;
+    var device_index = find_index(device_objects,'token',token);
+    //if (device_index < 0)
+    if (!device_type) return;
+    var device_index = find_index(device_objects,'token',token);
+    if (!device_objects[device_index]) return console.log("device not found", token);
+    var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
+    if (group_index < 0) return console.log("group_id not found", data.mac);
+    // --------------  respond to token requests  ----------------- //    
+    if (cmd == "link") {
+      device_objects[device_index].wsPower = ws;
+      try { ws.send("linked") }
+      catch (e) { console.log("reply error | " + e) };
+      console.log('linked climate socket',device_objects[device_index].mac);
+    }
+
+    // --------------  send buttons to clients --------------- //    
+    if (cmd == "main_voltage") {
+      for (var i=0; i < groups[group_index].members.length; i++) {
+        //console.log("sending buttons to ",groups[group_index].members[i]);
+	msg.message = "main_voltage: " + value;
+        message_user(groups[group_index].members[i],'room_sensor',msg);
+      }
+
+      try { ws.send("sent to climate clients") }
+      catch (e) { console.log("reply error | " + e) };
+      console.log('sent climate to clients',device_objects[device_index].mac);
+    }
+  });
+});
 
 wssPower.on('connection', function connection(ws) {
-  console.log(TAG,"<< ---- incoming Power connection ---- >>");
+  console.log(TAG,"<< ---- incoming power connection ---- >>");
   ws.on('message', function incoming(message) {
-    console.log("<< ---- incoming Power message ---- >>\n",message); 
+    console.log("<< ---- incoming power message ---- >>\n",message); 
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -146,8 +192,6 @@ wssPower.on('connection', function connection(ws) {
       catch (e) { console.log("reply error | " + e) };
       console.log('sent power to clients',device_objects[device_index].mac);
     }
-
-
   });
 });
 
@@ -271,7 +315,7 @@ wssMicrophone.on('connection', function connection(ws) {
   });
 });
 
-wssMotion.on('connection', function connection(ws) {
+/* DELETE wssMotion.on('connection', function connection(ws) {
   console.log(TAG,"<< ---- incoming motion connection ---- >>");
   ws.on('message', function incoming(message) {
     //console.log("<< ---- incoming motion message ---- >>\n",message); 
@@ -304,6 +348,49 @@ wssMotion.on('connection', function connection(ws) {
       for (var i=0; i < groups[group_index].members.length; i++) {
         //console.log("sending motion to ",groups[group_index].members[i]);
 	msg.message = "Motion Detected!";
+        message_user(groups[group_index].members[i],'room_sensor',msg);
+      }
+
+      //try { ws.send("sent to motion clients") }
+      //catch (e) { console.log("reply error | " + e) };
+      //console.log('sent motion to clients',device_objects[device_index].mac);
+    }
+  });
+});*/
+
+wssClimate.on('connection', function connection(ws) {
+  console.log(TAG,"<< ---- incoming climate connection ---- >>");
+  ws.on('message', function incoming(message) {
+    console.log("<< ---- incoming climate message ---- >>\n",message); 
+    var msg = {};
+    try { msg = JSON.parse(message) }
+    catch (e) { console.log("invalid json", message) };
+    var token = msg.token;
+    var mac = msg.mac;
+    var cmd = msg.cmd;
+    var value = msg.value;
+    var device_type = msg.device_type;
+    var local_ip = msg.local_ip;
+    var public_ip = ws.upgradeReq.connection.remoteAddress;
+    var device_index = find_index(device_objects,'token',token);
+    if (device_index < 0) return console.log("device not found", mac);
+    if (!device_type) return;
+    var device_index = find_index(device_objects,'token',token);
+    if (!device_objects[device_index]) return console.log("device not found", token);
+    var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
+    if (group_index < 0) return console.log("group_id not found", data.mac);
+    // --------------  respond to climate requests  ----------------- //    
+    if (cmd == "link") {
+      device_objects[device_index].wsClimate = ws;
+      try { ws.send("linked") }
+      catch (e) { console.log("reply error | " + e) };
+      console.log('updated motion socket',device_objects[device_index].mac);
+    }
+    // --------------  send climate to clients --------------- //    
+    if (cmd == "light") {
+      for (var i=0; i < groups[group_index].members.length; i++) {
+        //console.log("sending motion to ",groups[group_index].members[i]);
+	msg.message = "light level";
         message_user(groups[group_index].members[i],'room_sensor',msg);
       }
 
@@ -618,9 +705,10 @@ io.on('connection', function (socket) {
 
   socket.on('get settings', function (data) {
     var index = find_index(device_objects,'token',data.token);
-    if (index < 0) return console.log("get settings | device not found", data.token);
+    if (index < 0) return console.log(TAG,"get settings | device not found", data.token);
     if (device_objects[index].wsTokens) return device_objects[index].wsTokens.emit('get settings',data);
     console.log("get settings",device_objects[index].mac);
+    if (!device_objects[index].socket) return console.log(TAG,"get settings | socket no found",device_objects[index].mac);
     device_objects[index].socket.emit('get settings',data);
   });
 
