@@ -137,11 +137,11 @@ wssClimate.on('connection', function connection(ws) {
     }
 
     // --------------  send buttons to clients --------------- //    
-    if (cmd == "main_voltage") {
+    if (cmd == "climate") {
       for (var i=0; i < groups[group_index].members.length; i++) {
         //console.log("sending buttons to ",groups[group_index].members[i]);
-	msg.message = "main_voltage: " + value;
-        message_user(groups[group_index].members[i],'room_sensor',msg);
+	//msg.message = "temperature: " + value;
+        message_user(groups[group_index].members[i],'regulator climate',msg);
       }
 
       try { ws.send("sent to climate clients") }
@@ -181,13 +181,12 @@ wssPower.on('connection', function connection(ws) {
     }
 
     // --------------  send buttons to clients --------------- //    
-    if (cmd == "main_voltage") {
+    if (cmd == "power") {
       for (var i=0; i < groups[group_index].members.length; i++) {
-        //console.log("sending buttons to ",groups[group_index].members[i]);
-	msg.message = "main_voltage: " + value;
-        message_user(groups[group_index].members[i],'room_sensor',msg);
+        //console.log("sending power to ",groups[group_index].members[i]);
+	//msg.message = "main_voltage: " + value;
+        message_user(groups[group_index].members[i],'regulator power',msg);
       }
-
       try { ws.send("sent to power clients") }
       catch (e) { console.log("reply error | " + e) };
       console.log('sent power to clients',device_objects[device_index].mac);
@@ -466,7 +465,7 @@ wssTokens.on('connection', function connection(ws) {
         //if (device_objects[device_index].wsTokens) delete device_objects[device_index].wsTokens;
         //database.store_device_object(device_objects[device_index]);
         device_objects[device_index].wsTokens = ws;
-        console.log('updated device',device_objects[device_index]);
+        //console.log('updated device',device_objects[device_index]);
       }
 
       var index = find_index(groups,'group_id',mac);
@@ -904,16 +903,22 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('regulator', function (data) {
+    var device_index = find_index(device_objects,'token',data.token);
+    if (device_index < 0) return console.log(TAG,"regulator not found",data);
+    if (!device_objects[device_index].wsPower) return console.log(TAG,"regulator socket not found",data);
+    try {device_objects[device_index].wsPower.send(data.command);}
+    catch (e) { console.log("socket error ",device_objects[device_index].mac, e) };
+    console.log(TAG,"sent to regulator:",device_objects[device_index].mac, data.command);
+  });
+
   socket.on('room_sensor', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index < 0) return console.log(TAG,"room_sensor not found",data);
-    //if (!device_objects[device_index].wsButtons) return console.log(TAG,"room_sensor socket not found",data);
-    //try {device_objects[device_index].wsButtons.send(data.command);}
     if (!device_objects[device_index].wsButtons) return console.log(TAG,"room_sensor socket not found",data);
     try {device_objects[device_index].wsButtons.send(data.command);}
     catch (e) { console.log("socket error ",device_objects[device_index].mac, e) };
     console.log(TAG,"sent to room_sensor:",device_objects[device_index].mac, data.command);
-
   });
 
   socket.on('room_sensor_rec', function (data) {
@@ -1229,6 +1234,8 @@ io.on('connection', function (socket) {
     delete temp_object.socket;
     delete temp_object.wsButtons;
     delete temp_object.wsTokens;
+    delete temp_object.wsClimate;
+    delete temp_object.wsPower;
     console.log(TAG,'link device',temp_object);
     socket.emit('link device',temp_object);
     //get_devices(data,socket);

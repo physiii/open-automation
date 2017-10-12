@@ -25,6 +25,7 @@ angular.module('starter.controllers', ['socket-io'])
   var motion_sensors = [];
   var media_controllers = [];
   var room_sensors = [];
+  var regulators = [];
   var sirens = [];
   var cameras = [];
   var sirens = [];
@@ -177,7 +178,7 @@ angular.module('starter.controllers', ['socket-io'])
 
         if (devices[i].device_type[j] == "regulator") {
 	  devices[i].background_color = "#222";
-          room_sensors.push( devices[i] );        
+          regulators.push( devices[i] );        
         }
 
         if (devices[i].device_type[j] == "siren") {
@@ -199,6 +200,7 @@ angular.module('starter.controllers', ['socket-io'])
       $rootScope.alarms = alarms;
       $rootScope.media_controllers = media_controllers;
       $rootScope.room_sensors = room_sensors;
+      $rootScope.regulators = regulators;
       $rootScope.sirens = sirens;
     });
   });

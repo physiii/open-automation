@@ -438,22 +438,42 @@
     </div>
   </div>
 </div>
-<!-- SHOW ONLY WHEN ACTIVE
-  <div data-ng-repeat="x in sirens" class="col-lg-4 col-md-6 col-sm-12" >
-    <div class="card" style="border-style:solid;border-width:2px;border-color:#444;margin:20px;background-color:#444;color:#eee;text-align:center;">
-      <ion-card-header>
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  regulators  ----------------------------->
+<!------------------------------------------------------------------------>
+<div ng-controller="RegulatorCtrl">
+  <div data-ng-repeat="x in regulators" class="col-lg-4 col-md-6 col-sm-12" >
+    <div class="card" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
+      <ion-card-header >
       <h4 style="margin:10px;float:right;color:#ccc">
         {{ x.device_name }}
       </h4>
       </ion-card-header>
-      <div class="item item-divider row" style="width:100%;">
-        <div id="{{x.mac}}_screen" class="card item item-divider" style="width:75%;height:150px;margin:auto;padding:2px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;color:#eee;background:#222">{{ x.state.magnitude }}
+      <div class="item item-divider" style="width:100%;">
+        <div id="{{x.mac}}_motion" class="card item item-divider" style="height:150px;margin:auto;padding:10px 0px 0px 10px;border-style:solid;border-width:1px;border-color:#AAA;background:{{ x.background_color }}">
+	  <h2 style="color:#eee">Voltage: <b>{{ x.power.voltage }}</b></h2>
+	  <h2 style="color:#eee">Current: <b>{{ x.power.current }}</b></h2>
+	  <h2 style="color:#eee">Temperature: <b>{{ x.climate.temperature }}</b></h2>
+	  <h2 style="color:#eee">Humidity: <b>{{ x.climate.humidity }}</b></h2>
+	  <h2 style="color:#eee">Power: ON<b>{{ x.power.usb_state }}</b></h2>
         </div>
-          <button style="height:150px;width:25%;" ng-click="test_siren(x)"><i class="fa fa-volume-up fa-4x col"></i></button>
       </div>
+
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="regulator('power_on',x)"><i  class=""></i>power on</button>
+            <button style="height:100px;width:100%;" ng-click="regulator('power_off',x)"><i class=""></i>power off</button>
+          </div>
+
+          <!-- <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="regulator('battery_on',x)"><i  class=""></i>battery on</button>
+            <button style="height:100px;width:100%;" ng-click="regulator('battery_off',x)"><i class=""></i>battery off</button>
+          </div> -->
+
     </div>
   </div>
--->
+</div>
+
 
 <!------------------------------------------------------------------------>
 <!-----------------------------  Beacon  --------------------------------->
