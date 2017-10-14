@@ -25,7 +25,6 @@ angular.module('starter.controllers', ['socket-io'])
   var motion_sensors = [];
   var media_controllers = [];
   var room_sensors = [];
-  var regulators = [];
   var sirens = [];
   var cameras = [];
   var sirens = [];
@@ -44,10 +43,11 @@ angular.module('starter.controllers', ['socket-io'])
 
   var token = $.cookie('token');
   var user = $.cookie('user');
-  token  = "e7ba376a61fe1e792d7e51a4c7335197f5e1351a9c65d093fae354640444974ae56ffa569a321a1cef3ba6314a4f203d2f06573e505b7681869625da69837253";
-  user = "scottcolemanhomes@gmail.com";
   $rootScope.token = token;
   $rootScope.user = user;
+  token  = "e7ba376a61fe1e792d7e51a4c7335197f5e1351a9c65d093fae354640444974ae56ffa569a321a1cef3ba6314a4f203d2f06573e505b7681869625da69837253";
+  user = "scottcolemanhomes@gmail.com";
+
   relay_socket.emit('link user',{token:token, user:user});
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
@@ -178,11 +178,6 @@ angular.module('starter.controllers', ['socket-io'])
           room_sensors.push( devices[i] );        
         }
 
-        if (devices[i].device_type[j] == "regulator") {
-	  devices[i].background_color = "#222";
-          regulators.push( devices[i] );        
-        }
-
         if (devices[i].device_type[j] == "siren") {
   	  //console.log("siren",devices[i]);
           sirens.push( devices[i] );        
@@ -202,7 +197,6 @@ angular.module('starter.controllers', ['socket-io'])
       $rootScope.alarms = alarms;
       $rootScope.media_controllers = media_controllers;
       $rootScope.room_sensors = room_sensors;
-      $rootScope.regulators = regulators;
       $rootScope.sirens = sirens;
     });
   });
