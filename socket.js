@@ -162,20 +162,19 @@ wssPower.on('connection', function connection(ws) {
     var mac = msg.mac;
     var cmd = msg.cmd;
     var device_type = msg.device_type;
+    if (!device_type) return;
     var local_ip = msg.local_ip;
     var value = msg.value;
     var public_ip = ws.upgradeReq.connection.remoteAddress;
     var device_index = find_index(device_objects,'token',token);
-    //if (device_index < 0)
-    if (!device_type) return;
-    var device_index = find_index(device_objects,'token',token);
     if (!device_objects[device_index]) return console.log("device not found", token);
+    device_objects[device_index].wsPower = ws;
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
     // --------------  respond to token requests  ----------------- //    
     if (cmd == "link") {
       device_objects[device_index].wsPower = ws;
-      try { ws.send("linked") }
+      try { device_objects[device_index].wsPower.send("linked") }
       catch (e) { console.log("reply error | " + e) };
       console.log('linked power socket',device_objects[device_index].mac);
     }
@@ -187,7 +186,7 @@ wssPower.on('connection', function connection(ws) {
 	//msg.message = "main_voltage: " + value;
         message_user(groups[group_index].members[i],'regulator power',msg);
       }
-      try { ws.send("sent to power clients") }
+      try { device_objects[device_index].wsPower.send("sent power to clients") }
       catch (e) { console.log("reply error | " + e) };
       console.log('sent power to clients',device_objects[device_index].mac);
     }
@@ -906,6 +905,14 @@ io.on('connection', function (socket) {
   socket.on('regulator', function (data) {
     var device_index = find_index(device_objects,'token',data.token);
     if (device_index < 0) return console.log(TAG,"regulator not found",data);
+
+
+    /*for (var i = 0; i < device_objects.length; i++) {
+      try {device_objects[i].wsPower.send(data.command);}    
+      catch (e) { console.log("socket error ",device_objects[i].mac, e) };
+      console.log(TAG,"sent to regulator1:",device_objects[i].mac, data.command);
+    }*/
+
     if (!device_objects[device_index].wsPower) return console.log(TAG,"regulator socket not found",data);
     try {device_objects[device_index].wsPower.send(data.command);}
     catch (e) { console.log("socket error ",device_objects[device_index].mac, e) };
