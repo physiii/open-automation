@@ -18,15 +18,9 @@ angular.module('open-automation')
 })
 
 .controller("userinfo", function ($scope, $rootScope, socket) {
-
-
-
-
   $scope.stack = "col";
-
-
   var TAG = "[userinfo]";
-  var gateways = [];
+  /*var gateways = [];
   var mobile = []; 
   var garage_openers = [];
   var motion_sensors = [];
@@ -37,8 +31,9 @@ angular.module('open-automation')
   var cameras = [];
   var sirens = [];
   var alarms = [];
-  var smoke_alarms = [];
+  var smoke_alarms = [];*/
   $rootScope.alert_contacts = [];
+
   $rootScope.server_address = location.host;
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
@@ -49,14 +44,16 @@ angular.module('open-automation')
   $rootScope.relay_socket = relay_socket;
   console.log(TAG + " Connected to: " + url);
 
-  var token = $.cookie('token');
+  var token = $.cookie('token'); //already done in login?
   var user = $.cookie('user');
+  if (user == "null") user = null;
+  if (token == "null") token = null;
   $rootScope.token = token;
   $rootScope.user = user;
-  relay_socket.emit('link user',{token:token, user:user});
+
+  relay_socket.emit('link user',{token:token, user:user}); //already done in login?
   relay_socket.emit('get devices',{token:token});
   relay_socket.emit('get contacts',{user_token:token});  
-
 
   relay_socket.on('set status', function (data) {
     var mac = data.mac;
@@ -149,6 +146,7 @@ angular.module('open-automation')
 
       if (devices[i].type == "gateway") {
         relay_socket.emit('get settings',{token:devices[i].token});
+        console.log(TAG,'getting settings',devices[i].mac);
       }
 
       if (devices[i].type == "mobile") {
@@ -191,7 +189,6 @@ angular.module('open-automation')
   
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
-
     var devices = $rootScope.devices;
     var i = find_index(devices,'mac',data.mac);
     if (i < 0) return console.log("load_settings | device not found",data.mac);
@@ -231,6 +228,81 @@ angular.module('open-automation')
       $rootScope.devices[i].settings = data;
     });
   });
+
+
+
+  
+
+
+
+  //$rootScope.login_message = "init";
+  /*$scope.login = function(user) {
+    $.post( "/login",user).success(function(data){
+      console.log("login!",data);
+      if (data.error) {
+        console.log("error",data.error);
+        return;
+      }
+      $.cookie('user',data.user, { path: '/' });
+      $.cookie('token',data.token, { path: '/' });
+
+      relay_socket.emit('link user',{token:token, user:user});
+      relay_socket.emit('get devices',{token:token});
+      relay_socket.emit('get contacts',{user_token:token});
+      window.location.replace("#/dashboard");
+    }).fail(function(data) {
+    //document.getElementById("login_message").style.display = "inline";
+    $scope.$apply(function () {
+      $rootScope.login_message = "Invalid username/password";
+    });
+    console.log( "error: ",data );
+  });
+  }*/
+
+ /*$scope.login = function(user) {
+    console.log("loging in, " + user);
+    $.post( "/login",user).success(function(data){
+      console.log("login!",data);
+      $scope.close();
+      if (data.error) {
+        console.log("error",data.error);
+        return;
+      }
+      $.cookie('user',data.user, { path: '/' });
+      $.cookie('token',data.token, { path: '/' });
+
+      var token = $.cookie('token');
+      var user = $.cookie('user');
+      if (user == "null") user = null;
+      if (token == "null") token = null;
+      $rootScope.token = token;
+      $rootScope.user = user;
+      relay_socket.emit('link user',{token:token, user:user});
+      relay_socket.emit('get devices',{token:token});
+      relay_socket.emit('get contacts',{user_token:token});
+
+      window.location.replace("#/dashboard");
+    }).fail(function(data) {
+    //document.getElementById("login_message").style.display = "inline";
+    $scope.$apply(function () {
+      $scope.login_message = "Invalid username/password";
+    });
+    console.log( "error: ",data );
+  });
+  }*/
+
+  $rootScope.logout = function() {
+    $rootScope.token = null;
+    $rootScope.user = null;
+    token = null;
+    user = null;
+    $.cookie('token', null, { path: '/' });
+    $.cookie('user', null, { path: '/' });
+    //$.cookie("name", null, { path: '/' });
+    relay_socket.emit('user logout', {token:token});
+    window.location.replace("/");
+    console.log('logout',user);
+  }
 
   $rootScope.ping_audio = function(command,token) {
     console.log('ping audio',command);

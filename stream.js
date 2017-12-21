@@ -51,7 +51,7 @@ socketServer.broadcast = function(data, settings) {
     if (client.readyState === WebSocket.OPEN) {
       if (client.token == token && client.camera == camera) {
         client.send(data);
-        console.log("<< !!! SENDING BROADCAST ("+client.token+") !!! >>>");
+        //console.log("<< !!! SENDING BROADCAST ("+client.token+") !!! >>>");
       }
 
       if (client.readyState !== WebSocket.OPEN) {
