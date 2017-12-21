@@ -1,0 +1,11 @@
+<!-------------------------------------------------------------->
+<!-------------------------  rooms  ---------------------------->
+<!-------------------------------------------------------------->
+<style>
+</style>
+
+<div ng-controller="RoomCtrl" flex="" ng-cloak="">
+  <md-list-item ng-repeat="room in rooms" ng-click="select_room(room)" style="height:100px;background:#222" class="noright">
+    <h1>{{ room.name }}</h1>
+  </md-list-item>
+</div>

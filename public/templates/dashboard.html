@@ -1,0 +1,1182 @@
+ <style> 
+.background {
+  padding: auto;
+}
+
+.light_btn {
+  height: 60px;
+  width: 20%;
+}
+
+.light_btns {
+  background: #444;
+  text-align: center;
+}
+
+.light_btn_icn {
+  margin: 10px 0px 0px 0px;
+  color:#eee;
+}
+
+.light_div {
+  width: 100%;
+  text-align: center;
+  background: purple;
+}
+.md-track-ticks canvas { display: none; }
+md-slider {
+  touch-action: none;
+  margin:5px;
+}
+
+
+.divider {
+}
+</style>
+<div md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"  class="background" ng-controller="gridListDemoCtrl">
+<!------------------------------------------------------------------------>
+<!-----------------------------  Video  ---------------------------------->
+<!------------------------------------------------------------------------>
+<div ng-controller="CameraCtrl">
+  <md-grid-list style="margin:10px" md-cols="1" md-cols-sm="2" md-cols-md="2" md-cols-lg="4" md-cols-gt-lg="4" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="10px" md-gutter-gt-sm="10px">
+    <md-grid-tile ng-repeat="device in devices" ng-if="device.type == 'camera'" style="background:#444" md-rowspan="{{device.span.row}}" md-colspan="{{device.span.col}}" md-colspan-sm="{{device.span.col}}" md-colspan-xs="{{device.span.col}}" ng-class="tile.background">
+      <md-grid-tile-header layout="row" layout-align="center">
+        <h2>{{ device.name }}</h2>
+      </md-grid-tile-header>
+
+
+      <div ng-show="device.show_main" style="width:100%;height:100%">
+        <canvas
+  	  ng-show="device.previewCanvas.show"
+          id="previewCanvas_{{ device.id }}"
+          ng-click="start_webcam(device.id)">
+        </canvas>
+        <canvas
+  	  ng-show="device.videoCanvas.show"
+          style="width:100%"
+          id="videoCanvas_{{ device.id }}"
+          ng-click="stop_webcam(device.id)">
+        </canvas>
+      </div>
+
+      <div ng-if="device.show_dashboard" style="width:100%">
+	<md-toolbar class="md-scroll-shrink" style="background:#444;">
+	  <div layout="row" layout-align="center center" flex>
+	    <md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	      <h5>Recordings</h5>
+              <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+            </md-button>
+            <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+              <h5>Statistics</h5>
+              <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+            </md-button>
+        <md-button class="col" style="margin:auto" ng-click="device.show_settings = !device.show_settings; device.show_dashboard = !device.show_dashboard">
+  	  <h5>Settings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+        </md-button>
+          </div>
+        </md-toolbar>
+      </div>
+
+      <div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+        <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.camera_number)" class="noright">
+	  <p>{{ item.name }}</p>
+	</md-list-item>
+      </div>
+
+
+  <div ng-show="device.show_settings" style="overflow-y:auto; height:calc(100% - 100px);width:100%;"> 
+
+    <md-list-item style="background:#444;height:20px;margin:20px 0px 0px 0px;" class="noright">
+      <p>Device Name</p>
+      <md-input-container style="text-align:center">
+        <label>{{device.name}}</label>
+        <input type="text" ng-model="device.set_name">
+      </md-input-container>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Device ID</p>
+        <label>{{device.settings.mac}}</label>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Public IP</p>
+      <label>{{device.settings.public_ip}}</label>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Local IP</p>
+      <label>{{device.settings.local_ip}}</label>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Dashboard</p>
+      <md-switch value="{{device.set_settings.dashboard_enabled}}" ng-model="device.dashboard_enabled" ng-click="device.set_settings.dashboard_enabled =!device.dashboard_enabled"></md-switch>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px;padding:0px 0px 0px 15px" class="noright">
+      <p>Stream Timeout</p>
+        <md-input-container>
+          <md-select ng-model="device.set_settings.stream_timeout">
+            <md-option ng-selected="true">{{device.stream_timeout}}</md-option>
+            <md-option ng-value="0">Off</md-option>
+            <md-option ng-value="5">5</md-option>
+            <md-option ng-value="10">10</md-option>
+            <md-option ng-value="20">20</md-option>
+            <md-option ng-value="40">40</md-option>
+          </md-select>
+        </md-input-container>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px;padding:0px 0px 0px 15px" class="noright">
+      <p>Rotation</p>
+      <md-input-container>
+        <md-select ng-model="device.set_settings.rotation">
+          <md-option ng-value="{{device.rotation}}" ng-selected="true"></md-option>
+          <md-option ng-value="0">0</md-option>
+          <md-option ng-value="1">90</md-option>
+          <md-option ng-value="4">180</md-option>
+          <md-option ng-value="3">270</md-option>
+        </md-select>
+      </md-input-container>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px;padding:0px 15px 0px 15px" class="noright">
+      <p>Video Resolution</p>
+      <md-input-container style="max-width:100px;">
+        <label>{{device.resolution.width}}</label>
+        <input type="number" ng-model="device.set_settings.resolution.width">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>{{device.resolution.height}}</label>
+        <input type="number" ng-model="device.set_settings.resolution.height">
+      </md-input-container>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:40px" class="noright">
+      <md-button style="width:100%;margin:10px;background:#555" ng-click="device.show_terminal = true;device.show_settings = false;">Command</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:40px" class="noright">
+      <md-button style="width:100%;margin:10px;background:#555" ng-click="attach_device.show = true;device_settings.show = false;">Attached Devices</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px;" class="noright">
+      <p style="margin: auto auto auto 15px">Software version <b>v{{device.settings.software_version}}</b></p>
+      <md-button style="background:#591313;" ng-click="update(device)">Update</md-button>
+    </md-list-item>
+
+  </div>
+
+  <div ng-show="device.show_terminal" class="col" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-input-container style="width:calc(100% - 20px)">
+      <label>type command...</label>
+      <input style="" type="text" ng-model="selected_device.command">
+    </md-input-container>
+    <div ng-bind-html="selected_device.command_result" style=""></div>
+  </div>
+
+  <md-grid-tile-footer layout="row" layout-align="end center">
+
+    <md-button ng-show="device.show_terminal" ng-click="command(selected_device)">send</md-button>
+    <md-button ng-show="device.show_terminal" ng-click="device.show_terminal = false;device.show_settings = true">Back</md-button>
+
+    <md-button ng-show="device.show_main" style="float:left" ng-click="device.span.col = 2;device.span.row = 2;">Fullscreen</md-button>
+
+    <md-button ng-show="device.show_main"  ng-click="device.show_main = false;device.show_dashboard = true">Dashboard</md-button>
+    <md-button ng-show="device.show_dashboard"  ng-click="device.show_dashboard = false;device.show_main = true">Back</md-button>
+    <md-button ng-show="device.show_settings"  ng-click="device.show_settings = false;device.show_dashboard = true">Back</md-button>
+    <md-button ng-show="device.show_settings"  ng-click="set_device_settings(device)">Save</md-button>
+    <md-button ng-show="device.show_recordings"  ng-click="device.show_recordings = false;device.show_dashboard = true">Back</md-button>
+  </md-grid-tile-footer>
+
+      <!-- <md-grid-tile-footer ng-if="device.show_dashboard_btn" layout="row" layout-align="end center">
+        <md-button ng-click="show_dashboard(device)">Dashboard</md-button>
+      </md-grid-tile-footer>
+      <md-grid-tile-footer ng-if="!device.show_dashboard_btn" layout="row" layout-align="end center">
+        <md-button ng-if="device.show_settings" ng-click="set(device)">save</md-button>
+        <md-button ng-click="show_main(device)">Back</md-button>
+      </md-grid-tile-footer> -->
+    </md-grid-tile>
+  </md-grid-list>
+</div>
+
+<!-------------------------------------------------------------->
+<!----------------------  Thermostat  -------------------------->
+<!------------------------------------------------------------ng-repeat="device in devices" ng-if="device.type == 'thermostat'"-->
+
+
+
+<div ng-controller="ClimateCtrl">
+<md-grid-list style="margin:10px" md-cols="1" md-cols-sm="2" md-cols-md="2" md-cols-lg="4" md-cols-gt-lg="4" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
+<md-grid-tile  style="background:#444" md-rowspan="{{device.span.row}}" md-rowspan-xs="2" md-colspan="2" md-colspan-sm="2" md-colspan-xs="1">
+
+  <md-grid-tile-header layout-align="center">
+    <h2>{{device.name}}</h2>
+  </md-grid-tile-header>
+  <div layout-gt-xs>
+
+
+    <div style="text-align:center;">
+      <div style="font-size:50px">70&#8457;</div>
+      <div style="font-size:10px">Current</div>
+    </div>
+
+
+    <div ng-show="!device.show_dashboard"  layout>
+      <div class="info">
+	<p>Mode <a style="color:#006600">AUTO{{ x.power.usb_state }}</a><br>
+  	<md-divider class="divider"></md-divider>
+        <md-button style="margin:0px;height:10px;" ng-click="set_thermostat('fan on')">auto</md-button>
+        <md-button style="margin:0px;height:10px;" ng-click="set_thermostat('fan on')">cool</md-button>
+        <md-button style="margin:0px;height:10px" ng-click="set_thermostat('fan on')">warm</md-button>
+      </div>
+      <div class="info">
+	<p>Fan<br>
+  	<md-divider class="divider"></md-divider>
+
+        <md-button style="margin:auto" ng-click="set_thermostat('fan on')">
+	  on
+        </md-button>
+
+        <md-button style="margin:auto" ng-click="set_thermostat('fan on')">
+	  off
+        </md-button>
+
+
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <div style="font-size:10px">Set Point</div>
+      <div style="font-size:40px">70&#8457;</div>
+      <div ng-show="!device.show_dashboard"  layout>
+
+        <md-button style="margin:auto" ng-click="media_dash('mute')">
+          <i style="color:#660000;font-size:50px;" class="material-icons">keyboard_arrow_up</i>
+        </md-button>
+
+        <md-button style="margin:auto" ng-click="media_dash('mute')">
+          <i style="color:#006600;font-size:40px;" class="fa fa-power-off" aria-hidden="true"></i>
+        </md-button>
+
+        <md-button style="margin:auto" ng-click="media_dash('volume up')">
+          <i style="color:#000066;font-size:50px;" class="material-icons">keyboard_arrow_down</i>
+        </md-button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div ng-show="device.show_dashboard" style="width:100%">
+    <md-toolbar class="md-scroll-shrink" style="background:#444;">
+      <div layout="row" layout-align="center center" flex>
+
+	<md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	  <h5>Recordings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+          <h5>Statistics</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_settings(device)"">
+  	  <h5>Settings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+        </md-button>
+
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.device_number)" class="noright">
+      <p>{{ item.name }}</p>
+    </md-list-item>
+  </div>
+
+
+  <md-grid-tile-footer ng-show="!device.show_dashboard" layout="row" layout-align="end center">
+   <md-button ng-click="show_dashboard(device)">Dashboard</md-button>
+  </md-grid-tile-footer>
+  <md-grid-tile-footer ng-show="device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_main(device)">Back</md-button>
+  </md-grid-tile-footer>
+</md-grid-tile>
+</md-grid-list>
+</div>
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  Alarm  ---------------------------------->
+<!------------------------------------------------------------------------>
+<div ng-controller="AccessCtrl">
+<md-grid-list style="margin:10px" md-cols="1" md-cols-sm="2" md-cols-md="2" md-cols-lg="4" md-cols-gt-lg="4" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
+      <md-grid-tile ng-repeat="device in alarms" style="background:#444" md-rowspan="{{device.span.row}}" md-colspan="{{device.span.col}}" md-colspan-sm="1" md-colspan-xs="1" ng-class="tile.background">
+
+        <md-grid-tile-header style="background:#660000" layout-align="center">
+          <h2>System {{device.status}}</h2>
+	</md-grid-tile-header>
+
+        <div ng-if="!device.show_dashboard" style="width:100%">
+	  <md-toolbar class="md-scroll-shrink" style="background:#444;">
+	    <div layout="row" layout-align="center center" flex>
+
+	      <md-button class="col" style="margin:auto" ng-click="set_alarm('arm')">
+  	        <h5>Arm</h5>
+                <i style="color:#ddd;font-size:50px;" class="material-icons">lock</i>
+              </md-button>
+
+              <md-button class="col" style="margin:auto" ng-click="set_alarm('disarm')">
+                <h5>Disarm</h5>
+                <i style="color:#ddd;font-size:50px;" class="material-icons">lock_open</i>
+              </md-button>
+
+              <md-button class="col" style="margin:auto" ng-click="set_alarm('night')">
+  	        <h5>Night</h5>
+                <i style="color:#ddd;font-size:50px;" class="material-icons">brightness_2</i>
+              </md-button>
+
+            </div>
+          </md-toolbar>
+        </div>
+
+        <div ng-if="device.show_dashboard" style="width:100%">
+	  <md-toolbar class="md-scroll-shrink" style="background:#444;">
+	    <div layout="row" layout-align="center center" flex>
+
+	      <md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	        <h5>Recordings</h5>
+                <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+              </md-button>
+
+              <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+                <h5>Statistics</h5>
+                <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+              </md-button>
+
+              <md-button class="col" style="margin:auto" ng-click="show_settings(device)"">
+  	        <h5>Settings</h5>
+                <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+              </md-button>
+
+            </div>
+          </md-toolbar>
+        </div>
+
+	<div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+	  <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.device_number)" class="noright">
+	    <p>{{ item.name }}</p>
+	  </md-list-item>
+	</div>
+
+
+        <md-grid-tile-footer ng-show="!device.show_dashboard" layout="row" layout-align="end center">
+          <md-button ng-click="show_dashboard(device)">Dashboard</md-button>
+	</md-grid-tile-footer>
+        <md-grid-tile-footer ng-show="device.show_dashboard" layout="row" layout-align="end center">
+          <md-button ng-click="show_main(device)">Back</md-button>
+	</md-grid-tile-footer>
+
+      </md-grid-tile>
+</md-grid-list>
+</div>
+<!------------------------------------------------------------------------>
+<!-----------------------------  Media  ---------------------------------->
+<!------------------------------------------------------------------------>
+<md-grid-list style="margin:10px"  md-cols="1" md-cols-sm="2" md-cols-md="2" md-cols-lg="4" md-cols-gt-lg="4" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
+<md-grid-tile style="background:#444" md-rowspan="{{device.span.row}}" md-colspan="{{device.span.col}}" md-colspan-sm="1" md-colspan-xs="1">
+
+  <md-grid-tile-header layout-align="center">
+    <h2>Media</h2>
+  </md-grid-tile-header>
+
+  <div ng-if="!device.show_dashboard" style="width:100%">
+    <md-toolbar class="md-scroll-shrink" style="background:#444;">
+      <div layout="row" layout-align="center center" flex>
+
+        <md-button class="col" style="margin:auto" ng-click="media_dash('volume down')">
+          <i style="color:#ddd;font-size:50px;" class="material-icons">volume_down</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="media_dash('mute')">
+          <i style="color:#ddd;font-size:50px;" class="material-icons">volume_off</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="media_dash('volume up')">
+          <i style="color:#ddd;font-size:50px;" class="material-icons">volume_up</i>
+        </md-button>
+
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div ng-if="device.show_dashboard" style="width:100%">
+    <md-toolbar class="md-scroll-shrink" style="background:#444;">
+      <div layout="row" layout-align="center center" flex>
+
+	<md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	  <h5>Recordings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+          <h5>Statistics</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_settings(device)"">
+  	  <h5>Settings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+        </md-button>
+
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.device_number)" class="noright">
+      <p>{{ item.name }}</p>
+    </md-list-item>
+  </div>
+
+  <md-grid-tile-footer ng-show="!device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_dashboard(device)">Dashboard</md-button>
+  </md-grid-tile-footer>
+  <md-grid-tile-footer ng-show="device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_main(device)">Back</md-button>
+  </md-grid-tile-footer>
+</md-grid-tile>
+
+
+
+<!--------------------------------------------------------------------------------------------------->
+<!-------------------------  Media Controllers --------------------------->
+<!------------------------------------------------------------------------>
+<div ng-controller="MediaCtrl" ng-repeat="x in media_controllers" class="col-lg-4 col-md-6 col-sm-12">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">{{ x.name }}</h4>
+            </div>
+          </ion-card-header>
+
+          <div class="item item-divider" style="width:100%;height:130px">
+            <div id="{{x.mac}}_screen" class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;background:#222">
+              <div style="width:100%;text-align:center;font-size:45px;">{{ x.state.ir_code }}</div>
+            </div>
+          </div>
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor('mute',x)"><i  class="fa fa-volume-off fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('volume down',x)"><i class="fa fa-volume-down fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('volume up',x)"><i class="fa fa-volume-up fa-4x col"></i></button>
+          </div>
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor('power',x)"><i class=" fa fa-power-off fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('play',x)"><i class="fa fa-pause fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('next',x)"><i class="fa fa-forward fa-4x col"></i></button>
+          </div>
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor('custom1',x)"><h1>1</h1></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('custom2',x)"><h1>2</h1></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('custom3',x)"><h1>3</h1></button>
+          </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:left;color:#ccc">{{ x.name }}</h4>
+            </div>
+          </ion-card-header>
+          <div class="row item item-divider" style="margin:auto">
+            <div id="{{x.mac}}_screen" class="card item item-divider" style="width:100%;height:120px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center;background:#222">
+              <div style="width:100%;text-align:center;font-size:45px;color:#fff">{{ x.state.ir_code }}</div>
+            </div>
+            <button style="height:100px;margin:10px;width:150px;" ng-click="room_sensor_clear(x)">Clear<br>Codes</button>
+          </div>
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('mute',x)"><i  class="fa fa-volume-off fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('volume down',x)"><i class="fa fa-volume-down fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('volume up',x)"><i class="fa fa-volume-up fa-4x col"></i></button>
+          </div>
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('power',x)"><i class=" fa fa-power-off fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('play',x)"><i class="fa fa-pause fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('next',x)"><i class="fa fa-forward fa-4x col"></i></button>
+          </div>
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('custom1',x)"><h1>1</h1></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('custom2',x)"><h1>2</h1></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor_rec('custom3',x)"><h1>3</h1></button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  Light  ---------------------------------->
+<!------------------------------------------------------------------------>
+<md-grid-tile style="background:#444" md-rowspan="1" md-colspan="2" md-colspan-sm="2" md-colspan-xs="1">
+
+  <md-grid-tile-header layout-align="center">
+    <h2>Light</h2>
+  </md-grid-tile-header>
+
+  <md-toolbar class="md-scroll-shrink light_div" style="background:#444">
+    <div class="light_btns">
+      <md-button class="light_btn md-raised" style="" ng-click="all_lights('warm')" flex="40">
+        <i style="color:#444" class="material-icons light_btn_icn">lightbulb_outline</i>
+      </md-button>
+      <md-button class="light_btn md-raised" style="background:#111;" ng-click="all_lights('off')" flex="40">
+        <i class="material-icons light_btn_icn">lightbulb_outline</i>
+      </md-button>
+      <md-button class="light_btn md-raised md-primary" style="background:blue;" ng-click="all_lights('blue')" flex="40">
+        <i class="material-icons light_btn_icn">lightbulb_outline</i>
+      </md-button>
+      <md-button class="light_btn md-raised" style="background:magenta;" ng-click="all_lights('magenta')" flex="40">
+        <i class="material-icons light_btn_icn">lightbulb_outline</i>
+      </md-button>
+      <md-slider class="md-primary" md-discrete max="100" aria-label="rating" flex="100"></md-slider>
+    </div>
+  </md-toolbar>
+
+
+  <div ng-show="device.show_dashboard" style="width:100%">
+    <md-toolbar class="md-scroll-shrink" style="background:#444;">
+      <div layout="row" layout-align="center center" flex>
+
+	<md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	  <h5>Recordings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+          <h5>Statistics</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_settings(device)"">
+  	  <h5>Settings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+        </md-button>
+
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.device_number)" class="noright">
+      <p>{{ item.name }}</p>
+    </md-list-item>
+  </div>
+
+  <md-grid-tile-footer ng-show="!device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_dashboard(device)">Dashboard</md-button>
+  </md-grid-tile-footer>
+  <md-grid-tile-footer ng-show="device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_main(device)">Back</md-button>
+  </md-grid-tile-footer>
+
+</md-grid-tile>
+
+<!------------------------------------------------------------------------->
+<!----------------------------  Access  ---------------------------------->
+<!--------------------------------------------------------------------
+<div ng-controller="AccessCtrl" >
+  <div data-ng-repeat="x in garage_openers" class="col-lg-4 col-md-6 col-sm-12" >
+    <div class="card" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
+      <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        Garage
+      </h4>
+      </ion-card-header>
+      <div class="item item-divider" style="width:100%;height:130px">
+        <div id="{{x.mac}}_screen" class="card item item-divider" style="height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">
+          <div style="width:100%;text-align:center;font-size:20px;">{{ x.current_state }}</div>
+          <div id="{{x.mac}}_lock" style="display:none" class="fa fa-lock fa-4x col"></div>
+          <div id="{{x.mac}}_unlock" style="display:none" class="fa fa-unlock fa-4x col"></div>
+          <div id="{{x.mac}}_loading" style="height:150px;margin:auto;padding:10px;text-align:center"></div>
+        </div>
+      </div>
+      <div class="row item item-divider" style="margin:auto">
+        <button style="height:100px" ng-click="close(x.mac)" class="fa fa-lock fa-3x col"></button>
+        <button style="height:100px" ng-click="open(x.mac)" class="fa fa-unlock fa-3x col"></button>
+      </div>
+    </div>
+</div>
+---->
+
+
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  Locks  ---------------------------------->
+<!------------------------------------------------------------------------>
+
+
+<md-grid-tile ng-repeat="device in devices" ng-if="device.type == 'Secure Keypad Door Lock'"  style="background:#444" md-rowspan="{{device.span.row}}" md-rowspan-xs="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
+
+  <md-grid-tile-header layout-align="center">
+    <h2>{{device.name}}Deadbolt</h2>
+  </md-grid-tile-header>
+
+  <div ng-if="!device.show_dashboard" style="width:100%">
+    <div style="background:#666;color:#660000;font-size:50px;padding:10px;margin:0px 0px 10px 0px;text-align:center;border-radius:2px;border-color:#ddd;border-size:3px;"><b>Locked</b></div>
+    <md-toolbar class="md-scroll-shrink" style="background:#444;">
+      <div layout="row" layout-align="center center" flex>
+
+        <md-button class="col" style="margin:auto" ng-click="media_dash('volume down')">
+          <i style="color:#ddd;font-size:50px;" class="material-icons">lock</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="media_dash('volume up')">
+          <i style="color:#ddd;font-size:50px;" class="material-icons">lock_open</i>
+        </md-button>
+
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div ng-show="device.show_dashboard" style="width:100%">
+    <md-toolbar class="md-scroll-shrink" style="background:#444;">
+      <div layout="row" layout-align="center center" flex>
+
+	<md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	  <h5>Recordings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+          <h5>Statistics</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_settings(device)"">
+  	  <h5>Settings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+        </md-button>
+
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.device_number)" class="noright">
+      <p>{{ item.name }}</p>
+    </md-list-item>
+  </div>
+
+  <md-grid-tile-footer ng-show="!device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_dashboard(device)">Dashboard</md-button>
+  </md-grid-tile-footer>
+  <md-grid-tile-footer ng-show="device.show_dashboard" layout="row" layout-align="end center">
+    <md-button ng-click="show_main(device)">Back</md-button>
+  </md-grid-tile-footer>
+</md-grid-tile>
+
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  Locks  ---------------------------------->
+<!------------------------------------------------------
+<div ng-controller="AccessCtrl">
+  <div data-ng-repeat="gateway in gateways">
+    <div data-ng-repeat="device in gateway.settings.devices" ng-if="device.type == 'Secure Keypad Door Lock'" class="col-lg-4 col-md-6 col-sm-12">
+    <div class="flip-container">
+      <div class="flipper clearfix" >
+        <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">{{ device.type }}</h4>
+            </div>
+          </ion-card-header>
+          <div class="item item-divider" style="width:100%;height:130px">
+          <div ng-if="device.classes['98']['0'].value == true" style="background:#9C0C1B;height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">LOCKED<i class="fa fa-lock fa-4x col"></i></div>
+          <div ng-if="device.classes['98']['0'].value == false" style="background:#0B7520;height:150px;margin:auto;padding:10px;border-style:solid;border-width:1px;border-color:#AAA;text-align:center">UNLOCKED<i class="fa fa-unlock fa-4x col"></i></div>
+          </div>
+        <div class="row item item-divider" style="margin:auto">
+          <button style="height:100px" ng-click="lock(device,gateway)" class="fa fa-lock fa-3x col"></button>
+          <button style="height:100px" ng-click="unlock(device,gateway)" class="fa fa-unlock fa-3x col"></button>
+        </div>
+        </div>
+        <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+          <ion-card-header >
+            <div ng-click="flip()" style="width:100%">
+              <h4 style="margin:10px;text-align:right;color:#ccc">Access History</h4>
+            </div>
+          </ion-card-header>
+          <div class="row item item-divider" style="margin:auto">
+ 	    
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+------------------>
+<!------------------------------------------------------------------------>
+<!---------------------------  room sensors  ----------------------------->
+<!-----------------------------------------------------------------
+<div ng-controller="RoomCtrl">
+  <div data-ng-repeat="x in room_sensors" class="col-lg-4 col-md-6 col-sm-12" >
+    <div class="card" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
+      <ion-card-header >
+      <h4 style="margin:10px;float:right;color:#ccc">
+        {{ x.name }}
+      </h4>
+      </ion-card-header>
+      <div class="item item-divider" style="width:100%;">
+        <div id="{{x.mac}}_motion" class="card item item-divider" style="height:150px;margin:auto;padding:40px 0px 0px 0px;border-style:solid;border-width:1px;border-color:#AAA;background:{{ x.background_color }}"><h2 style="color:#eee"><b>{{ x.message }}</b></h2>
+        </div>
+      </div>
+
+      <div class="item item-divider" style="width:100%;text-align:right">{{ x.state.magnitude }}
+        <div id="{{x.mac}}_screen" class="card item item-divider" style="height:50px;margin:auto;padding:2px;border-style:solid;border-width:1px;border-color:#AAA;text-align:right;color:#eee;background:#222">
+	  <div id="{{x.mac}}_magnitude" style="float:left;height:100%;border-style:solid;border-width:2px;border-color:#222;border-radius:1px;background:#850505">
+          </div>
+        </div>
+      </div>
+
+          <div class="row item item-divider" style="margin:auto">
+            <button style="height:100px;width:100%;" ng-click="room_sensor('light_on',x)"><i  class=""></i>on</button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('light_toggle',x)"><i class="fa fa-lightbulb-o fa-4x col"></i></button>
+            <button style="height:100px;width:100%;" ng-click="room_sensor('light_off',x)"><i class=""></i>off</button>
+          </div>
+
+    </div>
+  </div>
+</div>
+------->
+
+</md-grid-list>
+
+</div>
+
+
+<style>
+.info {
+  width:40%;
+  text-align: center;
+  margin: auto;
+}
+.panel {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 48px 0px;
+}
+
+.btn_panel {
+  text-align: center;
+  margin: auto;
+}
+
+.power_btn {
+  margin: 10px;
+  width:90%;
+}
+
+</style>
+
+<div ng-controller="RegulatorCtrl">
+    <md-grid-list style="margin:10px" md-cols="1" md-cols-sm="2" md-cols-md="2" md-cols-lg="4" md-cols-gt-lg="4" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="10px" md-gutter-gt-sm="10px">
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  regulator  ------------------------------>
+<!------------------------------------------------------------------------>
+
+<md-grid-tile ng-repeat="device in devices" ng-if="device.type == 'regulator'" style="background:#333;padding:0px;margin:0px" md-rowspan="{{device.span.row}}" md-rowspan-xs="2" md-colspan="2" md-colspan-sm="2" md-colspan-xs="1">
+<div style="" class="col">
+  <div style="text-align:center" layout-align="center">
+    <div>
+    <h2>{{device.name}}</h2>
+    </div>
+  </div>
+
+  <div layout-gt-xs>
+
+    <div class="panel" ng-show="device.show_main" style="width:100%" layout>
+
+      <div class="info">
+	<p>Power <a ng-style="device.power.usb_state == 'ON' ? {'color':'#006600'} : {'color':'#660000'}">{{ device.power.usb_state }}</a><br>
+	<md-divider style="max-width:200px;margin:auto" class="divider"></md-divider>
+	{{ (device.power.voltage/1000).toFixed(2) }} V<br>
+	{{ device.power.current }} mA<br>
+      </div>
+      <div class="info">
+	<p>Climate<br>
+	<md-divider style="max-width:200px;margin:auto" class="divider"></md-divider>
+	{{ device.climate.temperature }}&#8457;<br>
+	{{ device.climate.humidity }}% RH</b>
+      </div>
+      <div class="btn_panel" style="">
+        <md-button class="power_btn" ng-click="set('power_off',device)">
+  	  <div style="font-size:90%">Power Off</div>
+          <i style="color:#660000;font-size:200%;" class="material-icons">power_settings_new</i>
+        </md-button>
+
+        <md-button class="power_btn" ng-click="set('power_on',device)">
+  	  <div style="font-size:90%">Power On</div>
+          <i style="color:#006600;font-size:200%;" class="material-icons">power_settings_new</i>
+        </md-button>
+      </div>
+    </div>
+
+
+    <div ng-show="!device.show_dashboard"  layout>
+
+    </div>
+
+  </div>
+
+  <div ng-show="device.show_dashboard" style="width:100%">
+
+      <div layout="row" layout-align="center center" flex>
+
+	<md-button class="col" style="margin:auto" ng-click="show_recordings(device)">
+  	  <h5>Recordings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">history</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="show_statistics(device)">
+          <h5>Statistics</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">insert_chart</i>
+        </md-button>
+
+        <md-button class="col" style="margin:auto" ng-click="device.show_settings = !device.show_settings; device.show_dashboard = !device.show_dashboard">
+  	  <h5>Settings</h5>
+          <i style="color:#ddd;font-size:50px;" class="material-icons">settings</i>
+        </md-button>
+
+      </div>
+
+  </div>
+
+  <div ng-show="device.show_recordings" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-list-item ng-repeat="item in device.folder_list" ng-click="select_item(item, device, device.device_number)" class="noright">
+      <p>{{ item.name }}</p>
+    </md-list-item>
+  </div>
+
+  <div ng-show="device.show_settings" style="overflow-y:auto; height:calc(100% - 100px);width:100%;"> 
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Low battery</p>
+      <md-input-container style="max-width:100px;">
+        <label>off {{device.settings.low_battery.off}}</label>
+        <input type="number" ng-model="device.settings.set_low_battery.off">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>on {{device.settings.low_battery.on}}</label>
+        <input type="number" ng-model="device.settings.set_low_battery.on">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>High battery</p>
+      <md-input-container style="max-width:100px;">
+        <label>off {{device.settings.high_battery.off}}</label>
+        <input type="number" ng-model="device.settings.set_high_battery.off">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>on {{device.settings.high_battery.on}}</label>
+        <input type="number" ng-model="device.settings.set_high_battery.on">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Temperature</p>
+      <md-input-container style="max-width:100px;">
+        <label>factor <b>{{device.settings.set_temperature.factor}}</b></label>
+        <input type="number" ng-model="device.settings.set_temperature.factor">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>bias <b>{{device.settings.set_temperature.bias}}</b></label>
+        <input type="number" ng-model="device.settings.set_temperature.bias">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Humidity</p>
+      <md-input-container style="max-width:100px;">
+        <label>factor <b>{{device.settings.set_humidity.factor}}</b></label>
+        <input type="number" ng-model="device.settings.set_humidity.factor">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>bias <b>{{device.settings.set_humidity.bias}}</b></label>
+        <input type="number" ng-model="device.settings.set_humidity.bias">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Light</p>
+      <md-input-container style="max-width:100px;">
+        <label>factor <b>{{device.settings.set_light.factor}}</b></label>
+        <input type="number" ng-model="device.settings.set_light.factor">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>bias <b>{{device.settings.set_light.bias}}</b></label>
+        <input type="number" ng-model="device.settings.set_light.bias">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Current</p>
+      <md-input-container style="max-width:100px;">
+        <label>factor <b>{{device.settings.set_current.factor}}</b></label>
+        <input type="number" ng-model="device.settings.set_current.factor">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>bias <b>{{device.settings.set_current.bias}}</b></label>
+        <input type="number" ng-model="device.settings.set_current.bias">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Voltage</p>
+      <md-input-container style="max-width:100px;">
+        <label>factor <b>{{device.settings.set_voltage.factor}}</b></label>
+        <input type="number" step="0.01" ng-model="device.settings.set_voltage.factor">
+      </md-input-container>
+      <md-input-container style="max-width:100px">
+        <label>bias <b>{{device.settings.set_voltage.bias}}</b></label>
+        <input type="number" ng-model="device.settings.set_voltage.bias">
+      </md-input-container>
+      <md-button ng-click="set(device)">save</md-button>
+    </md-list-item>
+  </div>
+
+  <md-grid-tile-footer layout="row" layout-align="end center">
+    <md-button ng-show="device.show_main"  ng-click="device.show_main = false;device.show_dashboard = true">Dashboard</md-button>
+    <md-button ng-show="device.show_dashboard"  ng-click="device.show_dashboard = false;device.show_main = true">Back</md-button>
+    <md-button ng-show="device.show_settings"  ng-click="device.show_settings = false;device.show_dashboard = true">Back</md-button>
+  </md-grid-tile-footer>
+
+</div>
+</md-grid-tile>
+</md-grid-list>
+</div>
+<!------------------------------------------------------------------------>
+<!-----------------------------  Beacon  --------------------------------->
+<!----------------------------------------------
+<div ng-controller="MapCtrl" class="col-lg-4 col-md-6 col-sm-12">
+  <div class="flip-container">
+    <div class="flipper clearfix" >
+      <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;background-color:#444;color:#eee;text-align:center;">
+        <ion-card-header >
+          <div ng-click="flip()" style="width:100%">
+            <h4 style="margin:10px;text-align:right;color:#ccc">Beacon</h4>
+          </div>
+        </ion-card-header>
+  <div style="padding:10px" class="item item-divider">
+    <div style="border:2px solid #555;width:100%;height:500px;" id="map"></div>
+  </div>
+      </div>
+      <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+        <ion-card-header >
+          <div ng-click="flip()" style="width:100%">
+            <h4 style="margin:10px;text-align:right;color:#ccc">Device List</h4>
+          </div>
+        </ion-card-header>          
+      </div>
+    </div>
+  </div>
+</div>
+-------------------------->
+<!------------------------------------------------------------------------>
+<!-----------------------------  Weather  --------------------------------->
+<!---------------------------------------
+<div ng-controller="MediaCtrl" class="col-lg-4 col-md-6 col-sm-12">
+  <div class="flip-container">
+    <div class="flipper clearfix" >
+      <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
+        <ion-card-header >
+          <div ng-click="flip()" style="width:100%">
+            <h4 style="margin:10px;text-align:right;color:#ccc">Weather</h4>
+          </div>
+        </ion-card-header>
+  <div style="padding:10px" class="item item-divider">
+    <div style="background:#f8f8f8;border:2px solid #444;">
+      <iframe type="text/html" frameborder="0" height="245" width="" src="http://forecast.io/embed/#lat=42.3583&lon=-71.0603&name=Oklahoma City"> </iframe>
+    </div>
+    <div style="background:#f8f8f8;border:2px solid #444;border-width:0px 2px 2px 2px">
+      <img src='//radar.weather.gov/ridge/Conus/Loop/NatLoop.gif' style='max-width:100%'/>    
+    </div>
+  </div>
+      </div>
+      <div class="back card item-text-wrapped success" style="border-style:solid;border-width:2px;border-color:#7E1A1A;margin:0px;background-color:#7E1A1A;color:#eee;text-align:center;">
+        <ion-card-header >
+          <div ng-click="flip()" style="width:100%">
+            <h4 style="margin:10px;text-align:right;color:#ccc">Detailed Weather</h4>
+          </div>
+        </ion-card-header>          
+      </div>
+    </div>
+  </div>
+</div>
+--------------------------------->
+<!------------------------------------------------------------------------>
+<!------------------------------------------------------------------------>
+<!------------------------------------------------------------------------>
+
+<!-------------------------------------------------------------->
+
+
+<!------------------------------------------------------------------------>
+<!-----------------------------  Video  ---------------------------------->
+<!--------------------------------------------------
+<div ng-controller="CameraCtrl">
+<div data-ng-repeat="gateway in gateways" ng-if="gateway.settings.dashboard_enabled">
+  <div data-ng-repeat="camera in gateway.camera_list">
+    <div id="container_{{ gateway.mac }}_{{ camera.camera_number}}" class="col-lg-4 col-md-6 col-sm-12">
+      <div class="flip-container">
+        <div class="flipper clearfix">
+
+
+          <div class="front card item-text-wrapped" style="border-style:solid;border-width:2px;border-color:#444;margin:0px;padding:0px;background-color:#444;color:#eee;text-align:center;">
+            <ion-card-header >
+              <div ng-click="flip();list_folder(gateway, camera.camera_number)" style="width:100%" class=""> 
+                <h4 style="margin:10px 5px 10px 10px;text-align:left;float:left;color:#ccc">{{ gateway.name }}</h4>
+<h4 style="text-align:left;float:left;color:#ccc" ng-if="gateway.camera_list.length > 1">({{camera.camera_number[0]}})</h4>
+                <button class="btn btn-sm" style="float:right;height:30px;margin:5px;color:#444"><i class="fa fa-chevron-left fa-1x" aria-hidden="true"></i> Flip <i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
+              </div>
+            </ion-card-header>
+            <div id="play-button_{{ gateway.mac }}_{{ camera.camera_number }}" ng-click="start_webcam(gateway, camera.camera_number)" class="item item-divider" style="width:100%;background-color:#ddd;padding:0px">
+              <canvas id="previewCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="height:100%;width:100%"></canvas>
+              <div class="play-button"></div>
+            </div>
+            <div id="loading_videoCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="position:absolute;left:48%;top:50%;display:none">
+              <i style="color:#eee" class="fa fa-spinner fa-spin fa-5x fa-fw"></i>
+            </div>
+            <canvas id="videoCanvas_{{ gateway.mac }}_{{ camera.camera_number }}" style="width:100%;display:none"></canvas>
+            <i class="ion-arrow-expand" ng-click="fullscreen('container_' + gateway.mac + '_' + camera.camera_number)" style="height:20px;font-size:40px;position:absolute;bottom:25px;right:10px"></i>
+          </div>
+
+          <div class="back card" style="max-height:350px;border-style:solid;border-width:2px;border-color:#444;background-color:#444;color:#eee;text-align:center;">
+
+            <div class="item item-divider" style="background-color:#6E1A1A;color:#eee;padding:10px;">
+                <div style="font-size:20px;text-align:left;float:left;color:#ccc;margin:5px">{{ gateway.name }}</div>
+              <b>{{ gateway.motion_list.selected_month.month }} {{ gateway.motion_list.selected_day.day }}</b>
+              <button ng-click="flip()" class="btn btn-sm" style="float:right;height:30px;color:#444"><i class="fa fa-chevron-left fa-1x" aria-hidden="true"></i> Flip <i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
+	      <div ng-if="!gateway.show_dashboard">
+                <button class="btn btn-sm" ng-click="show_dashboard(gateway)" style="float:right;height:30px;margin:0px 15px 0px 0px;color:#444"><i class="fa fa-chevron-left fa-1x" aria-hidden="true"></i> Dashboard</button>
+	      </div>
+            </div>
+
+            <div ng-if="gateway.show_dashboard" style="">
+              <div class="row item item-divider" style="margin:auto">
+                <button style="height:100px;width:100%;" ng-click="show_recordings(gateway)"><i class="fa fa-circle fa-4x col"></i>Recordings</button>
+                <button style="height:100px;width:100%;" ng-click="show_statistics(gateway)"><i class="fa fa-bar-chart fa-4x col"></i>Statistics</button>
+                <button style="height:100px;width:100%;" ng-click="show_settings(gateway)"><i  class="fa fa-gears fa-4x col"></i>Settings</button>
+              </div>
+            </div>
+
+            <div ng-if="gateway.show_statistics" style="">
+              <div style="float:left">Disk Space: <b>{{gateway.settings.disk.free/1000000000 | number:2}} </b>GB Available | Total {{ gateway.settings.disk.total/1000000000 | number:2}}</div>
+              <br><div style="float:left">Status: {{ gateway.status }}</div>
+            </div>
+
+            <div ng-if="gateway.show_settings" style="">
+              <li  class="item item-divider">
+                <button ng-click="flip()" class="" style="float:left;height:30px;color:#444">Change Device Name <i class="fa fa-chevron-right fa-1x" aria-hidden="true"></i></button>
+                <div style="float:right"><b>{{ gateway.name }}</b></div>
+              </li>
+              <li class="item item-divider">
+                <div style="float:left">Machine Address</div>
+                <div style="float:right"><b>{{ gateway.mac }}</b></div>
+              </li>
+              <li class="item item-divider">
+                <div style="float:left">Local IP</div>
+                <div style="float:right"><b>{{ gateway.settings.local_ip }}</b></div>
+              </li>
+              <li  class="item item-divider">
+                <div style="float:left">Public IP</div>
+                <div style="float:right"><b>{{ gateway.settings.public_ip }}</b></div>
+              </li>
+              <div ng-if="gateway.show_settings_buttons" style="">
+                <div class="row item item-divider" style="margin:auto">
+                  <button style="height:100px;width:100%;" ng-click="show_more_options(gateway)"><i class="fa fa-tasks fa-4x col"></i>More Options</button>
+                  <button style="height:100px;width:100%;" ng-click="show_attached_devices(gateway)"><i  class="fa fa-plus-square fa-4x col"></i>Attached Devices</button>
+                </div>
+              </div>
+            </div>
+
+              <div ng-if="gateway.show_more_options" style="">
+                <li class="item item-divider">
+		<div class="row">
+                  <div style="" >Rotate</div>
+                  <label class="item item-input item-select">
+                    <select ng-model="gateway.rotation" ng-change="set_rotation(gateway)">
+                      <option value="0" selected>0 &deg</option>
+                      <option value="90">90 &deg</option>
+                      <option value="180">180 &deg</option>
+                      <option value="270">270 &deg</option>
+                    </select>
+                  </label>
+		  </div>
+                </li>
+              </div>
+
+
+            <div ng-if="gateway.show_attached_devices" style="overflow-y:scroll;">
+ 	  <div class="item item-divider" data-ng-repeat="device in gateway.devices" style="overflow-y:scroll;"> 
+            <li ng-if="device.type != 'lights'" class="item item-divider">
+              <div style="float:left">{{device.type}}</div>
+	      <button style="padding:5px;float:right" class="fa fa-times fa-1x" ng-click="rename_device(gateway)"></button>
+            </li>
+            <li data-ng-repeat="light in device.lights" class="item item-divider">
+              <div style="float:left">{{ light.name }}</div>
+              <label style="float:right" class="toggle toggle-balanced">
+                <input type="checkbox" ng-model="light.state.on" value="{{light.state.on}}" ng-click="light_command(gateway,device,light)" >
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+		</input>
+              </label>
+            </li>
+	  </div>
+
+            <li ng-if="gateway.show_attach_device_button" class="item item-divider">
+	      <button style="height:50px;width:100%;" ng-click="gateway.show_attach_device_buttons(gateway)"></i>Attach New Device</button>
+            </li>
+            </div>
+
+            <div ng-if="gateway.show_recordings" style="">
+              <div ng-if="!flip_card" style="overflow-y:scroll;">
+                <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway, camera.camera_number);" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
+                  <div style="float:left">{{ item.name }} {{ item[4] }}</div>
+                  <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
+                </li>
+	      </div>
+              <div ng-if="flip_card" style="overflow-y:scroll;" ng-click="flip()">
+                <li id="folder_list" data-ng-repeat="item in gateway.folder_list" ng-click="select_item(item, gateway, camera.camera_number)" class="item item-divider" style="margin:0px 0px 0px 0px;width:100%;">
+                 <div style="float:left">{{ item.name }} {{ item[4] }}</div>
+                 <div style="float:right" class="fa fa-chevron-right fa-1x"></div>
+                </li>
+  	      </div>
+	    </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+---------------------->
+
+

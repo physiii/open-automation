@@ -71,7 +71,9 @@ socketServer.broadcast = function(data, settings) {
 // HTTP Server to accept incomming MPEG Stream
 var streamServer = require('http').createServer( function(request, response) {
   response.connection.setTimeout(0);
+
   var params = request.url.substr(1).split('/');
+  console.log(TAG,"incoming stream: ",params);
   var token = params[0];
   var camera = params[1];
   var settings = {token:token, camera:camera};
