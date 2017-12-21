@@ -28,45 +28,6 @@ angular.module('open-automation')
     console.log("show_form: ",form);
   }
 
-
-  //$rootScope.login_message = "init";
-  $scope.login = function(user) {
-    console.log("loging in, " + user);
-    $.post( "/login",user).success(function(data){
-      console.log("login!",data);
-      if (data.error) {
-        console.log("error",data.error);
-        return;
-      }
-      $.cookie('user',data.user, { path: '/' });
-      $.cookie('token',data.token, { path: '/' });
-      window.location.replace("#/dashboard");
-    }).fail(function(data) {
-    //document.getElementById("login_message").style.display = "inline";
-    $scope.$apply(function () {
-      $rootScope.login_message = "Invalid username/password";
-    });
-    console.log( "error: ",data );
-  });
-  }
-  
-  $scope.register = function(user) {
-    $.post( "/register",user).success(function(data){
-      if (data.error) {
-        document.getElementById("register_message").style.display = "inline";
-        $scope.$apply(function () {
-          $rootScope.register_message = data.error;
-        });
-        console.log("error",data.error);
-        return;
-      }
-      console.log("register",data);
-      $.cookie('user',data.username, { path: '/' } );
-      $.cookie('token',data.token, { path: '/' } );
-      window.location.replace("/home");
-    });
-  }
-
   $scope.show_login = function() {
     document.getElementById("pyfi_logo").style.display = "none";
     document.getElementById("main_login_form").style.display = "inline";
@@ -122,16 +83,26 @@ angular.module('open-automation')
 
 .controller('LoginCtrl', function ($scope, $timeout, $mdSidenav, $log, $rootScope, socket) {
   $scope.login = function(user) {
-    console.log("loging in, " + user);
     $.post( "/login",user).success(function(data){
-      console.log("login!",data);
-      $scope.close();
-      if (data.error) {
-        console.log("error",data.error);
-        return;
-      }
-      $.cookie('user',data.user, { path: '/' });
-      $.cookie('token',data.token, { path: '/' });
+      $rootScope.close();
+      if (data.error) return console.log("error",data.error);
+      relay_socket = $rootScope.relay_socket;
+      var user = data.user;
+      var token = data.token;
+      $rootScope.token = token;
+      $rootScope.user = user;
+      $.cookie('user',user, { path: '/' });
+      $.cookie('token',token, { path: '/' });
+
+      //var token = $.cookie('token');
+      //var user = $.cookie('user');
+      //if (user == "null") user = null;
+      //if (token == "null") token = null;
+      console.log("linking user",user,token);
+      relay_socket.emit('link user',{token:token, user:user});
+      relay_socket.emit('get devices',{token:token});
+      relay_socket.emit('get contacts',{user_token:token});
+
       window.location.replace("#/dashboard");
     }).fail(function(data) {
     //document.getElementById("login_message").style.display = "inline";
@@ -141,7 +112,41 @@ angular.module('open-automation')
     console.log( "error: ",data );
   });
   }
+
+  $scope.register = function(user) {
+    $.post( "/register",user).success(function(data){
+      if (data.error) {
+        $scope.$apply(function () {
+          $rootScope.login_message = data.error;
+        });
+        console.log("error",data.error);
+        return;
+      }
+
+      $rootScope.close();
+      relay_socket = $rootScope.relay_socket;
+      var user = data.user;
+      var token = data.token;
+      $rootScope.token = token;
+      $rootScope.user = user;
+
+      console.log("register",data);
+      $.cookie('user',user, { path: '/' } );
+      $.cookie('token',token, { path: '/' } );
+
+
+      console.log("linking user",user,token);
+      relay_socket.emit('link user',{token:token, user:user});
+      relay_socket.emit('get devices',{token:token});
+      relay_socket.emit('get contacts',{user_token:token});
+
+      window.location.replace("#/dashboard");
+
+    });
+  }
+
 })
+
 
 .controller('NavCtrl', function ($scope, $timeout, $mdSidenav, $log, $rootScope, socket) {
     $scope.toggleLeft = buildDelayedToggler('left');
@@ -206,8 +211,8 @@ angular.module('open-automation')
       };
     }
   })
-  .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
+  .controller('LeftCtrl', function ($scope, $rootScope, $timeout, $mdSidenav, $log) {
+    $rootScope.close = function () {
       // Component lookup should always be available since we are not using `ng-if`
       $mdSidenav('left').close()
         .then(function () {
@@ -216,8 +221,8 @@ angular.module('open-automation')
 
     };
   })
-  .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
+  .controller('RightCtrl', function ($scope, $rootScope, $timeout, $mdSidenav, $log) {
+    $rootScope.close = function () {
       // Component lookup should always be available since we are not using `ng-if`
       $mdSidenav('right').close()
         .then(function () {

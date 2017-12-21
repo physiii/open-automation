@@ -39,7 +39,7 @@ angular.module('open-automation')
   
   relay_socket.on('link device', function (data) {
     if (data.type == "gateway") {
-      $rootScope.gateways.push(data);
+      //$rootScope.gateways.push(data);
     }
     relay_socket.emit('get settings',{token:data.token});
     //console.log("get device settings",data);

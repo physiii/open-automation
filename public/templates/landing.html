@@ -40,7 +40,7 @@ margin : 5px;
 
     <img id="pyfi_logo" class="logo" src="images/pyfi_images/pyfi-logo.png"></img>
 
-    <div style="display:none;" id="main_login_form">
+    <form ng-controller="LoginCtrl" ng-submit="login(user_login)" style="display:none;" id="main_login_form">
       <md-content class="main_login_form" md-theme="docs-dark">
         <div layout-gt-md="row">
           <md-input-container style="margin:auto">
@@ -52,12 +52,12 @@ margin : 5px;
             <input type="password" ng-model="user_login.password">
           </md-input-container>
         </div>
-        <md-button style="background:#555;width:100%" ng-click="login(user_login)">login</md-button>
+        <md-button style="background:#555;width:100%" type="submit">login</md-button>
       </md-content>
-    </div>
+    </form>
 
-    <div style="display:none;" id="main_register_form">
-      <md-content class="main_login_form" md-theme="docs-dark">
+    <form ng-controller="LoginCtrl"  ng-submit="register(user_register)" style="display:none;" id="main_register_form">
+      <md-content class="main_register_form" md-theme="docs-dark">
         <div layout="column">
           <md-input-container style="margin:10px">
             <label>Email</label>
@@ -65,16 +65,16 @@ margin : 5px;
           </md-input-container>
           <md-input-container style="margin:10px">
             <label>Password</label>
-            <input ng-model="user_register.password" type="email">
+            <input ng-model="user_register.password" type="password">
           </md-input-container>
           <md-input-container  style="margin:10px">
             <label>Password</label>
             <input type="password" ng-model="user_register.password_confirm">
           </md-input-container>
         </div>
-        <md-button style="background:#555;width:100%" ng-click="login(user_register)">Register</md-button>
+        <md-button style="background:#555;width:100%" type="submit">Register</md-button>
       </md-content>
-    </div>
+    </form>
 
   </div>
 </div>
