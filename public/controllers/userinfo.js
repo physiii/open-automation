@@ -191,21 +191,21 @@ angular.module('open-automation')
   
   //var camera_socket_connected = false;
   relay_socket.on('load settings', function (data) {
+
     var devices = $rootScope.devices;
     var i = find_index(devices,'mac',data.mac);
-    if (i < 0) return console.log("load_settings | mac not found",data.mac);
-
-    $scope.$apply(function () {
-      $rootScope.devices[i].settings = data;
-    });
+    if (i < 0) return console.log("load_settings | device not found",data.mac);
 
     var attached_devices = data.devices;
     if (attached_devices) {
       for (var j = 0; j < attached_devices.length; j++) {
     	if (attached_devices[j].type == "camera") {
-
+    console.log('load settings',data.mac);
           var device_id = $rootScope.find_index(devices,"id",attached_devices[j].id);
-          if (device_id > -1) continue;
+          if (device_id > -1) {
+	    console.log(TAG,"device_id already exists",attached_devices[j]);
+	    continue;
+	  }
 
           var parts = attached_devices[j].dev.replace("/dev/video","");
           if (parts.length <= 1) continue;
@@ -219,128 +219,18 @@ angular.module('open-automation')
           attached_devices[j].videoCanvas = {show:false};
           attached_devices[j].show_dashboard_btn= true;
           attached_devices[j].span = {row:0, col:1}
+          console.log(TAG,data.mac,"added camera",attached_devices[j]);
           relay_socket.emit('get camera preview',{token:devices[i].token, camera_number:attached_devices[j].camera_number});
 	}
 	attached_devices[j].settings = devices[i].settings;
         $rootScope.devices.push(attached_devices[j]);
-        $scope.$apply(function () {});
-        console.log(TAG,data.mac,"added device",attached_devices[j]);
-      }
-    }
-
-    /*var camera_list = data.stdout.split(/(?:\r\n|\r|\n)/g);
-    camera_list.splice(0,1);
-    camera_list.splice(camera_list.length - 1,1);
-    var index = $rootScope.find_index($rootScope.devices,'token',data.token);
-    var device = $rootScope.devices[index];
-    for (var i = 0; i < camera_list.length; i++) {
-      var parts = camera_list[i].split(" ");
-      parts = parts[9].replace("/dev/video","");
-      if (parts.length <= 1) {
-        camera_list.splice(i,1);
-        i--;
-        continue;
-      }
-      if (parts[parts.length - 1] != '0') {
-        camera_list.splice(i,1);
-        i--;
-        continue;
-      }
-      var camera_number = parts;
-      var id = device.mac+"_"+camera_number;
-      //var devices = $rootScope.devices;
-      var device_id = $rootScope.find_index(devices,"id",id);
-      if (device_id > -1) continue;
-      
-      device.device_type = "camera";
-      device.id = id;
-      device.camera_number = camera_number;
-
-      //devices.push(device);
-      //devices.push({id:id, mac:device.mac, name:device.device_name, camera_number:camera_number, token:device.token, device_type:"camera"});
-      var j = $rootScope.devices.length - 1;
-      relay_socket.emit('get camera preview',{token:device.token, camera_number:camera_number});
-      device.show_video_canvas = false;
-      device.show_preview_canvas = true;
-      device.show_canvas = true;
-      device.show_dashboard_btn= true;
-      device.span = {row:0, col:1}
-
-      $scope.$apply(function () {});
-      //console.log(TAG,"camera list!",data);
-    }*/
-
-
-    //relay_socket.emit('get camera list',devices[i]);
-    console.log('load settings',data);
-  });
-
-  relay_socket.on('load devices', function (data) {
-    //load_settings(data);
-  });
-
-  /*function load_settings(data) {
-    var settings = data;
-    var mac = settings.mac;
-    //var devices = $rootScope.devices;
-    var find_index = $rootScope.find_index;
-
-    var devices = settings.devices;
-    if (devices) {
-      for (var j = 0; j < devices.length; j++) {
-        console.log(TAG,mac,"added device",devices[j].type);
-        $rootScope.devices.push(devices[j]);
-      }
-    }
-
-    var i = find_index(devices,'mac',mac);
-    if (i < 0) return console.log("load_settings | mac not found",mac);
-    devices[i].settings = settings;
-    devices[i].status = "Connected";
-
-    //console.log(TAG,"load_settings",mac);
-    key = 'thermostat';
-    for (key in devices) {
-      if (devices[key].type == 'thermostat') {
-        current_state = devices[key].current_state;
-        if (current_state.tmode === 0) {
-          current_state['mode'] = "off";
-          current_state['set_temp'] = "O";   
-        } 
-        if (current_state.tmode === 1) {
-          current_state['mode'] = "heat";
-          current_state['set_temp'] = current_state.t_heat;
-        }  
-        if (current_state.tmode === 2) {
-          current_state['mode'] = "cool";
-          current_state['set_temp'] = current_state.t_cool;   
-        }
-        if (current_state.tmode === 3) {
-          current_state['mode'] = "auto";
-          current_state['set_temp'] = current_state.auto;
-        }        
-        if (current_state.fmode == 0) {
-          current_state['fan'] = "auto";
-        } 
-	if (current_state.fmode == 1) {
-          current_state['fan'] = "on";
-        }
-    	if (current_state.fmode == 2) {
-          current_state['fan'] = "on2";
-        }
-    	if (current_state.fmode == 3) {
-          current_state['fan'] = "off";
-        }
-	set_state = current_state;
-        devices[key].set_state = set_state;
-        devices[key].current_state = current_state;
-        //console.log('load thermostat',devices[key]);
+        //console.log(TAG,data.mac,"added device",attached_devices[j]);
       }
     }
     $scope.$apply(function () {
-      $rootScope.devices[i] = devices;
+      $rootScope.devices[i].settings = data;
     });
-  }*/
+  });
 
   $rootScope.ping_audio = function(command,token) {
     console.log('ping audio',command);
