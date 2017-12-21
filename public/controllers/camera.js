@@ -2,7 +2,7 @@ angular.module('open-automation')
 .controller('CameraCtrl', function($scope, $rootScope, socket, $compile, $http, $mdMedia) {
   console.log("<< ------  CameraCtrl  ------ >> ");
   var TAG = "[camera]";
-  var stream_port = "8084";
+  var stream_port = "8085";
   var relay_socket = $rootScope.relay_socket;
   var devices = $rootScope.devices;
   $scope.flip_card = false;
@@ -145,59 +145,38 @@ angular.module('open-automation')
 
     device.videoCanvas.show = false;
     device.previewCanvas.show = true;
-
     device.show_main = true;
-    //if (device.stream_started) return console.log("stream already started");
-    //device.camera_socket = 'ws://'+$rootScope.server_ip+':'+stream_port;
-    //device.stream_started = true;
-    //device.canvas = document.getElementById('videoCanvas_'+device.id);
-    //device.player = new JSMpeg.Player(devices[i].camera_socket, 
-    //  {canvas:device.canvas,token:device.token, camera:device.camera_number});
 
     var command = {token:device.token, command:"stop_webcam", camera_number:device.camera_number};
     relay_socket.emit('ffmpeg',command);
     return console.log(TAG,"stop_webcam",command);
   }
-
-
-  $scope.start_stream = function(id) {
-
-  }
   
   $scope.play_file = function(file, device) {
     file = file.folder + "/" + file[8];
-    //var file_obj = {file:file, token:device.token}
 
     device.show_canvas = true;
     device.videoCanvas.show = true;
     device.previewCanvas.show = false;
-
     device.show_dashboard = false;
     device.show_recordings = false;
     device.show_main = true;
 
-    //document.getElementById("videoCanvas_"+device.id).style.display = "inline";
-    //if (device.stream_started) return console.log("stream already started");
 
     device.camera_socket = 'ws://'+$rootScope.server_ip+':'+stream_port;
-    //device.stream_started = true;
     device.canvas = document.getElementById('videoCanvas_'+device.id);
     device.player = new JSMpeg.Player(device.camera_socket, 
       {canvas:device.canvas,token:device.token, camera:device.camera_number});
 
     var command = {file:file, token:device.token, command:"play_file", camera_number:device.camera_number, id:device.id}
     relay_socket.emit('ffmpeg',command);
-
     return console.log("play_file",command);
-
   }
 
   $scope.play_folder = function(folder, device) {
-
     device.show_canvas = true;
     device.videoCanvas.show = true;
     device.previewCanvas.show = false;
-
     device.show_dashboard = false;
     device.show_recordings = false;
     device.show_main = true;
@@ -208,9 +187,9 @@ angular.module('open-automation')
       {canvas:device.canvas,token:device.token, camera:device.camera_number});
 
     var command = {folder:folder, token:device.token, command:"play_folder", camera_number:device.camera_number, id:device.id};
-    console.log("play_folder",command);
     relay_socket.emit('ffmpeg',command);
     $scope.start_stream(device.id);
+    console.log("play_folder",command);
   }
 
   $scope.select_item = function (item, device) {
@@ -317,8 +296,8 @@ angular.module('open-automation')
     console.log("show_attached_devices");
   }
 
-})
-
+});
+/*
 .controller('gridListDemoCtrl', function($scope) {
 
     this.tiles = buildGridModel({
@@ -370,4 +349,4 @@ angular.module('open-automation')
   })
   .config( function( $mdIconProvider ){
     $mdIconProvider.iconSet("avatar", 'icons/avatar-icons.svg', 128);
-  });
+  });*/
