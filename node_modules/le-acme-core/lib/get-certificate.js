@@ -24,7 +24,7 @@ function certBufferToPem(cert) {
 }
 
 module.exports.create = function (deps) {
-  var request = deps.request;
+  var acmeRequest = deps.acmeRequest;
   var Acme = deps.Acme;
   var RSA = deps.RSA;
 
@@ -193,7 +193,7 @@ module.exports.create = function (deps) {
 
       if (authz.status==='pending') {
         setTimeout(function() {
-          request({
+          acmeRequest.create()({
             method: 'GET'
           , url: state.authorizationUrl
           }, function(err, res, body) {
@@ -278,7 +278,7 @@ module.exports.create = function (deps) {
 
       state.certificate=body;
       certUrl=res.headers.location;
-      request({
+      acmeRequest.create()({
         method: 'GET'
       , url: certUrl
       , encoding: null
@@ -310,7 +310,7 @@ module.exports.create = function (deps) {
 
     function downloadIssuerCert(links) {
       log('Requesting issuer certificate...');
-      request({
+      acmeRequest.create()({
         method: 'GET'
       , url: links.up
       , encoding: null

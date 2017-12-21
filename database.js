@@ -175,7 +175,7 @@ function store_device_object(device_object) {
   delete temp_object.socket;
   delete temp_object._id;
   //console.log("temp_object",temp_object);
-  //console.log('store_device_object',temp_object);
+  console.log('store_device_object',temp_object);
   MongoClient.connect('mongodb://127.0.0.1:27017/relay', function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -185,7 +185,7 @@ function store_device_object(device_object) {
 	if (err) {
           console.log("store_device_object",err);
         }
-	//console.log('item',item);
+	console.log('item',item);
       });
       db.close();
       //get_device_objects();

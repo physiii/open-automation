@@ -11,7 +11,7 @@ module.exports.create = function (deps) {
   var NOOP = function () {
   };
   var log = NOOP;
-  var request = deps.request || require('request');
+  var acmeRequest = deps.acmeRequest;
   var RSA = deps.RSA;
   var generateSignature = RSA.signJws;
 
@@ -30,7 +30,7 @@ module.exports.create = function (deps) {
   Acme.prototype.getNonce=function(url, cb) {
     var self=this;
 
-    request.head({
+    acmeRequest.create().head({
       url:url,
     }, function(err, res/*, body*/) {
       if (err) {
@@ -73,7 +73,7 @@ module.exports.create = function (deps) {
 
 //process.exit(1);
 //return;
-    return request.post({
+    return acmeRequest.create().post({
       url: url
     , body: signed
     , encoding: null
