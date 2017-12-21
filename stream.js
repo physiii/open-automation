@@ -15,15 +15,15 @@ socketServer.connectionCount = 0;
 
 socketServer.on('connection', function(socket) {
   socketServer.connectionCount++;
-  console.log( 'video socket opened ('+socketServer.connectionCount+' total)' );
+  console.log( TAG,'video socket opened ('+socketServer.connectionCount+' total)' );
 
   socket.onmessage = function (event) {
     var data = JSON.parse(event.data);
     socket.token = data.token;
     socket.camera = data.camera;
-    console.log("stored video token",socket.token);
-    console.log("stored camera number",socket.camera);
-    //console.log(TAG,"clients",socketServer.clients);
+    //console.log("stored video token",socket.token);
+    console.log(TAG,"stored token for camera",socket.camera);
+    console.log(TAG,"clients",this.clients);
   }
 
   socket.on('close', function(code, message){
@@ -45,17 +45,31 @@ socketServer.on('disconnect', function(socket) {
 socketServer.broadcast = function(data, settings) {
   var token = settings.token;
   var camera = settings.camera;
-  //var stream_width = settings.stream_width;
-  //var stream_height = settings.stream_height;
-  //if (!socketServer.clients[0]) return console.log(TAG,"no clients",settings);
-  for( var i in this.clients ) {
+  //console.log("<< !!! BROADCAST TO CLIENTS !!! >>>",socketServer.clients);
+
+  socketServer.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      if (client.token == token && client.camera == camera) {
+        client.send(data);
+        console.log("<< !!! SENDING BROADCAST ("+client.token+") !!! >>>");
+      }
+
+      if (client.readyState !== WebSocket.OPEN) {
+        console.log("Client not connected ("+i+")");
+        //continue;
+      } 
+    }
+  });
+
+  /*for( var i in this.clients ) {
+    console.log("<< !!! SENDING BROADCAST DATA !!! >>>");
     var client = this.clients[i];
     if (client.token != token) {
-      //console.log("wrong token");
+      console.log("wrong token");
       continue;
     }
     if (client.camera != camera) {
-      //console.log("wrong camera");
+      console.log("wrong camera");
       continue;
     }
     if (client.readyState !== WebSocket.OPEN) {
@@ -64,8 +78,8 @@ socketServer.broadcast = function(data, settings) {
     }
  
     this.clients[i].send(data);
-    //console.log("<< !!! SENDING BROADCAST ("+i+") !!! >>>");
-  }
+    console.log("<< !!! SENDING BROADCAST ("+i+") !!! >>>");
+  }*/
 };
 
 // HTTP Server to accept incomming MPEG Stream
@@ -73,7 +87,6 @@ var streamServer = require('http').createServer( function(request, response) {
   response.connection.setTimeout(0);
 
   var params = request.url.substr(1).split('/');
-  console.log(TAG,"incoming stream: ",params);
   var token = params[0];
   var camera = params[1];
   var settings = {token:token, camera:camera};
@@ -83,6 +96,7 @@ var streamServer = require('http').createServer( function(request, response) {
   request.on('data', function(data){
     socketServer.broadcast(data, settings);
   });
+  console.log(TAG,"incoming stream: ",params);
 }).listen(STREAM_PORT);
 
 console.log('Listening for MPEG Stream on http://127.0.0.1:'+STREAM_PORT+'/<token>/<camera>/');
