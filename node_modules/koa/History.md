@@ -1,7 +1,25 @@
 
+
+2.4.1 / 2017-11-06
+==================
+
+ * fix bad merge w/ 2.4.0
+
+2.4.0 / 2017-11-06
+==================
+
+UNPUBLISHED
+
+ * update `package.engines.node` to be more strict
+ * update `fresh@^0.5.2`
+ * fix: `inspect()` no longer crashes `context`
+ * fix: gated `res.statusMessage` for HTTP/2
+ * added: `app.handleRequest()` is exposed
+
 2.3.0 / 2017-06-20
 ==================
 
+ * fix: use `Buffer.from()`
  * test on node 7 & 8
  * add `package-lock.json` to `.gitignore`
  * run `lint --fix`
