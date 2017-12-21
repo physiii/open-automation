@@ -6,8 +6,8 @@ var TAG = "[stream.js]";
 var http = require('http');
 var WebSocket = require('ws');
 
-var STREAM_PORT = config.video_stream_port || 8082;
-var WEBSOCKET_PORT = config.video_websocket_port || 8084;
+var STREAM_PORT = config.video_stream_port || 8083;
+var WEBSOCKET_PORT = config.video_websocket_port || 8085;
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});

@@ -24,10 +24,11 @@ function create(deps) {
   });
 
   deps.RSA = deps.RSA || require('rsa-compat').RSA;
-  deps.request = deps.request || require('request');
+  deps.acmeRequest = require('./lib/le-acme-request');
   deps.Acme = require('./lib/acme-client').create(deps);
 
   deps.LeCore.Acme = deps.Acme;
+  deps.LeCore.acmeRequest = deps.acmeRequest;
   deps.LeCore.getAcmeUrls = require('./lib/get-acme-urls').create(deps);
   deps.LeCore.registerNewAccount = require('./lib/register-new-account').create(deps);
   deps.LeCore.getCertificate = require('./lib/get-certificate').create(deps);

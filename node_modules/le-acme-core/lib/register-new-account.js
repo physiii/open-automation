@@ -8,7 +8,7 @@
 'use strict';
 module.exports.create = function (deps) {
   var NOOP=function () {}, log=NOOP;
-  var request=deps.request;
+  var acmeRequest = deps.acmeRequest;
   var RSA = deps.RSA;
   var Acme = deps.Acme;
 
@@ -55,7 +55,7 @@ module.exports.create = function (deps) {
           state.agreeTerms = agree;
           state.termsUrl=links['terms-of-service'];
           log(state.termsUrl);
-          request.get(state.termsUrl, getAgreement);
+          acmeRequest.create().get(state.termsUrl, getAgreement);
         });
       } else {
         cb(null, null);

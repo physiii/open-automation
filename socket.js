@@ -13,8 +13,8 @@ module.exports = {
 var start_time = Date.now();
 
 var DEVICE_PORT = config.device_port || 4000;
-var BUTTONS_PORT = config.buttons_port || 4001;
-var find_index = utils.find_index;
+//var BUTTONS_PORT = config.buttons_port || 4001;
+var find_index = utils.find_index; 
 var TAG = "[socket.js]";
 
 /* --------------  websocket server for devices  ----------------- */
@@ -657,14 +657,13 @@ io.on('connection', function (socket) {
   //console.info(socket.id + " | client connected" );
 
   socket.on('get token', function (data) {
-    console.log("get token",mac);
     var mac = data.mac;
-    var public_ip = socket.request.connection.remoteAddress;
-    public_ip = public_ip.slice(7);
     //var name = data.name;
     //var salt = data.salt //some random value
     var token = crypto.createHash('sha512').update(mac).digest('hex');
     data.token = token;
+    var public_ip = socket.request.connection.remoteAddress;
+    public_ip = public_ip.slice(7);
     data.public_ip = public_ip;
     socket.emit('get token',data);
     var index = find_index(device_objects,'token',token);
@@ -674,19 +673,20 @@ io.on('connection', function (socket) {
       console.log('get token | updated socket',mac);
     } else {
       data.groups = [mac];
-      database.store_device_object(data);
       data.socket = socket;
       device_objects.push(data);
+      database.store_device_object(data);
       console.log('get token | added device',mac);
     }
 
-    if (!groups) groups = [];
+    //if (!groups) groups = [];
     index = find_index(groups,'group_id',mac);
     if (index < 0) {
       var group = {group_id:mac, mode:'init', type:['alarm'], members:[mac]};
       groups.push(group);
       database.store_group(group);
     }
+    console.log("get token",mac);
   });
 
   socket.on('load settings', function (data) {
