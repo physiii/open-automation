@@ -1,0 +1,167 @@
+<!-------------------------------------------------------------->
+<!----------------------  settings  ---------------------------->
+<!-------------------------------------------------------------->
+<style>
+.acct_btn {
+  margin:5px;
+  width:100%;
+  border-style:solid;
+  border-width:1px;
+  border-color:#888;
+  padding:5px;
+}
+</style>
+
+<div style="padding:25px;color:#ddd" ng-controller="AccountCtrl" flex="" ng-cloak="">
+  <md-grid-list style="margin:10px" md-cols="1" md-cols-sm="1" md-cols-md="1" md-cols-lg="2" md-cols-gt-lg="2" md-row-height-gt-lg="1:2" md-row-height="1:1" md-gutter="10px" md-gutter-gt-sm="10px">
+    <md-grid-tile style="background:#444" md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
+      <md-grid-tile-header layout="row" layout-align="center">
+        <h2>Devices</h2>
+      </md-grid-tile-header>
+
+        <div ng-show="device_list.show" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+	  <md-list-item ng-repeat="device in devices" ng-click="select_device(device)" class="noright">
+	    <p style="text-align:left">{{ device.name }}</p>
+	    <p style="text-align:right">{{ device.type }}</p>
+	  </md-list-item>
+	</div>
+
+      <div ng-show="device_terminal.show">
+        {{ selected_device.comand_response }}
+      </div>
+
+  <div ng-show="device_settings.show" style="overflow-y:auto; height:calc(100% - 100px);width:100%;"> 
+
+    <md-list-item style="background:#444;height:20px;margin:20px 0px 0px 0px;" class="noright">
+      <p>Device Name</p>
+      <md-input-container style="text-align:center">
+        <label>{{selected_device.name}}</label>
+        <input type="text" ng-model="selected_device.set_name">
+      </md-input-container>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Device ID</p>
+        <label>{{selected_device.settings.mac}}</label>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Public IP</p>
+      <label>{{selected_device.settings.public_ip}}</label>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Local IP</p>
+      <label>{{selected_device.settings.local_ip}}</label>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Dashboard</p>
+      <md-switch value="{{selected_device.settings.dashboard_enabled}}" ng-model="selected_device.settings.dashboard_enabled" ng-click="toggle_setting({dashboard_enabled:!selected_device.settings.dashboard_enabled,token:selected_device.token})"></md-switch>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Media</p>
+      <md-switch ng-model="selected_device.settings.media"></md-switch>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px" class="noright">
+      <p>Gateway</p>
+      <md-switch ng-model="selected_device.settings.gateway"></md-switch>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:40px" class="noright">
+      <md-button style="width:100%;margin:10px;background:#555" ng-click="device_terminal.show = true;device_settings.show = false;">Command</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:40px" class="noright">
+      <md-button style="width:100%;margin:10px;background:#555" ng-click="attach_device.show = true;device_settings.show = false;">Attached Devices</md-button>
+    </md-list-item>
+
+    <md-list-item style="background:#444;height:20px;" class="noright">
+      <p style="margin: auto auto auto 15px">Software version <b>v{{selected_device.settings.software_version}}</b></p>
+      <md-button style="background:#591313;" ng-click="update(selected_device)">Update</md-button>
+    </md-list-item>
+
+  </div>
+
+  <div ng-show="device_terminal.show" class="col" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
+    <md-input-container style="width:calc(100% - 20px)">
+      <label>type command...</label>
+      <input style="" type="text" ng-model="selected_device.command">
+    </md-input-container>
+    <div ng-bind-html="selected_device.command_result" style=""></div>
+  </div>
+
+  <div ng-show="add_device.show" style="width:100%;text-align:center">
+          <md-input-container style="">
+            <label>Device ID</label>
+            <input type="text" ng-model="new_device.mac">
+          </md-input-container>
+          <md-input-container style="">
+            <label>Device Name</label>
+            <input type="text" ng-model="new_device.device_name">
+          </md-input-container>
+          <div ng-show="add_device.show" layout="row" layout-align="center">
+            <md-button style="background:#555;" ng-click="add_device(new_device)">add</md-button>
+	  </div>
+  </div>
+
+  <md-grid-tile-footer layout="row" layout-align="end center">
+
+
+
+    <md-button ng-show="device_terminal.show" ng-click="command(selected_device)">send</md-button>
+    <md-button ng-show="device_terminal.show" ng-click="device_terminal.show = false;device_settings.show = true">Back</md-button>
+
+    <md-button ng-show="device_list.show"  ng-click="add_device.show = true;device_list.show = false">Add Device</md-button>
+    <md-button ng-show="add_device.show"  ng-click="device_list.show = true;add_device.show = false">Back</md-button>
+
+    <md-button ng-show="attach_device.show"  ng-click="attach_device.show = true;device_settings.show = false">Attach Device</md-button>
+    <md-button ng-show="attach_device.show"  ng-click="device_settings.show = true;attach_device.show = false">Back</md-button>
+
+    <md-button ng-show="device_settings.show"  ng-click="device_list.show = true;device_settings.show = false">Back</md-button>
+    <md-button ng-show="device_settings.show"  ng-click="set(selected_device)">Save</md-button>
+  </md-grid-tile-footer>
+
+    </md-grid-tile>
+  </md-grid-list>
+
+
+<!--
+    <md-grid-list  md-cols="1" md-cols-sm="1" md-cols-md="1" md-cols-lg="1" md-cols-gt-lg="2" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
+      <md-grid-tile style="background:#444" md-rowspan="{{add_device_form.span.row}}" md-colspan="{{add_device_form.span.col}}" md-colspan-sm="1" md-colspan-xs="1">
+
+        <div ng-show="device_list.show" style="width:100%;" >
+	  <div style="padding:10px;width:100%;background:purple" ng-repeat="device in devices" ng-click="select_device(device)" class="">
+	    <div style="float:left">{{ device.device_name }}</div>
+	    <div style="float:right">{{ device.device_type[0] }}</div>
+	  </div>
+	</div>
+
+        <div ng-show="device_settings.show" style="text-align:center;width:100%;" >
+	    <div style="float:left">{{ selected_device.device_name }}</div>
+	    <div style="float:right">{{ selected_device.device_type }}</div>
+	</div>
+
+        <div ng-show="add_device_form.show" style="text-align:center;width:100%;" >
+          <md-input-container style="margin:auto">
+            <label>Device Name</label>
+            <input type="text" ng-model="new_device.device_name">
+          </md-input-container>
+          <md-input-container style="margin:auto">
+            <label>Device ID</label>
+            <input type="text" ng-model="new_device.mac">
+          </md-input-container>
+          <div ng-show="add_device_form.show" layout="row" layout-align="center">
+            <md-button style="background:#555;" ng-click="add_device(new_device)">add</md-button>
+	  </div>
+        </div>
+
+        <md-grid-tile-footer ng-show="!add_device_form.show" layout="row" layout-align="center">
+          <md-button ng-click="show_add_device_form()">add device</md-button>
+	</md-grid-tile-footer>
+      </md-grid-tile>
+    </md-grid-list>
+-->
+</div>

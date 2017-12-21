@@ -1,239 +1,150 @@
 <!DOCTYPE html>
-<html ng-app="main_site" ng-controller="index" >
+<html>
 <head>
-  <% include ../partials/header.ejs %>
 
-  <link href="materialize/dist/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
-</head>
+<title>pyfi</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<body style="background:#444">
-  <% include ../partials/nav.ejs %>
+<link href="/css/fonts.css" rel="stylesheet">
+<link href="https://material.angularjs.org/1.1.5/docs.css" rel="stylesheet">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/style_2.css" rel="stylesheet">
+<link href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.5/angular-material.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">  
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+
+<script src="/js/socket.io.js"></script>
+<script src="/js/ng-socket-io.js"></script>
+<script src="/js/services.js"></script>
+<script src="/js/jsmpeg/jsmpeg.min.js"></script>
+<script src="/js/jquery-2.2.4.min.js"></script>
+<script src="/js/jquery.cookie.min.js"></script>
+
+<script src="http://durated.github.io/angular-scroll/0.6.1/angular-scroll.min.js"></script>
+<script src="/js/angular-parallax.js"></script>
+
+<!--
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkp7LaN0aTOl5xN8x5RunDAJsgwWBoYJo"></script>
+-->
+
 <style>
-test{
-    background: url("images/pyfi_images/hand_finished1.jpg") no-repeat top center fixed;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
-    width: 100%;
+body {
+  background:#555;
+  color:#ddd;
 }
-
-
-  .parallax-container {
-
-  }
 </style>
+</head>
+<body ng-app="open-automation" ng-controller="userinfo" ng-cloak>
 
-<div style="height:40vw;" class="parallax-container">
-  <div style="" class="parallax">
-    <img style="width:100%" src="images/pyfi_images/construction_van.jpg"></img>
-  </div>
-  <div style="text-align:center">
-    <% include ../partials/login_form.ejs %>
-    <img id="pyfi_logo" style="color:#3ec1f9;width:70%;margin:50px auto auto auto;max-width:40vw;padding:20px;background-color: rgba(0,0,0,0.7);border-radius:5px" src="images/pyfi_images/pyfi-logo.png"></img>
-  </div>
-</div>
+  <div layout="column" layout-fill>
 
-<div style="padding:20px;">
-  <div style="margin:0px auto 0px auto;padding:25px;text-align:center;max-width:1000px;background-color: rgba(2,2,2,0.3);border-radius:5px" class="row">
-    <div class="col s12 m6">
-      <div class="card blue-grey darken-1 fade_in">
-        <div class="card-content white-text">
-          <span class="quickening card-title">Remote Site Monitoring</span>
-          <img style="width:100%;height:100%" src="images/pyfi_images/construction_site_thumbnail.jpg"></img>
-          <br><br><br>
-          <hr style="margin:20px">
-          <p>24 Hour Video Monitoring</p>
-          <p>View Live Streams and recordings from Anywhere!</p>
-          <p>Mobile Friendly interface</p>
-          <p>Motion Activation and alerts</p>
-          <p>Records all activated immediately</p>
+<nav style="background:#333;height:50px" ng-controller="NavCtrl">
+  <section layout="row" flex="" >
+
+    <md-sidenav style="background:#444" class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
+
+      <md-toolbar style="background:#444">
+      <md-button style="margin:10px auto auto 10px" ng-controller="LeftCtrl" ng-click="close()">
+        <i style="color:#ddd;font-size:40px;margin:auto 10px auto auto" class="material-icons">menu</i>
+        <img img style="width:160px;" src="images/pyfi_images/pyfi-logo1.png"></img>
+      </md-button>
+      </md-toolbar>
+      <md-content style="background:#333;color:#ddd" ng-controller="LeftCtrl">
+
+    <div ng-if="show_login_form" ng-controller="LoginCtrl">
+      <md-content style="text-align:center" md-theme="docs-dark">
+	<div>{{ login_message }}</div>
+        <div layout-gt-md="row" style="">
+          <md-input-container style="margin:auto">
+            <label>Email</label>
+            <input ng-model="user_login.username" type="email">
+          </md-input-container>
+          <md-input-container style="margin:auto">
+            <label>Password</label>
+            <input type="password" ng-model="user_login.password">
+          </md-input-container>
+          <md-button style="background:#555;width:80%" ng-click="login(user_login)">login</md-button>
         </div>
-        <div class="card-action">
-          <button style="" class="btn waves-effect waves-light animated" type="button" ng-click="goto('remote_site_monitoring')" >
-            packages & pricing
-          </button>
-        </div>
-      </div>
+      </md-content>
     </div>
-    <div class="col s12 m6">
-      <div class="card blue-grey darken-1 fade_in">
-        <div class="card-content white-text">
-          <span class="quickening card-title">Home Automation & Security</span>
-          <img class="" style="width:100%;height:100%" src="images/pyfi_images/hand_finished1.jpg"></img>
-          <hr style="margin:20px">
-          <p>Control thermostats, deadbolts, lights and more!</p>
-          <p>Mobile Friendly interface</p>
-          <p>Motion Activation and alerts</p>
-          <p>24 Hour Video Monitoring</p>
-          <p>Records all activated immediately</p>
-        </div>
-        <div class="card-action">
-          <button style="" class="btn waves-effect waves-light animated" type="button" ng-click="goto('home_automation_security')" >
-            packages & pricing
-          </button>
-        </div>
+
+        <md-button ng-if="show_login_form_btn" style="width:90%;" ng-click="show_login()">Login</md-button>
+        <md-button hide-gt-md="" style="width:90%;" ng-click="show_register()">Register</md-button>
+        <md-button hide-gt-md="" style="width:90%;" ng-click="download_android()">
+          Android | <div class="fa fa-cloud-download fa-2x"></div>
+        </md-button>
+      </md-content>
+
+    </md-sidenav>
+    <md-button hide-gt-xs ng-click="toggleLeft()" class="md-primary">
+      <i style="color:#ddd;margin:0px 0px 0px 0px;font-size:40px" class="material-icons">menu</i>
+    </md-button>
+    <a href="/" hide-gt-xs class=""><img img style="width:160px;margin:5px 0px 0px 0px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+    <div ng-controller="landing" style="width:100%" >
+      <div hide show-gt-xs style="color:#ddd">
+        <a href="/" class=""><img img style="width:160px;margin:5px 0px 0px 10px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+        <md-button style="margin:10px;float:right" ng-click="show_login()">Login</md-button>
+        <md-button style="margin:10px;float:right" ng-click="show_register()">Register</md-button>
+        <md-button style="margin:10px;float:right" ng-click="download_android()">
+          Android | <div class="fa fa-cloud-download fa-2x"></div>
+        </md-button>
       </div>
+    <div>
+  </section>
+</nav>
+
+    <main flex>
+      <div ng-view></div>
+    </main>
+
+<footer>
+  <md-toolbar class="md-scroll-shrink" style="background:#222">
+    <div style="" layout="row" layout-align="center center" flex>
+
+      <md-button class="col" style="margin:auto" ng-href="#/dashboard">
+        <i style="color:#ddd;font-size:35px;" class="material-icons">trending_up</i>
+      </md-button>
+
+      <md-button class="col" style="margin:auto" ng-href="#/rooms">
+        <i style="color:#ddd;font-size:35px;" class="material-icons">home</i>
+      </md-button>
+
+      <md-button class="col" style="margin:auto" ng-href="#/settings">
+        <i style="color:#ddd;font-size:35px;" class="material-icons">settings</i>
+      </md-button>
+
     </div>
-  </div>
-</div>
-
-<div style="height:50vw;" class="parallax-container">
-  <div style="" class="parallax">
-    <img style="width:100%" src="images/pyfi_images/pyfi_dashboard2.jpg"></img>
-  </div>
-</div>
-
-
-<div>
-  <div class="row container" style="margin:0px auto 0px auto;max-width:800px;text-align:center;width:100%"></div>
-</div>
-
-<div class="row" style="margin:0px auto 0px auto;padding:20px;text-align:center;background-color: rgba(2,2,2,0.4);border-radius:5px;color:#eee">
-  <div style="">
+  </md-toolbar>
+</footer>
 
   </div>
 
-  <iframe style="width:70vw;height:40vw"
-    src="https://www.youtube.com/embed/9-sBJSBuXrM">
-  </iframe>
-    <h3>Save time and money!</h3>
-  <h4>Ready to get started?</h4>
-  <div style="background-color: rgba(2,2,2,0.0);">
-    <p> Email us your project needs <a hred="mailto:sales@pyfi.org">sales@pyfi.org</a></p>
-    <p> Or give us a call at (405) 352-0123</p>
-  </div>
-</div>
 
 
-<div style="height:40vw;" class="parallax-container">
-  <div style="" class="parallax">
-    <img style="width:100%" src="images/pyfi_images/dual_cameras.jpg"></img>
-  </div>
-</div>
-
-<div class="row" style="margin:0px auto 20px auto;padding:20px;text-align:center;max-width:800px;background-color: rgba(2,2,2,0.4);border-radius:5px">
-    <div id="contact_form">
-      <form style="" id="customer_contact_form">
-
-        <div class="input-field col s12 m6">
-          <i class="material-icons prefix">account_circle</i>
-          <input id="icon_prefix" type="text" class="validate">
-          <label for="icon_prefix">Full Name</label>
-        </div>
-
-        <div class="input-field col s12 m6">
-          <i class="material-icons prefix">phone</i>
-          <input id="icon_telephone" type="tel" class="validate">
-          <label for="icon_telephone">Telephone</label>
-        </div>
-
-        <div class="input-field col s12 m6">
-          <i class="material-icons prefix">mail</i>
-          <input id="" type="tel" class="validate">
-          <label for="">Email</label>
-        </div>
-
-        <div class="input-field col s12 m6">
-          <i class="material-icons prefix">business</i>
-          <input id="" type="tel" class="validate">
-          <label for="">Company Name</label>
-        </div>
-
-        <div class="input-field col s12">
-          <i class="material-icons prefix">chat</i>
-          <textarea id="textarea1" class="materialize-textarea"></textarea>
-          <label for="textarea1">Project Desciption</label>
-        </div>
-
-          <button style="height:50px;" class="btn btn-block waves-effect waves-light animated" type="button" ng-click="submit_home_consult()" >
-            Submit Quote Request | <i class="fa fa-paper-plane fa-3x"></i>
-          </button>
-        </form>
-
-  <div style="background-color: rgba(2,2,2,0.0);">
-    <p>(405) 352-0123</p>
-    <p><a hred="mailto:sales@pyfi.org">sales@pyfi.org</a></p>
-  </div>
-
-      </div>
-      <% include ../partials/login_form.ejs %>
-      <% include ../partials/price_generator.ejs %>
-      <% include ../partials/motion_detector_form.ejs %>
-  </div>
-
-
-
-  <div class="slider">
-    <ul class="slides">
-      <li>
-        <img src="images/pyfi_images/pyfi_universal_controller_spreadout.jpg">
-        <div class="caption right-align">
-        </div>
-      </li>
-      <li>
-        <img src="images/pyfi_images/hand_populated.jpg"> 
-        <div class="caption left-align">
-          <h1 class="light white-text">Trusted Development</h1>
-          <h3 class="light white-text">Hand built and tested means you can trust our devices to maintain performance!</h3>
-        </div>
-      </li>
-      <li>
-        <img src="images/pyfi_images/boards.jpg"> 
-        <div class="caption right-align">
-        </div>
-      </li>
-      <li>
-        <img src="images/pyfi_images/opener.jpg"> 
-        <div class="caption center-align">
-        </div>
-      </li>
-    </ul>
-  </div>
-
-<div style="padding:20px;">
-  <div class="row container" style="margin:auto;max-width:800px;text-align:center;width:100%">
-    <h2 class="header" style="text-align:center;font-size:50px;color:#1a5fce">About Us</h2>
-    <p style="text-align:left;font-size:20px;color:#789edb">Pyfi's Home Automation and Security provides homeowners with quality home media and automation services such as location controlled thermostats, media, lights, dead bolts, and surveillance. 
-
-Pyfi's Home Automation and Security is able to provide customized services, tailored to your specific needs. All of Pyfi's services are controlled from a user friendly dashboard, conveniently managed from your desktop or mobile device.
-  </div>
-</div>
-
-
-<script>
-function myFunction() {
-  var first_name = document.getElementById("first_name").value;
-  var last_name = document.getElementById("last_name").value;
-  var phone = document.getElementById("phone_number").value;
-  var email = document.getElementById("email").value;
-  document.getElementById("contact_form").className = "fade-out";
-  // Returns successful data submission message when the entered information is stored in database.
-  var dataString = 'first_name=' + first_name + '&last_name=' + last_name + '&phone_number=' + phone + '&email=' + email;
-  console.log(dataString);
-  // AJAX code to submit form.
-  $.ajax({
-      type: "POST",
-      url: "http://24.253.223.242:8080/open-automation.org/php/add_customer_contact.php",
-      data: dataString,
-      cache: false,
-      success: function(html) {
-        console.log(html);
-      }
-    });
-  return false;
-}
-
-
-  $(document).ready(function () {
-      $(".button-collapse").sideNav();
-    $(function () {
-        $('#mycarousel').carousel({
-            interval: 3000
-        });
-    });
-  });
-</script>
-
+<script src="/js/angular-parallax.js"></script>
+<script src="/js/routes.js"></script>
+<script src="/controllers/landing.js"></script>
+<script src="/controllers/userinfo.js"></script>
+<script src="/controllers/account.js"></script>
+<script src="/controllers/room.js"></script>
+<script src="/controllers/camera.js"></script>
+<script src="/controllers/media.js"></script>
+<script src="/controllers/climate.js"></script>
+<script src="/controllers/access.js"></script>
+<script src="/controllers/lights.js"></script>
+<script src="/controllers/regulator.js"></script>
+<script src="/controllers/map.js"></script>
 </body>
 </html>
+

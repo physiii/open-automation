@@ -89,6 +89,9 @@ app.get('/', function (req, res) {
   res.render('pages/index')
 });
 
+app.post('/testing', function(req, res) {
+  console.log("testtttting!!!");
+});
 
 app.post('/login',
   passport.authenticate('local'),

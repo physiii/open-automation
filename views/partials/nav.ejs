@@ -1,4 +1,81 @@
 <!DOCTYPE html>
+<nav ng-app="open-automation" style="background:#333;height:50px" ng-controller="NavCtrl" layout="column" ng-cloak>
+  <section layout="row" flex="" >
+
+    <md-sidenav style="background:#444" class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
+
+      <md-toolbar style="background:#444">
+      <md-button style="margin:10px auto auto 10px" ng-controller="LeftCtrl" ng-click="close()">
+        <i style="color:#ddd;font-size:40px;margin:auto 10px auto auto" class="material-icons">menu</i>
+        <img img style="width:160px;" src="images/pyfi_images/pyfi-logo1.png"></img>
+      </md-button>
+      </md-toolbar>
+      <md-content style="background:#333;color:#ddd" ng-controller="LeftCtrl">
+
+    <div ng-show="show_login_form" ng-controller="LoginCtrl">
+      <md-content style="text-align:center" md-theme="docs-dark">
+	<div>{{ login_message }}</div>testtt
+        <div layout-gt-md="row" style="">
+          <md-input-container>
+            <label>Email</label>
+            <input>
+          </md-input-container>
+          <md-input-container style="margin:auto">
+            <label>Password</label>
+            <input type="password" ng-model="user.password">
+          </md-input-container>
+          <md-button style="background:#555;width:80%" ng-click="login(user)">login</md-button>
+        </div>
+      </md-content>
+    </div>
+
+        <md-button ng-show="show_login_form_btn" style="width:90%;" ng-click="show_login()">Login</md-button>
+        <md-button hide-gt-md="" style="width:90%;" ng-click="show_register()">Register</md-button>
+        <md-button hide-gt-md="" style="width:90%;" ng-click="download_android()">
+          Android | <div class="fa fa-cloud-download fa-2x"></div>
+        </md-button>
+      </md-content>
+
+    </md-sidenav>
+<!--
+    <md-sidenav style="background:#333;" class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
+      <md-button style="margin:10px auto auto 10px" ng-controller="LeftCtrl" ng-click="close()" class="md-primary">
+        <i style="color:#ddd;font-size:40px;margin:auto 10px auto auto" class="material-icons">menu</i>
+        <img img style="width:160px;" src="images/pyfi_images/pyfi-logo1.png"></img>
+      </md-button>
+      <md-content style="background:#333;color:#ddd" layout-padding="" ng-controller="LeftCtrl">
+        <md-button hide-gt-md="" style="width:90%;" ng-click="show_login()">Login</md-button>
+        <md-button hide-gt-md="" style="width:90%;" ng-click="show_register()">Register</md-button>
+        <md-button hide-gt-md="" style="width:90%;" ng-click="download_android()">
+          Android | <div class="fa fa-cloud-download fa-2x"></div>
+        </md-button>
+      </md-content>
+    </md-sidenav>
+-->
+    <md-button hide-gt-xs ng-click="toggleLeft()" class="md-primary">
+      <i style="color:#ddd;margin:0px 0px 0px 0px;font-size:40px" class="material-icons">menu</i>
+    </md-button>
+    <a href="/" hide-gt-xs class=""><img img style="width:160px;margin:5px 0px 0px 0px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+    <div ng-controller="landing" style="width:100%" >
+      <div hide show-gt-xs style="color:#ddd">
+        <a href="/" class=""><img img style="width:160px;margin:5px 0px 0px 10px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+        <md-button style="margin:10px;float:right" ng-click="show_login()">Login</md-button>
+        <md-button style="margin:10px;float:right" ng-click="show_register()">Register</md-button>
+        <md-button style="margin:10px;float:right" ng-click="download_android()">
+          Android | <div class="fa fa-cloud-download fa-2x"></div>
+        </md-button>
+      </div>
+    <div>
+  </section>
+</nav>
+
+
+
+<!--
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be foundin the LICENSE file at http://material.angularjs.org/HEAD/license.
+-->
+<!--
 <div class="">
   <nav>
     <div style="" class="nav-wrapper black">
@@ -45,8 +122,5 @@
   </nav>
 </div>
 <iframe id="download_android" style="display:none"></iframe>
-<script>
-  $(document).ready(function () {
-    $(".button-collapse").sideNav();
-  });
-</script>
+-->
+

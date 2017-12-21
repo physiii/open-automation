@@ -7,38 +7,104 @@
   <script src="js/jquery-ui.min.js"></script>
 </head>
 
+<body ng-app="open-automation">
+
+
+<p><a href="#/!">Main</a></p>
+
+<a href="#!london">City 1</a>
+<a href="#!paris">City 2</a>
+
+<p>Click on the links to read about London and Paris.</p>
+
+<div ng-view></div>
+
+<script>
+var app = angular.module("open-automation", ["ngRoute"]);
+app.config(function($routeProvider) {
+    $routeProvider
+    .when("/", {
+        templateUrl : "<h1>testtt!!</h1>"
+    })
+    .when("/london", {
+        templateUrl : "<h1>testtt!!</h1>"
+    })
+    .when("/paris", {
+        templateUrl : "<h1>testtt!!</h1>"
+    });
+});
+</script>
+
 <!--
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>  
-    <script src="//vanderlee.github.io/colorpicker/jquery.colorpicker.js"></script>    
-    <link href="//code.ionicframework.com/nightly/css/ionic.css" rel="stylesheet">
-    <script src="js/Vibrant.js"></script>
-    <script src="http://code.highcharts.com/highcharts.js"></script>
-    <script src="https://rawgithub.com/highslide-software/draggable-points/master/draggable-points.js"></script>
--->
 
-<body>
+<style>
+.my-card-container .mdc-card {
+  max-height: 300px;
+
+}
+</style>
+<div class="my-card-container">
+<div class="mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
 
 
 
-<div ng-app="starter">
 
-  <div ng-controller="userinfo"></div>
-  <!--
-    The nav bar that will be updated as we navigate between views.
-  -->
-  <ion-nav-bar class="bar-stable">
-    <ion-nav-back-button>
-    </ion-nav-back-button>
-  </ion-nav-bar>
-  <!--
-    The views will be rendered in the <ion-nav-view> directive below
-    Templates are in the /templates folder (but you could also
-    have templates inline in this html file if you'd like).
-  -->
-  <ion-nav-view></ion-nav-view>    
 
+
+<div ng-controller="CameraCtrl">
+<div data-ng-repeat="gateway in gateways" class="mdc-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-4-tablet mdc-layout-grid__cell--span-12-phone">
+  <div data-ng-repeat="camera in gateway.camera_list">
+
+test
+  </div>
 </div>
+</div>
+
+
+
+
+<div class="mdc-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-4-tablet mdc-layout-grid__cell--span-12-phone">
+  <section class="mdc-card__primary">
+    <h1 class="mdc-card__title mdc-card__title--large">Title goes here</h1>
+    <h2 class="mdc-card__subtitle">Subtitle here</h2>
+  </section>
+  <section class="mdc-card__supporting-text">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+    commodo consequat.
+  </section>
+  <section class="mdc-card__actions">
+    <button class="mdc-button mdc-button--compact mdc-card__action">Action 1</button>
+    <button class="mdc-button mdc-button--compact mdc-card__action">Action 2</button>
+  </section>
+</div>
+
+
+
+<div class="mdc-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-4-tablet mdc-layout-grid__cell--span-12-phone">
+  <section class="mdc-card__primary">
+    <h1 class="mdc-card__title mdc-card__title--large">Title goes here</h1>
+    <h2 class="mdc-card__subtitle">Subtitle here</h2>
+  </section>
+  <section class="mdc-card__supporting-text">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+    commodo consequat.
+  </section>
+  <section class="mdc-card__actions">
+    <button class="mdc-button mdc-button--compact mdc-card__action">Action 1</button>
+    <button class="mdc-button mdc-button--compact mdc-card__action">Action 2</button>
+  </section>
+</div>
+  </div>
+</div>
+</div>
+
+-->
+  
 
 </body>
 </html>

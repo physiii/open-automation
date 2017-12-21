@@ -11,7 +11,7 @@ user-select: text;
 .background-1 {
    background-image: linear-gradient(#eee, #eee);
    box-shadow: inset 0 0 100px hsla(1,50%,90%,0.5);
- }
+}
 </style>
 
 <div style="margin:auto auto auto auto;max-width:2000px;padding:5px">
@@ -132,7 +132,7 @@ user-select: text;
           </div>
         </li>
         <div ng-if="gateway.settings.gateway_enabled" class="item-divider">  
-          <div style="margin:10px 20px 10px 20px;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">      
+          <div style="margin:10px 20px 10px 20px;padding:10px;border-style:solid;border-width:1px;border-color:#999;text-align:center" class="card">    
             <div id="{{ gateway.mac }}_add_thermostat_form" style="display:none" >
               <div style="max-width:300px;margin:auto;padding:0px 25px 0px 25px;margin:10px 0px 0px 0px;">
                 <input  ng-model="new_thermostat.local_ip" placeholder="Enter IP Address"  />
@@ -144,12 +144,13 @@ user-select: text;
                 <input type="hidden" ng-init="new_thermostat.device_type = 'thermostat'" />
                 <input type="hidden" ng-init="new_thermostat.token = gateway.token" />
                 <input type="hidden" ng-model="new_thermostat.mac" value="{{ gateway.mac }}" />
-                <input type="submit" ng-click="add_device(new_thermostat)" value="Add" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />
+                <input type="submit" ng-click="add_thermostat(new_thermostat)" value="Add" style="border-style:solid;border-width:1px;border-color:#888;margin:auto" class="button button-block button-stable" />
               </div>
               <input type="hidden" ng-init="new_light.device_type = 'lights'" />
               <input type="hidden" ng-init="new_light.token = gateway.token" />
               <input type="hidden" ng-model="new_light.mac" value="{{ gateway.mac }}" />
-              <input type="submit" id="{{ gateway.mac }}_add_thermostat_form_btn" ng-click="show_form('_add_thermostat_form', gateway.mac)" value="Add thermostat" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
+  	    </div>
+            <input type="submit" id="{{ gateway.mac }}_add_thermostat_form_btn" ng-click="show_form('_add_thermostat_form', gateway.mac)" value="Add thermostat" style="border-style:solid;border-width:1px;border-color:#888" class="button button-block button-stable" />
               <div id="lights_scan_form" style="display:none" >
                 <div style="max-width:300px;margin:auto;padding:10px 25px 0px 25px;">
                   <h2>Scanning network for lights...</h2>

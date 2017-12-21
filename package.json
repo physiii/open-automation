@@ -49,6 +49,7 @@
     "le-sni-auto": "^2.1.1",
     "le-store-certbot": "^2.0.5",
     "letsencrypt": "^2.1.8",
+    "material-components-web": "^0.24.0",
     "mongodb": "^2.2.1",
     "node-hue-api": "^2.2.0",
     "node-php": "0.0.1",
