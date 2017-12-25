@@ -115,11 +115,12 @@ body {
     <a href="/" hide-gt-xs class=""><img img style="width:160px;margin:5px 0px 0px 0px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
     <div ng-controller="landing" style="width:100%" >
       <div hide show-gt-xs style="color:#ddd">
-        <a href="/" class=""><img img style="width:160px;margin:5px 0px 0px 10px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+        <a href="/#/" class=""><img img style="width:160px;margin:5px 0px 0px 10px" src="images/pyfi_images/pyfi-logo1.png"></img></a>
+
+        <md-button ng-show="user" style="margin:10px;float:right" ng-click="logout()"> logout</md-button>
+        <md-button ng-show="user" style="margin:10px;float:right" href="/#/dashboard">{{user}} dashboard</md-button>
 
         <md-button ng-if="!user" style="margin:10px;float:right" ng-click="show_login()">Login</md-button>
-        <md-button ng-show="user" style="margin:10px;float:right" ng-click="logout()">{{user}}, logout</md-button>
-
         <md-button ng-if="!user" style="margin:10px;float:right" ng-click="show_register()">Register</md-button>
         <md-button ng-if="!user" style="margin:10px;float:right" ng-click="download_android()">
           Android | <div class="fa fa-cloud-download fa-2x"></div>
