@@ -696,7 +696,7 @@ io.on('connection', function (socket) {
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
     for (var i=0; i < groups[group_index].members.length; i++) {
-      console.log("load settings2 | member",groups[group_index].members[i]);
+      //console.log("load settings2 | member",groups[group_index].members[i]);
       message_user(groups[group_index].members[i],'load settings',data);
     }
   });
@@ -848,7 +848,7 @@ io.on('connection', function (socket) {
   socket.on('get contacts', function (data) {
     var group_index = find_index(groups,'group_id',data.user_token);
     socket.emit('get contacts',groups[group_index]);
-    console.log("get contacts",data);
+    //console.log("get contacts",data);
   });
 
   socket.on('add contact', function (data) {
@@ -1044,7 +1044,7 @@ io.on('connection', function (socket) {
     }
 
     var group_index = find_index(groups,'group_id',data.mac);
-    if (group_index < 0) return console.log("set status | group_id not found",data.mac);
+    if (group_index < 0) return;// console.log("set status | group_id not found",data.mac);
     if (!groups[group_index].zones) groups[group_index].zones = []
     for (var i = 0; i < groups[group_index].zones.length; i++) {
       if (groups[group_index].zones[i].wifi) {
@@ -1179,7 +1179,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('link user', function (data) {
-    console.log("!! LINK USER !!",data);
+    //console.log("!! LINK USER !!",data);
     var index = find_index(user_objects,'socket',socket);
     //if (index < 0) {
       data.socket = socket;

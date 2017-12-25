@@ -2,7 +2,7 @@ angular.module('open-automation')
 .controller('CameraCtrl', function($scope, $rootScope, socket, $compile, $http, $mdMedia) {
   console.log("<< ------  CameraCtrl  ------ >> ");
   var TAG = "[camera]";
-  var stream_port = "8085";
+  var stream_port = "8084";
   var relay_socket = $rootScope.relay_socket;
   var devices = $rootScope.devices;
   $scope.flip_card = false;

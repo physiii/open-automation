@@ -58,18 +58,18 @@ angular.module('open-automation')
   relay_socket.on('set status', function (data) {
     var mac = data.mac;
     var mobile = $rootScope.mobile;
-    for (var i = 0; i < mobile.length; i++) {
+    /*for (var i = 0; i < mobile.length; i++) {
       if (mac === mobile[i].mac) {
         mobile[i] = data;
-        /*mobile[i].latitude = data.latitude;
+        mobile[i].latitude = data.latitude;
         mobile[i].longitude = data.longitude;
         mobile[i].speed = data.speed;
-        mobile[i].accuracy = data.accuracy;*/
+        mobile[i].accuracy = data.accuracy;
       }
-    }
+    }*/
     $rootScope.mobile = mobile;
     //console.log("set status",data);
-    $rootScope.update_map(data);
+    //$rootScope.update_map(data);
   });
 
   relay_socket.on('motion_sensor', function (state) {
@@ -150,34 +150,34 @@ angular.module('open-automation')
       }
 
       if (devices[i].type == "mobile") {
-        mobile.push( devices[i] );              
+        //mobile.push( devices[i] );              
       }
 
       if (devices[i].type == "alarm") {
 	devices[i].status = "Armed"
-        alarms.push( devices[i] );
+        //alarms.push( devices[i] );
       }
 
       if (devices[i].type == "media_controller") {
-        media_controllers.push( devices[i] );
+        //media_controllers.push( devices[i] );
       }
 
       if (devices[i].type == "room_sensor") {
         devices[i].background_color = "#222";
-        room_sensors.push( devices[i] );
+        //room_sensors.push( devices[i] );
       }
 
       if (devices[i].type == "regulator") {
         devices[i].background_color = "#222";
-        regulators.push( devices[i] );        
+        //regulators.push( devices[i] );        
       }
 
       if (devices[i].type == "siren") {
-        sirens.push( devices[i] );        
+        //sirens.push( devices[i] );        
       }
 
       if (devices[i].type == "garage_opener") {
-        garage_openers.push( devices[i] );  
+        //garage_openers.push( devices[i] );  
       }
     }
 

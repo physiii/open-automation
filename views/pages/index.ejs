@@ -62,42 +62,42 @@ body {
       </md-toolbar>
       <md-content style="background:#333;color:#ddd" ng-controller="LeftCtrl">
 
-    <form ng-submit="login(user_login)" ng-if="show_login_form" ng-controller="LoginCtrl">
-      <md-content style="text-align:center" md-theme="docs-dark">
-	<div>{{ login_message }}</div>
-        <div layout-gt-md="row" style="">
-          <md-input-container style="margin:auto">
-            <label>Email</label>
-            <input ng-model="user_login.username" type="email">
-          </md-input-container>
-          <md-input-container style="margin:auto">
-            <label>Password</label>
-            <input type="password" ng-model="user_login.password">
-          </md-input-container>
-          <md-button style="background:#555;width:80%" type="submit">login</md-button>
-        </div>
-      </md-content>
-    </form>
+        <form ng-submit="login(user_login)" ng-if="show_login_form" ng-controller="LoginCtrl">
+          <md-content style="text-align:center" md-theme="docs-dark">
+	    <div>{{ login_message }}</div>
+            <div layout-gt-md="row" style="">
+              <md-input-container style="margin:auto">
+                <label>Email</label>
+                <input ng-model="user_login.username" type="email">
+              </md-input-container>
+              <md-input-container style="margin:auto">
+                <label>Password</label>
+                <input type="password" ng-model="user_login.password">
+              </md-input-container>
+              <md-button style="background:#555;width:80%" type="submit">login</md-button>
+            </div>
+          </md-content>
+        </form>
 
-    <form ng-if="!user" ng-submit="register(user_register)">
-      <md-content md-theme="docs-dark">
-        <div layout="column">
-          <md-input-container style="margin:10px">
-            <label>Email</label>
-            <input ng-model="user_register.username" type="email">
-          </md-input-container>
-          <md-input-container style="margin:10px">
-            <label>Password</label>
-            <input ng-model="user_register.password" type="password">
-          </md-input-container>
-          <md-input-container  style="margin:10px">
-            <label>Password</label>
-            <input type="password" ng-model="user_register.password_confirm">
-          </md-input-container>
-        </div>
-        <md-button style="background:#555;width:100%" type="submit">Register</md-button>
-      </md-content>
-    </form>
+        <form ng-if="show_register_form" ng-submit="register(user_register)" ng-controller="LoginCtrl">
+          <md-content md-theme="docs-dark">
+            <div layout="column">
+              <md-input-container style="margin:10px">
+                <label>Email</label>
+                <input ng-model="user_register.username" type="email">
+              </md-input-container>
+              <md-input-container style="margin:10px">
+                <label>Password</label>
+                <input ng-model="user_register.password" type="password">
+              </md-input-container>
+              <md-input-container  style="margin:10px">
+                <label>Password</label>
+                <input type="password" ng-model="user_register.password_confirm">
+              </md-input-container>
+            </div>
+            <md-button style="background:#555;width:100%" type="submit">Register</md-button>
+          </md-content>
+        </form>
 
         <md-button ng-if="!user" style="width:90%;" ng-click="show_login()">Login</md-button>
         <md-button ng-show="user" style="width:90%;" ng-click="logout()">{{user}}, logout</md-button>
