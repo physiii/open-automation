@@ -6,6 +6,10 @@ app.config(function ($routeProvider,$locationProvider) {
       templateUrl : "templates/landing.html",
        controller : "landing"
    })
+  .when("/demo", {
+      controller: "DemoCtrl",
+      templateUrl : "templates/demo.html",
+  })
   .when("/dashboard", {
       templateUrl : "templates/dashboard.html",
   })

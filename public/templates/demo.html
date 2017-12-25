@@ -33,7 +33,7 @@ md-slider {
 .divider {
 }
 </style>
-<div md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"  class="background">
+<div md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"  class="background" ng-init="">
 <!------------------------------------------------------------------------>
 <!-----------------------------  Video  ---------------------------------->
 <!------------------------------------------------------------------------>
@@ -48,7 +48,6 @@ md-slider {
       <div ng-show="device.show_main" style="width:100%;height:100%">
         <canvas
   	  ng-show="device.previewCanvas.show"
-          style="width:100%;height:100%"
           id="previewCanvas_{{ device.id }}"
           ng-click="start_webcam(device.id)">
         </canvas>

@@ -82,6 +82,11 @@ angular.module('open-automation')
 })
 
 .controller('LoginCtrl', function ($scope, $timeout, $mdSidenav, $log, $rootScope, socket) {
+
+  $scope.show_register = function() {
+    console.log(TAG,"SHOW REGISTER");
+  }
+
   $scope.login = function(user) {
     $.post( "/login",user).success(function(data){
       $rootScope.close();
@@ -148,6 +153,45 @@ angular.module('open-automation')
 })
 
 
+.controller('DemoCtrl', function ($scope, $timeout, $mdSidenav, $log, $rootScope, socket) {
+  demo_login();
+  function demo_login() {
+    console.log("DEMO LOGIN!!!");
+    var user = {username:"demo@pyfi.org",password:"qweasdzxc"};
+    $.post( "/login",user).success(function(data){
+      /*if (data.error) {
+        $scope.$apply(function () {
+          $rootScope.login_message = data.error;
+        });
+        console.log("error",data.error);
+        return;
+      }*/
+
+      $rootScope.close();
+      relay_socket = $rootScope.relay_socket;
+      var user = "demo@pyfi.org";
+      var token = "bb40e7eed098bc2ad5d8a9c51265f1020700d1eee688134f3ba6c75531a2ece27bc99e41d61b442126222e90211d8dbb18d091e90f274e335d594bd888bdf50e";
+      $rootScope.token = token;
+      $rootScope.user = user;
+
+      console.log("demo_login",data);
+      $.cookie('user',user, { path: '/' } );
+      $.cookie('token',token, { path: '/' } );
+
+
+      console.log("linking user",user,token);
+      relay_socket.emit('link user',{token:token, user:user});
+      relay_socket.emit('get devices',{token:token});
+      relay_socket.emit('get contacts',{user_token:token});
+
+      window.location.replace("#/dashboard");
+
+    });
+  }
+
+})
+
+
 .controller('NavCtrl', function ($scope, $timeout, $mdSidenav, $log, $rootScope, socket) {
     $scope.toggleLeft = buildDelayedToggler('left');
     $scope.toggleRight = buildToggler('right');
@@ -164,6 +208,17 @@ angular.module('open-automation')
     document.getElementById("main_login_form").style.display = "inline";
     document.getElementById("main_register_form").style.display = "none";*/
     console.log("show login!")
+  }
+
+  $scope.show_register_form = false;
+  $scope.show_register_form_btn = true;
+  $scope.show_register = function() {
+    $scope.show_register_form = true;
+    $scope.show_register_form_btn = false;
+    /*document.getElementById("pyfi_logo").style.display = "none";
+    document.getElementById("main_register_form").style.display = "inline";
+    document.getElementById("main_register_form").style.display = "none";*/
+    console.log("show register!")
   }
 
 

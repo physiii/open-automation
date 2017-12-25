@@ -71,6 +71,7 @@ passport.serializeUser(function(user, done) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
+    username = username.toLowerCase();
     var index = utils.find_index(accounts,'username',username);
     if (index < 0) return console.log("account not found",username);
     var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
@@ -101,7 +102,7 @@ app.post('/login',
   });
 
 app.post('/register', function(req, res) {
-  var username = req.body.username;
+  var username = req.body.username.toLowerCase();
   var index = utils.find_index(accounts,'username',username);
   if (index < 0) {
     var account_obj = {username:username};
@@ -140,6 +141,15 @@ app.get('/home_automation_security', function(req, res) {
 
 app.get('/home', function(req, res) {
   res.render('pages/home');
+});
+
+
+app.get('/demo', function(req, res) {
+  var path = __dirname + '/public/test.html';
+  console.log(TAG,path);
+  //res.sendFile(path);
+  //res.sendFile(__dirname + '/test.html');
+  //res.render('public/test.html');
 });
 
 app.get('/test', function(req, res) {
