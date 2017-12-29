@@ -208,7 +208,7 @@ angular.module('open-automation')
           if (parts.length <= 1) continue;
           if (parts[0] != 2) continue; //must set /dev/video2* as streaming camera
 
- 	  attached_devices[j].name = attached_devices[j].camera_number;
+ 	  //attached_devices[j].name = attached_devices[j].camera_number;
  	  attached_devices[j].token = devices[i].token;
           attached_devices[j].show_main = true;
           attached_devices[j].previewCanvas = {show:true};
@@ -216,10 +216,10 @@ angular.module('open-automation')
           attached_devices[j].videoCanvas = {show:false};
           attached_devices[j].show_dashboard_btn= true;
           attached_devices[j].span = {row:0, col:1}
-          console.log(TAG,data.mac,"added camera",attached_devices[j]);
+          //console.log(TAG,data.mac,"added camera",devices[i].settings);
           relay_socket.emit('get camera preview',{token:devices[i].token, camera_number:attached_devices[j].camera_number});
 	}
-	attached_devices[j].settings = devices[i].settings;
+	attached_devices[j].settings = data;
         $rootScope.devices.push(attached_devices[j]);
         //console.log(TAG,data.mac,"added device",attached_devices[j]);
       }
