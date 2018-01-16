@@ -388,6 +388,7 @@ md-slider {
 <!------------------------------------------------------------------------>
 <!-----------------------------  Media  ---------------------------------->
 <!------------------------------------------------------------------------>
+<div ng-controller="MediaCtrl">
 <md-grid-list style="margin:10px"  md-cols="1" md-cols-sm="2" md-cols-md="2" md-cols-lg="4" md-cols-gt-lg="4" md-row-height-gt-lg="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
 <md-grid-tile style="background:#444" md-rowspan="{{device.span.row}}" md-colspan="{{device.span.col}}" md-colspan-sm="1" md-colspan-xs="1">
 
@@ -398,7 +399,6 @@ md-slider {
   <div ng-if="!device.show_dashboard" style="width:100%">
     <md-toolbar class="md-scroll-shrink" style="background:#444;">
       <div layout="row" layout-align="center center" flex>
-
         <md-button class="col" style="margin:auto" ng-click="media_dash('volume down')">
           <i style="color:#ddd;font-size:50px;" class="material-icons">volume_down</i>
         </md-button>
@@ -451,7 +451,7 @@ md-slider {
     <md-button ng-click="show_main(device)">Back</md-button>
   </md-grid-tile-footer>
 </md-grid-tile>
-
+</div>
 
 
 <!--------------------------------------------------------------------------------------------------->

@@ -47,6 +47,7 @@ angular.module('open-automation')
     relay_socket.emit('media', { token:device.token, cmd:command });  
   }
   $scope.media_dash = function(command,option) {
+    console.log("emmitting dash command",command)
     var devices = $rootScope.devices;
     var length = -1;
     if (devices) {
