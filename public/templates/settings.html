@@ -83,6 +83,10 @@
       <md-button style="background:#591313;" ng-click="update(selected_device)">Update</md-button>
     </md-list-item>
 
+    <md-list-item style="background:#444;height:20px;" class="noright">
+      <md-button style="background:#591313;float:right" ng-click="remove_device(selected_device)">Remove from Account</md-button>
+    </md-list-item>
+
   </div>
 
   <div ng-show="device_terminal.show" class="col" style="overflow-y:auto;height:calc(100% - 100px);width:100%">
