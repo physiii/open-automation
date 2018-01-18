@@ -47,8 +47,8 @@ angular.module('open-automation')
   });
 
   $scope.remove_device = function(device) {
-    device.user_token = $rootScope.token;  
-    relay_socket.emit('unlink device',device);
+    var data = {token:device.token, user_token:$rootScope.token};
+    relay_socket.emit('unlink device',data);
   }
 
   relay_socket.on('unlink device', function (data) {
