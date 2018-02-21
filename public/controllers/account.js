@@ -13,6 +13,12 @@ angular.module('open-automation')
   $scope.add_device_form = { show: false, span:{row:0,col:0} };
   $scope.device_list = { show: true, span:{row:0,col:0} };
   $scope.device_settings = { show: false, span:{row:0,col:0} };
+  $scope.add_contact_info = {
+    show:true
+  };
+  $scope.addContactInfo = false;
+  $scope.addDeviceData = false;
+
 
   // --------------------- //
   // add or remove devices //
@@ -107,6 +113,7 @@ angular.module('open-automation')
     $scope.add_device_form.show = false;
     $scope.device_list.show = false;
     $scope.device_settings.show = true;
+    $scope.settings_contact.show = true;
     $scope.selected_device = device;
     console.log(TAG,"select_device",device);  
   }
