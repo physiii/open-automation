@@ -855,15 +855,20 @@ io.on('connection', function (socket) {
     var group_index = find_index(groups,'group_id',data.user_token);
     groups[group_index].contacts.push({label:data.label,number:data.number});
     database.store_group(groups[group_index]);
-    console.log("add contact",data);
+    socket.emit('add contact',data);
   });
 
   socket.on('remove contact', function (data) {
     var group_index = find_index(groups,'group_id',data.user_token);
     var user_index = groups[group_index].contacts.indexOf(data.user);
-    groups[group_index].contacts.slice(user_index,1);
+    for(var i =0;i<groups[group_index].contacts.length;i++){
+      if(groups[group_index].contacts[i].label === data.user.label){
+          user_index =i;
+      }
+    }
+    groups[group_index].contacts.splice(user_index,1);
     database.store_group(groups[group_index]);
-    console.log("remove contact",data);
+      socket.emit('remove contact',data);
   });
 
   socket.on('media', function (data) {

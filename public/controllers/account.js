@@ -18,6 +18,7 @@ angular.module('open-automation')
   };
   $scope.addContactInfo = false;
   $scope.addDeviceData = false;
+  $scope.contacts=[];
 
 
   // --------------------- //
@@ -35,7 +36,19 @@ angular.module('open-automation')
     });
     console.log("command result",devices[index]);
   });
+  $scope.getContacts = function(){
+    var data = {
+        user_token : $rootScope.user
+    }
+    relay_socket.emit('get contacts', data);
+     relay_socket.on('get contacts', function (data) {
+          $scope.$apply(function () {
+              $scope.contacts = data.contacts
+          });
+      });
+  }
 
+    $scope.getContacts();
 
   $scope.add_device = function(device) {
     device.user_token = $rootScope.token;
@@ -55,6 +68,7 @@ angular.module('open-automation')
   $scope.remove_device = function(device) {
     var data = {token:device.token, user_token:$rootScope.token};
     relay_socket.emit('unlink device',data);
+
   }
 
   relay_socket.on('unlink device', function (data) {
@@ -70,25 +84,20 @@ angular.module('open-automation')
 
 
   $scope.add_contact = function(contact) {
-   contact.user_token = $rootScope.token;
+   contact.user_token = $rootScope.user;
+   contact.label = contact.firstName +' '+contact.lastName;
+   contact.number = contact.phoneNumber;
    relay_socket.emit('add contact', contact);
-   console.log("add_contact | ", contact);
+   $scope.add_contact_info.show= true;
+   $scope.getContacts();
   }
   
   $scope.remove_contact = function(contact) {
-    $.post( "php/remove_alert_contact.php",{user:$rootScope.username, number:contact.number, label:contact.label}).success(function(data){
-      console.log("remove_alert_contact.php | " + data);
-      alert_contacts = $rootScope.alert_contacts;
-      console.log("before: " + alert_contacts);
-      for (i = 0; i < alert_contacts.length; i++) {
-        if (alert_contacts[i].number == contact.number) {
-          $scope.$apply(function () {
-            $rootScope.alert_contacts.splice(i,1);
-          });   
-        }
+      var data ={
+        user_token : $rootScope.user, user : contact
       }
-      console.log("after: " + alert_contacts);      
-    });
+      relay_socket.emit('remove contact', data);
+      $scope.getContacts();
   }
 
 
