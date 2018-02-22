@@ -167,14 +167,21 @@
               </div>
             </md-input-container>
             <div layout="row" layout-align="center">
-              <md-button type="submit" style="background:#555;" ng-click="addContactInfo=true;">add</md-button>
+              <md-button type="submit" style="background:#555;" ng-click="addContactInfo=true;add_contact(contact)">add</md-button>
             </div>
           </form>
+        </div>
+        <div ng-show="add_contact_info.show">
+          <md-list-item ng-repeat="contact in contacts">
+            <p style="text-align:left">{{ contact.label }}</p>
+            <p style="text-align:right">{{ contact.number }}</p>
+            <p style="text-align:right;padding-left: 5em;padding-top: 0.5em;cursor:pointer;"><i class="material-icons"  ng-click="remove_contact(contact)">clear</i></p>
+          </md-list-item>
         </div>
       </div>
 
     <md-grid-tile-footer layout="row" layout-align="end center">
-      <md-button ng-show="add_contact_info.show"  ng-click="add_contact_info.show = false">Add Contact</md-button>
+      <md-button ng-show="add_contact_info.show"  ng-click="add_contact_info.show = false;">Add Contact</md-button>
       <md-button ng-hide="add_contact_info.show"  ng-click="add_contact_info.show = true">Back</md-button>
     </md-grid-tile-footer>
     </md-grid-tile>
