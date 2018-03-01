@@ -7,6 +7,9 @@ var utils = require('./utils.js');
 var crypto = require('crypto');
 var http = require('http');
 var url = require('url');
+var nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
+
 module.exports = {
   start: start
 }
@@ -16,6 +19,16 @@ var DEVICE_PORT = config.device_port || 4000;
 //var BUTTONS_PORT = config.buttons_port || 4001;
 var find_index = utils.find_index; 
 var TAG = "[socket.js]";
+
+var transporter = nodemailer.createTransport(
+  smtpTransport({
+    service: config.mail.service,
+    auth: {
+      user: config.mail.from_user,
+      pass: config.mail.password
+    }
+  })
+);
 
 /* --------------  websocket server for devices  ----------------- */
 var WebSocketServer = require('ws').Server
@@ -647,6 +660,7 @@ function find_index(array, key, value) {
   return -1;
 }
 
+var emailSent=false;
 function start(server)  {
 // -------------  socket.io server  ---------------- //
 
@@ -717,6 +731,30 @@ io.on('connection', function (socket) {
     device_objects[device_index].socket.emit('update',data);
   });
 
+//---------- motion ---------//
+socket.on('motion detected', function (data) {
+    console.log("motion detected",data.toString());
+    if(!emailSent) {
+     var mailOptions = {
+       from: config.mail.from_user,
+       to: config.mail.to_user,
+       subject: 'Motion Detected',
+       text: data.toString()
+     }; 
+     emailSent=true;
+     transporter.sendMail(mailOptions, function(error, info){
+       if (error) {
+         console.log(error);
+       } else {
+         console.log('Email sent: ' + info.response);
+       }
+     }); 
+    }
+  });
+socket.on('motion stopped', function (data) {
+    console.log("motion stopped",data.toString());
+  });
+ 
 //----------- ffmpeg ----------//
   socket.on('ffmpeg', function (data) {
     //console.log("hit ffmpeg",data);
@@ -855,15 +893,20 @@ io.on('connection', function (socket) {
     var group_index = find_index(groups,'group_id',data.user_token);
     groups[group_index].contacts.push({label:data.label,number:data.number});
     database.store_group(groups[group_index]);
-    console.log("add contact",data);
+    socket.emit('add contact',data);
   });
 
   socket.on('remove contact', function (data) {
     var group_index = find_index(groups,'group_id',data.user_token);
     var user_index = groups[group_index].contacts.indexOf(data.user);
-    groups[group_index].contacts.slice(user_index,1);
+    for(var i =0;i<groups[group_index].contacts.length;i++){
+      if(groups[group_index].contacts[i].label === data.user.label){
+          user_index =i;
+      }
+    }
+    groups[group_index].contacts.splice(user_index,1);
     database.store_group(groups[group_index]);
-    console.log("remove contact",data);
+      socket.emit('remove contact',data);
   });
 
   socket.on('media', function (data) {
