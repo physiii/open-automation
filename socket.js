@@ -660,7 +660,7 @@ function find_index(array, key, value) {
   return -1;
 }
 
-var emailSent=false;
+var motionStarted=false;
 function start(server)  {
 // -------------  socket.io server  ---------------- //
 
@@ -734,14 +734,14 @@ io.on('connection', function (socket) {
 //---------- motion ---------//
 socket.on('motion detected', function (data) {
     console.log("motion detected",data.toString());
-    if(!emailSent) {
+    if(!motionStarted) {
+     motionStarted=true;
      var mailOptions = {
        from: config.mail.from_user,
        to: config.mail.to_user,
        subject: 'Motion Detected',
        text: data.toString()
      }; 
-     emailSent=true;
      transporter.sendMail(mailOptions, function(error, info){
        if (error) {
          console.log(error);
@@ -753,6 +753,22 @@ socket.on('motion detected', function (data) {
   });
 socket.on('motion stopped', function (data) {
     console.log("motion stopped",data.toString());
+    if(motionStarted) {
+     motionStarted=false;
+     var mailOptions = {
+       from: config.mail.from_user,
+       to: config.mail.to_user,
+       subject: 'Motion Stopped',
+       text: data.toString()
+     }; 
+     transporter.sendMail(mailOptions, function(error, info){
+       if (error) {
+         console.log(error);
+       } else {
+         console.log('Email sent: ' + info.response);
+       }
+     }); 
+    }
   });
  
 //----------- ffmpeg ----------//
