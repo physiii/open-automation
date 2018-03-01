@@ -96,6 +96,7 @@ angular.module('open-automation')
       var token = data.token;
       $rootScope.token = token;
       $rootScope.user = user;
+
       $.cookie('user',user, { path: '/' });
       $.cookie('token',token, { path: '/' });
 
