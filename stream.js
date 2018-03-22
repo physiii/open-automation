@@ -15,10 +15,16 @@ var WebSocket = require('ws');
 //ssl_certificate /etc/letsencrypt/live/pyfi.org/fullchain.pem;
 //ssl_certificate_key /etc/letsencrypt/live/pyfi.org/privkey.pem;
 
-
+if(use_dev){
+var privateKey = fs.readFileSync('./key.pem');
+var certificate = fs.readFileSync('./cert.pem');
+var credentials = { key: privateKey, cert: certificate };
+} else {
 var privateKey = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem');
 var certificate = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem');
 var credentials = { key: privateKey, cert: certificate };
+};
+
 
 var STREAM_PORT = config.video_stream_port || 5054;
 var WEBSOCKET_PORT = config.video_websocket_port || 8085;

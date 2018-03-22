@@ -45,10 +45,17 @@ var use_ssl = config.use_ssl || false;
 var use_domain_ssl = config.use_domain_ssl || false;
 var use_dev = config.use_dev || false;
 
+if(use_dev){
+var options = {
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+  };
+} else {
 var options = {
     key: fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem'),
   };
+}
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies

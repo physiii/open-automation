@@ -1,7 +1,7 @@
 {
   "use_ssl":false,
   "use_domain_ssl":false,
-  "use_dev":false,
+  "use_dev":true,
   "website_port":5000,
   "website_secure_port":4443,
   "video_websocket_port":8085,
