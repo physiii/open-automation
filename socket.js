@@ -33,9 +33,18 @@ var transporter = nodemailer.createTransport(
 );
 var use_ssl = config.use_ssl || false;
 var use_domain_ssl = config.use_domain_ssl || false;
+var use_dev = config.use_dev || false;
+
+
+if(use_dev){
+var privateKey = fs.readFileSync('./key.pem');
+var certificate = fs.readFileSync('./cert.pem');
+var credentials = { key: privateKey, cert: certificate };
+} else {
 var privateKey = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem');
 var certificate = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem');
 var credentials = { key: privateKey, cert: certificate };
+}
 
 /* --------------  websocket server for devices  ----------------- */
 var WebSocketServer = require('ws').Server
