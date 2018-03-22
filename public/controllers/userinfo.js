@@ -34,12 +34,17 @@ angular.module('open-automation')
   var smoke_alarms = [];*/
   $rootScope.alert_contacts = [];
 
+  $rootScope.protocol = location.protocol
   $rootScope.server_address = location.host;
   var parts = $rootScope.server_address.split(":");
   $rootScope.server_ip = parts[0];
-  $rootScope.port = parts[1] || 80;
+  if ($rootScope.protocol === "https:" && parts[1] == 4443){  
+  $rootScope.port = 4443;
+  } else if ($rootScope.protocol === "https:" && parts[1] != 4443) {
+  $rootScope.port = 443;
+  } else {$rootScope.port = parts[1]; }
   $scope.showDarkTheme = true;
-  var url = "http://" + $rootScope.server_ip + ":" + $rootScope.port;
+  var url = $rootScope.protocol +"//" + $rootScope.server_ip + ":" + $rootScope.port;
   var relay_socket = io.connect(url);
   $rootScope.relay_socket = relay_socket;
   console.log(TAG + " Connected to: " + url);

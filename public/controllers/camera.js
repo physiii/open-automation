@@ -2,7 +2,7 @@ angular.module('open-automation')
 .controller('CameraCtrl', function($scope, $rootScope, socket, $compile, $http, $mdMedia) {
   console.log("<< ------  CameraCtrl  ------ >> ");
   var TAG = "[camera]";
-  var stream_port = "8084";
+  var stream_port = "8085";
   var relay_socket = $rootScope.relay_socket;
   var devices = $rootScope.devices;
   $scope.flip_card = false;
@@ -125,7 +125,9 @@ angular.module('open-automation')
 
     device.show_main = true;
     if (device.stream_started) return console.log("stream already started");
-    device.camera_socket = 'ws://'+$rootScope.server_ip+':'+stream_port;
+
+    
+    device.camera_socket = 'wss://'+$rootScope.server_ip+':'+stream_port;  
     //device.stream_started = true;
     device.canvas = document.getElementById('videoCanvas_'+device.id);
     device.player = new JSMpeg.Player(devices[i].camera_socket, 
@@ -161,9 +163,8 @@ angular.module('open-automation')
     device.show_dashboard = false;
     device.show_recordings = false;
     device.show_main = true;
-
-
-    device.camera_socket = 'ws://'+$rootScope.server_ip+':'+stream_port;
+    
+    device.camera_socket = 'wss://'+$rootScope.server_ip+':'+stream_port;   
     device.canvas = document.getElementById('videoCanvas_'+device.id);
     device.player = new JSMpeg.Player(device.camera_socket, 
       {canvas:device.canvas,token:device.token, camera:device.camera_number});
@@ -181,7 +182,8 @@ angular.module('open-automation')
     device.show_recordings = false;
     device.show_main = true;
 
-    device.camera_socket = 'ws://'+$rootScope.server_ip+':'+stream_port;
+
+    device.camera_socket = 'wss://'+$rootScope.server_ip+':'+stream_port;
     device.canvas = document.getElementById('videoCanvas_'+device.id);
     device.player = new JSMpeg.Player(device.camera_socket, 
       {canvas:device.canvas,token:device.token, camera:device.camera_number});

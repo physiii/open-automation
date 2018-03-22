@@ -43,6 +43,12 @@ var port = config.website_port || 5000;
 var secure_port = config.website_secure_port || 4443;
 var use_ssl = config.use_ssl || false;
 var use_domain_ssl = config.use_domain_ssl || false;
+var use_dev = config.use_dev || false;
+
+var options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem'),
+  };
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
@@ -171,39 +177,18 @@ app.get('/get_ip', function(req, res) {
 
 // Create and start servers
 
-var server = http.createServer(app);
-
 // Self Signed CA reads for SSL traffic
 
-if (use_ssl) {
-
-  var options = {
-    key: fs.readFileSync(__dirname + '/server.key'),
-    cert: fs.readFileSync(__dirname + '/server.crt'),
-    ca: fs.readFileSync(__dirname + '/ca.crt')
-  };
-
+if (use_ssl || use_domain_ssl) {
   var secure_server = https.createServer(options, app);
   secure_server.listen(config.website_secure_port);
   console.log('Secure Server listening on port ' + secure_port);
+} else {
+  var server = http.createServer(app);
+  server.listen(port);
+  console.log('Insecure Server listening on port ' + port);
 }
 
-
-if (use_domain_ssl) {
-
-  var options = {
-    key: fs.readFileSync(__dirname + '/private.key'),
-    cert: fs.readFileSync(__dirname + '/certificate.pem'),
-    ca: fs.readFileSync(__dirname + '/chain.pem')
-  };
-
-  var secure_server = https.createServer(options, app);
-  secure_server.listen(config.website_secure_port);
-  console.log('Secure Server listening on port ' + config.website_secure_port);
-}
-
-server.listen(port);
-console.log('Insecure Server listening on port ' + port);
 
 if (use_ssl || use_domain_ssl){
   console.log(TAG + "Hit secure Port")
