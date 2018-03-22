@@ -6,6 +6,8 @@ var database = require('./database.js');
 var utils = require('./utils.js');
 var crypto = require('crypto');
 var http = require('http');
+var https= require('https');
+var fs = require('fs');
 var url = require('url');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -29,6 +31,11 @@ var transporter = nodemailer.createTransport(
     }
   })
 );
+var use_ssl = config.use_ssl || false;
+var use_domain_ssl = config.use_domain_ssl || false;
+var privateKey = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem');
+var certificate = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem');
+var credentials = { key: privateKey, cert: certificate };
 
 /* --------------  websocket server for devices  ----------------- */
 var WebSocketServer = require('ws').Server
@@ -41,7 +48,12 @@ const wssMotion = new WebSocketServer({ noServer: true });
 const wssUpdate = new WebSocketServer({ noServer: true });
 const wssClimate = new WebSocketServer({ noServer: true });
 const server = http.createServer().listen(DEVICE_PORT);
-
+/*if (use_ssl || use_domain_ssl){
+const server = https.createServer(credentials).listen(DEVICE_PORT);
+} else {
+const server = http.createServer().listen(DEVICE_PORT);
+};
+*/
 function sendEmail(toAddr, subject, message) {
   var mailOptions = {
     from: config.mail.from_user,

@@ -1,10 +1,16 @@
 {
   "use_ssl":false,
-  "use_domain_ssl":false,"website_port":5000,"website_secure_port":443,"video_websocket_port":8084,"video_stream_port":8082,"device_port":4000,
+  "use_domain_ssl":false,
+  "use_dev":false,
+  "website_port":5000,
+  "website_secure_port":4443,
+  "video_websocket_port":8085,
+  "video_stream_port":5054,
+  "device_port":4001,
   "mail": {
     "service": "gmail",
-    "from_user": "xyz@gmail.com",
-    "password": "pass",
-    "to_user": "xyzz@gmail.com"
+    "from_user": "astronophile@gmail.com",
+    "password": "qscwdvpk",
+    "to_user": "physiphile@gmail.com"
   }
 }
