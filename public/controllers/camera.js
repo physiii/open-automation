@@ -7,9 +7,6 @@ angular.module('open-automation')
   var devices = $rootScope.devices;
   $scope.flip_card = false;
   $scope.video_sm = $mdMedia('sm');
-  $rootScope.protocol = location.protocol
-  
-
 
   //console.log(TAG,$scope.video_sm);
   // ------------- //
