@@ -1,11 +1,16 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 	mode: 'development',
-	entry: './src/index.js',
+	entry: [
+		'./src/index.js',
+		'webpack-hot-middleware/client'
+	],
 	output: {
 		filename: 'js/main.js',
-		path: path.resolve(__dirname, 'public')
+		path: path.resolve(__dirname, 'public'),
+		publicPath: '/'
 	},
 	module: {
 		rules: [
@@ -14,9 +19,13 @@ module.exports = {
 				exclude: /node_modules/,
 				loader: "babel-loader",
 				query: {
-					presets: ['env', 'react']
+					presets: ['env', 'react'],
+					plugins: ['react-hot-loader/babel']
 				}
 			}
 		]
-	}
+	},
+	plugins: [
+		new webpack.HotModuleReplacementPlugin()
+	]
 };
