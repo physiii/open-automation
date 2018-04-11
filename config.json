@@ -10,7 +10,7 @@
   "mail": {
     "service": "gmail",
     "from_user": "astronophile@gmail.com",
-    "password": "qscwdvpk",
+    "password": "",
     "to_user": "physiphile@gmail.com"
   }
 }
