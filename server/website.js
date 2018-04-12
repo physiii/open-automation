@@ -68,11 +68,21 @@ function start (app) {
 	passport.use(new LocalStrategy(
 		function(username, password, done) {
 			username = username.toLowerCase();
-			var index = utils.find_index(accounts,'username',username);
-			if (index < 0) return console.log("account not found",username);
+			var index = utils.find_index(accounts, 'username', username);
+
+			if (index < 0) {
+				console.log("account not found", username);
+				return done(null, false);
+			}
+
 			var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
-			if (token != accounts[index].token) return console.log("passwords do not match");
-			return done(null, {token:token, user:username});
+
+			if (token != accounts[index].token) {
+				console.log("passwords do not match");
+				return done(null, false);
+			}
+
+			return done(null, {token:token, username:username});
 		}
 	));
 
@@ -107,16 +117,16 @@ function start (app) {
 			res.json({error:"account already exists"});
 			return console.log("account already exist!");
 		}
-		
+
 		var index = utils.find_index(groups,'group_id',username);
 		if (index < 0) {
-			var group = {group_id:username, mode:'init', user:username, device_type:['alarm'], contacts:[], members:[username]};    
+			var group = {group_id:username, mode:'init', user:username, device_type:['alarm'], contacts:[], members:[username]};
 			database.store_group(group);
 		} else {
 			res.json({error:"group already exists"});
 			return console.log("group already exist!");
 		}
-		
+
 		var result = {username:username, token:token};
 		res.json(result);
 		console.log("registered account",account_obj);
