@@ -1,0 +1,11 @@
+// A tab bar.
+
+@import "../_config.scss";
+
+%TabBar,
+.oa-TabBar {
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 1 1 auto;
+	background-color: $tab-bar-background;
+}

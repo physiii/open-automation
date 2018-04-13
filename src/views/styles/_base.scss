@@ -1,0 +1,23 @@
+@import "_config.scss";
+@import "_reset.scss";
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: $background;
+	color: $text-color;
+	cursor: default;
+	user-select: none;
+}
+body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.oa-util-selectable,
+%util-selectable {
+	user-select: text;
+	cursor: auto;
+}

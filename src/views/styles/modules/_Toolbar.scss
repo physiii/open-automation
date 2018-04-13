@@ -1,0 +1,54 @@
+// A generic toolbar with left, middle, and right sections.
+
+%Toolbar,
+.oa-Toolbar {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	flex: 1 1 auto;
+	white-space: nowrap;
+
+	// min-height: 50px;
+}
+
+
+//
+// Module Components
+//
+// 1. This is a workaround for a flexbox bug in IE 11 that causes the
+//    children of Toolbars to sometimes behave as if the Toolbar has no
+//    height set when it has min-height. Bug info:
+//    https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
+
+.oa-Toolbar--left {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	// min-height: inherit; // 1
+
+	flex: 0 1 50%;
+	position: relative;
+}
+.oa-Toolbar--right {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-end;
+	align-items: center;
+	// min-height: inherit; // 1
+
+	flex: 0 1 50%;
+	position: relative;
+}
+.oa-Toolbar--middle {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	// min-height: inherit; // 1
+
+	flex: 0 0 auto;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}

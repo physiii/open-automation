@@ -13,6 +13,7 @@ npm-debug.log*
 
 # Production
 /public/js
+/public/css
 
 # Keys
 *.key

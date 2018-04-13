@@ -17,7 +17,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var webpack = require('webpack');
 var WebpackDevMiddleware = require('webpack-dev-middleware');
 var WebpackHotMiddleware = require('webpack-hot-middleware');
-var webpack_config = require('../webpack.config');
+var webpack_config_file = require('../webpack.config');
 
 module.exports = {
 	start: start
@@ -41,6 +41,7 @@ function start (app) {
 
 	// Set up webpack middleware (for automatic compiling/hot reloading)
 	if (use_dev) {
+		var webpack_config = webpack_config_file(use_dev ? {development: true} : {production: true});
 		var webpack_compiler = webpack(webpack_config);
 		app.use(WebpackDevMiddleware(webpack_compiler, {publicPath: webpack_config.output.publicPath}));
 		app.use(WebpackHotMiddleware(webpack_compiler));

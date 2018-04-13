@@ -1,0 +1,59 @@
+// Configuration and global variables
+
+//
+// Colors
+//
+
+$background:                    #555555;
+$toolbar-background:            #333333;
+$tab-bar-background:            #222222;
+
+$text-color:                    #dddddd;
+
+
+//
+// Typography
+//
+
+$sans-font-family:              Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$serif-font-family:             "Georgia", Times, "Times New Roman", serif;
+$mono-font-family:              Monaco, Menlo, Consolas, "Courier New", monospace;
+
+$base-font-size:                13px;
+$base-font-family:              $sans-font-family;
+$base-line-height:              18 / 13; // line-height divided by font-size
+
+
+//
+// Sizing
+//
+
+$large-font-size:               $base-font-size + 2px;
+$small-font-size:               $base-font-size - 1px;
+$mini-font-size:                $base-font-size - 2px;
+
+$base-border-radius:            4px;
+$large-border-radius:           6px;
+$small-border-radius:           3px;
+
+
+//
+// Forms
+//
+
+$input-padding-vertical:            7px;
+$input-padding-horizontal:          14px;
+$input-background:                  #ffffff;
+$input-text-color:                  #666666;
+$input-placeholder:                 lighten($input-text-color, 40%);
+$input-border:                      #cccccc;
+$input-hover-border:                #8c8c8c;
+$input-focus-outline:               #408fdb;
+$checkbox-size:                     19px;
+
+
+//
+// z-index
+//
+
+$max-z-index:                       2147483647; // Max value of a 32-bit integer

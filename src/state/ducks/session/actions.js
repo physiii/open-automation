@@ -9,6 +9,12 @@ export const loginSuccess = (username, token) => ({
 	payload: {username, token}
 });
 
+export const loginError = (error) => ({
+	type: types.LOGIN_ERROR,
+	payload: error,
+	error: true
+});
+
 export const logout = () => ({
 	type: types.LOGOUT
 });

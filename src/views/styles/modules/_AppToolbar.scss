@@ -1,0 +1,11 @@
+// This is the main app toolbar.
+
+@import "../_config.scss";
+
+%AppToolbar,
+.oa-AppToolbar {
+	display: flex;
+	flex-flow: column nowrap;
+	flex: 1 1 auto;
+	background-color: $toolbar-background;
+}

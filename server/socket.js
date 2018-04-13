@@ -37,14 +37,13 @@ var use_dev = config.use_dev || false;
 
 
 if(use_dev){
-var privateKey = fs.readFileSync(__dirname + '/key.pem');
-var certificate = fs.readFileSync(__dirname + '/cert.pem');
-var credentials = { key: privateKey, cert: certificate };
+	var privateKey = fs.readFileSync(__dirname + '/key.pem');
+	var certificate = fs.readFileSync(__dirname + '/cert.pem');
 } else {
-var privateKey = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem');
-var certificate = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem');
-var credentials = { key: privateKey, cert: certificate };
+	var privateKey = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/privkey.pem');
+	var certificate = fs.readFileSync('/etc/letsencrypt/live/pyfi.org/fullchain.pem');
 }
+var credentials = { key: privateKey, cert: certificate };
 
 /* --------------  websocket server for devices  ----------------- */
 var WebSocketServer = require('ws').Server
@@ -155,7 +154,7 @@ wssUpdate.on('connection', function connection(ws) {
     if (!device_objects[device_index]) return console.log("device not found", token);
     var group_index = find_index(groups, 'group_id', device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsUpdate = ws;
       try { ws.send("linked") }
@@ -163,7 +162,7 @@ wssUpdate.on('connection', function connection(ws) {
       console.log('updated update socket', device_objects[device_index].mac);
     }
 
-    // --------------  send buttons to clients --------------- //    
+    // --------------  send buttons to clients --------------- //
     if (cmd == "update") {
       try { ws.send("sending update") }
       catch (e) { console.log("reply error | " + e) };
@@ -176,7 +175,7 @@ wssUpdate.on('connection', function connection(ws) {
 wssClimate.on('connection', function connection(ws) {
   console.log(TAG, "<< ---- incoming climate connection ---- >>");
   ws.on('message', function incoming(message) {
-    //console.log("<< ---- incoming climate message ---- >>\n",message); 
+    //console.log("<< ---- incoming climate message ---- >>\n",message);
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -194,7 +193,7 @@ wssClimate.on('connection', function connection(ws) {
     if (!device_objects[device_index]) return console.log("device not found", token);
     var group_index = find_index(groups, 'group_id', device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsPower = ws;
       var link_obj = {};
@@ -204,7 +203,7 @@ wssClimate.on('connection', function connection(ws) {
       console.log((Date.now() - start_time) / 1000, 'linked climate socket', device_objects[device_index].mac);
     }
 
-    // --------------  send buttons to clients --------------- //    
+    // --------------  send buttons to clients --------------- //
     if (cmd == "climate") {
       for (var i = 0; i < groups[group_index].members.length; i++) {
         //console.log("sending buttons to ",groups[group_index].members[i]);
@@ -222,7 +221,7 @@ wssClimate.on('connection', function connection(ws) {
 wssPower.on('connection', function connection(ws) {
   console.log(TAG, "<< ---- incoming power connection ---- >>");
   ws.on('message', function incoming(message) {
-    //console.log("<< ---- incoming power message ---- >>\n",message); 
+    //console.log("<< ---- incoming power message ---- >>\n",message);
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -239,7 +238,7 @@ wssPower.on('connection', function connection(ws) {
     device_objects[device_index].wsPower = ws;
     var group_index = find_index(groups, 'group_id', device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsPower = ws;
       var link_obj = {};
@@ -249,7 +248,7 @@ wssPower.on('connection', function connection(ws) {
       console.log((Date.now() - start_time) / 1000, 'linked power socket', device_objects[device_index].mac);
     }
 
-    // --------------  send buttons to clients --------------- //    
+    // --------------  send buttons to clients --------------- //
     if (cmd == "power") {
       for (var i = 0; i < groups[group_index].members.length; i++) {
         //console.log("sending power to ",groups[group_index].members[i]);
@@ -286,7 +285,7 @@ wssLED.on('connection', function connection(ws) {
     if (!device_objects[device_index]) return console.log("device not found", token);
     var group_index = find_index(groups, 'group_id', device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsLED = ws;
       //try { ws.send("linked") }
@@ -295,7 +294,7 @@ wssLED.on('connection', function connection(ws) {
       console.log('updated LED socket', device_objects[device_index].mac);
     }
 
-    // --------------  send buttons to clients --------------- //    
+    // --------------  send buttons to clients --------------- //
     if (cmd == "LED") {
       for (var i = 0; i < groups[group_index].members.length; i++) {
         //console.log("sending buttons to ",groups[group_index].members[i]);
@@ -332,7 +331,7 @@ wssButtons.on('connection', function connection(ws) {
     if (!device_objects[device_index]) return console.log("device not found", token);
     var group_index = find_index(groups, 'group_id', device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsButtons = ws;
       try { ws.send("linked") }
@@ -340,7 +339,7 @@ wssButtons.on('connection', function connection(ws) {
       console.log('updated buttons socket', device_objects[device_index].mac);
     }
 
-    // --------------  send buttons to clients --------------- //    
+    // --------------  send buttons to clients --------------- //
     if (cmd == "buttons") {
       for (var i = 0; i < groups[group_index].members.length; i++) {
         //console.log("sending buttons to ",groups[group_index].members[i]);
@@ -375,7 +374,7 @@ wssMicrophone.on('connection', function connection(ws) {
     if (!type) return;
     var device_index = find_index(device_objects, 'token', token);
     if (!device_objects[device_index]) return console.log("device not found", token);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsMicrophone = ws;
       try { ws.send("linked") }
@@ -388,7 +387,7 @@ wssMicrophone.on('connection', function connection(ws) {
 /* DELETE wssMotion.on('connection', function connection(ws) {
   console.log(TAG,"<< ---- incoming motion connection ---- >>");
   ws.on('message', function incoming(message) {
-    //console.log("<< ---- incoming motion message ---- >>\n",message); 
+    //console.log("<< ---- incoming motion message ---- >>\n",message);
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -406,14 +405,14 @@ wssMicrophone.on('connection', function connection(ws) {
     if (!device_objects[device_index]) return console.log("device not found", token);
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsMotion = ws;
       try { ws.send("linked") }
       catch (e) { console.log("reply error | " + e) };
       console.log('updated motion socket',device_objects[device_index].mac);
     }
-    // --------------  send motion to clients --------------- //    
+    // --------------  send motion to clients --------------- //
     if (cmd == "motion") {
       for (var i=0; i < groups[group_index].members.length; i++) {
         //console.log("sending motion to ",groups[group_index].members[i]);
@@ -431,7 +430,7 @@ wssMicrophone.on('connection', function connection(ws) {
 /*wssClimate.on('connection', function connection(ws) {
   console.log(TAG,"<< ---- incoming climate connection ---- >>");
   ws.on('message', function incoming(message) {
-    console.log("<< ---- incoming climate message ---- >>\n",message); 
+    console.log("<< ---- incoming climate message ---- >>\n",message);
     var msg = {};
     try { msg = JSON.parse(message) }
     catch (e) { console.log("invalid json", message) };
@@ -449,14 +448,14 @@ wssMicrophone.on('connection', function connection(ws) {
     if (!device_objects[device_index]) return console.log("device not found", token);
     var group_index = find_index(groups,'group_id',device_objects[device_index].mac);
     if (group_index < 0) return console.log("group_id not found", data.mac);
-    // --------------  respond to climate requests  ----------------- //    
+    // --------------  respond to climate requests  ----------------- //
     if (cmd == "link") {
       device_objects[device_index].wsClimate = ws;
       try { ws.send("linked") }
       catch (e) { console.log("reply error | " + e) };
       console.log('updated motion socket',device_objects[device_index].mac);
     }
-    // --------------  send climate to clients --------------- //    
+    // --------------  send climate to clients --------------- //
     if (cmd == "light") {
       for (var i=0; i < groups[group_index].members.length; i++) {
         //console.log("sending motion to ",groups[group_index].members[i]);
@@ -488,7 +487,7 @@ wssTokens.on('connection', function connection(ws) {
     //console.log(TAG, "device_objects ", device_objects);
     if (!type) return;
 
-    // --------------  respond to ping requests  ----------------- //    
+    // --------------  respond to ping requests  ----------------- //
     if (cmd == "png_test") {
       command = "png_test";
       try { ws.send('command' + command) }
@@ -497,7 +496,7 @@ wssTokens.on('connection', function connection(ws) {
       //console.log(mac + " | received ping, sending reply ");
     }
 
-    // ------------------  send device info  --------------------- //    
+    // ------------------  send device info  --------------------- //
     if (cmd == "version") {
       if (!device_objects[device_index])
         return;
@@ -514,7 +513,7 @@ wssTokens.on('connection', function connection(ws) {
       console.log("sending version number", msg);
     }
 
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     if (cmd == "token_request") {
       var token = crypto.createHash('sha512').update(mac).digest('hex');
       console.log(TAG, (Date.now() - start_time) / 1000, "token_request", token);
@@ -547,7 +546,7 @@ wssTokens.on('connection', function connection(ws) {
       }
     }
 
-    // --------------  respond to token requests  ----------------- //    
+    // --------------  respond to token requests  ----------------- //
     /*if (cmd == "buttons") {
       var token = crypto.createHash('sha512').update(mac).digest('hex');
       //try { ws.send('{\"token\":\"'+token+'\"}') }
@@ -556,14 +555,14 @@ wssTokens.on('connection', function connection(ws) {
       catch (e) { console.log("reply error | " + e) };
     }
 
-    // --------------  respond to OTA requests  ----------------- //    
+    // --------------  respond to OTA requests  ----------------- //
     if (cmd == "init_ota") {
       try { ws.send('{\"cmd\":\"update\",\"token\":\"'+token+'\"}') }
       //try { ws.send("TESTING!!!!") }
       catch (e) { console.log("reply error | " + e) };
       //console.log(TAG,"init_ota")
     }
-    
+
     // ----------------  garage opener  ------------------- //
     if (type === "garage_opener") { console.log("garage_opener",msg)
     }
@@ -627,7 +626,7 @@ wssTokens.on('connection', function connection(ws) {
         }
       }
     }
-  
+
     // ------------  motion sensor  --------------- //
     for (var i = 0; i < type.length; i++) {
       if (type[i] === "motion_sensor") {
@@ -1019,7 +1018,7 @@ function start(server) {
 
 
       /*for (var i = 0; i < device_objects.length; i++) {
-        try {device_objects[i].wsPower.send(data.command);}    
+        try {device_objects[i].wsPower.send(data.command);}
         catch (e) { console.log("socket error ",device_objects[i].mac, e) };
         console.log(TAG,"sent to regulator1:",device_objects[i].mac, data.command);
       }*/

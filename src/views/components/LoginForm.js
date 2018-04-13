@@ -51,6 +51,7 @@ export class LoginForm extends Component {
 		} else {
 			return (
 				<form onSubmit={this.handleSubmit}>
+					{this.props.error}
 					<input type="text" value={this.state.username} onChange={this.handleUsernameChange} />
 					<input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
 					<input type="submit" value="Login" />
@@ -63,7 +64,8 @@ export class LoginForm extends Component {
 export default connect(
 	(state) => ({
 		isLoggedIn: session.selectors.isAuthenticated(state.session),
-		isLoading: state.session.isFetching
+		isLoading: state.session.isFetching,
+		error: state.session.error
 	}),
 	(dispatch) => ({
 		login: (username, password) => {
