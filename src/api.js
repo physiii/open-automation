@@ -13,7 +13,7 @@ class Api {
 		return Api.apiCall('link user', {user: username});
 	}
 
-	getDevices (token) {
+	getDevices () {
 		return Api.apiCall('get devices');
 	}
 
@@ -29,7 +29,7 @@ class Api {
 
 			api.relaySocket.emit(event, {...payload, user_token: api.token}, (error, data) => {
 				if (error) {
-					reject(error); // TODO: Is this a string? If so, throw new Error instead of reject.
+					reject(error); // TODO: Is this a string? If so, throw Error instead of reject.
 				} else {
 					resolve(data);
 					console.log('API response: ' + event, data);

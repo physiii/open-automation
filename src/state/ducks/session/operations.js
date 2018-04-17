@@ -2,6 +2,7 @@ import * as actions from './actions';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Api from '../../../api.js';
+import * as devices from '../devices';
 
 const initialize = (username, token) => (dispatch) => {
 	if (!username) {
@@ -11,17 +12,19 @@ const initialize = (username, token) => (dispatch) => {
 		token = Cookies.get('token');
 	}
 
-	if (token) {
-		Api.setApiToken(token);
-		Api.linkUser(username);
-		Api.getDevices();
-
-		dispatch(actions.loginSuccess(username, token));
+	if (!token) {
+		return;
 	}
+
+	Api.setApiToken(token);
+	Api.linkUser(username);
+
+	dispatch(actions.loginSuccess(username, token));
+	dispatch(devices.operations.fetchDevices());
 };
 
 const login = (username, password) => (dispatch) => {
-	// Dispatch login action (see loginSuccess call below for the action that actually saves user to store)
+	// Dispatch login action (see initialize call below for the action that actually saves user to store)
 	dispatch(actions.login());
 
 	// Post credentials to login endpoint on server.
