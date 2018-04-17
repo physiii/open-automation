@@ -1,44 +1,44 @@
 import io from 'socket.io-client';
 
-let relaySocket = io();
-
 class Api {
 	constructor () {
-		relaySocket.on('get devices', (data) => {
-			console.log('get devices', data);
-
-			let devices = data;
-
-			devices.forEach((device) => {
-				if (device.type === 'gateway') {
-					console.log('gateway - get settings', device);
-					relaySocket.emit('get settings', {token: device.token});
-				}
-			});
-		});
-
-		relaySocket.on('load settings', (data) => {
-			console.log('load settings', data);
-		});
+		this.relaySocket = io();
 	}
 
-	linkUser (username, token) {
-		relaySocket.emit('link user', {user: username, token: token});
+	setApiToken (token) {
+		this.token = token;
+	}
+
+	linkUser (username) {
+		return Api.apiCall('link user', {user: username});
 	}
 
 	getDevices (token) {
-		relaySocket.emit('get devices', {token});
+		return Api.apiCall('get devices');
 	}
 
-	linkDevice (name, id, token) {
-		relaySocket.emit('link device', {
-			device_name: name,
-			mac: id,
-			user_token: token
+	linkDevice (name, id) {
+		return Api.apiCall('link device', {device_name: name, mac: id});
+	}
+
+	static apiCall (event, data) {
+		return new Promise((resolve, reject) => {
+			if (!api.token) {
+				throw new Error('No API token set');
+			}
+
+			api.relaySocket.emit(event, {...data, token: api.token, user_token: api.token}, (error, data) => {
+				if (error) {
+					reject(error); // TODO: Is this a string? If so, throw new Error instead of reject.
+				} else {
+					resolve(data);
+					console.log('API response: ' + event, data);
+				}
+			});
 		});
 	}
 }
 
-let api = new Api();
+const api = new Api();
 
 export default api;

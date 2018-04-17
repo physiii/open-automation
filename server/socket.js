@@ -1288,7 +1288,7 @@ function start(server) {
       }
     });
 
-    socket.on('link user', function (data) {
+    socket.on('link user', function (data, callback) {
       //console.log("!! LINK USER !!",data);
       var index = find_index(user_objects, 'socket', socket);
       //if (index < 0) {
@@ -1299,6 +1299,7 @@ function start(server) {
 
       console.log('socket already exists');
       //}
+      callback(null, data.user);
     });
 
     socket.on('link device', function (data) {
@@ -1387,14 +1388,15 @@ function start(server) {
     });
 
 
-    socket.on('get devices', function (data) {
+    socket.on('get devices', function (data, callback) {
       var index = find_index(accounts, 'token', data.token);
       if (index < 0) return console.log("get devices | account not found", data);
       var username = accounts[index].username;
       var devices = [];
       var group_index = find_index(groups, 'group_id', username);
       if (group_index < 0) return console.log("get_devices | no group found", username);
-      devices.push(groups[group_index]);
+      console.log('get devices', groups[group_index].members);
+      // devices.push(groups[group_index]);
       for (var i = 0; i < groups[group_index].members.length; i++) {
         var member_index = find_index(device_objects, 'mac', groups[group_index].members[i]);
         if (member_index < 0) {
@@ -1402,8 +1404,12 @@ function start(server) {
           continue;
         }
 
-        if (device_objects[member_index].socket)
+        console.log('get devices - member', device_objects[member_index]);
+
+        if (device_objects[member_index].socket) {
+        	console.log('get devices emit');
           device_objects[member_index].socket.emit('get devices', { username: username });
+        }
 
         if (device_objects[member_index].type == 'room_sensor') {
           if (device_objects[member_index].wsMotion) device_objects[member_index].wsMotion.send('get device ' + username);
@@ -1424,6 +1430,7 @@ function start(server) {
       //console.log('get_devices',username,devices);
       //socket.emit('get devices',{devices:devices});
       socket.emit('get devices', devices);
+      callback(null, devices);
     });
 
     socket.on('load devices', function (data) {

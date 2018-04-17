@@ -3,15 +3,21 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Api from '../../../api.js';
 
-const initialize = () => (dispatch) => {
-	let username = Cookies.get('user');
-	let token = Cookies.get('token');
+const initialize = (username, token) => (dispatch) => {
+	if (!username) {
+		username = Cookies.get('user');
+	}
+	if (!token) {
+		token = Cookies.get('token');
+	}
 
-	// User token cookie found?
 	if (token) {
+		Api.setApiToken(token);
 		Api.linkUser(username, token);
-		Api.getDevices(token);
-		dispatch(actions.loginSuccess(username, token));
+		Api.getDevices(token).then((devices) => {
+			console.log('got devices', devices)
+			dispatch(actions.loginSuccess(username, token));
+		});
 	}
 };
 
@@ -21,35 +27,35 @@ const login = (username, password) => (dispatch) => {
 
 	// Post credentials to login endpoint on server.
 	axios.post('/api/login', {username, password}).then((response) => {
-		let username = response.data.username,
-			token = response.data.token;
+		const {username, token} = response.data;
 
-		Api.linkUser(username, token);
-		dispatch(actions.loginSuccess(username, token));
+		dispatch(initialize(username, token));
 
 		Cookies.set('user', username);
 		Cookies.set('token', token);
 	}).catch((error) => {
-		let error_message;
+		let errorMessage;
 
 		if (error.response) {
 			if (error.response.status === 401) {
-				error_message = 'Username or password not correct';
+				errorMessage = 'Username or password not correct';
 			} else {
-				error_message = 'An error occurred';
+				errorMessage = 'An error occurred';
 			}
 		} else if (error.request) {
-			error_message = 'No response received';
+			errorMessage = 'No response received';
 		} else {
-			error_message = 'Error';
+			errorMessage = 'Error';
 		}
 
-		dispatch(actions.loginError(new Error(error_message)));
+		dispatch(actions.loginError(new Error(errorMessage)));
 		throw error;
 	});
 };
 
 const logout = () => (dispatch) => {
+	Api.setApiToken(null);
+
 	dispatch(actions.logout());
 
 	Cookies.remove('user');
