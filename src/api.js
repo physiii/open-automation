@@ -21,13 +21,13 @@ class Api {
 		return Api.apiCall('link device', {device_name: name, mac: id});
 	}
 
-	static apiCall (event, data) {
+	static apiCall (event, payload) {
 		return new Promise((resolve, reject) => {
 			if (!api.token) {
 				throw new Error('No API token set');
 			}
 
-			api.relaySocket.emit(event, {...data, token: api.token, user_token: api.token}, (error, data) => {
+			api.relaySocket.emit(event, {...payload, user_token: api.token}, (error, data) => {
 				if (error) {
 					reject(error); // TODO: Is this a string? If so, throw new Error instead of reject.
 				} else {

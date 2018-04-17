@@ -11,6 +11,7 @@ var fs = require('fs');
 var url = require('url');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
+var promiseAllSoftFail = require('promise-all-soft-fail').promiseAllSoftFail;
 
 module.exports = {
   start: start
@@ -1292,8 +1293,11 @@ function start(server) {
       //console.log("!! LINK USER !!",data);
       var index = find_index(user_objects, 'socket', socket);
       //if (index < 0) {
-      data.socket = socket;
-      user_objects.push(data);
+      user_objects.push({
+        user: data.user,
+        token: data.user_token,
+        socket: socket
+      });
       console.log('link user', data.user)
       //} else {
 
@@ -1389,48 +1393,87 @@ function start(server) {
 
 
     socket.on('get devices', function (data, callback) {
-      var index = find_index(accounts, 'token', data.token);
+      var index = find_index(accounts, 'token', data.user_token);
       if (index < 0) return console.log("get devices | account not found", data);
       var username = accounts[index].username;
       var devices = [];
-      var group_index = find_index(groups, 'group_id', username);
-      if (group_index < 0) return console.log("get_devices | no group found", username);
-      console.log('get devices', groups[group_index].members);
-      // devices.push(groups[group_index]);
-      for (var i = 0; i < groups[group_index].members.length; i++) {
-        var member_index = find_index(device_objects, 'mac', groups[group_index].members[i]);
+      var gateway_promises = [];
+      var group = groups[find_index(groups, 'group_id', username)];
+      if (!group) return console.log("get_devices | no group found", username);
+
+      for (var i = 0; i < group.members.length; i++) {
+        var member_index = find_index(device_objects, 'mac', group.members[i]);
         if (member_index < 0) {
-          //console.log("get devices | member not found",groups[group_index].members[i]);
+          //console.log("get devices | member not found",group.members[i]);
           continue;
         }
+        var device = device_objects[member_index];
 
-        console.log('get devices - member', device_objects[member_index]);
-
-        if (device_objects[member_index].socket) {
+        if (device.socket) {
         	console.log('get devices emit');
-          device_objects[member_index].socket.emit('get devices', { username: username });
+          device.socket.emit('get devices', { username: username });
         }
 
-        if (device_objects[member_index].type == 'room_sensor') {
-          if (device_objects[member_index].wsMotion) device_objects[member_index].wsMotion.send('get device ' + username);
-          else console.log(TAG, 'room_sensor not connected', device_objects[member_index].mac)
+        if (device.type == 'room_sensor') {
+          if (device.wsMotion) device.wsMotion.send('get device ' + username);
+          else console.log(TAG, 'room_sensor not connected', device.mac)
         }
 
+        if (device.type == 'gateway') {
+        	var get_gateway_settings = new Promise(function (resolve, reject) {
 
-        //var temp_object = Object.assign({}, device_objects[member_index]);
-        //delete temp_object.socket;
-        var token = device_objects[member_index].token;
-        var mac = device_objects[member_index].mac;
-        var type = device_objects[member_index].type;
-        var name = device_objects[member_index].name;
+        		if (!device.socket) {
+        			return reject();
+        		}
 
-        var temp_object = { name: name, type: type, mac: mac, token: token };
-        devices.push(temp_object);
+        		device.socket.emit('get settings', {token: device.token}, function (error, data) {
+					    var attached_devices = data.devices;
+
+					    if (attached_devices) {
+					      for (var j = 0; j < attached_devices.length; j++) {
+					        if (attached_devices[j].type == "camera") {
+					          var device_id = find_index(devices, "id", attached_devices[j].id);
+
+					          if (device_id > -1) {
+					            console.log(TAG,"device_id already exists",attached_devices[j]);
+					            continue;
+					          }
+
+					          var parts = attached_devices[j].dev.replace("/dev/video","");
+					          if (parts.length <= 1) continue;
+					          if (parts[0] != 2) continue; //must set /dev/video2* as streaming camera
+
+					       	  attached_devices[j].token = device.token;
+					        }
+
+					        devices.push(attached_devices[j]);
+						    }
+					    }
+
+					    // Resolve the promise.
+        			resolve(data);
+        		});
+        	});
+
+        	// Keep track of each gateway's promise so we can tell when we're finished getting all gateway settings.
+        	gateway_promises.push(get_gateway_settings);
+        }
+
+        devices.push({
+        	name: device.name,
+        	type: device.type,
+        	mac: device.mac,
+        	token: device.token
+        });
       }
       //console.log('get_devices',username,devices);
       //socket.emit('get devices',{devices:devices});
-      socket.emit('get devices', devices);
-      callback(null, devices);
+
+      // When all gateway promises are resolved or rejected, send the devices.
+      promiseAllSoftFail(gateway_promises).then(function (result) {
+	      socket.emit('get devices', devices);
+	      callback(null, devices);
+	    });
     });
 
     socket.on('load devices', function (data) {

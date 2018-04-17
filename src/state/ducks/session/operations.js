@@ -13,11 +13,10 @@ const initialize = (username, token) => (dispatch) => {
 
 	if (token) {
 		Api.setApiToken(token);
-		Api.linkUser(username, token);
-		Api.getDevices(token).then((devices) => {
-			console.log('got devices', devices)
-			dispatch(actions.loginSuccess(username, token));
-		});
+		Api.linkUser(username);
+		Api.getDevices();
+
+		dispatch(actions.loginSuccess(username, token));
 	}
 };
 
