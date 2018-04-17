@@ -17,7 +17,7 @@ module.exports = env => {
 		output: {
 			filename: 'js/main.js',
 			path: path.resolve(__dirname, 'public'),
-			publicPath: '/' // TODO: Try removing to see what it breaks, then comment this line
+			publicPath: '/' // Needed for hot module reloading and webpack adjusting asset paths properly.
 		},
 		module: {
 			// TODO: Add html-loader to generate index.html

@@ -8,6 +8,7 @@ var crypto = require('crypto');
 var express = require('express');
 var socket = require('./socket.js');
 var bodyParser = require('body-parser');
+var path = require('path');
 var url = require('url');
 var fs = require('fs');
 var https = require('https');
@@ -92,18 +93,21 @@ function start (app) {
 
 	app.use('/', express.static(__dirname + '/../public'));
 
-	app.get('/', function (req, res) {
-		res.sendFile('index.html');
+	app.get('/get_ip', function(req, res) {
+		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+		ip = ip.split(":");
+		ip = ip[ip.length - 1];
+		res.send(ip);
 	});
 
-	app.post('/login',
+	app.post('/api/login',
 		passport.authenticate('local'),
 		function(req, res) {
 			console.log("authenticated",req.user);
 			res.json(req.user);
 		});
 
-	app.post('/register', function(req, res) {
+	app.post('/api/register', function(req, res) {
 		var username = req.body.username.toLowerCase();
 		var index = utils.find_index(accounts,'username',username);
 		if (index < 0) {
@@ -133,11 +137,8 @@ function start (app) {
 		console.log("registered account",account_obj);
 	});
 
-	app.get('/get_ip', function(req, res) {
-		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-		ip = ip.split(":");
-		ip = ip[ip.length - 1];
-		res.send(ip);
+	app.get('*', function (req, res) {
+		res.sendFile('/index.html', {root: __dirname + '/../public'});
 	});
 
 	// Create server

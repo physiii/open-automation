@@ -1,19 +1,28 @@
 import React from 'react';
 import Toolbar from '../components/Toolbar.js';
+import Button from '../components/Button.js'
+import {connect} from 'react-redux';
+import * as session from '../../state/ducks/session';
 import '../styles/modules/_AppToolbar.scss';
 
-const AppToolbar = (props) => {
+export const AppToolbar = (props) => {
 	return (
 		<div className="oa-AppToolbar">
 			<Toolbar
-				leftChildren={<h1>Pyfi</h1>}
+				leftChildren={<Button to="/">Pyfi</Button>}
 				rightChildren={[
 					<button key="register">Register</button>,
-					<button key="login">Login</button>
+					props.isLoggedIn ?
+						<Button to="/logout" key="logout">Logout</Button> :
+						<Button to="/login" key="login">Login</Button>
 				]}
 			/>
 		</div>
 	);
 };
 
-export default AppToolbar;
+const mapStateToProps = (state) => ({
+	isLoggedIn: session.selectors.isAuthenticated(state.session)
+});
+
+export default connect(mapStateToProps)(AppToolbar);

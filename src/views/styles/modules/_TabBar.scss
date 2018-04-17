@@ -1,4 +1,4 @@
-// A tab bar.
+// Main app tab bar.
 
 @import "../_config.scss";
 
@@ -6,6 +6,7 @@
 .oa-TabBar {
 	display: flex;
 	flex-flow: row nowrap;
+	justify-content: center;
 	flex: 1 1 auto;
 	background-color: $tab-bar-background;
 }

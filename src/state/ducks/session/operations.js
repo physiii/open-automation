@@ -20,7 +20,7 @@ const login = (username, password) => (dispatch) => {
 	dispatch(actions.login());
 
 	// Post credentials to login endpoint on server.
-	axios.post('/login', {username, password}).then((response) => {
+	axios.post('/api/login', {username, password}).then((response) => {
 		let username = response.data.username,
 			token = response.data.token;
 
