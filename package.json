@@ -19,7 +19,6 @@
     "mongodb": "^2.2.1",
     "nodemailer": "^4.6.4",
     "nodemailer-smtp-transport": "^2.7.4",
-    "normalize.scss": "^0.1.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "promise-all-soft-fail": "^2.0.1",
@@ -37,6 +36,7 @@
     "ws": "^5.1.1"
   },
   "devDependencies": {
+    "autoprefixer": "^8.3.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
@@ -45,6 +45,8 @@
     "css-loader": "^0.28.11",
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.8.3",
+    "normalize.scss": "^0.1.0",
+    "postcss-loader": "^2.1.4",
     "react-hot-loader": "^4.0.1",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",

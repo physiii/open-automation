@@ -42,7 +42,12 @@ function start (app) {
 
 	// Set up webpack middleware (for automatic compiling/hot reloading)
 	if (use_dev) {
-		var webpack_config = webpack_config_file(use_dev ? {development: true} : {production: true});
+		var webpack_env = {
+			hot: true, // Used so that in webpack config we know when webpack is running as middleware.
+			development: use_dev,
+			production: !use_dev
+		};
+		var webpack_config = webpack_config_file(webpack_env);
 		var webpack_compiler = webpack(webpack_config);
 		app.use(WebpackDevMiddleware(webpack_compiler, {publicPath: webpack_config.output.publicPath}));
 		app.use(WebpackHotMiddleware(webpack_compiler));

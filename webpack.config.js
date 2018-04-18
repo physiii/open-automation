@@ -5,6 +5,7 @@ const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 
 module.exports = env => {
 	const isProduction = env.production === true;
+	const isHot = env.hot === true;
 	const {ifProduction} = getIfUtils(env);
 
 	return {
@@ -34,13 +35,23 @@ module.exports = env => {
 				{
 					test: /\.scss$/,
 					use: [{
-						loader: ifProduction(MiniCssExtractPlugin.loader, 'style-loader'), // Extract CSS to file for production.
+						loader: isHot ? 'style-loader' : MiniCssExtractPlugin.loader // Extract CSS to file for production.
 					}, {
 						loader: 'css-loader',
-						options: {sourceMap: ifProduction(false, true)}
+						options: {
+							minimize: ifProduction(),
+							sourceMap: true
+						}
+					}, {
+						loader: 'postcss-loader',
+						options: {
+							sourceMap: true
+						}
 					}, {
 						loader: 'sass-loader',
-						options: {sourceMap: ifProduction(false, true)}
+						options: {
+							sourceMap: true
+						}
 					}]
 				}
 			]
