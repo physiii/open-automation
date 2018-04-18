@@ -1,137 +1,57 @@
-/*!
- * fresh
- * Copyright(c) 2012 TJ Holowaychuk
- * Copyright(c) 2016-2017 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
 
 /**
- * RegExp to check for no-cache token in Cache-Control.
- * @private
+ * Expose `fresh()`.
  */
 
-var CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/
+module.exports = fresh;
 
 /**
- * Module exports.
- * @public
- */
-
-module.exports = fresh
-
-/**
- * Check freshness of the response using request and response headers.
+ * Check freshness of `req` and `res` headers.
  *
- * @param {Object} reqHeaders
- * @param {Object} resHeaders
+ * When the cache is "fresh" __true__ is returned,
+ * otherwise __false__ is returned to indicate that
+ * the cache is now stale.
+ *
+ * @param {Object} req
+ * @param {Object} res
  * @return {Boolean}
- * @public
+ * @api public
  */
 
-function fresh (reqHeaders, resHeaders) {
+function fresh(req, res) {
+  // defaults
+  var etagMatches = true;
+  var notModified = true;
+
   // fields
-  var modifiedSince = reqHeaders['if-modified-since']
-  var noneMatch = reqHeaders['if-none-match']
+  var modifiedSince = req['if-modified-since'];
+  var noneMatch = req['if-none-match'];
+  var lastModified = res['last-modified'];
+  var etag = res['etag'];
+  var cc = req['cache-control'];
 
   // unconditional request
-  if (!modifiedSince && !noneMatch) {
-    return false
-  }
+  if (!modifiedSince && !noneMatch) return false;
 
-  // Always return stale when Cache-Control: no-cache
-  // to support end-to-end reload requests
-  // https://tools.ietf.org/html/rfc2616#section-14.9.4
-  var cacheControl = reqHeaders['cache-control']
-  if (cacheControl && CACHE_CONTROL_NO_CACHE_REGEXP.test(cacheControl)) {
-    return false
-  }
+  // check for no-cache cache request directive
+  if (cc && cc.indexOf('no-cache') !== -1) return false;  
+
+  // parse if-none-match
+  if (noneMatch) noneMatch = noneMatch.split(/ *, */);
 
   // if-none-match
-  if (noneMatch && noneMatch !== '*') {
-    var etag = resHeaders['etag']
-
-    if (!etag) {
-      return false
-    }
-
-    var etagStale = true
-    var matches = parseTokenList(noneMatch)
-    for (var i = 0; i < matches.length; i++) {
-      var match = matches[i]
-      if (match === etag || match === 'W/' + etag || 'W/' + match === etag) {
-        etagStale = false
-        break
-      }
-    }
-
-    if (etagStale) {
-      return false
-    }
+  if (noneMatch) {
+    etagMatches = noneMatch.some(function (match) {
+      return match === '*' || match === etag || match === 'W/' + etag;
+    });
   }
 
   // if-modified-since
   if (modifiedSince) {
-    var lastModified = resHeaders['last-modified']
-    var modifiedStale = !lastModified || !(parseHttpDate(lastModified) <= parseHttpDate(modifiedSince))
-
-    if (modifiedStale) {
-      return false
-    }
+    modifiedSince = new Date(modifiedSince);
+    lastModified = new Date(lastModified);
+    notModified = lastModified <= modifiedSince;
   }
 
-  return true
-}
-
-/**
- * Parse an HTTP Date into a number.
- *
- * @param {string} date
- * @private
- */
-
-function parseHttpDate (date) {
-  var timestamp = date && Date.parse(date)
-
-  // istanbul ignore next: guard against date.js Date.parse patching
-  return typeof timestamp === 'number'
-    ? timestamp
-    : NaN
-}
-
-/**
- * Parse a HTTP token list.
- *
- * @param {string} str
- * @private
- */
-
-function parseTokenList (str) {
-  var end = 0
-  var list = []
-  var start = 0
-
-  // gather tokens
-  for (var i = 0, len = str.length; i < len; i++) {
-    switch (str.charCodeAt(i)) {
-      case 0x20: /*   */
-        if (start === end) {
-          start = end = i + 1
-        }
-        break
-      case 0x2c: /* , */
-        list.push(str.substring(start, end))
-        start = end = i + 1
-        break
-      default:
-        end = i + 1
-        break
-    }
-  }
-
-  // final token
-  list.push(str.substring(start, end))
-
-  return list
+  return !! (etagMatches && notModified);
 }

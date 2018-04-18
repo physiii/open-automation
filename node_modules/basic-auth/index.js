@@ -2,18 +2,11 @@
  * basic-auth
  * Copyright(c) 2013 TJ Holowaychuk
  * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2015-2016 Douglas Christopher Wilson
+ * Copyright(c) 2015 Douglas Christopher Wilson
  * MIT Licensed
  */
 
 'use strict'
-
-/**
- * Module dependencies.
- * @private
- */
-
-var Buffer = require('safe-buffer').Buffer
 
 /**
  * Module exports.
@@ -21,7 +14,6 @@ var Buffer = require('safe-buffer').Buffer
  */
 
 module.exports = auth
-module.exports.parse = parse
 
 /**
  * RegExp for basic auth credentials
@@ -32,7 +24,7 @@ module.exports.parse = parse
  * @private
  */
 
-var CREDENTIALS_REGEXP = /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/
+var credentialsRegExp = /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9\-\._~\+\/]+=*) *$/
 
 /**
  * RegExp for basic auth user/pass
@@ -43,7 +35,7 @@ var CREDENTIALS_REGEXP = /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$
  * @private
  */
 
-var USER_PASS_REGEXP = /^([^:]*):(.*)$/
+var userPassRegExp = /^([^:]*):(.*)$/
 
 /**
  * Parse the Authorization header field of a request.
@@ -53,7 +45,7 @@ var USER_PASS_REGEXP = /^([^:]*):(.*)$/
  * @public
  */
 
-function auth (req) {
+function auth(req) {
   if (!req) {
     throw new TypeError('argument req is required')
   }
@@ -63,10 +55,24 @@ function auth (req) {
   }
 
   // get header
-  var header = getAuthorization(req)
+  var header = getAuthorization(req.req || req)
 
   // parse header
-  return parse(header)
+  var match = credentialsRegExp.exec(header || '')
+
+  if (!match) {
+    return
+  }
+
+  // decode user pass
+  var userPass = userPassRegExp.exec(decodeBase64(match[1]))
+
+  if (!userPass) {
+    return
+  }
+
+  // return credentials object
+  return new Credentials(userPass[1], userPass[2])
 }
 
 /**
@@ -74,8 +80,8 @@ function auth (req) {
  * @private
  */
 
-function decodeBase64 (str) {
-  return Buffer.from(str, 'base64').toString()
+function decodeBase64(str) {
+  return new Buffer(str, 'base64').toString()
 }
 
 /**
@@ -83,7 +89,7 @@ function decodeBase64 (str) {
  * @private
  */
 
-function getAuthorization (req) {
+function getAuthorization(req) {
   if (!req.headers || typeof req.headers !== 'object') {
     throw new TypeError('argument req is required to have headers property')
   }
@@ -92,42 +98,11 @@ function getAuthorization (req) {
 }
 
 /**
- * Parse basic auth to object.
- *
- * @param {string} string
- * @return {object}
- * @public
- */
-
-function parse (string) {
-  if (typeof string !== 'string') {
-    return undefined
-  }
-
-  // parse header
-  var match = CREDENTIALS_REGEXP.exec(string)
-
-  if (!match) {
-    return undefined
-  }
-
-  // decode user pass
-  var userPass = USER_PASS_REGEXP.exec(decodeBase64(match[1]))
-
-  if (!userPass) {
-    return undefined
-  }
-
-  // return credentials object
-  return new Credentials(userPass[1], userPass[2])
-}
-
-/**
  * Object to represent user credentials.
  * @private
  */
 
-function Credentials (name, pass) {
+function Credentials(name, pass) {
   this.name = name
   this.pass = pass
 }
