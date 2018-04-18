@@ -26,11 +26,15 @@ module.exports = env => {
 				{
 					test: /\.js$/,
 					exclude: /node_modules/,
-					loader: "babel-loader",
-					options: {
-						presets: ['es2015', 'stage-0', 'react'], // TODO: Get react proptypes warnings working (BABEL_ENV?)
-						plugins: ['react-hot-loader/babel']
-					}
+					use: [{
+						loader: 'babel-loader',
+						options: {
+							presets: ['es2015', 'stage-0', 'react'], // TODO: Get react proptypes warnings working (BABEL_ENV?)
+							plugins: ['react-hot-loader/babel']
+						}
+					}, {
+						loader: 'eslint-loader'
+					}]
 				},
 				{
 					test: /\.scss$/,
