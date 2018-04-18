@@ -1,12 +1,11 @@
-const path = require('path');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const {getIfUtils, removeEmpty} = require('webpack-config-utils');
+const path = require('path'),
+	webpack = require('webpack'),
+	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
+	{getIfUtils, propIfNot, removeEmpty} = require('webpack-config-utils');
 
-module.exports = env => {
-	const isProduction = env.production === true;
-	const isHot = env.hot === true;
-	const {ifProduction} = getIfUtils(env);
+module.exports = (env) => {
+	const isHot = env.hot === true,
+		{ifProduction} = getIfUtils(env);
 
 	return {
 		mode: ifProduction('production', 'development'),
@@ -26,37 +25,49 @@ module.exports = env => {
 				{
 					test: /\.js$/,
 					exclude: /node_modules/,
-					use: [{
-						loader: 'babel-loader',
-						options: {
-							presets: ['es2015', 'stage-0', 'react'], // TODO: Get react proptypes warnings working (BABEL_ENV?)
-							plugins: ['react-hot-loader/babel']
-						}
-					}, {
-						loader: 'eslint-loader'
-					}]
+					use: removeEmpty([
+						{
+							loader: 'babel-loader',
+							options: {
+								presets: [
+									'es2015',
+									'stage-0',
+									'react'
+								], // TODO: Get react proptypes warnings working (BABEL_ENV?)
+								plugins: ['react-hot-loader/babel']
+							}
+						},
+						propIfNot(isHot, {
+							loader: 'eslint-loader'
+						})
+					])
 				},
 				{
 					test: /\.scss$/,
-					use: [{
-						loader: isHot ? 'style-loader' : MiniCssExtractPlugin.loader // Extract CSS to file for production.
-					}, {
-						loader: 'css-loader',
-						options: {
-							minimize: ifProduction(),
-							sourceMap: true
+					use: [
+						{
+							loader: isHot ? 'style-loader' : MiniCssExtractPlugin.loader // Extract CSS to file for production.
+						},
+						{
+							loader: 'css-loader',
+							options: {
+								minimize: ifProduction(),
+								sourceMap: true
+							}
+						},
+						{
+							loader: 'postcss-loader',
+							options: {
+								sourceMap: true
+							}
+						},
+						{
+							loader: 'sass-loader',
+							options: {
+								sourceMap: true
+							}
 						}
-					}, {
-						loader: 'postcss-loader',
-						options: {
-							sourceMap: true
-						}
-					}, {
-						loader: 'sass-loader',
-						options: {
-							sourceMap: true
-						}
-					}]
+					]
 				}
 			]
 		},
@@ -78,4 +89,4 @@ module.exports = env => {
 			}
 		}
 	};
-}
+};

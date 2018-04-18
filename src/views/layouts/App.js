@@ -1,5 +1,6 @@
 import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
+import PropTypes from 'prop-types';
 import PrivateRoute from '../components/PrivateRoute.js';
 import AppToolbar from '../components/AppToolbar.js';
 import LoginForm from '../components/LoginForm.js';
@@ -35,6 +36,10 @@ export const App = (props) => (
 		</div>
 	</div>
 );
+
+App.propTypes = {
+	devices: PropTypes.array
+};
 
 const mapStateToProps = (state) => ({
 	devices: devices.selectors.getDashboardDevices(state.devices)

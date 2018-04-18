@@ -3,11 +3,8 @@ import thunk from 'redux-thunk';
 import * as reducers from './ducks';
 
 export default function configureStore (initialState) {
-	// Compose reducers
-	const rootReducer = combineReducers(reducers);
-
-	// Middleware wrapper for Redux DevTools browser extension
-	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+	const rootReducer = combineReducers(reducers), // Compose reducers
+		composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // Middleware wrapper for Redux DevTools browser extension
 
 	return createStore(
 		rootReducer,

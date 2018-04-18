@@ -49,7 +49,10 @@ function start (app) {
 		};
 		var webpack_config = webpack_config_file(webpack_env);
 		var webpack_compiler = webpack(webpack_config);
-		app.use(WebpackDevMiddleware(webpack_compiler, {publicPath: webpack_config.output.publicPath}));
+		app.use(WebpackDevMiddleware(webpack_compiler, {
+			publicPath: webpack_config.output.publicPath,
+			logLevel: 'warn'
+		}));
 		app.use(WebpackHotMiddleware(webpack_compiler));
 	}
 

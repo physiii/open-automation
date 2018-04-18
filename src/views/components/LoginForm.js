@@ -1,15 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as session from '../../state/ducks/session';
 
-export class LoginForm extends Component {
-	propTypes: {
-		login: PropTypes.func
-	}
-
-	constructor(props) {
+export class LoginForm extends React.Component {
+	constructor (props) {
 		super(props);
 
 		this.state = {
@@ -35,8 +31,8 @@ export class LoginForm extends Component {
 		this.props.login(this.state.username, this.state.password);
 	}
 
+	// TODO: Break up this component.
 	render () {
-		// TODO: Break up this component.
 		if (this.props.isLoggedIn) {
 			return <Redirect to="/" />;
 		}
@@ -56,16 +52,22 @@ export class LoginForm extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
-	isLoggedIn: session.selectors.isAuthenticated(state.session),
-	isLoading: state.session.isFetching,
-	error: state.session.error
-});
+LoginForm.propTypes = {
+	isLoggedIn: PropTypes.bool,
+	isLoading: PropTypes.bool,
+	error: PropTypes.string,
+	login: PropTypes.func
+};
 
-const mapDispatchToProps = (dispatch) => ({
-	login: (username, password) => {
-		dispatch(session.operations.login(username, password));
-	}
-});
+const mapStateToProps = (state) => ({
+		isLoggedIn: session.selectors.isAuthenticated(state.session),
+		isLoading: state.session.isFetching,
+		error: state.session.error
+	}),
+	mapDispatchToProps = (dispatch) => ({
+		login: (username, password) => {
+			dispatch(session.operations.login(username, password));
+		}
+	});
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

@@ -1,6 +1,6 @@
 import * as types from './types';
 
-export const login = (username, token) => ({
+export const login = () => ({
 	type: types.LOGIN
 });
 

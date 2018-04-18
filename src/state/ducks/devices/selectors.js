@@ -1,5 +1,9 @@
 const getDashboardDevices = (devices) => {
-	return devices ? devices.filter(device => device.type !== 'gateway') : null;
+	if (!devices) {
+		return null;
+	}
+
+	return devices.filter((device) => device.type !== 'gateway');
 };
 
 export {
