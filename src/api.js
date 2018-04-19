@@ -21,6 +21,14 @@ class Api {
 		return Api.apiCall('link device', {device_name: name, mac: id});
 	}
 
+	stream (command, deviceToken, cameraNumber) {
+		return Api.apiCall('ffmpeg', {
+			command,
+			token: deviceToken,
+			camera_number: cameraNumber
+		});
+	}
+
 	static apiCall (event, payload) {
 		return new Promise((resolve, reject) => {
 			if (!api.token) {

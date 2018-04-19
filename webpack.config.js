@@ -1,7 +1,9 @@
+// import exec from 'script.exec.js';
+
 const path = require('path'),
 	webpack = require('webpack'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-	{getIfUtils, propIfNot, removeEmpty} = require('webpack-config-utils');
+	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils');
 
 module.exports = (env) => {
 	const isHot = env.hot === true,
@@ -42,11 +44,16 @@ module.exports = (env) => {
 						})
 					])
 				},
+				// This allows us to import jsmpeg in any file as if it was exported like an ES6 module.
+				{
+					test: require.resolve(path.resolve(__dirname, 'src/lib/jsmpeg/jsmpeg.min.js')),
+					use: ['exports-loader?JSMpeg']
+				},
 				{
 					test: /\.scss$/,
 					use: [
 						{
-							loader: isHot ? 'style-loader' : MiniCssExtractPlugin.loader // Extract CSS to file for production.
+							loader: propIf(isHot, 'style-loader', MiniCssExtractPlugin.loader) // Extract CSS to file for production.
 						},
 						{
 							loader: 'css-loader',

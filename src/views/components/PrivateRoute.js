@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Route, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as session from '../../state/ducks/session';
+import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 
 /**
  * Higher order component for Route. Implements a private route that will only
@@ -15,6 +15,7 @@ export class PrivateRoute extends React.Component {
 
 		return (
 			<Route {...rest} render={(props) => {
+				// TODO: Redirect back to current route after login.
 				if (!isLoggedIn) {
 					return <Redirect to="/login" />;
 				}
@@ -30,13 +31,13 @@ export class PrivateRoute extends React.Component {
 }
 
 PrivateRoute.propTypes = {
-	component: PropTypes.node,
+	component: PropTypes.func, // TODO: Make this actually check for React functional or class component.
 	render: PropTypes.func,
 	isLoggedIn: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
-	isLoggedIn: session.selectors.isAuthenticated(state.session)
+	isLoggedIn: isAuthenticated(state.session)
 });
 
 export default connect(

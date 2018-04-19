@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Toolbar from '../components/Toolbar.js';
 import Button from '../components/Button.js';
 import {connect} from 'react-redux';
-import * as session from '../../state/ducks/session';
+import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 import '../styles/modules/_AppToolbar.scss';
 
 export const AppToolbar = (props) => (
@@ -25,7 +25,7 @@ AppToolbar.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-	isLoggedIn: session.selectors.isAuthenticated(state.session)
+	isLoggedIn: isAuthenticated(state.session)
 });
 
 export default connect(mapStateToProps)(AppToolbar);

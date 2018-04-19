@@ -48,6 +48,7 @@
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-react": "^7.7.0",
+    "exports-loader": "^0.7.0",
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.8.3",
     "normalize.scss": "^0.1.0",

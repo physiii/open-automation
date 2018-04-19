@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as session from '../../state/ducks/session';
+import {logout} from '../../state/ducks/session/operations.js';
 
 export class Logout extends React.Component {
 	constructor (props) {
@@ -20,7 +20,7 @@ Logout.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-	logout: () => dispatch(session.operations.logout())
+	logout: () => dispatch(logout())
 });
 
 export default connect(null, mapDispatchToProps)(Logout);

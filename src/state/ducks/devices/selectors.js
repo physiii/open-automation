@@ -1,4 +1,4 @@
-const getDashboardDevices = (devices) => {
+const devicesWithoutGateways = (devices) => {
 	if (!devices) {
 		return null;
 	}
@@ -7,5 +7,5 @@ const getDashboardDevices = (devices) => {
 };
 
 export {
-	getDashboardDevices
+	devicesWithoutGateways
 };

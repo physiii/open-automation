@@ -19,7 +19,7 @@ config = {
 }
 
 try {
-  config = require('./config.json');
+  config = require('../config.json');
 } catch (e) {
   var config_str = JSON.stringify(config).replace(",","\,\n  ");
   config_str = config_str.replace("{","{\n  ").replace("}","\n}");

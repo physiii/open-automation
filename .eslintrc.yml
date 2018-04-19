@@ -238,7 +238,6 @@ rules:
     - error
     - single
   radix: error
-  # react/display-name: 0
   react/jsx-boolean-value: 'off'
   react/jsx-curly-spacing: 'off'
   react/jsx-max-props-per-line:
