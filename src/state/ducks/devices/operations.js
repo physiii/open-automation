@@ -10,7 +10,7 @@ const fetchDevices = () => (dispatch) => {
 		Api.stream('start_webcam', camera.token, camera.camera_number);
 	},
 	stopCameraStream = (camera) => () => {
-		Api.stream('stop_webcam', camera.token, camera.camera_number);
+		Api.stream('stop', camera.token, camera.camera_number);
 	};
 
 export {

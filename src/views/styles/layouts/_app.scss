@@ -2,10 +2,14 @@
 
 @import "../utilities/_fillContext.scss";
 
+$toolbar-height: 50px;
+$tabBar-height: 64px;
+
 .oa-l-app { @extend %fillContext;
 	display: flex;
 	flex-flow: column nowrap;
 }
+
 
 //
 // Layout Components
@@ -14,15 +18,17 @@
 .oa-l-app--toolbar {
 	display: flex;
 	flex-flow: column nowrap;
-	flex: 0 0 50px;
+	flex: 0 0 $toolbar-height;
 }
 .oa-l-app--content {
 	flex: 1 0 auto;
+	max-height: calc(100vh - #{$toolbar-height} - #{$tabBar-height});
+	padding: 10px;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
 .oa-l-app--tabBar {
 	display: flex;
 	flex-flow: column nowrap;
-	flex: 0 0 64px;
+	flex: 0 0 $tabBar-height;
 }

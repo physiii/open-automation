@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import VideoStream from './VideoStream.js';
+import VideoPlayer from './VideoPlayer.js';
 
-export const CameraCard = (props) => {
-	return <VideoStream camera={props.camera} />;
-};
+export class CameraCard extends React.Component {
+	render () {
+		return <VideoPlayer camera={this.props.camera} />;
+	}
+}
 
 CameraCard.propTypes = {
 	camera: PropTypes.object
