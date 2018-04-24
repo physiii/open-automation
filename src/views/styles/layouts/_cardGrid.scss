@@ -1,0 +1,16 @@
+// A layout for grids of cards.
+
+.oa-l-cardGrid {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+
+	margin: 8px 0 8px 8px;
+}
+
+.oa-l-cardGrid--card {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 400px;
+	margin-right: 8px;
+}

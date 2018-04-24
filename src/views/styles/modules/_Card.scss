@@ -3,6 +3,10 @@
 @import "../_config.scss";
 
 .oa-Card {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 100%;
+	flex: 1 1 auto;
 	background-color: #444444; // TODO: Move to config
 }
 
@@ -22,5 +26,4 @@
 	flex-flow: row nowrap;
 	justify-content: center;
 	flex: 1 1 auto;
-	min-height: 300px;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import JSMpeg from '../../lib/jsmpeg/jsmpeg.min.js';
+import JSMpeg from '../../lib/tokenJsmpeg.js';
 import {connect} from 'react-redux';
 import {startCameraStream, stopCameraStream} from '../../state/ducks/devices/operations.js';
 import '../styles/modules/_VideoStream.scss';
@@ -14,19 +14,19 @@ export class VideoStream extends React.Component {
 	componentDidMount () {
 		this.bootstrapPlayer();
 
-		if (this.props.shouldPlay) {
-			this.play();
+		if (this.props.shouldStream) {
+			this.start();
 		} else {
-			this.pause();
+			this.stop();
 		}
 	}
 
 	shouldComponentUpdate (nextProps) {
-		// Check to see if shouldPlay changed, and if so, play or pause the stream.
-		if (!this.props.shouldPlay && nextProps.shouldPlay) {
-			this.play();
-		} else if (this.props.shouldPlay && !nextProps.shouldPlay) {
-			this.pause();
+		// Check to see if shouldStream changed, and if so, start or stop the stream.
+		if (!this.props.shouldStream && nextProps.shouldStream) {
+			this.start();
+		} else if (this.props.shouldStream && !nextProps.shouldStream) {
+			this.stop();
 		}
 
 		// Never re-render after first render. This prevents unnecessary
@@ -39,11 +39,11 @@ export class VideoStream extends React.Component {
 	}
 
 	componentWillUnmount () {
-		this.pause();
-		// this.player.destroy(); // TODO: This doesn't work. Need to update JSMpeg?
+		this.stop();
+		this.player.destroy();
 	}
 
-	play () {
+	start () {
 		this.props.startStreaming(this.props.camera);
 
 		// Need to match exactly false because of JSMpeg quirks.
@@ -52,7 +52,7 @@ export class VideoStream extends React.Component {
 		}
 	}
 
-	pause () {
+	stop () {
 		this.props.stopStreaming(this.props.camera);
 
 		if (this.player.isPlaying) {
@@ -73,10 +73,8 @@ export class VideoStream extends React.Component {
 		return (
 			<canvas
 				className={this.props.className || 'oa-VideoStream'}
-				style={{
-					width: this.props.camera.resolution.width,
-					height: this.props.camera.resolution.height
-				}}
+				width={this.props.camera.resolution.width}
+				height={this.props.camera.resolution.height}
 				ref={this.canvas} />
 		);
 	}
@@ -84,7 +82,7 @@ export class VideoStream extends React.Component {
 
 VideoStream.propTypes = {
 	camera: PropTypes.object.isRequired,
-	shouldPlay: PropTypes.bool,
+	shouldStream: PropTypes.bool,
 	className: PropTypes.string,
 	startStreaming: PropTypes.func.isRequired,
 	stopStreaming: PropTypes.func.isRequired

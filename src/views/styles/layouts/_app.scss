@@ -23,7 +23,6 @@ $tabBar-height: 64px;
 .oa-l-app--content {
 	flex: 1 0 auto;
 	max-height: calc(100vh - #{$toolbar-height} - #{$tabBar-height});
-	padding: 10px;
 	overflow-x: hidden;
 	overflow-y: auto;
 }

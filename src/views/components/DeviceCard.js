@@ -19,7 +19,7 @@ export const DeviceCard = (props) => {
 	return (
 		<div className="oa-Card">
 			<div className="oa-Card--toolbar">
-				<Toolbar middleChildren={props.device.type} />
+				<Toolbar middleChildren={props.device.name || props.device.type} />
 			</div>
 			<div className="oa-Card--content">
 				{content}

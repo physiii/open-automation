@@ -131,7 +131,8 @@ rules:
   no-extra-parens:
     - error
     - all
-    - ignoreJSX: 'all'
+    - nestedBinaryExpressions: false
+      ignoreJSX: 'all'
   no-floating-decimal: error
   no-implicit-coercion: error
   no-implicit-globals: error

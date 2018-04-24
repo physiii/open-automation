@@ -9,7 +9,7 @@ import '../styles/modules/_AppToolbar.scss';
 export const AppToolbar = (props) => (
 	<div className="oa-AppToolbar">
 		<Toolbar
-			leftChildren={<Button to="/">Pyfi</Button>}
+			leftChildren={<Button to="/">Open Automation</Button>}
 			rightChildren={[
 				<button key="register">Register</button>,
 				props.isLoggedIn

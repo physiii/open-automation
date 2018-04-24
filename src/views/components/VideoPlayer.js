@@ -7,27 +7,35 @@ export class Video extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {isPlaying: false};
-		this.clickHandler = this.clickHandler.bind(this);
+		this.onClick = this.onClick.bind(this);
 	}
 
-	clickHandler () {
-		if (this.state.isPlaying) {
-			this.setState({isPlaying: false});
-		} else {
-			this.setState({isPlaying: true});
-		}
+	onClick () {
+		this.setState({isPlaying: !this.state.isPlaying});
+	}
+
+	getAspectRatioPaddingTop () {
+		const aspectRatio = this.props.camera.resolution.height / this.props.camera.resolution.width;
+
+		return (aspectRatio * 100) + '%'; // eslint-disable-line no-magic-numbers
 	}
 
 	render () {
 		return (
 			<div
 				className="oa-VideoPlayer"
-				onClick={this.clickHandler}>
-				{!this.state.isPlaying
-					? <button className="oa-VideoPlayer--playButton">Play</button>
-					: null }
-				<div className="oa-VideoPlayer--video">
-					<VideoStream className="oa-VideoPlayer--canvas" camera={this.props.camera} shouldPlay={this.state.isPlaying} />
+				onClick={this.onClick}>
+				<div className="oa-VideoPlayer--overlay">
+					{!this.state.isPlaying
+						? <button className="oa-VideoPlayer--playButton">Play</button>
+						: null }
+				</div>
+				<div className="oa-VideoPlayer--video" style={{width: this.props.camera.resolution.width}}>
+					<span
+						className="oa-VideoPlayer--aspectRatio"
+						style={{paddingTop: this.getAspectRatioPaddingTop()}}
+					/>
+					<VideoStream className="oa-VideoPlayer--canvas" camera={this.props.camera} shouldStream={this.state.isPlaying} />
 				</div>
 			</div>
 		);
