@@ -1303,7 +1303,10 @@ function start(server) {
 
       console.log('socket already exists');
       //}
-      callback(null, data.user);
+
+      if (typeof callback === 'function') {
+	      callback(null, data.user);
+	    }
     });
 
     socket.on('link device', function (data) {
@@ -1443,7 +1446,7 @@ function start(server) {
 					          if (parts.length <= 1) continue;
 					          if (parts[0] != 2) continue; //must set /dev/video2* as streaming camera
 
-					       	  attached_devices[j].token = device.token;
+					       	  attached_devices[j].token = data.token;
 					        }
 
 					        devices.push(attached_devices[j]);
@@ -1472,7 +1475,10 @@ function start(server) {
       // When all gateway promises are resolved or rejected, send the devices.
       promiseAllSoftFail(gateway_promises).then(function (result) {
 	      socket.emit('get devices', devices);
-	      callback(null, devices);
+
+	      if (typeof callback === 'function') {
+		      callback(null, devices);
+		    }
 	    });
     });
 

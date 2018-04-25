@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider as ReduxProvider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
-// import './index.css';
+import Api from './api.js';
 import App from './views/layouts/App';
 import configureStore from './state/store';
 import * as session from './state/ducks/session';
@@ -13,6 +13,8 @@ const reduxStore = configureStore();
 
 // Set up user if already logged in.
 reduxStore.dispatch(session.operations.initialize());
+
+window.OpenAutomation = {Api};
 
 ReactDOM.render(
 	<Router>
