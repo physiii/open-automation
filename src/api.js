@@ -29,18 +29,22 @@ class Api {
 		});
 	}
 
+	getRecordings (device) {
+		return Api.apiCall('camera/recordings/get', {device});
+	}
+
 	static apiCall (event, payload) {
 		return new Promise((resolve, reject) => {
 			if (!api.token) {
-				throw new Error('No API token set');
+				reject(new Error('No API token set'));
 			}
 
 			api.relaySocket.emit(event, {...payload, user_token: api.token}, (error, data) => {
 				if (error) {
-					reject(error); // TODO: Is this a string? If so, throw Error instead of reject.
+					reject(new Error(error));
 				} else {
 					resolve(data);
-					console.log('API response: ' + event, data);
+					console.log('API response: ' + event, data); // TODO: Only log for dev build.
 				}
 			});
 		});

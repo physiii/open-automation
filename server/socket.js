@@ -3,6 +3,7 @@
 // ---------------------------------- socket.js -------------------------------------- //
 
 var database = require('./database.js');
+var devices = require('./devices.js');
 var utils = require('./utils.js');
 var crypto = require('crypto');
 var http = require('http');
@@ -1399,7 +1400,7 @@ function start(server) {
       var index = find_index(accounts, 'token', data.user_token);
       if (index < 0) return console.log("get devices | account not found", data);
       var username = accounts[index].username;
-      var devices = [];
+      var device_list = [];
       var gateway_promises = [];
       var group = groups[find_index(groups, 'group_id', username)];
       if (!group) return console.log("get_devices | no group found", username);
@@ -1435,7 +1436,7 @@ function start(server) {
 					    if (attached_devices) {
 					      for (var j = 0; j < attached_devices.length; j++) {
 					        if (attached_devices[j].type == "camera") {
-					          var device_id = find_index(devices, "id", attached_devices[j].id);
+					          var device_id = find_index(device_list, "id", attached_devices[j].id);
 
 					          if (device_id > -1) {
 					            console.log(TAG,"device_id already exists",attached_devices[j]);
@@ -1449,7 +1450,7 @@ function start(server) {
 					       	  attached_devices[j].token = data.token;
 					        }
 
-					        devices.push(attached_devices[j]);
+					        device_list.push(attached_devices[j]);
 						    }
 					    }
 
@@ -1462,7 +1463,7 @@ function start(server) {
         	gateway_promises.push(get_gateway_settings);
         }
 
-        devices.push({
+        device_list.push({
         	name: device.name,
         	type: device.type,
         	mac: device.mac,
@@ -1474,10 +1475,10 @@ function start(server) {
 
       // When all gateway promises are resolved or rejected, send the devices.
       promiseAllSoftFail(gateway_promises).then(function (result) {
-	      socket.emit('get devices', devices);
+	      socket.emit('get devices', device_list);
 
 	      if (typeof callback === 'function') {
-		      callback(null, devices);
+		      callback(null, device_list);
 		    }
 	    });
     });
@@ -1494,7 +1495,6 @@ function start(server) {
     });
 
     socket.on('start stream', function (data) {
-      var devices = [];
       var index = find_index(groups, 'group_id', data.token);
       console.log("!! start stream !!", data.token);
       if (index < 0) return;
@@ -1579,6 +1579,29 @@ function start(server) {
 
 
       if (index > -1) device_objects.splice(index, 1);
+    });
+
+    socket.on('camera/recordings/get', function (data, callback) {
+    	const gateway = devices.get_device_by_token(data.device.token);
+    	let error;
+
+    	if (!gateway) {
+    		error = 'No gateway found for token';
+    	} else if (!gateway.socket) {
+    		error = 'Cannot communicate with gateway - no socket';
+    	}
+
+    	if (error) {
+    		console.log(TAG, 'camera/recordings/get', error);
+
+    		if (typeof callback === 'function') {
+    			callback(error);
+    		}
+
+    		return;
+    	}
+
+    	gateway.socket.emit('camera/recordings/get', {camera_number: data.device.camera_number}, callback);
     });
 
   });
