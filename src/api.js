@@ -29,8 +29,11 @@ class Api {
 		});
 	}
 
-	getRecordings (device) {
-		return Api.apiCall('camera/recordings/get', {device});
+	getRecordings (deviceToken, cameraNumber) {
+		return Api.apiCall('camera/recordings/get', {
+			device_token: deviceToken,
+			camera_number: cameraNumber
+		});
 	}
 
 	static apiCall (event, payload) {

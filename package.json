@@ -16,6 +16,7 @@
     "express": "^4.16.3",
     "find-remove": "^1.2.0",
     "getmac": "^1.4.1",
+    "immutable": "^3.8.2",
     "js-cookie": "^2.2.0",
     "mongodb": "^2.2.1",
     "nodemailer": "^4.6.4",

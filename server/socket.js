@@ -1582,7 +1582,7 @@ function start(server) {
     });
 
     socket.on('camera/recordings/get', function (data, callback) {
-    	const gateway = devices.get_device_by_token(data.device.token);
+    	const gateway = devices.get_device_by_token(data.device_token);
     	let error;
 
     	if (!gateway) {
@@ -1601,7 +1601,7 @@ function start(server) {
     		return;
     	}
 
-    	gateway.socket.emit('camera/recordings/get', {camera_number: data.device.camera_number}, callback);
+    	gateway.socket.emit('camera/recordings/get', {camera_number: data.camera_number}, callback);
     });
 
   });

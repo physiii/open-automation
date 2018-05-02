@@ -19,6 +19,11 @@ const fetchDevices = () => (dispatch) => {
 
 		return devices;
 	},
+	fetchCameraRecordings = (camera) => (dispatch) => {
+		Api.getRecordings(camera.token, camera.camera_number).then((recordings) => {
+			dispatch(actions.loadCameraRecordings(camera.id, recordings));
+		});
+	},
 	startCameraStream = (camera) => () => {
 		Api.stream('start_webcam', camera.token, camera.camera_number);
 	},
@@ -28,6 +33,7 @@ const fetchDevices = () => (dispatch) => {
 
 export {
 	fetchDevices,
+	fetchCameraRecordings,
 	startCameraStream,
 	stopCameraStream
 };

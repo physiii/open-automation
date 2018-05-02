@@ -8,6 +8,9 @@ import LoginForm from '../components/LoginForm.js';
 import Logout from '../components/Logout.js';
 import TabBar from '../components/TabBar.js';
 import {hot} from 'react-hot-loader';
+import {connect} from 'react-redux';
+import {deviceById} from '../../state/ducks/devices/selectors.js';
+import {fetchCameraRecordings} from '../../state/ducks/devices/operations.js';
 import '../styles/layouts/_app.scss';
 
 export const App = () => (
@@ -17,7 +20,41 @@ export const App = () => (
 		</div>
 		<div className="oa-l-app--content">
 			<PrivateRoute exact path="/" render={() => <Redirect to="/dashboard" />} />
-			<PrivateRoute path="/dashboard" component={Dashboard} />
+			<PrivateRoute exact path="/dashboard" component={Dashboard} />
+			<PrivateRoute path="/dashboard/recordings/:cameraId" render={({match}) => {
+				const MyComp = connect(
+					(state, ownProps) => {
+						const camera = deviceById(ownProps.cameraId, state.devices);
+
+						return {
+							camera
+						};
+					},
+					(dispatch) => {
+						return {
+							getRecs: (camera) => {
+								dispatch(fetchCameraRecordings(camera));
+							}
+						};
+					}
+				)((props) => {
+					if (props.camera) {
+						props.getRecs(props.camera);
+
+						console.log(props.camera.recordings);
+					}
+
+					return (
+						<ol>
+							{props.camera && props.camera.recordings ? props.camera.recordings.map((recording) => (
+								<li>{recording.date} {recording.file}</li>
+							)) : null}
+						</ol>
+					);
+				});
+
+				return <MyComp cameraId={match.params.cameraId} />;
+			}} />
 			<PrivateRoute path="/settings" component={Settings} />
 			<Route path="/login" component={LoginForm} />
 			<Route path="/logout" component={Logout} />
