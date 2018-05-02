@@ -1,2 +1,2 @@
-export {default as devices} from './devices';
+export {default as devicesList} from './devices-list';
 export {default as session} from './session';

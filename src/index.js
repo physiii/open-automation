@@ -14,6 +14,7 @@ const reduxStore = configureStore();
 // Set up user if already logged in.
 reduxStore.dispatch(session.operations.initialize());
 
+// Expose some utilities for use in browser console.
 window.OpenAutomation = {Api};
 
 ReactDOM.render(

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import JSMpeg from '../../lib/tokenJsmpeg.js';
 import {connect} from 'react-redux';
-import {startCameraStream, stopCameraStream} from '../../state/ducks/devices/operations.js';
+import {startCameraStream, stopCameraStream} from '../../state/ducks/devices-list/operations.js';
 import '../styles/modules/_VideoStream.scss';
 
 export class VideoStream extends React.Component {

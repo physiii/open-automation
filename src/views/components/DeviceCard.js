@@ -25,14 +25,18 @@ export const DeviceCard = (props) => {
 				{content}
 			</div>
 			<div className="oa-Card--toolbar">
-				<Toolbar rightChildren={<Button>Dashboard</Button>} />
+				<Toolbar rightChildren={props.device.type === 'camera'
+					? <Button to={`${props.parentPath}/recordings/${props.device.id}`}>Recordings</Button>
+					: null
+				} />
 			</div>
 		</div>
 	);
 };
 
 DeviceCard.propTypes = {
-	device: PropTypes.object
+	device: PropTypes.object,
+	parentPath: PropTypes.string
 };
 
 export default DeviceCard;

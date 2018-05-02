@@ -1,7 +1,8 @@
 import * as types from './types';
 
 const initialState = {
-		isFetching: false,
+		user: null,
+		loading: false,
 		error: false
 	},
 	reducer = (state = initialState, action) => {
@@ -9,21 +10,23 @@ const initialState = {
 			case types.LOGIN:
 				return {
 					...state,
-					isFetching: true,
+					loading: true,
 					error: false
 				};
 			case types.LOGIN_SUCCESS:
 				return {
 					...state,
-					username: action.payload.username,
-					token: action.payload.token,
-					isFetching: false,
+					user: {
+						username: action.payload.username,
+						token: action.payload.token
+					},
+					loading: false,
 					error: false
 				};
 			case types.LOGIN_ERROR:
 				return {
 					...state,
-					isFetching: false,
+					loading: false,
 					error: action.payload.message
 				};
 			case types.LOGOUT:

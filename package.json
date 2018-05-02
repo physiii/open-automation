@@ -18,6 +18,7 @@
     "getmac": "^1.4.1",
     "immutable": "^3.8.2",
     "js-cookie": "^2.2.0",
+    "moment": "^2.22.1",
     "mongodb": "^2.2.1",
     "nodemailer": "^4.6.4",
     "nodemailer-smtp-transport": "^2.7.4",

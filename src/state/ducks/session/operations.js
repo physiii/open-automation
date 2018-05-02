@@ -2,7 +2,7 @@ import * as actions from './actions';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Api from '../../../api.js';
-import * as devices from '../devices';
+import * as devices from '../devices-list';
 
 const initialize = (username = Cookies.get('user'), token = Cookies.get('token')) => (dispatch) => {
 		if (!token) {
@@ -10,10 +10,10 @@ const initialize = (username = Cookies.get('user'), token = Cookies.get('token')
 		}
 
 		Api.setApiToken(token);
-		Api.linkUser(username);
-
-		dispatch(actions.loginSuccess(username, token));
-		dispatch(devices.operations.fetchDevices());
+		Api.linkUser(username).then(() => {
+			dispatch(actions.loginSuccess(username, token));
+			dispatch(devices.operations.fetchDevices());
+		});
 	},
 	login = (username, password) => (dispatch) => {
 		// Dispatch login action (see initialize call below for the action that actually saves user to store)

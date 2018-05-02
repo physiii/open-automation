@@ -2,8 +2,12 @@ import * as actions from './actions';
 import Api from '../../../api.js';
 
 const fetchDevices = () => (dispatch) => {
+		dispatch(actions.fetchDevices());
+
 		Api.getDevices().then((devices) => {
-			dispatch(actions.loadDevices(mockDevices(devices)));
+			dispatch(actions.fetchDevicesSuccess(mockDevices(devices)));
+		}).catch((error) => {
+			dispatch(actions.fetchDevicesError(error));
 		});
 	},
 	mockDevices = (devices) => {
@@ -20,8 +24,12 @@ const fetchDevices = () => (dispatch) => {
 		return devices;
 	},
 	fetchCameraRecordings = (camera) => (dispatch) => {
+		dispatch(actions.fetchCameraRecordings(camera.id));
+
 		Api.getRecordings(camera.token, camera.camera_number).then((recordings) => {
-			dispatch(actions.loadCameraRecordings(camera.id, recordings));
+			dispatch(actions.fetchCameraRecordingsSuccess(camera.id, recordings));
+		}).catch((error) => {
+			dispatch(actions.fetchCameraRecordingsError(error));
 		});
 	},
 	startCameraStream = (camera) => () => {

@@ -3,7 +3,7 @@ import DeviceRecord from './device-record.js';
 
 class Camera extends DeviceRecord({
 	camera_number: null,
-	recordings: Immutable.List([]),
+	recordingsList: null,
 	resolution: Immutable.Record({
 		width: 600,
 		height: 480

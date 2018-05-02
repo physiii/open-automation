@@ -1,4 +1,4 @@
-const isAuthenticated = (session) => Boolean(session.token);
+const isAuthenticated = (session) => Boolean(session.user.token);
 
 export {
 	isAuthenticated
