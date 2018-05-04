@@ -145,7 +145,11 @@ rules:
   no-lone-blocks: error
   no-lonely-if: error
   no-loop-func: error
-  no-magic-numbers: error
+  no-magic-numbers:
+    - error
+    - ignore:
+      - 0
+      - 1
   no-mixed-operators: error
   no-mixed-requires: error
   no-multi-assign: error
@@ -164,7 +168,9 @@ rules:
   no-octal-escape: error
   no-param-reassign: error
   no-path-concat: error
-  no-plusplus: error
+  no-plusplus:
+    - error
+    - allowForLoopAfterthoughts: true
   no-process-env: error
   no-process-exit: error
   no-proto: error
@@ -260,6 +266,7 @@ rules:
     - error
     - order:
       - /[A-Z_]+$/
+      - /constructor/
       - static-methods
       - lifecycle
       - everything-else

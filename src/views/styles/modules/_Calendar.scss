@@ -1,0 +1,39 @@
+// Calendar
+
+.oa-Calendar {
+	width: 400px;
+	display: flex;
+	flex-flow: column nowrap;
+	text-align: center;
+}
+
+.oa-Calendar--weekHeading {
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+.oa-Calendar--dayHeading {
+	flex: 0 0 calc(100% / 7);
+}
+
+.oa-Calendar--week {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.oa-Calendar--firstWeek { @extend .oa-Calendar--week;
+	justify-content: flex-end;
+}
+
+.oa-Calendar--day {
+	flex: 0 0 calc(100% / 7);
+
+	&.oa-is-event::after {
+		content: "";
+		display: block;
+		width: 7px;
+		height: 7px;
+		margin: 4px auto;
+		background: #ffffff;
+		border-radius: 100%;
+	}
+}

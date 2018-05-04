@@ -19,7 +19,7 @@ export const Dashboard = (props) => (
 			</div>
 		)} />
 		<PrivateRoute path={`${props.match.path}/recordings/:cameraId`} render={({match}) => (
-			<CameraRecordings cameraId={match.params.cameraId} parentPath={props.match.path} />
+			<CameraRecordings cameraId={match.params.cameraId} match={match} parentPath={props.match.path} />
 		)} />
 	</div>
 );

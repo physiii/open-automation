@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import PrivateRoute from '../components/PrivateRoute.js';
 import Button from './Button.js';
+import Calendar from './Calendar.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {deviceById} from '../../state/ducks/devices-list/selectors.js';
+import {deviceById, cameraRecordingsDateGrouped} from '../../state/ducks/devices-list/selectors.js';
 import {fetchCameraRecordings} from '../../state/ducks/devices-list/operations.js';
 
 export class CameraRecordings extends React.Component {
@@ -12,53 +14,48 @@ export class CameraRecordings extends React.Component {
 	}
 
 	render () {
-		let recordings;
-
-		if (!this.props.isLoading && !(this.props.recordings instanceof Array)) {
-
-			// Group by year
-			recordings = this.props.recordings.groupBy((recording) => new Date(recording.date).getFullYear());
-
-			// Group by month
-			recordings.forEach((year, key) => {
-				recordings = recordings.set(
-					key,
-					year.groupBy((recording) => new Date(recording.date).getMonth())
-				);
-			});
-
-			// Group by day
-			recordings.forEach((year, yearKey) => {
-				year.forEach((month, monthKey) => {
-					recordings = recordings.setIn(
-						[
-							yearKey,
-							monthKey
-						],
-						month.groupBy((recording) => new Date(recording.date).getDate())
-					);
-				});
-			});
-
-			recordings = recordings.toOrderedMap();
-		}
-
 		return (
-			<div>
-				<Button to={this.props.parentPath}>Back</Button>
-				{this.props.isLoading
-					? <div>Loading Recordings</div>
-					: <ol>
-						{recordings
-							? recordings.keySeq().map((year) => <li key={year}>{year}</li>)
-							: 'no recordings'
-						}
-						{/*recordings.map((recording, index) => (
-							<li key={index}>{moment(recording.date).format('MMMM D YYYY, h:mm:ss a')}</li>
-						))*/}
-					</ol>
+			<PrivateRoute path={`${this.props.match.path}/:year?/:month?/:date?`} render={(routeProps) => {
+				const {year: selectedYear, month: selectedMonth, date: selectedDate} = routeProps.match.params,
+					yearsList = this.props.recordings,
+					monthsList = selectedYear && yearsList ? yearsList.get(Number(selectedYear)) : null,
+					datesList = selectedMonth && monthsList ? monthsList.get(Number(selectedMonth)) : null,
+					recordingsList = selectedDate && datesList ? datesList.get(Number(selectedDate)) : null;
+
+				let list, backUrl;
+
+				if (recordingsList) {
+					list = recordingsList.map((recording) => <li key={recording.date}><Button to={`${routeProps.match.url}/${recording.file}`}>{recording.date}</Button></li>);
+					backUrl = `${this.props.match.url}/${selectedYear}/${selectedMonth}`;
+				} else if (datesList) {
+					list = datesList.keySeq().map((date) => <li key={date}><Button to={`${routeProps.match.url}/${date}`}>{date}</Button></li>);
+					backUrl = `${this.props.match.url}/${selectedYear}`;
+				} else if (monthsList) {
+					list = monthsList.keySeq().map((month) => <li key={month}><Button to={`${routeProps.match.url}/${month}`}>{month}</Button></li>);
+					backUrl = this.props.match.url;
+				} else if (yearsList) {
+					list = yearsList.keySeq().map((year) => <li key={year}><Button to={`${routeProps.match.url}/${year}`}>{year}</Button></li>);
+					backUrl = this.props.parentPath;
+				} else {
+					list = 'No Recordings';
+					backUrl = this.props.parentPath;
 				}
-			</div>
+
+				return (
+					<div>
+						<Button to={backUrl}>Back</Button>
+						<Calendar
+							events={this.props.camera.recordingsList.recordings.map((recording) => new Date(recording.date)).toJS()}
+						/>
+						{this.props.isLoading
+							? <div>Loading Recordings</div>
+							: <ol>
+								{list}
+							</ol>
+						}
+					</div>
+				);
+			}} />
 		);
 	}
 }
@@ -68,6 +65,7 @@ CameraRecordings.propTypes = {
 	recordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
 	getRecordings: PropTypes.func,
 	isLoading: PropTypes.bool,
+	match: PropTypes.object,
 	parentPath: PropTypes.string
 };
 
@@ -76,7 +74,7 @@ const mapStateToProps = (state, ownProps) => {
 
 		return {
 			camera,
-			recordings: camera.recordingsList.recordings || [],
+			recordings: cameraRecordingsDateGrouped(camera),
 			isLoading: camera.recordingsList.loading
 		};
 	},
