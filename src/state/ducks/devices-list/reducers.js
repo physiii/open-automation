@@ -37,7 +37,7 @@ const initialState = {
 				return {
 					...state,
 					loading: false,
-					error: action.payload.message
+					error: action.payload.error.message
 				};
 			case types.FETCH_CAMERA_RECORDINGS:
 			case types.FETCH_CAMERA_RECORDINGS_SUCCESS:
@@ -78,7 +78,7 @@ const initialState = {
 				return {
 					...state,
 					loading: false,
-					error: action.payload.message
+					error: action.payload.error.message
 				};
 			default:
 				return state;

@@ -95,7 +95,7 @@ rules:
   max-len: 'off'
   max-lines: error
   max-nested-callbacks: error
-  max-params: error
+  max-params: 'off'
   max-statements: error
   max-statements-per-line: error
   multiline-comment-style: 'off'
@@ -258,7 +258,10 @@ rules:
   react/no-did-mount-set-state: error
   react/no-did-update-set-state: error
   react/no-multi-comp: error
-  react/no-unknown-property: error
+  react/no-unknown-property:
+    - error
+    - ignore:
+      - 'datetime' # This is a valid HTML attribute that eslint-plugin-react isn't aware of.
   react/prop-types: error
   react/react-in-jsx-scope: error
   react/self-closing-comp: error

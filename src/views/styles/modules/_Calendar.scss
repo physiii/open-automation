@@ -7,6 +7,13 @@
 	text-align: center;
 }
 
+%oa-Calendar--monthButton {
+	width: auto;
+}
+
+.oa-Calendar--previousMonthButton { @extend %oa-Calendar--monthButton; }
+.oa-Calendar--nextMonthButton { @extend %oa-Calendar--monthButton; }
+
 .oa-Calendar--weekHeading {
 	display: flex;
 	flex-flow: row nowrap;
@@ -26,6 +33,10 @@
 
 .oa-Calendar--day {
 	flex: 0 0 calc(100% / 7);
+
+	&.oa-is-selected {
+		color: #ffffff;
+	}
 
 	&.oa-is-event::after {
 		content: "";

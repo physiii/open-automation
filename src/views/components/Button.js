@@ -8,11 +8,20 @@ export const Button = (props) => {
 		return <Link className="oa-Button" to={props.to}>{props.children}</Link>;
 	}
 
-	return <a href="#" className="oa-Button">{props.children}</a>;
+	return (
+		<a href="#" onClick={(event) => {
+			event.preventDefault();
+
+			if (typeof props.onClick === 'function') {
+				props.onClick(event);
+			}
+		}} className="oa-Button">{props.children}</a>
+	);
 };
 
 Button.propTypes = {
 	to: PropTypes.string,
+	onClick: PropTypes.func,
 	children: PropTypes.node.isRequired
 };
 

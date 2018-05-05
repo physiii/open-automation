@@ -11,7 +11,7 @@ export const fetchDevicesSuccess = (devices) => ({
 
 export const fetchDevicesError = (error) => ({
 	type: types.FETCH_DEVICES_ERROR,
-	payload: error,
+	payload: {error},
 	error: true
 });
 
@@ -25,8 +25,8 @@ export const fetchCameraRecordingsSuccess = (cameraId, recordings) => ({
 	payload: {cameraId, recordings}
 });
 
-export const fetchCameraRecordingsError = (error) => ({
+export const fetchCameraRecordingsError = (cameraId, error) => ({
 	type: types.FETCH_CAMERA_RECORDINGS_ERROR,
-	payload: error,
+	payload: {cameraId, error},
 	error: true
 });

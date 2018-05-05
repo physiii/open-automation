@@ -27,7 +27,7 @@ const initialState = {
 				return {
 					...state,
 					loading: false,
-					error: action.payload.message
+					error: action.payload.error.message
 				};
 			case types.LOGOUT:
 				return initialState;

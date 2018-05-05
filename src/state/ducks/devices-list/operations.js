@@ -29,8 +29,11 @@ const fetchDevices = () => (dispatch) => {
 		Api.getRecordings(camera.token, camera.camera_number).then((recordings) => {
 			dispatch(actions.fetchCameraRecordingsSuccess(camera.id, recordings));
 		}).catch((error) => {
-			dispatch(actions.fetchCameraRecordingsError(error));
+			dispatch(actions.fetchCameraRecordingsError(camera.id, error));
 		});
+	},
+	playCameraRecording = (camera, file) => () => {
+		Api.stream('play_file', camera.token, camera.camera_number, file);
 	},
 	startCameraStream = (camera) => () => {
 		Api.stream('start_webcam', camera.token, camera.camera_number);
@@ -42,6 +45,7 @@ const fetchDevices = () => (dispatch) => {
 export {
 	fetchDevices,
 	fetchCameraRecordings,
+	playCameraRecording,
 	startCameraStream,
 	stopCameraStream
 };

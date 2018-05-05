@@ -21,12 +21,18 @@ class Api {
 		return Api.apiCall('link device', {device_name: name, mac: id});
 	}
 
-	stream (command, deviceToken, cameraNumber) {
-		return Api.apiCall('ffmpeg', {
+	stream (command, deviceToken, cameraNumber, file) {
+		const options = {
 			command,
 			token: deviceToken,
 			camera_number: cameraNumber
-		});
+		};
+
+		if (file) {
+			options.file = file;
+		}
+
+		return Api.apiCall('ffmpeg', options);
 	}
 
 	getRecordings (deviceToken, cameraNumber) {
@@ -44,6 +50,7 @@ class Api {
 
 			api.relaySocket.emit(event, {...payload, user_token: api.token}, (error, data) => {
 				if (error) {
+					console.error('API error: ' + event, error); // TODO: Only log for dev build.
 					reject(new Error(error));
 				} else {
 					resolve(data);

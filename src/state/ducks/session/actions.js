@@ -11,7 +11,7 @@ export const loginSuccess = (username, token) => ({
 
 export const loginError = (error) => ({
 	type: types.LOGIN_ERROR,
-	payload: error,
+	payload: {error},
 	error: true
 });
 

@@ -20,34 +20,32 @@ const initialize = (username = Cookies.get('user'), token = Cookies.get('token')
 		dispatch(actions.login());
 
 		// Post credentials to login endpoint on server.
-		axios
-			.post('/api/login', {username, password}).then((response) => {
-				const {token} = response.data;
+		axios.post('/api/login', {username, password}).then((response) => {
+			const {token} = response.data;
 
-				dispatch(initialize(username, token));
+			dispatch(initialize(username, token));
 
-				Cookies.set('user', username);
-				Cookies.set('token', token);
-			})
-			.catch((error) => {
-				const unauthorizedErrorCode = 401;
-				let errorMessage;
+			Cookies.set('user', username);
+			Cookies.set('token', token);
+		}).catch((error) => {
+			const unauthorizedErrorCode = 401;
+			let errorMessage;
 
-				if (error.response) {
-					if (error.response.status === unauthorizedErrorCode) {
-						errorMessage = 'Username or password not correct';
-					} else {
-						errorMessage = 'An error occurred';
-					}
-				} else if (error.request) {
-					errorMessage = 'No response received';
+			if (error.response) {
+				if (error.response.status === unauthorizedErrorCode) {
+					errorMessage = 'Username or password not correct';
 				} else {
-					errorMessage = 'Error';
+					errorMessage = 'An error occurred when logging in';
 				}
+			} else if (error.request) {
+				errorMessage = 'No response received when logging in';
+			} else {
+				errorMessage = 'An error occurred when logging in';
+			}
 
-				dispatch(actions.loginError(new Error(errorMessage)));
-				throw error;
-			});
+			dispatch(actions.loginError({error: new Error(errorMessage)}));
+			throw error;
+		});
 	},
 	logout = () => (dispatch) => {
 		Api.setApiToken(null);

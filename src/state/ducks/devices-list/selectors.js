@@ -4,8 +4,22 @@ const devicesWithoutGateways = (devicesList) => {
 	deviceById = (deviceId, devicesList) => {
 		return devicesList.devices.find((device) => device.id === deviceId);
 	},
+	recordingsForDate = (camera, date) => {
+		if (!camera.recordingsList || !camera.recordingsList.recordings) {
+			return null;
+		}
+
+		return camera.recordingsList.recordings.filter((recording) => date.isSame(recording.date, 'day'));
+	},
+	recordingById = (camera, recordingId) => {
+		if (!camera.recordingsList || !camera.recordingsList.recordings) {
+			return null;
+		}
+
+		return camera.recordingsList.recordings.find((recording) => recording.id === recordingId);
+	},
 	cameraRecordingsDateGrouped = (camera) => {
-		if (!camera.recordingsList.recordings) {
+		if (!camera.recordingsList || !camera.recordingsList.recordings) {
 			return null;
 		}
 
@@ -40,6 +54,8 @@ const devicesWithoutGateways = (devicesList) => {
 export {
 	devicesWithoutGateways,
 	deviceById,
+	recordingsForDate,
+	recordingById,
 	cameraRecordingsDateGrouped,
 	hasInitialFetchCompleted
 };
