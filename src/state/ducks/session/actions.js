@@ -1,5 +1,9 @@
 import * as types from './types';
 
+export const initialize = () => ({
+	type: types.INITIALIZE
+});
+
 export const login = () => ({
 	type: types.LOGIN
 });

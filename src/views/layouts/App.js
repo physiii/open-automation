@@ -9,6 +9,7 @@ import LoginForm from '../components/LoginForm.js';
 import Logout from '../components/Logout.js';
 import TabBar from '../components/TabBar.js';
 import {connect} from 'react-redux';
+import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 import {hasInitialFetchCompleted} from '../../state/ducks/devices-list/selectors.js';
 import {hot} from 'react-hot-loader';
 import '../styles/layouts/_app.scss';
@@ -55,7 +56,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-		isLoading: !hasInitialFetchCompleted(state.devicesList)
+		isLoading: state.session.loading || (isAuthenticated(state.session) && !hasInitialFetchCompleted(state.devicesList))
 	}),
 	connectedApp = connect(
 		mapStateToProps,

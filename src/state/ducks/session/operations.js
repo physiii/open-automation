@@ -1,29 +1,25 @@
 import * as actions from './actions';
+import * as devices from '../devices-list';
+import Api from '../../../api.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import Api from '../../../api.js';
-import * as devices from '../devices-list';
 
 const initialize = (username = Cookies.get('user'), token = Cookies.get('token')) => (dispatch) => {
-		if (!token) {
-			return;
+		if (username && token) { // User is logged in.
+			dispatch(loginSuccess(username, token));
+		} else { // User is not logged in.
+			dispatch(actions.initialize());
 		}
-
-		Api.setApiToken(token);
-		Api.linkUser(username).then(() => {
-			dispatch(actions.loginSuccess(username, token));
-			dispatch(devices.operations.fetchDevices());
-		});
 	},
 	login = (username, password) => (dispatch) => {
-		// Dispatch login action (see initialize call below for the action that actually saves user to store)
+		// Dispatch login action (see loginSuccess call below for the action that actually saves user to store)
 		dispatch(actions.login());
 
 		// Post credentials to login endpoint on server.
 		axios.post('/api/login', {username, password}).then((response) => {
 			const {token} = response.data;
 
-			dispatch(initialize(username, token));
+			dispatch(loginSuccess(username, token));
 
 			Cookies.set('user', username);
 			Cookies.set('token', token);
@@ -45,6 +41,13 @@ const initialize = (username = Cookies.get('user'), token = Cookies.get('token')
 
 			dispatch(actions.loginError({error: new Error(errorMessage)}));
 			throw error;
+		});
+	},
+	loginSuccess = (username, token) => (dispatch) => {
+		Api.setApiToken(token);
+		Api.linkUser(username).then(() => {
+			dispatch(actions.loginSuccess(username, token));
+			dispatch(devices.operations.fetchDevices());
 		});
 	},
 	logout = () => (dispatch) => {

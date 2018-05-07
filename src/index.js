@@ -1,27 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider as ReduxProvider} from 'react-redux';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {ConnectedRouter} from 'react-router-redux';
+import createHistory from 'history/createBrowserHistory';
 import Api from './api.js';
 import App from './views/layouts/App';
 import configureStore from './state/store';
-import * as session from './state/ducks/session';
+import {initialize as initializeSession} from './state/ducks/session/operations.js';
 import './views/styles/main.scss';
 
-// Create store.
-const reduxStore = configureStore();
+const history = createHistory(), // History object to share between router and store.
+	reduxStore = configureStore(history); // Create store.
 
 // Set up user if already logged in.
-reduxStore.dispatch(session.operations.initialize());
+reduxStore.dispatch(initializeSession());
 
 // Expose some utilities for use in browser console.
 window.OpenAutomation = {Api};
 
 ReactDOM.render(
-	<Router>
-		<ReduxProvider store={reduxStore}>
+	<ReduxProvider store={reduxStore}>
+		<ConnectedRouter history={history}>
 			<App />
-		</ReduxProvider>
-	</Router>,
+		</ConnectedRouter>
+	</ReduxProvider>,
 	document.getElementById('open-automation')
 );

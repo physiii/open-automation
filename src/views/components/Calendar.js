@@ -35,12 +35,6 @@ export class Calendar extends React.Component {
 		return nextState;
 	}
 
-	componentDidMount () {
-		if (this.state.selectedDate) {
-			this.selectDate(this.state.selectedDate);
-		}
-	}
-
 	getNumberOfDaysInMonth (date) {
 		const addOneMonth = 1,
 			lastDayOfPreviousMonth = 0,
@@ -83,7 +77,7 @@ export class Calendar extends React.Component {
 	}
 
 	doesDateHaveEvent (date, events) {
-		if (!(events instanceof Array)) {
+		if (!events || !events.find) {
 			return false;
 		}
 
