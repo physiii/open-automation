@@ -2,17 +2,17 @@
 // -----------------  https://github.com/physiii/open-automation  -------------------- //
 // ---------------------------------- socket.js -------------------------------------- //
 
-var database = require('./database.js');
-var devices = require('./devices.js');
-var utils = require('./utils.js');
-var crypto = require('crypto');
-var http = require('http');
-var https= require('https');
-var fs = require('fs');
-var url = require('url');
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var promiseAllSoftFail = require('promise-all-soft-fail').promiseAllSoftFail;
+const database = require('./database.js'),
+	devices = require('./devices/devices-manager.js'),
+	utils = require('./utils.js'),
+	crypto = require('crypto'),
+	http = require('http'),
+	https= require('https'),
+	fs = require('fs'),
+	url = require('url'),
+	nodemailer = require('nodemailer'),
+	smtpTransport = require('nodemailer-smtp-transport'),
+	promiseAllSoftFail = require('promise-all-soft-fail').promiseAllSoftFail;
 
 module.exports = {
   start: start
@@ -719,9 +719,41 @@ function start(server) {
 
   var io = require('socket.io').listen(server);
 
-  //io.set('origins', '*');
   io.on('connection', function (socket) {
     console.info(socket.id + " | client connected");
+
+    socket.on('gateway/device/connect', (data, callback) => {
+    	const device = devices.getDeviceById(data.id);
+
+    	// TODO: Add some sort of authentication so we know this is really the device it claims to be.
+
+    	// Disconnect if the device doesn't exist.
+    	if (!device) {
+    		if (typeof callback === 'function') {
+    			callback('Device does not exist.');
+    		}
+
+    		socket.disconnect();
+    		return;
+    	}
+
+    	const token = crypto.createHash('sha512').update(device.id).digest('hex');
+    	// TODO: Salt token
+
+    	device.setSocket(socket, token);
+
+    	if (typeof callback === 'function') {
+    		callback(null, token);
+    	}
+    });
+
+    socket.on('devices/get', (data, callback) => {
+    	if (typeof callback === 'function') {
+    		const locationDevices = devices.getDevicesByLocation(data.user_token);
+    		// console.log('devices/get', locationDevices);
+    		callback(null, devices.getClientSerializedDevices(locationDevices));
+    	}
+    });
 
     socket.on('get token', function (data) {
       var mac = data.mac;
@@ -1443,10 +1475,6 @@ function start(server) {
 					            continue;
 					          }
 
-					          var parts = attached_devices[j].dev.replace("/dev/video","");
-					          if (parts.length <= 1) continue;
-					          if (parts[0] != 2) continue; //must set /dev/video2* as streaming camera
-
 					       	  attached_devices[j].token = data.token;
 					        }
 
@@ -1581,28 +1609,28 @@ function start(server) {
       if (index > -1) device_objects.splice(index, 1);
     });
 
-    socket.on('camera/recordings/get', function (data, callback) {
-    	const gateway = devices.get_device_by_token(data.device_token);
-    	let error;
+    // socket.on('camera/recordings/get', function (data, callback) {
+    // 	const gateway = devices.get_device_by_token(data.device_token);
+    // 	let error;
 
-    	if (!gateway) {
-    		error = 'No gateway found for token';
-    	} else if (!gateway.socket) {
-    		error = 'Cannot communicate with gateway - no socket';
-    	}
+    // 	if (!gateway) {
+    // 		error = 'No gateway found for token';
+    // 	} else if (!gateway.socket) {
+    // 		error = 'Cannot communicate with gateway - no socket';
+    // 	}
 
-    	if (error) {
-    		console.log(TAG, 'camera/recordings/get', error);
+    // 	if (error) {
+    // 		console.log(TAG, 'camera/recordings/get', error);
 
-    		if (typeof callback === 'function') {
-    			callback(error);
-    		}
+    // 		if (typeof callback === 'function') {
+    // 			callback(error);
+    // 		}
 
-    		return;
-    	}
+    // 		return;
+    // 	}
 
-    	gateway.socket.emit('camera/recordings/get', {camera_number: data.camera_number}, callback);
-    });
+    // 	gateway.socket.emit('camera/recordings/get', {camera_number: data.camera_number}, callback);
+    // });
 
   });
 }
