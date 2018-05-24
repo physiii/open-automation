@@ -10,7 +10,7 @@ class ServicesManager {
 		this.updateServices(services);
 	}
 
-	addService (data) {
+	addService (data, gatewaySocket) {
 		let service = this.getServiceById(data.id);
 
 		if (service) {
@@ -19,11 +19,17 @@ class ServicesManager {
 
 		switch (data.type) {
 			case 'camera':
-				service = new CameraService(data, {class: GatewayCameraDriver, socket: this.device.socket});
+				service = new CameraService(data, GatewayCameraDriver);
 				break;
 			default:
 				service = new Service(data);
 				break;
+		}
+
+		// If the service is using a gateway driver, pass the gateway socket to
+		// the driver.
+		if (gatewaySocket && service.driver && service.driver.setGatewaySocket) {
+			service.driver.setGatewaySocket(gatewaySocket);
 		}
 
 		service.device = this.device;
@@ -32,15 +38,17 @@ class ServicesManager {
 		return service;
 	}
 
-	updateServices (services) {
+	updateServices (services, gatewaySocket) {
 		services.forEach((service) => {
-			this.addService(service, this.device);
+			this.addService(service, gatewaySocket);
 		});
 	}
 
-	setSocket (socket) {
+	setGatewaySocket (socket) {
 		this.services.forEach((service) => {
-			service.setSocket(socket);
+			if (service.driver && service.driver.setGatewaySocket) {
+				service.driver.setGatewaySocket(socket);
+			}
 		});
 	}
 

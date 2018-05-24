@@ -2,12 +2,14 @@ const Service = require('./service.js'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, driver) {
+	constructor (data, driverClass) {
 		super(data);
+
+		this.type = 'camera';
 
 		this.setSettings(data.settings || {});
 
-		this.driver = new driver.class(this.id, driver.socket);
+		this.driver = new driverClass(this.id);
 		this.subscribeToDriver();
 	}
 
@@ -18,8 +20,6 @@ class CameraService extends Service {
 		this.settings.resolution_h = settings.resolution_h || 480;
 		this.settings.rotation = settings.rotation || 0;
 	}
-
-	setSocket (socket) {}
 
 	getPreviewImage () {
 		this.driver.getPreview();

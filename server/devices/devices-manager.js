@@ -1,9 +1,10 @@
 const database = require('../database.js'),
-	Device = require('./device.js');
+	Device = require('./device.js'),
+	socketEscrow = {};
+let devicesList = [];
 
 class DevicesManager {
 	constructor () {
-		this.devices = [];
 		this.loadDevicesFromDb(); // TODO: Move this?
 	}
 
@@ -14,33 +15,51 @@ class DevicesManager {
 			return device;
 		}
 
-		device = new Device(data);
-		this.devices.push(device);
+		device = new Device({
+			...data,
+			socket: data.socket || this.getFromSocketEscrow(data.id)
+		});
+
+		this.removeFromSocketEscrow(data.id);
+
+		devicesList.push(device);
 		database.store_device(device);
 
 		return device;
 	}
 
+	addToSocketEscrow (deviceId, socket) {
+		socketEscrow[deviceId] = socket;
+	}
+
+	getFromSocketEscrow (deviceId) {
+		return socketEscrow[deviceId];
+	}
+
+	removeFromSocketEscrow (deviceId) {
+		delete socketEscrow[deviceId];
+	}
+
 	getDeviceById (deviceId) {
-		return this.devices.find((device) => device.id === deviceId);
+		return devicesList.find((device) => device.id === deviceId);
 	}
 
 	getDevicesByLocation (locationId) {
-		return this.devices.filter((device) => device.location === locationId);
+		return devicesList.filter((device) => device.location === locationId);
 	}
 
 	loadDevicesFromDb () {
 		return new Promise((resolve, reject) => {
 			database.get_devices().then((devices) => {
-				this.devices = devices.map((device) => new Device(device));
-				resolve(this.devices);
+				devicesList = devices.map((device) => new Device(device));
+				resolve(devicesList);
 			}).catch((error) => {
 				reject(error);
 			});
 		});
 	}
 
-	getClientSerializedDevices (devices = this.devices) {
+	getClientSerializedDevices (devices = devicesList) {
 		return devices.map((device) => device.clientSerialize());
 	}
 }

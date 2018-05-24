@@ -1,10 +1,8 @@
-const EventEmitter = require('events');
+const GatewayServiceDriver = require('./gateway.js');
 
-class GatewayCameraDriver {
-	constructor (cameraId, socket) {
-		this.serviceId = cameraId;
-		this.socket = socket;
-		this.events = new EventEmitter();
+class GatewayCameraDriver extends GatewayServiceDriver {
+	constructor (cameraId, gatewaySocket) {
+		super(cameraId, 'camera', gatewaySocket);
 	}
 
 	streamLive () {
@@ -23,13 +21,7 @@ class GatewayCameraDriver {
 		this.gatewayEmit('recordings/get');
 	}
 
-	on () {
-		return this.events.on.apply(this.events, arguments);
-	}
-
-	gatewayEmit (event, data, callback) {
-		this.socket.emit('camera/' + this.serviceId + '/' + event, data, callback);
-	}
+	listenToGateway () {}
 }
 
 module.exports = GatewayCameraDriver;

@@ -8,8 +8,6 @@ class Service {
 		this.settings = {};
 	}
 
-	setSocket () {}
-
 	serialize () {
 		return {
 			id: this.id,
@@ -23,7 +21,10 @@ class Service {
 	}
 
 	clientSerialize () {
-		return this.serialize();
+		return {
+			...this.serialize(),
+			device_id: this.device.id
+		};
 	}
 }
 

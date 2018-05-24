@@ -1,15 +1,22 @@
 const uuid = require('uuid/v4'),
+	crypto = require('crypto'),
 	database = require('../database.js'),
-	ServicesManager = require('../services/services-manager.js');
+	ServicesManager = require('../services/services-manager.js'),
+	TAG = '[Device]';
 
 class Device {
 	constructor (data) {
 		this.id = data.id || uuid();
+		this.token = crypto.createHash('sha512').update(this.id).digest('hex'); // TODO: Salt token
 		this.location = data.location;
 		this.services = new ServicesManager(data.services, this);
 		this.setStatus(data.status || {});
 		this.setSettings(data.settings || {});
 		this.setInfo(data.info || {});
+
+		if (data.gatewaySocket) {
+			this.setGatewaySocket(data.gatewaySocket);
+		}
 	}
 
 	setStatus (status) {
@@ -30,25 +37,66 @@ class Device {
 		};
 	}
 
-	setSocket (socket, token) {
-		this.token = token;
-		this.socket = socket;
+	setGatewaySocket (socket) {
+		if (socket === this.gatewaySocket) {
+			return;
+		}
+
+		this.gatewaySocket = socket;
 		this.status.connected = true;
 
-		this.services.setSocket(this.socket);
+		// Update the service drivers with the new socket.
+		this.services.setGatewaySocket(this.getGatewaySocketProxy());
 
-		this.socket.on('load', (data, callback) => {
-			// Update services.
+		// Send the gateway device the token.
+		this.gatewayEmit('token', {token: this.token});
+
+		// Update when the gateway sends new state.
+		this.gatewayOn('load', (data, callback) => {
 			this.services.updateServices(data.services);
-
-			// Update device info.
 			this.setInfo(data.info);
 		});
 
-		this.socket.on('disconnect', (data) => {
-			delete this.socket;
+		// Can't use gatewayOn with socket.io events.
+		this.gatewaySocket.on('disconnect', (data) => {
 			this.status.connected = false;
 		});
+	}
+
+	gatewayOn (event, localCallback) {
+		if (!this.gatewaySocket) {
+			console.log(TAG, this.id, 'Tried to listen to gateway event "' + event + '" but the device does not have a gateway socket.');
+			return;
+		}
+
+		this.gatewaySocket.on(event, (data, remoteCallback) => {
+			if (data.token !== this.token) {
+				console.log(TAG, this.id, 'Received event from gateway, but device token does not match.');
+				return;
+			}
+
+			localCallback(data, remoteCallback);
+		});
+	}
+
+	gatewayEmit (event, data, callback) {
+		if (!this.gatewaySocket) {
+			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the device does not have a gateway socket.');
+			return;
+		}
+
+		if (!this.status.connected) {
+			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the gateway socket is not connected.');
+		}
+
+		this.gatewaySocket.emit(event, data, callback);
+	}
+
+	getGatewaySocketProxy () {
+		return {
+			on: this.gatewayOn,
+			emit: this.gatewayEmit
+		};
 	}
 
 	serialize () {
