@@ -18,7 +18,16 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 	}
 
 	getRecordings () {
-		this.gatewayEmit('recordings/get');
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('recordings/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.recordings);
+			});
+		});
 	}
 
 	listenToGateway () {}

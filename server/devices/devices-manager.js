@@ -4,10 +4,6 @@ const database = require('../database.js'),
 let devicesList = [];
 
 class DevicesManager {
-	constructor () {
-		this.loadDevicesFromDb(); // TODO: Move this?
-	}
-
 	addDevice (data) {
 		let device = this.getDeviceById(data.id);
 
@@ -28,6 +24,28 @@ class DevicesManager {
 		return device;
 	}
 
+	getDeviceById (deviceId) {
+		return devicesList.find((device) => device.id === deviceId);
+	}
+
+	getDeviceByServiceId (serviceId) {
+		return devicesList.find((device) => device.services.getServiceById(serviceId));
+	}
+
+	getDevicesByLocation (locationId) {
+		return devicesList.filter((device) => device.location === locationId);
+	}
+
+	getServiceById (serviceId) {
+		const device = this.getDeviceByServiceId(serviceId);
+
+		if (!device) {
+			return;
+		}
+
+		return device.services.getServiceById(serviceId);
+	}
+
 	addToSocketEscrow (deviceId, socket) {
 		socketEscrow[deviceId] = socket;
 	}
@@ -38,14 +56,6 @@ class DevicesManager {
 
 	removeFromSocketEscrow (deviceId) {
 		delete socketEscrow[deviceId];
-	}
-
-	getDeviceById (deviceId) {
-		return devicesList.find((device) => device.id === deviceId);
-	}
-
-	getDevicesByLocation (locationId) {
-		return devicesList.filter((device) => device.location === locationId);
 	}
 
 	loadDevicesFromDb () {

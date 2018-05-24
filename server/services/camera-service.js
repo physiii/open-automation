@@ -22,15 +22,19 @@ class CameraService extends Service {
 	}
 
 	getPreviewImage () {
-		this.driver.getPreview();
+		return this.driver.getPreview();
+	}
+
+	getRecordings () {
+		return this.driver.getRecordings();
 	}
 
 	streamLive () {
-		this.driver.streamLive();
+		return this.driver.streamLive();
 	}
 
 	stopStream () {
-		this.driver.stopStream();
+		return this.driver.stopStream();
 	}
 
 	serialize () {

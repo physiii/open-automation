@@ -17,6 +17,8 @@ module.exports = {
 	start: start
 };
 
+devices.loadDevicesFromDb();
+
 var transporter = nodemailer.createTransport(
 	smtpTransport({
 		service: config.mail.service,
@@ -33,6 +35,7 @@ function start (server) {
 	io.on('connection', function (socket) {
 		console.info(TAG, socket.id + ' | client connected');
 
+		// Gateway device connection
 		socket.on('gateway/device/connect', (data, callback) => {
 			const device = devices.getDeviceById(data.device_id);
 
@@ -58,13 +61,28 @@ function start (server) {
 			}
 		});
 
+
+		// Client API
+
 		socket.on('devices/get', (data, callback) => {
 			if (typeof callback === 'function') {
 				const locationDevices = devices.getDevicesByLocation(data.user_token);
-				// console.log('devices/get', locationDevices);
+
 				callback(null, {devices: devices.getClientSerializedDevices(locationDevices)});
 			}
 		});
+
+    socket.on('camera/recordings/get', function (data, callback) {
+    	if (typeof callback === 'function') {
+	    	const cameraService = devices.getServiceById(data.service_id);
+
+	    	cameraService.getRecordings().then((recordings) => {
+	    		callback(null, {recordings: recordings});
+	    	}).catch((error) => {
+	    		callback(error);
+	    	});
+	    }
+    });
 
 
 
@@ -300,6 +318,11 @@ function start (server) {
 		socket.on('disconnect', function () {
 			console.info(socket.id + ' | client disconnected');
 			var index = find_index(device_objects, 'socket', socket);
+
+			if (index < 0) {
+				return;
+			}
+
 			var device = device_objects[index];
 			for (var j = 0; j < device.groups.length; j++) {
 				//message group members

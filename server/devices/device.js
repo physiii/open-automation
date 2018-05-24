@@ -9,7 +9,12 @@ class Device {
 		this.id = data.id || uuid();
 		this.token = crypto.createHash('sha512').update(this.id).digest('hex'); // TODO: Salt token
 		this.location = data.location;
+
+		this.gatewayOn = this.gatewayOn.bind(this);
+		this.gatewayEmit = this.gatewayEmit.bind(this);
+
 		this.services = new ServicesManager(data.services, this);
+
 		this.setStatus(data.status || {});
 		this.setSettings(data.settings || {});
 		this.setInfo(data.info || {});
