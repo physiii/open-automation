@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Calendar from './Calendar.js';
-import VideoStream from './VideoStream.js';
+import VideoPlayer from './VideoPlayer.js';
 import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
@@ -35,10 +35,9 @@ export class CameraRecordings extends React.Component {
 					? <div>Loading Recordings</div>
 					: <div>
 						{this.props.selectedRecording
-							? <VideoStream
+							? <VideoPlayer
 								camera={this.props.camera}
-								file={this.props.selectedRecording.file}
-								shouldStream={true} />
+								video={this.props.selectedRecording} />
 							: <Calendar
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
@@ -70,12 +69,19 @@ CameraRecordings.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-		const camera = deviceById(ownProps.match.params.cameraId, state.devicesList),
-			selectedDate = moment([
-				ownProps.match.params.year,
-				ownProps.match.params.month - 1, // Subtract 1 from month because moment months are zero-based.
-				ownProps.match.params.date
-			]);
+		const camera = deviceById(ownProps.match.params.cameraId, state.devicesList);
+
+		// TODO: Handle camera not found.
+
+		let selectedDate = moment([
+			ownProps.match.params.year,
+			ownProps.match.params.month - 1, // Subtract 1 from month because moment months are zero-based.
+			ownProps.match.params.date
+		]);
+
+		if (!selectedDate.isValid()) {
+			selectedDate = moment();
+		}
 
 		return {
 			camera,

@@ -1,5 +1,7 @@
 const devicesWithoutGateways = (devicesList) => {
-		return devicesList.devices.filter((device) => device.type !== 'gateway');
+		return devicesList.devices.filter((device) => {
+			return !device.services.find((service) => service.type === 'gateway');
+		});
 	},
 	deviceById = (deviceId, devicesList) => {
 		return devicesList.devices.find((device) => device.id === deviceId);

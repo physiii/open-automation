@@ -49,6 +49,7 @@ export class VideoStream extends React.Component {
 		if (this.player.isPlaying === false) {
 			this.player.play();
 		}
+		console.log('framerate', this.player.video.frameRate);
 	}
 
 	stop () {
@@ -107,10 +108,10 @@ export const mapStateToProps = (state, ownProps) => {
 		return {
 			camera,
 			cameraId: camera.id,
-			jsmpegCamera: camera.camera_number,
-			jsmpegToken: camera.token,
-			width: camera.resolution.width,
-			height: camera.resolution.height
+			jsmpegCamera: camera.id,
+			jsmpegToken: null, // TODO
+			width: camera.settings.resolution_w || 640,
+			height: camera.settings.resolution_h || 480
 		};
 	},
 	mapDispatchToProps = (dispatch) => ({dispatch}),

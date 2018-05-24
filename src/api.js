@@ -14,18 +14,18 @@ class Api {
 	}
 
 	getDevices () {
-		return Api.apiCall('get devices');
+		return Api.apiCall('devices/get');
 	}
 
 	linkDevice (name, id) {
 		return Api.apiCall('link device', {device_name: name, mac: id});
 	}
 
-	stream (command, deviceToken, cameraNumber, file) {
+	stream (command, deviceToken, cameraServiceId, file) {
 		const options = {
 			command,
 			token: deviceToken,
-			camera_number: cameraNumber
+			camera_service_id: cameraServiceId
 		};
 
 		if (file) {
@@ -35,11 +35,8 @@ class Api {
 		return Api.apiCall('ffmpeg', options);
 	}
 
-	getRecordings (deviceToken, cameraNumber) {
-		return Api.apiCall('camera/recordings/get', {
-			device_token: deviceToken,
-			camera_number: cameraNumber
-		});
+	getRecordings (serviceId) {
+		return Api.apiCall('camera/recordings/get', {service_id: serviceId});
 	}
 
 	static apiCall (event, payload) {
@@ -53,8 +50,8 @@ class Api {
 					console.error('API error: ' + event, error); // TODO: Only log for dev build.
 					reject(new Error(error));
 				} else {
-					resolve(data);
 					console.log('API response: ' + event, data); // TODO: Only log for dev build.
+					resolve(data);
 				}
 			});
 		});

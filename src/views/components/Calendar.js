@@ -104,7 +104,7 @@ export class Calendar extends React.Component {
 		const month = this.state.selectedMonth;
 
 		return (
-			<time className="oa-Calendar" datetime={month.format('YYYY')}>
+			<time className="oa-Calendar" dateTime={month.format('YYYY')}>
 				<Toolbar
 					leftChildren={<Button className="oa-Calendar--previousMonthButton" onClick={this.selectPreviousMonth}>&lt;</Button>}
 					middleChildren={month.format('MMMM YYYY')}
@@ -119,12 +119,12 @@ export class Calendar extends React.Component {
 					<div className="oa-Calendar--dayHeading">Sat</div>
 				</div>
 				{this.getWeeksList(month).map((week, weekIndex) => {
-					const weekDate = moment(month).add(weekIndex, 'weeks');
+					const weekDate = moment(month).add(weekIndex, 'weeks'); // Create a new Moment date based on month so we don't mutate month.
 
 					return (
 						<time
 							className={weekIndex === 0 ? 'oa-Calendar--firstWeek' : 'oa-Calendar--week'}
-							datetime={weekDate.format('YYYY-[W]w')}
+							dateTime={weekDate.format('YYYY-[W]w')}
 							key={weekIndex}>
 							{week.map((day, dayIndex) => (
 								<time
@@ -133,7 +133,7 @@ export class Calendar extends React.Component {
 										(this.doesDateHaveEvent(day, this.props.events) ? ' oa-is-event' : '') +
 										(day.isSame(this.state.selectedDate, 'day') ? ' oa-is-selected' : '')
 									}
-									datetime={day.format('YYYY-MM-DD')}
+									dateTime={day.format('YYYY-MM-DD')}
 									key={dayIndex}>
 									<Button onClick={() => this.selectDate(day)}>
 										{day.date()}
@@ -151,7 +151,7 @@ export class Calendar extends React.Component {
 Calendar.propTypes = {
 	selectedDate: PropTypes.object,
 	selectedMonth: PropTypes.object,
-	events: PropTypes.array,
+	events: PropTypes.object, // TODO: Immutable List proptype (also allow array)
 	onSelect: PropTypes.func
 };
 

@@ -10,7 +10,7 @@ class WSSource extends JSMpeg.Source.WebSocket {
 		this.onOpen = this.onOpen.bind(this);
 	}
 	onOpen () {
-		originalOnOpen.call(this);
+		originalOnOpen.apply(this, arguments);
 		this.socket.send(JSON.stringify({
 			token: this.token,
 			camera: this.camera
