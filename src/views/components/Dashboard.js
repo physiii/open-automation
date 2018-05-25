@@ -4,7 +4,7 @@ import {Route} from 'react-router-dom';
 import DeviceCard from './DeviceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
-import {devicesWithoutGateways} from '../../state/ducks/devices-list/selectors.js';
+import {servicesWithoutGateways} from '../../state/ducks/services-list/selectors.js';
 import '../styles/layouts/_cardGrid.scss';
 
 export const Dashboard = (props) => {
@@ -37,7 +37,7 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-	devices: devicesWithoutGateways(state.devicesList)
+	devices: servicesWithoutGateways(state.servicesList)
 });
 
 export default connect(mapStateToProps)(Dashboard);

@@ -1,32 +1,30 @@
-const devicesWithoutGateways = (devicesList) => {
-		return devicesList.devices.filter((device) => {
-			return !device.services.find((service) => service.type === 'gateway');
-		});
+const servicesWithoutGateways = (servicesList) => {
+		return servicesList.services.filter((service) => service.type !== 'gateway');
 	},
-	deviceById = (deviceId, devicesList) => {
-		return devicesList.devices.find((device) => device.id === deviceId);
+	serviceById = (serviceId, servicesList) => {
+		return servicesList.services.find((service) => service.id === serviceId);
 	},
-	recordingsForDate = (camera, date) => {
-		if (!camera.recordingsList || !camera.recordingsList.recordings) {
+	recordingsForDate = (cameraService, date) => {
+		if (!cameraService.recordingsList || !cameraService.recordingsList.recordings) {
 			return null;
 		}
 
-		return camera.recordingsList.recordings.filter((recording) => date.isSame(recording.date, 'day'));
+		return cameraService.recordingsList.recordings.filter((recording) => date.isSame(recording.date, 'day'));
 	},
-	recordingById = (camera, recordingId) => {
-		if (!camera.recordingsList || !camera.recordingsList.recordings) {
+	recordingById = (cameraService, recordingId) => {
+		if (!cameraService.recordingsList || !cameraService.recordingsList.recordings) {
 			return null;
 		}
 
-		return camera.recordingsList.recordings.find((recording) => recording.id === recordingId);
+		return cameraService.recordingsList.recordings.find((recording) => recording.id === recordingId);
 	},
-	cameraRecordingsDateGrouped = (camera) => {
-		if (!camera.recordingsList || !camera.recordingsList.recordings) {
+	cameraRecordingsDateGrouped = (cameraService) => {
+		if (!cameraService.recordingsList || !cameraService.recordingsList.recordings) {
 			return null;
 		}
 
 		// Group by year
-		let recordings = camera.recordingsList.recordings.groupBy((recording) => new Date(recording.date).getFullYear()).toOrderedMap();
+		let recordings = cameraService.recordingsList.recordings.groupBy((recording) => new Date(recording.date).getFullYear()).toOrderedMap();
 
 		// Group by month and date
 		recordings.forEach((year, yearKey) => {
@@ -49,13 +47,13 @@ const devicesWithoutGateways = (devicesList) => {
 
 		return recordings;
 	},
-	hasInitialFetchCompleted = (devicesList) => {
-		return Boolean(devicesList.devices);
+	hasInitialFetchCompleted = (servicesList) => {
+		return Boolean(servicesList.services);
 	};
 
 export {
-	devicesWithoutGateways,
-	deviceById,
+	servicesWithoutGateways,
+	serviceById,
 	recordingsForDate,
 	recordingById,
 	cameraRecordingsDateGrouped,

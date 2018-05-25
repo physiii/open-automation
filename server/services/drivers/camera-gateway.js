@@ -6,15 +6,42 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 	}
 
 	streamLive () {
-		this.gatewayEmit('stream/live');
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('stream/live', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
 	}
 
-	stopStream () {
-		this.gatewayEmit('stream/stop');
+	stopLiveStream () {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('stream/stop', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	getPreview () {
-		this.gatewayEmit('preview/get');
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('preview/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.preview);
+			});
+		});
 	}
 
 	getRecordings () {
@@ -26,6 +53,32 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 				}
 
 				resolve(data.recordings);
+			});
+		});
+	}
+
+	streamRecording (recordingId) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('recording/stream', {recording_id: recordingId}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
+	}
+
+	stopRecordingStream (recordingId) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('recording/stream/stop', {recording_id: recordingId}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
 			});
 		});
 	}

@@ -1,15 +1,14 @@
-import Immutable from 'immutable';
-import DeviceRecord from './device-record.js';
+import ServiceRecord from './service-record.js';
 
-const resolution = Immutable.Record({
-	width: 640,
-	height: 480
-});
-
-class Camera extends DeviceRecord({
-	camera_number: null,
+// The Camera model defines the fields specific to a camera service and their defualt values.
+class Camera extends ServiceRecord({
 	recordingsList: null,
-	resolution: new resolution()
+	streaming_token: null,
+	settings: {
+		resolution_w: 640,
+		resolution_h: 480,
+		rotation: 0
+	}
 }) {}
 
 export default Camera;

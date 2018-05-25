@@ -1,12 +1,14 @@
 import Immutable from 'immutable';
 
-const DeviceRecord = (defaultValues) => class extends Immutable.Record({
+// The ServiceRecord defines the fields of services and their default values.
+const ServiceRecord = (defaultValues) => class extends Immutable.Record({
 	id: null,
 	type: null,
-	token: null,
-	services: [],
-	config: Immutable.Map({}),
-	...defaultValues
+	device_id: null,
+	...defaultValues,
+	settings: Immutable.Map({
+		...defaultValues.settings
+	})
 }) {};
 
-export default DeviceRecord;
+export default ServiceRecord;

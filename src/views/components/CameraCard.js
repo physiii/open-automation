@@ -4,7 +4,13 @@ import VideoPlayer from './VideoPlayer.js';
 
 export class CameraCard extends React.Component {
 	render () {
-		return <VideoPlayer camera={this.props.camera} />;
+		return (
+			<VideoPlayer
+				cameraServiceId={this.props.camera.id}
+				streamingToken={this.props.camera.streaming_token}
+				width={this.props.camera.settings.resolution_w}
+				height={this.props.camera.settings.resolution_h} />
+		);
 	}
 }
 

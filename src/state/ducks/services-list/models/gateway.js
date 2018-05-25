@@ -1,7 +1,8 @@
-import DeviceRecord from './device-record.js';
+import ServiceRecord from './service-record.js';
 
-class Gateway extends DeviceRecord({
-	mac: null
+// The Gateway model defines the fields specific to a gateway service and their defualt values.
+class Gateway extends ServiceRecord({
+	settings: {}
 }) {}
 
 export default Gateway;

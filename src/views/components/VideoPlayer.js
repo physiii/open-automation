@@ -15,9 +15,7 @@ export class VideoPlayer extends React.Component {
 	}
 
 	getAspectRatioPaddingTop () {
-		const aspectRatio = this.props.video && this.props.video.resolution
-			? this.props.video.resolution.height / this.props.video.resolution.width
-			: this.props.camera.settings.resolution_h / this.props.camera.settings.resolution_w;
+		const aspectRatio = this.props.height / this.props.width;
 
 		return (aspectRatio * 100) + '%'; // eslint-disable-line no-magic-numbers
 	}
@@ -30,13 +28,9 @@ export class VideoPlayer extends React.Component {
 						? <button className="oa-VideoPlayer--playButton">Play</button>
 						: null }
 				</div>
-				<div className="oa-VideoPlayer--video" style={{width: this.props.camera.settings.resolution_w}}>
+				<div className="oa-VideoPlayer--video" style={{width: this.props.width}}>
 					<span className="oa-VideoPlayer--aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
-					<VideoStream
-						className="oa-VideoPlayer--canvas"
-						camera={this.props.camera}
-						file={this.props.video ? this.props.video.file : null}
-						shouldStream={this.state.isPlaying} />
+					<VideoStream className="oa-VideoPlayer--canvas" {...this.props} shouldStream={this.state.isPlaying} />
 				</div>
 			</div>
 		);
@@ -44,8 +38,11 @@ export class VideoPlayer extends React.Component {
 }
 
 VideoPlayer.propTypes = {
-	camera: PropTypes.object,
-	video: PropTypes.object
+	cameraServiceId: PropTypes.string.isRequired,
+	recording: PropTypes.object,
+	streamingToken: PropTypes.string.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired
 };
 
 export default VideoPlayer;

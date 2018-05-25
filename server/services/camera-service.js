@@ -21,6 +21,14 @@ class CameraService extends Service {
 		this.settings.rotation = settings.rotation || 0;
 	}
 
+	streamLive () {
+		return this.driver.streamLive();
+	}
+
+	stopLiveStream () {
+		return this.driver.stopLiveStream();
+	}
+
 	getPreviewImage () {
 		return this.driver.getPreview();
 	}
@@ -29,12 +37,12 @@ class CameraService extends Service {
 		return this.driver.getRecordings();
 	}
 
-	streamLive () {
-		return this.driver.streamLive();
+	streamRecording (recordingId) {
+		return this.driver.streamRecording(recordingId);
 	}
 
-	stopStream () {
-		return this.driver.stopStream();
+	stopRecordingStream (recordingId) {
+		return this.driver.stopRecordingStream(recordingId);
 	}
 
 	serialize () {
@@ -49,7 +57,10 @@ class CameraService extends Service {
 	}
 
 	clientSerialize () {
-		return this.serialize();
+		return {
+			...this.serialize(),
+			streaming_token: this.device.token
+		};
 	}
 }
 

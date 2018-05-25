@@ -9,13 +9,11 @@ module.exports = {
   get_public_ip: get_public_ip
 }
 
-
-
-const crypto = require('crypto');
-var os = require('os');
-var request = require('request');
-var fs = require('fs');
-const exec = require('child_process').exec;
+const crypto = require('crypto'),
+	request = require('request'),
+	exec = require('child_process').exec;
+	os = require('os'),
+	fs = require('fs');
 
 // ---------------------- device info  ------------------- //
 var local_ip = "init";

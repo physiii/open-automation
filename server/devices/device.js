@@ -107,7 +107,7 @@ class Device {
 	serialize () {
 		return {
 			id: this.id,
-			location: this.location,
+			location_id: this.location.id || this.location,
 			settings: this.settings,
 			services: this.services.getSerializedServices(),
 			info: this.info

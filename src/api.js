@@ -21,22 +21,24 @@ class Api {
 		return Api.apiCall('link device', {device_name: name, mac: id});
 	}
 
-	stream (command, deviceToken, cameraServiceId, file) {
-		const options = {
-			command,
-			token: deviceToken,
-			camera_service_id: cameraServiceId
-		};
-
-		if (file) {
-			options.file = file;
-		}
-
-		return Api.apiCall('ffmpeg', options);
+	streamCameraLive (cameraServiceId) {
+		return Api.apiCall('camera/stream/live', {service_id: cameraServiceId});
 	}
 
-	getRecordings (serviceId) {
-		return Api.apiCall('camera/recordings/get', {service_id: serviceId});
+	stopCameraLiveStream (cameraServiceId) {
+		return Api.apiCall('camera/stream/stop', {service_id: cameraServiceId});
+	}
+
+	getRecordings (cameraServiceId) {
+		return Api.apiCall('camera/recordings/get', {service_id: cameraServiceId});
+	}
+
+	streamCameraRecording (cameraServiceId, recordingId) {
+		return Api.apiCall('camera/recording/stream', {service_id: cameraServiceId, recording_id: recordingId});
+	}
+
+	stopCameraRecordingStream (cameraServiceId, recordingId) {
+		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
 	static apiCall (event, payload) {
@@ -47,7 +49,7 @@ class Api {
 
 			api.relaySocket.emit(event, {...payload, user_token: api.token}, (error, data) => {
 				if (error) {
-					console.error('API error: ' + event, error); // TODO: Only log for dev build.
+					console.error('API error: ' + event, error, data); // TODO: Only log for dev build.
 					reject(new Error(error));
 				} else {
 					console.log('API response: ' + event, data); // TODO: Only log for dev build.

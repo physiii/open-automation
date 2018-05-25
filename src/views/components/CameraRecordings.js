@@ -5,8 +5,8 @@ import VideoPlayer from './VideoPlayer.js';
 import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {deviceById, recordingsForDate, recordingById} from '../../state/ducks/devices-list/selectors.js';
-import {fetchCameraRecordings} from '../../state/ducks/devices-list/operations.js';
+import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
+import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
 
 export class CameraRecordings extends React.Component {
 	constructor (props) {
@@ -16,11 +16,11 @@ export class CameraRecordings extends React.Component {
 	}
 
 	componentDidMount () {
-		this.props.fetchRecordings(this.props.camera);
+		this.props.fetchRecordings(this.props.cameraService);
 	}
 
 	getPathForDate (date) {
-		return `${this.props.basePath}/${this.props.camera.id}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
+		return `${this.props.basePath}/${this.props.cameraService.id}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
 	}
 
 	onDateSelect (date) {
@@ -36,8 +36,11 @@ export class CameraRecordings extends React.Component {
 					: <div>
 						{this.props.selectedRecording
 							? <VideoPlayer
-								camera={this.props.camera}
-								video={this.props.selectedRecording} />
+								cameraServiceId={this.props.cameraService.id}
+								recording={this.props.selectedRecording}
+								streamingToken={this.props.cameraService.streaming_token}
+								width={this.props.selectedRecording.width}
+								height={this.props.selectedRecording.height} />
 							: <Calendar
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
@@ -57,7 +60,7 @@ export class CameraRecordings extends React.Component {
 }
 
 CameraRecordings.propTypes = {
-	camera: PropTypes.object, // TODO: Immutable Record proptype (also allow object)
+	cameraService: PropTypes.object, // TODO: Immutable Record proptype (also allow object)
 	selectedDate: PropTypes.object,
 	allRecordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
 	selectedDateRecordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
@@ -69,7 +72,7 @@ CameraRecordings.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-		const camera = deviceById(ownProps.match.params.cameraId, state.devicesList);
+		const cameraService = serviceById(ownProps.match.params.cameraId, state.servicesList);
 
 		// TODO: Handle camera not found.
 
@@ -84,16 +87,16 @@ const mapStateToProps = (state, ownProps) => {
 		}
 
 		return {
-			camera,
+			cameraService,
 			selectedDate,
-			allRecordings: camera.recordingsList ? camera.recordingsList.recordings : null,
-			selectedDateRecordings: recordingsForDate(camera, selectedDate),
-			selectedRecording: recordingById(camera, ownProps.match.params.recordingId),
-			isLoading: camera.recordingsList.loading
+			allRecordings: cameraService.recordingsList ? cameraService.recordingsList.recordings : null,
+			selectedDateRecordings: recordingsForDate(cameraService, selectedDate),
+			selectedRecording: recordingById(cameraService, ownProps.match.params.recordingId),
+			isLoading: cameraService.recordingsList.loading
 		};
 	},
 	mapDispatchToProps = (dispatch) => ({
-		fetchRecordings: (camera) => dispatch(fetchCameraRecordings(camera))
+		fetchRecordings: (cameraService) => dispatch(fetchCameraRecordings(cameraService.id))
 	});
 
 export default connect(mapStateToProps, mapDispatchToProps)(CameraRecordings);

@@ -72,17 +72,123 @@ function start (server) {
 			}
 		});
 
-    socket.on('camera/recordings/get', function (data, callback) {
-    	if (typeof callback === 'function') {
-	    	const cameraService = devices.getServiceById(data.service_id);
+		// Camera Service API
 
-	    	cameraService.getRecordings().then((recordings) => {
-	    		callback(null, {recordings: recordings});
-	    	}).catch((error) => {
-	    		callback(error);
-	    	});
-	    }
-    });
+		socket.on('camera/stream/live', function (data, callback) {
+			const cameraService = devices.getServiceById(data.service_id);
+
+			// TODO: Confirm user has access to this service. If not, callback with service-not-found error.
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			cameraService.streamLive().then((stream_token) => {
+				if (typeof callback === 'function') {
+					callback(null, {stream_token});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('camera/stream/stop', function (data, callback) {
+			const cameraService = devices.getServiceById(data.service_id);
+
+			// TODO: Confirm user has access to this service. If not, callback with service-not-found error.
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			cameraService.stopLiveStream().then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('camera/recordings/get', function (data, callback) {
+			if (typeof callback === 'function') {
+				const cameraService = devices.getServiceById(data.service_id);
+
+				// TODO: Confirm user has access to this service. If not, callback with service-not-found error.
+
+				if (!cameraService) {
+					console.log('Service not found.', data);
+					callback('Service not found.', data);
+					return;
+				}
+
+				cameraService.getRecordings().then((recordings) => {
+					callback(null, {recordings});
+				}).catch((error) => {
+					callback(error, data);
+				});
+			}
+		});
+
+		socket.on('camera/recording/stream', function (data, callback) {
+			const cameraService = devices.getServiceById(data.service_id);
+
+			// TODO: Confirm user has access to this service. If not, callback with service-not-found error.
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			cameraService.streamRecording(data.recording_id).then((stream_token) => {
+				if (typeof callback === 'function') {
+					callback(null, {stream_token});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('camera/recording/stream/stop', function (data, callback) {
+			const cameraService = devices.getServiceById(data.service_id);
+
+			// TODO: Confirm user has access to this service. If not, callback with service-not-found error.
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			cameraService.stopRecordingStream(data.recording_id).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
 
 
 
