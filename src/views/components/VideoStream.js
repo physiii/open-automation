@@ -25,7 +25,9 @@ export class VideoStream extends React.Component {
 
 		// Only re-render if the camera or recording changes. This prevents unnecessary
 		// re-bootstrapping of JSMpeg.
-		if (nextProps.recording.id !== this.props.recording.id || nextProps.cameraServiceId !== this.props.cameraServiceId || nextProps.streamingToken !== this.props.streamingToken) {
+		if ((nextProps.recording && nextProps.recording.id) !== (this.props.recording && this.props.recording.id) ||
+			nextProps.cameraServiceId !== this.props.cameraServiceId ||
+			nextProps.streamingToken !== this.props.streamingToken) {
 			return true;
 		}
 
