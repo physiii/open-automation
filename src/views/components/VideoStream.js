@@ -35,6 +35,7 @@ export class VideoStream extends React.Component {
 	}
 
 	componentDidUpdate () {
+		this.stop();
 		this.bootstrapPlayer();
 	}
 
@@ -50,7 +51,6 @@ export class VideoStream extends React.Component {
 		if (this.player.isPlaying === false) {
 			this.player.play();
 		}
-		console.log('framerate', this.player.video.frameRate);
 	}
 
 	stop () {
@@ -102,7 +102,6 @@ VideoStream.propTypes = {
 export const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		startStreaming: () => {
-			console.log('Start streaming', ownProps.recording);
 			if (ownProps.recording) {
 				dispatch(startCameraRecordingStream(ownProps.recording));
 			} else {

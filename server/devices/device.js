@@ -8,7 +8,7 @@ class Device {
 	constructor (data) {
 		this.id = data.id || uuid();
 		this.token = crypto.createHash('sha512').update(this.id).digest('hex'); // TODO: Salt token
-		this.location = data.location;
+		this.location = data.location || data.location_id;
 
 		this.gatewayOn = this.gatewayOn.bind(this);
 		this.gatewayEmit = this.gatewayEmit.bind(this);
@@ -107,7 +107,7 @@ class Device {
 	serialize () {
 		return {
 			id: this.id,
-			location_id: this.location.id || this.location,
+			location_id: (this.location && this.location.id) || this.location,
 			settings: this.settings,
 			services: this.services.getSerializedServices(),
 			info: this.info
