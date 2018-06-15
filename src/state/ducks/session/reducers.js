@@ -23,7 +23,7 @@ const initialState = {
 					...state,
 					user: {
 						username: action.payload.username,
-						token: action.payload.token
+						xsrf_token: action.payload.xsrf_token
 					},
 					loading: false,
 					error: false
@@ -36,6 +36,18 @@ const initialState = {
 				};
 			case types.LOGOUT:
 				return initialState;
+			case types.REGISTER:
+				return {
+					...state,
+					loading: true,
+					error: false
+				};
+			case types.REGISTER_ERROR:
+				return {
+					...state,
+					loading: false,
+					error: action.payload.error.message
+				};
 			default:
 				return state;
 		}

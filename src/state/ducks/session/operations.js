@@ -4,63 +4,77 @@ import Api from '../../../api.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const initialize = (username = Cookies.get('user'), token = Cookies.get('token')) => (dispatch) => {
-		if (username && token) { // User is logged in.
-			dispatch(loginSuccess(username, token));
-		} else { // User is not logged in.
+const GENERIC_LOGIN_ERROR = 'An error occurred while logging in',
+	initialize = (username = Cookies.get('user')) => (dispatch) => {
+		// User is not logged in.
+		if (!username) {
 			dispatch(actions.initialize());
+
+			return;
 		}
+
+		// User is logged in.
+		dispatch(loginSuccess(username));
 	},
 	login = (username, password) => (dispatch) => {
 		// Dispatch login action (see loginSuccess call below for the action that actually saves user to store)
 		dispatch(actions.login());
 
 		// Post credentials to login endpoint on server.
-		axios.post('/api/login', {username, password}).then((response) => {
-			const {token} = response.data;
-
-			dispatch(loginSuccess(username, token));
-
-			Cookies.set('user', username);
-			Cookies.set('token', token);
+		axios.post('/api/login', {username, password}).then(() => {
+			dispatch(loginSuccess(username));
 		}).catch((error) => {
 			const unauthorizedErrorCode = 401;
-			let errorMessage;
+			let errorMessage = GENERIC_LOGIN_ERROR;
 
-			if (error.response) {
-				if (error.response.status === unauthorizedErrorCode) {
-					errorMessage = 'Username or password not correct';
-				} else {
-					errorMessage = 'An error occurred when logging in';
-				}
-			} else if (error.request) {
-				errorMessage = 'No response received when logging in';
-			} else {
-				errorMessage = 'An error occurred when logging in';
+			if (error.response && error.response.status === unauthorizedErrorCode) {
+				errorMessage = 'Username or password was incorrect';
 			}
 
-			dispatch(actions.loginError({error: new Error(errorMessage)}));
+			dispatch(actions.loginError(new Error(errorMessage)));
 			throw error;
 		});
 	},
-	loginSuccess = (username, token) => (dispatch) => {
-		Api.setApiToken(token);
-		Api.linkUser(username).then(() => {
-			dispatch(actions.loginSuccess(username, token));
+	loginSuccess = (username) => (dispatch) => {
+		const xsrfToken = Cookies.get('xsrf_token');
+
+		Cookies.set('user', username);
+
+		Api.initialize(xsrfToken).then(() => {
+			dispatch(actions.loginSuccess(username, xsrfToken));
 			dispatch(devices.operations.fetchDevices());
+		}).catch(() => {
+			Cookies.remove('user');
+
+			dispatch(actions.loginError(new Error(GENERIC_LOGIN_ERROR)));
 		});
 	},
 	logout = () => (dispatch) => {
-		Api.setApiToken(null);
-
 		dispatch(actions.logout());
 
 		Cookies.remove('user');
-		Cookies.remove('token');
+	},
+	register = (username, password) => (dispatch) => {
+		dispatch(actions.register());
+
+		axios.post('/api/register', {username, password}).then((response) => {
+			dispatch(loginSuccess(username));
+		}).catch((error) => {
+			const usernameConflictErrorCode = 409;
+			let errorMessage = 'An error occurred when registering';
+
+			if (error.response && error.response.status === usernameConflictErrorCode) {
+				errorMessage = 'An account already exists with that username';
+			}
+
+			dispatch(actions.registerError(new Error(errorMessage)));
+			throw error;
+		});
 	};
 
 export {
 	initialize,
 	login,
-	logout
+	logout,
+	register
 };

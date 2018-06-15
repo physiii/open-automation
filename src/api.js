@@ -1,16 +1,12 @@
 import io from 'socket.io-client';
 
+const SOCKET_CONNECT_TIMEOUT = 20000;
+
 class Api {
-	constructor () {
-		this.relaySocket = io();
-	}
+	initialize (xsrfToken) {
+		this.xsrf_token = xsrfToken;
 
-	setApiToken (token) {
-		this.token = token;
-	}
-
-	linkUser (username) {
-		return Api.apiCall('link user', {user: username});
+		return Api.openSocket();
 	}
 
 	getDevices () {
@@ -41,20 +37,54 @@ class Api {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
-	static apiCall (event, payload) {
+	static openSocket () {
 		return new Promise((resolve, reject) => {
-			if (!api.token) {
-				reject(new Error('No API token set'));
+			this.closeSocket();
+			api.relaySocket = io();
+
+			// Set a time limit for attempting to open the socket.
+			const timeout = setTimeout(() => {
+				reject(new Error('Timeout'));
+			}, SOCKET_CONNECT_TIMEOUT);
+
+			api.relaySocket.on('connect', () => {
+				clearTimeout(timeout);
+				resolve();
+			});
+		});
+	}
+
+	static closeSocket () {
+		return new Promise((resolve) => {
+			if (!api.relaySocket || !api.relaySocket.connected) {
+				resolve();
+
+				return;
 			}
 
-			api.relaySocket.emit(event, {...payload, user_token: api.token}, (error, data) => {
+			api.relaySocket.on('disconnect', resolve);
+			api.relaySocket.close();
+		});
+	}
+
+	static apiCall (event, payload) {
+		return new Promise((resolve, reject) => {
+			if (!api.relaySocket || !api.relaySocket.connected) {
+				reject(new Error('Relay socket not connected.'));
+
+				return;
+			}
+
+			api.relaySocket.emit(event, {...payload, xsrf_token: api.xsrf_token}, (error, data) => {
 				if (error) {
 					console.error('API error: ' + event, error, data); // TODO: Only log for dev build.
 					reject(new Error(error));
-				} else {
-					console.log('API response: ' + event, data); // TODO: Only log for dev build.
-					resolve(data);
+
+					return;
 				}
+
+				console.log('API response: ' + event, data); // TODO: Only log for dev build.
+				resolve(data);
 			});
 		});
 	}

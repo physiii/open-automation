@@ -1,6 +1,7 @@
 const database = require('../database.js'),
 	Device = require('./device.js'),
 	socketEscrow = {};
+
 let devicesList = [];
 
 class DevicesManager {
@@ -19,7 +20,7 @@ class DevicesManager {
 		this.removeFromSocketEscrow(data.id);
 
 		devicesList.push(device);
-		database.store_device(device);
+		database.saveDevice(device.dbSerialize());
 
 		return device;
 	}
@@ -60,7 +61,7 @@ class DevicesManager {
 
 	loadDevicesFromDb () {
 		return new Promise((resolve, reject) => {
-			database.get_devices().then((devices) => {
+			database.getDevices().then((devices) => {
 				devicesList = devices.map((device) => new Device(device));
 				resolve(devicesList);
 			}).catch((error) => {

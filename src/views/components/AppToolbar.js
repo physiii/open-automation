@@ -11,7 +11,7 @@ export const AppToolbar = (props) => (
 		<Toolbar
 			leftChildren={<Button to="/">Open Automation</Button>}
 			rightChildren={[
-				<button key="register">Register</button>,
+				<Button to="/register" key="register">Register</Button>,
 				props.isLoggedIn
 					? <Button to="/logout" key="logout">Logout</Button>
 					: <Button to="/login" key="login">Login</Button>

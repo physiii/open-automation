@@ -2,43 +2,37 @@
 // -----------------  https://github.com/physiii/open-automation  -------------------- //
 // ----------------------------- physiphile@gmail.com -------------------------------- //
 
+const fs = require('fs'),
+	path = require('path'),
+	database = require('./database.js'),
+	AccountsManager = require('./accounts/accounts-manager.js'),
+	DevicesManager = require('./devices/devices-manager.js');
 
-// ----------------------------------------------------- //
-// import config or create new config.json with defaults //
-// ----------------------------------------------------- //
-var fs = require('fs');
-
-config = {
-  "use_ssl": false,
-  "use_domain_ssl": false,
-  "website_port": 5000,
-  "website_secure_port": 443,
-  "video_websocket_port": 8084,
-  "video_stream_port": 8082,
-  "device_port": 4000
-}
-
+// Import config or create new config.json with defaults.
 try {
-  config = require('../config.json');
-} catch (e) {
-  var config_str = JSON.stringify(config).replace(",","\,\n  ");
-  config_str = config_str.replace("{","{\n  ").replace("}","\n}");
-  fs.writeFile(__dirname + "/config.json", config_str, (err) => {
-    if (err) throw err;
-    console.log("created config.json");
-  });
+	const config = require('../config.json');
+} catch (read_error) {
+	try {
+		fs.writeFileSync(path.join(__dirname, '../', '/config.json'), JSON.stringify({
+			use_ssl: false,
+			ssl_key_path: '',
+			ssl_cert_path: '',
+			api_token_issuer: null,
+			website_port: 5000,
+			website_secure_port: 443,
+			video_websocket_port: 8084,
+			video_stream_port: 8082,
+			device_port: 4000
+		}, null, '  '));
+
+		console.log('Created config.json with default configuration.');
+	} catch (write_error) {
+		throw write_error;
+	}
 }
 
-// ---------------- //
-// global variables //
-// ---------------- //
-accounts = [];
-groups = [];
-device_objects = [];
-device_sockets = [];
-status_objects = [];
-user_objects = [];
-user_sockets = [];
+AccountsManager.loadAccountsFromDb();
+DevicesManager.loadDevicesFromDb();
 
 var stream = require('./stream.js');
 var website = require('./website.js');

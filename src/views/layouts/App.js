@@ -6,6 +6,7 @@ import AppToolbar from '../components/AppToolbar.js';
 import Dashboard from '../components/Dashboard.js';
 import Settings from '../components/Settings.js';
 import LoginForm from '../components/LoginForm.js';
+import RegisterForm from '../components/RegisterForm.js';
 import Logout from '../components/Logout.js';
 import TabBar from '../components/TabBar.js';
 import {connect} from 'react-redux';
@@ -29,6 +30,7 @@ export const App = (props) => {
 				<PrivateRoute path="/dashboard" component={Dashboard} />
 				<PrivateRoute path="/settings" component={Settings} />
 				<Route path="/login" component={LoginForm} />
+				<Route path="/register" component={RegisterForm} />
 				<Route path="/logout" component={Logout} />
 			</div>
 			<div className="oa-l-app--tabBar">

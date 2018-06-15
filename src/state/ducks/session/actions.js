@@ -8,9 +8,9 @@ export const login = () => ({
 	type: types.LOGIN
 });
 
-export const loginSuccess = (username, token) => ({
+export const loginSuccess = (username, xsrfToken) => ({
 	type: types.LOGIN_SUCCESS,
-	payload: {username, token}
+	payload: {username, xsrf_token: xsrfToken}
 });
 
 export const loginError = (error) => ({
@@ -21,4 +21,14 @@ export const loginError = (error) => ({
 
 export const logout = () => ({
 	type: types.LOGOUT
+});
+
+export const register = () => ({
+	type: types.REGISTER
+});
+
+export const registerError = (error) => ({
+	type: types.REGISTER_ERROR,
+	payload: {error},
+	error: true
 });
