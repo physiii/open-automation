@@ -7,7 +7,7 @@ class Account {
 	constructor (data) {
 		this.id = data._id ? data._id.toHexString() : data.id;
 		this.username = data.username;
-		this.password = data.password;
+		this.password = data.password || data.token; // token is a legacy property.
 		this.salt = data.salt;
 		this.hash_algorithm = data.hash_algorithm || PASSWORD_HASH_ALGORITHM;
 
@@ -62,7 +62,7 @@ class Account {
 			jwt.sign({}, secret, {
 				issuer: issuer,
 				subject: this.id,
-				expiresIn: '15 minutes'
+				expiresIn: '1 week'
 			}, (error, access_token) => {
 				if (error) {
 					reject(error);
@@ -83,6 +83,13 @@ class Account {
 			salt: this.salt,
 			hash_algorithm: this.hash_algorithm,
 			registration_date: this.registration_date
+		};
+	}
+
+	clientSerialize () {
+		return {
+			id: this.id,
+			username: this.username
 		};
 	}
 

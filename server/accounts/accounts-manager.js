@@ -63,6 +63,10 @@ class AccountsManager {
 		}
 	}
 
+	isUsernameInUse (username) {
+		return Boolean(this.getAccountByUsername(username));
+	}
+
 	loadAccountsFromDb () {
 		return new Promise((resolve, reject) => {
 			database.getAccounts().then((accounts) => {

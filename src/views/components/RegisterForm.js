@@ -54,7 +54,10 @@ export class RegisterForm extends React.Component {
 RegisterForm.propTypes = {
 	isLoggedIn: PropTypes.bool,
 	isLoading: PropTypes.bool,
-	error: PropTypes.string,
+	error: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.bool
+	]),
 	register: PropTypes.func
 };
 

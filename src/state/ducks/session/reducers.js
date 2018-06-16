@@ -21,32 +21,39 @@ const initialState = {
 			case types.LOGIN_SUCCESS:
 				return {
 					...state,
-					user: {
-						username: action.payload.username,
-						xsrf_token: action.payload.xsrf_token
-					},
+					user: {username: action.payload.user.username},
 					loading: false,
 					error: false
 				};
-			case types.LOGIN_ERROR:
+			case types.LOGOUT:
 				return {
 					...state,
-					loading: false,
-					error: action.payload.error.message
+					loading: true,
+					error: false
 				};
-			case types.LOGOUT:
-				return initialState;
+			case types.LOGOUT_SUCCESS:
+				return {
+					...initialState,
+					loading: false
+				};
 			case types.REGISTER:
 				return {
 					...state,
 					loading: true,
 					error: false
 				};
+			case types.LOGIN_ERROR:
+			case types.LOGOUT_ERROR:
 			case types.REGISTER_ERROR:
 				return {
 					...state,
 					loading: false,
 					error: action.payload.error.message
+				};
+			case '@@router/LOCATION_CHANGE':
+				return {
+					...state,
+					error: false
 				};
 			default:
 				return state;

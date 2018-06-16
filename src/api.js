@@ -1,20 +1,35 @@
 import io from 'socket.io-client';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
-const SOCKET_CONNECT_TIMEOUT = 20000;
+const listeners = [],
+	SOCKET_CONNECT_TIMEOUT = 20000,
+	GENERIC_LOGIN_ERROR = 'An error occurred while trying to log in.';
 
 class Api {
-	initialize (xsrfToken) {
-		this.xsrf_token = xsrfToken;
+	connect () {
+		// Retrieve the CRSF token.
+		this.xsrf_token = Cookies.get('xsrf_token');
 
-		return Api.openSocket();
+		return new Promise((resolve, reject) => {
+			Api.openSocket().then(() => {
+				resolve();
+			}).catch((error) => {
+				reject(new Error(error));
+			});
+		});
+	}
+
+	on (event, callback) {
+		listeners.push({event, callback});
+
+		if (this.relaySocket && this.relaySocket.connected) {
+			this.relaySocket.on(event, callback);
+		}
 	}
 
 	getDevices () {
 		return Api.apiCall('devices/get');
-	}
-
-	linkDevice (name, id) {
-		return Api.apiCall('link device', {device_name: name, mac: id});
 	}
 
 	streamCameraLive (cameraServiceId) {
@@ -37,9 +52,74 @@ class Api {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
+	// Session API
+
+	login (username, password) {
+		return new Promise((resolve, reject) => {
+			axios.post('/api/login', {username, password}).then((response) => {
+				// Connect to Socket.io API.
+				this.connect().then(() => {
+					resolve(response.data.account);
+				}).catch(() => {
+					reject(new Error(GENERIC_LOGIN_ERROR));
+				});
+			}).catch((error) => {
+				const unauthorizedErrorCode = 401;
+				let errorMessage = GENERIC_LOGIN_ERROR;
+
+				if (error.response && error.response.status === unauthorizedErrorCode) {
+					errorMessage = 'Username or password is incorrect.';
+				}
+
+				reject(new Error(errorMessage));
+			});
+		});
+	}
+
+	logout () {
+		return new Promise((resolve, reject) => {
+			axios.post('/api/logout', null).then(() => {
+				Api.closeSocket().then(resolve);
+			}).catch(() => {
+				reject(new Error('An error occurred while trying to log out.'));
+			});
+		});
+	}
+
+	getAccount () {
+		return new Promise((resolve, reject) => {
+			axios.get('/api/account').then((response) => {
+				resolve(response.data.account);
+			}).catch(() => {
+				reject(new Error('Could not retrieve account information.'));
+			});
+		});
+	}
+
+	createAccount (accountData) {
+		return new Promise((resolve, reject) => {
+			axios.post('/api/account', {
+				username: accountData.username,
+				password: accountData.password
+			}).then((response) => {
+				resolve(response.data.account);
+			}).catch((error) => {
+				const usernameConflictErrorCode = 409;
+				let errorMessage = 'An error occurred while trying to create the account.';
+
+				if (error.response && error.response.status === usernameConflictErrorCode) {
+					errorMessage = 'An account already exists with that username.';
+				}
+
+				reject(new Error(errorMessage));
+			});
+		});
+	}
+
 	static openSocket () {
 		return new Promise((resolve, reject) => {
 			this.closeSocket();
+
 			api.relaySocket = io();
 
 			// Set a time limit for attempting to open the socket.
@@ -50,6 +130,11 @@ class Api {
 			api.relaySocket.on('connect', () => {
 				clearTimeout(timeout);
 				resolve();
+			});
+
+			// Set up listeners on new socket connection.
+			listeners.forEach(({event, callback}) => {
+				api.relaySocket.on(event, callback);
 			});
 		});
 	}

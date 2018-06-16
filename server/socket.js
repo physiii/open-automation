@@ -42,20 +42,24 @@ function start (server, jwt_secret) {
 
 		// TODO: Allow passing access_token through query params for non-browser clients (e.g. gateway devices).
 		if (!cookies.access_token) {
-			console.log(TAG, 'Closing socket connection due to no access token.', socket.id);
-
-			socket.disconnect();
-
+			handleAuthenticationError('no access token');
 			return;
+		}
+
+		function handleAuthenticationError (error) {
+			console.log(TAG, 'Closing socket connection due to authentication error (' + error + ').', socket.id);
+
+			socket.emit('session', {error: error || true});
+
+			// Closing socket connection on authentication error because the
+			// client must reconnect for socket server to get latest cookies.
+			socket.disconnect();
 		}
 
 		function verifyAccessToken (callback) {
 			jwt.verify(cookies.access_token, jwt_secret, {issuer: config.api_token_issuer}, (error, claims) => {
 				if (error) {
-					console.log(TAG, 'Closing socket connection due to invalid access token.', socket.id);
-
-					socket.disconnect();
-
+					handleAuthenticationError('invalid access token ' + error.name);
 					return;
 				}
 
@@ -70,9 +74,10 @@ function start (server, jwt_secret) {
 					console.log(TAG, 'Rejecting API request due to incorrect XSRF token.', socket.id);
 
 					if (typeof clientCallback === 'function') {
-						clientCallback('authorization');
+						clientCallback('authentication');
 					}
 
+					handleAuthenticationError('incorrect XSRF token');
 					return;
 				}
 

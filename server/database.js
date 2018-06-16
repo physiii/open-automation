@@ -93,10 +93,15 @@ function saveAccount (account) {
 
 	delete account_temp.socket;
 
+	// Delete undefined _id property so MongoDB will assign an id.
+	if (!account_temp._id) {
+		delete account_temp._id;
+	}
+
 	return new Promise((resolve, reject) => {
 		connect((db) => {
 			db.collection('accounts').updateOne(
-				{_id: new ObjectId(account_temp._id)},
+				{_id: ObjectId(account_temp._id)},
 				{$set: account_temp},
 				{upsert: true},
 				(error, data) => {
@@ -116,5 +121,5 @@ function saveAccount (account) {
 }
 
 function generateId (id) {
-	return new ObjectId(id);
+	return ObjectId(id);
 }
