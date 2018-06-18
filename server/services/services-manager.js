@@ -21,6 +21,10 @@ class ServicesManager {
 			case 'camera':
 				service = new CameraService(data, GatewayCameraDriver);
 				break;
+			case 'lock':
+				break;
+			case 'thermostat':
+				break;
 			default:
 				service = new Service(data);
 				break;
