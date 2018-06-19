@@ -256,6 +256,31 @@ function start (server) {
 			});
 		});
 
+		socket.on('thermostat/temp/set', function (data, callback) {
+			const thermostatService = devices.getServiceById(data.service_id);
+
+			if (!thermostatService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			thermostatService.setTemp(data.temp, data.mode, data.hold);
+			/*
+			.then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+			*/
+		});
+
 
 
 

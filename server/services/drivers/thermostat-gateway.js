@@ -7,7 +7,7 @@ class GatewayThermostatDriver extends GatewayServiceDriver {
 
   setTemp (temp, mode, hold) {
     return new Promise((resolve, reject) => {
-      this.gatewayEmit('thermostat/setTemp', {temp: temp, mode: mode, hold: hold}, (error, data) => {
+      this.gatewayEmit('thermostat/temp/set', {temp: temp, mode: mode, hold: hold}, (error, data) => {
         if (error) {
           reject(error);
           return;
