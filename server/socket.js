@@ -190,6 +190,72 @@ function start (server) {
 			});
 		});
 
+		socket.on('lock/lock/setlock', function (data, callback) {
+			const lockService = devices.getServiceById(data.service_id);
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lockService.lock().then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('lock/lock/setunlock', function (data, callback) {
+			const lockService = devices.getServiceById(data.service_id);
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lockService.unlock().then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('lock/lock/relockDelay', function (data, callback) {
+			const lockService = devices.getServiceById(data.service_id);
+
+			if (!cameraService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lockService.setRelockDelay(data.relock_delay).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
 
 
 

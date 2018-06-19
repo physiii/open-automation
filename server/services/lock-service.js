@@ -7,51 +7,31 @@ class LockService extends Service {
 
 		this.type = 'lock';
 
-		//this.setSettings(data.settings || {});
-
 		this.driver = new driverClass(this.id);
 		this.subscribeToDriver();
 	}
 
 	subscribeToDriver () {}
-/*
-	setSettings (settings) {
-		this.settings.resolution_w = settings.resolution_w || 640;
-		this.settings.resolution_h = settings.resolution_h || 480;
-		this.settings.rotation = settings.rotation || 0;
+
+	lock () {
+		return this.driver.lock();
 	}
 
-	streamLive () {
-		return this.driver.streamLive();
+	unlock () {
+		return this.driver.unlock();
 	}
 
-	stopLiveStream () {
-		return this.driver.stopLiveStream();
+	setRelockDelay () {
+		return this.driver.setRelockDelay();
 	}
 
-	getPreviewImage () {
-		return this.driver.getPreview();
-	}
-
-	getRecordings () {
-		return this.driver.getRecordings();
-	}
-
-	streamRecording (recordingId) {
-		return this.driver.streamRecording(recordingId);
-	}
-
-	stopRecordingStream (recordingId) {
-		return this.driver.stopRecordingStream(recordingId);
-	}
-*/
 	serialize () {
 		return {
 			...Service.prototype.serialize.apply(this, arguments),
-			os_device_path: this.os_device_path
+			zwave_node_id: this.zwave_node_id
 		};
 	}
-
+/*
 	dbSerialize () {
 		return this.serialize();
 	}
@@ -62,6 +42,7 @@ class LockService extends Service {
 			streaming_token: this.device.token
 		};
 	}
+	*/
 }
 
 module.exports = LockService;

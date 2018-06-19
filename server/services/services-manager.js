@@ -1,6 +1,8 @@
 const Service = require('./service.js'),
 	CameraService = require('./camera-service.js'),
 	GatewayCameraDriver = require('./drivers/camera-gateway.js');
+	LockService = require('./lock-service.js');
+	GatewayLockDriver = require('./drivers/camera-gateway.js');
 
 class ServicesManager {
 	constructor (services = [], device) {
@@ -22,6 +24,7 @@ class ServicesManager {
 				service = new CameraService(data, GatewayCameraDriver);
 				break;
 			case 'lock':
+				service = new LockService(data, GatewayLockDriver);
 				break;
 			case 'thermostat':
 				break;
