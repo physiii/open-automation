@@ -21,8 +21,8 @@ class LockService extends Service {
 		return this.driver.unlock();
 	}
 
-	setRelockDelay () {
-		return this.driver.setRelockDelay();
+	setRelockDelay (delay) {
+		return this.driver.setRelockDelay(delay);
 	}
 
 	serialize () {

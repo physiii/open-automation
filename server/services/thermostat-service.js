@@ -14,41 +14,18 @@ class ThermostatService extends Service {
 	}
 
 	subscribeToDriver () {}
-  /*
-	setSettings (settings) {
-		this.settings.resolution_w = settings.resolution_w || 640;
-		this.settings.resolution_h = settings.resolution_h || 480;
-		this.settings.rotation = settings.rotation || 0;
+
+	setTemp(temp, mode, hold) {
+		this.driver.setTemp (temp, mode, hold);
 	}
 
-	streamLive () {
-		return this.driver.streamLive();
+	fanMode (Mode) {
+		this.driver.fanMode (mode);
 	}
 
-	stopLiveStream () {
-		return this.driver.stopLiveStream();
-	}
-
-	getPreviewImage () {
-		return this.driver.getPreview();
-	}
-
-	getRecordings () {
-		return this.driver.getRecordings();
-	}
-
-	streamRecording (recordingId) {
-		return this.driver.streamRecording(recordingId);
-	}
-
-	stopRecordingStream (recordingId) {
-		return this.driver.stopRecordingStream(recordingId);
-	}
-  */
 	serialize () {
 		return {
-			...Service.prototype.serialize.apply(this, arguments),
-			os_device_path: this.os_device_path
+			...Service.prototype.serialize.apply(this, arguments);
 		};
 	}
 
@@ -62,6 +39,7 @@ class ThermostatService extends Service {
 			streaming_token: this.device.token
 		};
 	}
+
 }
 
 module.exports = ThermostatService;
