@@ -3,7 +3,7 @@ import * as devices from '../devices-list';
 import Api from '../../../api.js';
 
 const initialize = () => (dispatch) => {
-		Api.getAccount().then((user) => {
+		Api.getAccessToken().then((user) => {
 			// User is logged in. Connect to API.
 			Api.connect().then(() => {
 				dispatch(loginSuccess(user));

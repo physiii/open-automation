@@ -1,4 +1,5 @@
-const crypto = require('crypto'),
+const database = require('../database.js'),
+	crypto = require('crypto'),
 	jwt = require('jsonwebtoken'),
 	PASSWORD_HASH_ALGORITHM = 'sha512',
 	PASSWORD_SALT_SIZE = 64,
@@ -21,7 +22,9 @@ class Account {
 		return new Promise((resolve, reject) => {
 			this._hashPassword(password).then((password_hash) => {
 				this.password = password_hash;
-				resolve(this.password);
+				this.save().then(() => {
+					resolve();
+				}).catch(reject);
 			}).catch(reject);
 		});
 	}
@@ -43,14 +46,14 @@ class Account {
 			if (this.salt) {
 				resolve(this.salt);
 			} else {
-				crypto.randomBytes(PASSWORD_SALT_SIZE, (error, buffer) => {
+				crypto.randomBytes(PASSWORD_SALT_SIZE, (error, salt_buffer) => {
 					if (error) {
 						reject(error);
 
 						return;
 					}
 
-					this.salt = buffer.toString('hex');
+					this.salt = salt_buffer.toString('hex');
 
 					resolve(this.salt);
 				});
@@ -60,16 +63,20 @@ class Account {
 
 	generateAccessToken (issuer, secret) {
 		return new Promise((resolve, reject) => {
-			this.generateXsrfToken().then((xsrf_token) => {
+			Promise.all([
+				this.generateXsrfToken(),
+				this.generateRefreshToken()
+			]).then(([xsrf_token, refresh_token]) => {
 				jwt.sign(
 					{
-						xsrf_token
+						xsrf_token,
+						refresh_token
 					},
 					secret,
 					{
-						issuer: issuer,
+						issuer,
 						subject: this.id,
-						expiresIn: '1 week'
+						expiresIn: '3 days'
 					},
 					(error, access_token) => {
 						if (error) {
@@ -81,7 +88,7 @@ class Account {
 						resolve({access_token, xsrf_token});
 					}
 				);
-			});
+			}).catch(reject);
 		});
 	}
 
@@ -98,9 +105,36 @@ class Account {
 		});
 	}
 
+	generateRefreshToken () {
+		// Re-hash hashed password to serve as refresh token. If the account's
+		// password is changed, it will invalidate the refresh token.
+		return this._hashPassword(this.password);
+	}
+
+	verifyRefreshToken (refresh_token) {
+		return new Promise((resolve, reject) => {
+			this.generateRefreshToken().then((valid_refresh_token) => {
+				resolve(refresh_token === valid_refresh_token);
+			}).catch(reject);
+		});
+	}
+
+	save () {
+		return new Promise((resolve, reject) => {
+			database.saveAccount(this.dbSerialize()).then((account_id) => {
+				// Update the account's ID with the database-generated ID.
+				if (!this.id) {
+					this.id = account_id;
+				}
+
+				resolve(account_id);
+			}).catch(reject);
+		});
+	}
+
 	dbSerialize () {
 		return {
-			_id: this.id,
+			id: this.id,
 			username: this.username,
 			password: this.password,
 			salt: this.salt,

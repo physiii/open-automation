@@ -26,22 +26,11 @@ class AccountsManager {
 				...new_account
 			});
 
-		function errorHandler (error) {
-			this._removeAccount(account.id);
-			reject(error);
-		}
-
 		return new Promise((resolve, reject) => {
 			account.setPassword(password).then(() => {
-				database.saveAccount(account.dbSerialize()).then((account_id) => {
-					// Update the account's ID with the database-generated ID.
-					account.id = account_id;
-
-					this._addAccount(account);
-
-					resolve(account);
-				}).catch(errorHandler);
-			}).catch(errorHandler);
+				this._addAccount(account);
+				resolve(account);
+			}).catch(reject);
 		});
 	}
 

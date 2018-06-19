@@ -89,20 +89,15 @@ function getAccounts () {
 }
 
 function saveAccount (account) {
-	const account_temp = {...account};
+	const account_id = account.id;
 
-	delete account_temp.socket;
-
-	// Delete undefined _id property so MongoDB will assign an id.
-	if (!account_temp._id) {
-		delete account_temp._id;
-	}
+	delete account.id;
 
 	return new Promise((resolve, reject) => {
 		connect((db) => {
 			db.collection('accounts').updateOne(
-				{_id: ObjectId(account_temp._id)},
-				{$set: account_temp},
+				{_id: ObjectId(account_id)},
+				{$set: account},
 				{upsert: true},
 				(error, data) => {
 					db.close();
@@ -114,7 +109,7 @@ function saveAccount (account) {
 						return;
 					}
 
-					resolve(data.result.upserted[0]._id.toHexString());
+					resolve(data.upsertedId ? data.upsertedId._id.toHexString() : data.modifiedCount);
 				}, reject);
 		});
 	});

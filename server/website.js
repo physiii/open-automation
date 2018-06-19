@@ -2,18 +2,13 @@
 // -----------------  https://github.com/physiii/open-automation  -------------------- //
 // --------------------------------- website.js -------------------------------------- //
 
-const database = require('./database.js'),
-	config = require('../config.json'),
-	utils = require('./utils.js'),
+const config = require('../config.json'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	uuid = require('uuid/v4'),
-	crypto = require('crypto'),
 	express = require('express'),
 	socket = require('./socket.js'),
 	bodyParser = require('body-parser'),
 	cookie = require('cookie'),
-	path = require('path'),
-	url = require('url'),
 	fs = require('fs'),
 	https = require('https'),
 	http = require('http'),
@@ -27,7 +22,8 @@ const database = require('./database.js'),
 	WEBSITE_PORT = config.website_port || 5000,
 	WEBSITE_SECURE_PORT = config.website_secure_port || 4443,
 	IS_SSL_ENABLED = config.use_ssl || false,
-	IS_DEV_ENABLED = config.use_dev || false;
+	IS_DEV_ENABLED = config.use_dev || false,
+	MILLISECONDS_PER_SECOND = 1000;
 
 let SSL_KEY, SSL_CERT;
 
@@ -53,6 +49,35 @@ function start (app) {
 
 	// Set JSON Web Tokens secret.
 	const JWT_SECRET = SSL_KEY || uuid();
+
+	function verifyAccessToken (access_token, xsrf_token) {
+		return new Promise((resolve, reject) => {
+			if (!access_token) {
+				reject('No access token');
+				return;
+			}
+
+			jwt.verify(access_token, JWT_SECRET, {issuer: config.api_token_issuer}, (error, claims) => {
+				// Access token is invalid.
+				if (error) {
+					reject('Invalid access token ' + error.name);
+					return;
+				}
+
+				// Access token or CSRF token is invalid.
+				if (xsrf_token !== claims.xsrf_token) {
+					reject('Invalid XSRF token');
+					return;
+				}
+
+				// Get the account for the account ID provided by the access token.
+				resolve({
+					account: AccountsManager.getAccountById(claims.sub),
+					refresh_token: claims.refresh_token
+				});
+			});
+		});
+	}
 
 	// Set up webpack middleware (for automatic compiling/hot reloading).
 	if (IS_DEV_ENABLED) {
@@ -97,7 +122,7 @@ function start (app) {
 			}
 
 			// Password is correct.
-			return done(null, {account});
+			return done(null, account);
 		}).catch(() => {
 			return done(null, false);
 		});
@@ -114,12 +139,8 @@ function start (app) {
 		response.send(ip);
 	});
 
-	app.post(
-		'/api/login',
-		passport.authenticate('local'),
-		(request, response) => {
-			const account = request.user.account;
-
+	app.post('/api/token', (request, response, next) => {
+		function respondWithAccessToken (account) {
 			// Generate access token and CSRF token.
 			account.generateAccessToken(config.api_token_issuer, JWT_SECRET).then((tokens) => {
 				// Store the access token in a cookie on client. This cookie
@@ -129,14 +150,56 @@ function start (app) {
 
 				response.json({
 					account: account.clientSerialize(),
-					xsrf_token: tokens.xsrf_token
+					xsrf_token: tokens.xsrf_token,
+					access_token_expires: jwt.decode(tokens.access_token).exp * MILLISECONDS_PER_SECOND
 				});
 			}).catch((error) => {
 				console.log('Login ' + account.username + ': token signing error.', error);
 				response.sendStatus(500);
 			});
 		}
-	);
+
+		if (request.body.grant_type === 'password') {
+			// Authenticate user credentials.
+			passport.authenticate('local', (error, account) => {
+				if (error) {
+					return next(error);
+				}
+
+				if (!account) {
+					return response.sendStatus(401);
+				}
+
+				// Login successful.
+				request.logIn(account, (error) => {
+					if (error) {
+						return next(error);
+					}
+
+					respondWithAccessToken(account);
+				});
+			})(request, response, next);
+		} else if (request.body.grant_type === 'refresh') {
+			const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
+
+			verifyAccessToken(cookies.access_token, request.headers['x-xsrf-token']).then(({account, refresh_token}) => {
+				account.verifyRefreshToken(refresh_token).then((is_refresh_token_valid) => {
+					if (is_refresh_token_valid) {
+						respondWithAccessToken(account);
+					} else {
+						response.sendStatus(401);
+					}
+				}).catch(() => {
+					response.sendStatus(500);
+				});
+			}).catch((error) => {
+				console.log(error);
+				response.sendStatus(401);
+			});
+		} else {
+			response.sendStatus(400);
+		}
+	});
 
 	app.post('/api/logout', (request, response) => {
 		// Delete the token cookies from client.
@@ -163,36 +226,6 @@ function start (app) {
 		}).catch((error) => {
 			console.error('Tried to create an account, but there was an error.', error);
 			response.sendStatus(500);
-		});
-	});
-
-	app.get('/api/account', (request, response) => {
-		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
-
-		// There's no access token cookie.
-		if (!cookies.access_token) {
-			response.sendStatus(401);
-			return;
-		}
-
-		// Verify access token.
-		jwt.verify(cookies.access_token, JWT_SECRET, {issuer: config.api_token_issuer}, (error, claims) => {
-			// Access token or CSRF token is invalid.
-			if (error || request.headers['x-xsrf-token'] !== claims.xsrf_token) {
-				response.sendStatus(401);
-				return;
-			}
-
-			// Get the account for the account ID provided by the access token.
-			const account = AccountsManager.getAccountById(claims.sub);
-
-			// Account for ID wasn't found.
-			if (!account) {
-				response.sendStatus(404);
-				return;
-			}
-
-			response.json({account: account.clientSerialize()});
 		});
 	});
 

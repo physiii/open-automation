@@ -32,7 +32,7 @@ class Device {
 
 	setSettings (settings) {
 		this.settings = {
-			name:  settings.name
+			name: settings.name
 		};
 	}
 
@@ -42,8 +42,13 @@ class Device {
 		};
 	}
 
-	setGatewaySocket (socket) {
+	setGatewaySocket (socket, token) {
 		if (socket === this.gatewaySocket) {
+			return;
+		}
+
+		if (!token || !this.verifyToken(token)) {
+			console.log(TAG, this.id, 'Could not set gateway socket. Invalid device token.');
 			return;
 		}
 
@@ -102,6 +107,10 @@ class Device {
 			on: this.gatewayOn,
 			emit: this.gatewayEmit
 		};
+	}
+
+	verifyToken (token) {
+		return token === this.token;
 	}
 
 	serialize () {

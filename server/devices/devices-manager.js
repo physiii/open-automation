@@ -14,10 +14,10 @@ class DevicesManager {
 
 		device = new Device({
 			...data,
-			socket: data.socket || this.getFromSocketEscrow(data.id)
+			socket: data.socket || this.getFromSocketEscrow(data.id, data.token)
 		});
 
-		this.removeFromSocketEscrow(data.id);
+		this.removeFromSocketEscrow(data.id, data.token);
 
 		devicesList.push(device);
 		database.saveDevice(device.dbSerialize());
@@ -47,16 +47,16 @@ class DevicesManager {
 		return device.services.getServiceById(serviceId);
 	}
 
-	addToSocketEscrow (deviceId, socket) {
-		socketEscrow[deviceId] = socket;
+	addToSocketEscrow (deviceId, deviceToken, socket) {
+		socketEscrow[deviceId + deviceToken] = socket;
 	}
 
-	getFromSocketEscrow (deviceId) {
-		return socketEscrow[deviceId];
+	getFromSocketEscrow (deviceId, deviceToken) {
+		return socketEscrow[deviceId + deviceToken];
 	}
 
-	removeFromSocketEscrow (deviceId) {
-		delete socketEscrow[deviceId];
+	removeFromSocketEscrow (deviceId, deviceToken) {
+		delete socketEscrow[deviceId + deviceToken];
 	}
 
 	loadDevicesFromDb () {
