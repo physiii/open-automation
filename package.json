@@ -19,7 +19,6 @@
     "getmac": "^1.4.1",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
-    "js-cookie": "^2.2.0",
     "jsonwebtoken": "^8.3.0",
     "moment": "^2.22.1",
     "mongodb": "^2.2.1",

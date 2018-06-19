@@ -1,7 +1,8 @@
 const crypto = require('crypto'),
 	jwt = require('jsonwebtoken'),
 	PASSWORD_HASH_ALGORITHM = 'sha512',
-	PASSWORD_SALT_SIZE = 64;
+	PASSWORD_SALT_SIZE = 64,
+	XSRF_TOKEN_SIZE = 16;
 
 class Account {
 	constructor (data) {
@@ -59,18 +60,40 @@ class Account {
 
 	generateAccessToken (issuer, secret) {
 		return new Promise((resolve, reject) => {
-			jwt.sign({}, secret, {
-				issuer: issuer,
-				subject: this.id,
-				expiresIn: '1 week'
-			}, (error, access_token) => {
+			this.generateXsrfToken().then((xsrf_token) => {
+				jwt.sign(
+					{
+						xsrf_token
+					},
+					secret,
+					{
+						issuer: issuer,
+						subject: this.id,
+						expiresIn: '1 week'
+					},
+					(error, access_token) => {
+						if (error) {
+							reject(error);
+
+							return;
+						}
+
+						resolve({access_token, xsrf_token});
+					}
+				);
+			});
+		});
+	}
+
+	generateXsrfToken () {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(XSRF_TOKEN_SIZE, (error, token_buffer) => {
 				if (error) {
 					reject(error);
-
 					return;
 				}
 
-				resolve(access_token);
+				resolve(token_buffer.toString('hex'));
 			});
 		});
 	}

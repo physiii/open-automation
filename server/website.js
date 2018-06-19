@@ -27,28 +27,13 @@ const database = require('./database.js'),
 	WEBSITE_PORT = config.website_port || 5000,
 	WEBSITE_SECURE_PORT = config.website_secure_port || 4443,
 	IS_SSL_ENABLED = config.use_ssl || false,
-	IS_DEV_ENABLED = config.use_dev || false,
-	PASSWORD_HASH_ALGORITHM = 'sha512',
-	XSRF_TOKEN_SIZE = 16;
+	IS_DEV_ENABLED = config.use_dev || false;
 
 let SSL_KEY, SSL_CERT;
 
 module.exports = {
 	start
 };
-
-function generateXsrfToken () {
-	return new Promise((resolve, reject) => {
-		crypto.randomBytes(XSRF_TOKEN_SIZE, (error, token_buffer) => {
-			if (error) {
-				reject(error);
-				return;
-			}
-
-			resolve(token_buffer.toString('hex'));
-		});
-	});
-}
 
 function start (app) {
 	var port,
@@ -85,21 +70,11 @@ function start (app) {
 		app.use(WebpackHotMiddleware(webpack_compiler));
 	}
 
-	app.use(bodyParser.json()); // support json encoded bodies
-	app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
+	// Support json encoded bodies.
+	app.use(bodyParser.json());
 
-	// TODO: Investigate removing allowCrossDomain.
-	app.use(function allowCrossDomain (req, res, next) {
-		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-		res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-
-		if ('OPTIONS' == req.method) {
-			res.send(200);
-		} else {
-			next();
-		}
-	});
+	// Support encoded bodies.
+	app.use(bodyParser.urlencoded({extended: true}));
 
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -146,17 +121,16 @@ function start (app) {
 			const account = request.user.account;
 
 			// Generate access token and CSRF token.
-			Promise.all([
-				account.generateAccessToken(config.api_token_issuer, JWT_SECRET),
-				generateXsrfToken()
-			]).then(([access_token, xsrf_token]) => {
-				// Store the tokens in cookies on client.
-				response.setHeader('Set-Cookie', [
-					'access_token=' + access_token + '; path=/; HttpOnly;' + (IS_SSL_ENABLED ? ' Secure;' : ''),
-					'xsrf_token=' + xsrf_token + '; path=/;'
-				]);
+			account.generateAccessToken(config.api_token_issuer, JWT_SECRET).then((tokens) => {
+				// Store the access token in a cookie on client. This cookie
+				// MUST be set to HttpOnly; and Secure; (if SSL is configured)
+				// to protect against certain XSS and MITM attacks.
+				response.setHeader('Set-Cookie', 'access_token=' + tokens.access_token + '; path=/; HttpOnly;' + (IS_SSL_ENABLED ? ' Secure;' : ''));
 
-				response.json({account: account.clientSerialize()});
+				response.json({
+					account: account.clientSerialize(),
+					xsrf_token: tokens.xsrf_token
+				});
 			}).catch((error) => {
 				console.log('Login ' + account.username + ': token signing error.', error);
 				response.sendStatus(500);
@@ -166,10 +140,7 @@ function start (app) {
 
 	app.post('/api/logout', (request, response) => {
 		// Delete the token cookies from client.
-		response.setHeader('Set-Cookie', [
-			'access_token=null; path=/; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
-			'xsrf_token=null; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
-		]);
+		response.setHeader('Set-Cookie', 'access_token=null; path=/; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT;');
 		response.sendStatus(200);
 	});
 
@@ -206,8 +177,8 @@ function start (app) {
 
 		// Verify access token.
 		jwt.verify(cookies.access_token, JWT_SECRET, {issuer: config.api_token_issuer}, (error, claims) => {
-			// Access token is invalid.
-			if (error) {
+			// Access token or CSRF token is invalid.
+			if (error || request.headers['x-xsrf-token'] !== claims.xsrf_token) {
 				response.sendStatus(401);
 				return;
 			}

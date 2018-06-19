@@ -1,6 +1,5 @@
 import io from 'socket.io-client';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const listeners = [],
 	SOCKET_CONNECT_TIMEOUT = 20000,
@@ -8,9 +7,6 @@ const listeners = [],
 
 class Api {
 	connect () {
-		// Retrieve the CRSF token.
-		this.xsrf_token = Cookies.get('xsrf_token');
-
 		return new Promise((resolve, reject) => {
 			Api.openSocket().then(() => {
 				resolve();
@@ -57,6 +53,9 @@ class Api {
 	login (username, password) {
 		return new Promise((resolve, reject) => {
 			axios.post('/api/login', {username, password}).then((response) => {
+				// Store the CSRF token.
+				localStorage.setItem('xsrf_token', response.data.xsrf_token);
+
 				// Connect to Socket.io API.
 				this.connect().then(() => {
 					resolve(response.data.account);
@@ -88,7 +87,7 @@ class Api {
 
 	getAccount () {
 		return new Promise((resolve, reject) => {
-			axios.get('/api/account').then((response) => {
+			axios.get('/api/account', {headers: {'X-XSRF-TOKEN': localStorage.getItem('xsrf_token')}}).then((response) => {
 				resolve(response.data.account);
 			}).catch(() => {
 				reject(new Error('Could not retrieve account information.'));
@@ -160,7 +159,7 @@ class Api {
 				return;
 			}
 
-			api.relaySocket.emit(event, {...payload, xsrf_token: api.xsrf_token}, (error, data) => {
+			api.relaySocket.emit(event, {...payload, xsrf_token: localStorage.getItem('xsrf_token')}, (error, data) => {
 				if (error) {
 					console.error('API error: ' + event, error, data); // TODO: Only log for dev build.
 					reject(new Error(error));

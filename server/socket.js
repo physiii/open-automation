@@ -63,27 +63,27 @@ function start (server, jwt_secret) {
 					return;
 				}
 
-				callback(claims.sub);
+				callback(claims.sub, claims.xsrf_token);
 			});
 		}
 
 		function endpoint (event, callback) {
 			socket.on(event, (data, clientCallback) => {
-				// Verify CSRF token.
-				if (cookies.xsrf_token !== data.xsrf_token) {
-					console.log(TAG, 'Rejecting API request due to incorrect XSRF token.', socket.id);
-
-					if (typeof clientCallback === 'function') {
-						clientCallback('authentication');
-					}
-
-					handleAuthenticationError('incorrect XSRF token');
-					return;
-				}
-
 				// Verify access token at each API request. This ensures that
 				// the API will stop responding when the access token expires.
-				verifyAccessToken(() => {
+				verifyAccessToken((account_id, xsrf_token) => {
+					// Verify CSRF token.
+					if (data.xsrf_token !== xsrf_token) {
+						console.log(TAG, 'Rejecting API request due to incorrect XSRF token.', socket.id);
+
+						if (typeof clientCallback === 'function') {
+							clientCallback('authentication');
+						}
+
+						handleAuthenticationError('incorrect XSRF token');
+						return;
+					}
+
 					callback(data, clientCallback);
 				});
 			});
