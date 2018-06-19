@@ -30,5 +30,6 @@ class GatewayThermostatDriver extends GatewayServiceDriver {
       });
     });
   }
+}
 
 module.exports = GatewayThermostatDriver;

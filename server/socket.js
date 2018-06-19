@@ -193,7 +193,7 @@ function start (server) {
 		socket.on('lock/lock/setlock', function (data, callback) {
 			const lockService = devices.getServiceById(data.service_id);
 
-			if (!cameraService) {
+			if (!lockService) {
 				if (typeof callback === 'function') {
 					callback('Service not found.', data);
 				}
@@ -215,7 +215,7 @@ function start (server) {
 		socket.on('lock/lock/setunlock', function (data, callback) {
 			const lockService = devices.getServiceById(data.service_id);
 
-			if (!cameraService) {
+			if (!lockService) {
 				if (typeof callback === 'function') {
 					callback('Service not found.', data);
 				}
@@ -237,7 +237,7 @@ function start (server) {
 		socket.on('lock/lock/relockDelay', function (data, callback) {
 			const lockService = devices.getServiceById(data.service_id);
 
-			if (!cameraService) {
+			if (!lockService) {
 				if (typeof callback === 'function') {
 					callback('Service not found.', data);
 				}
