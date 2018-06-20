@@ -69,7 +69,7 @@ function start (server, jwt_secret) {
 
 		// Client API
 
-		const cookies = cookie.parse(socket.handshake.headers.cookie);
+		const cookies = socket.handshake.headers.cookie ? cookie.parse(socket.handshake.headers.cookie) : {};
 
 		// TODO: Allow passing access_token through query params for non-browser clients (e.g. native apps).
 		if (!cookies.access_token) {
@@ -138,7 +138,7 @@ function start (server, jwt_secret) {
 
 			clientEndpoint('devices/get', (data, callback) => {
 				if (typeof callback === 'function') {
-					const locationDevices = DevicesManager.getDevicesByLocation(account._id);
+					const locationDevices = DevicesManager.getDevicesByLocation(account.id);
 
 					callback(null, {devices: DevicesManager.getClientSerializedDevices(locationDevices)});
 				}
