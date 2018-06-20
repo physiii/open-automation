@@ -21,10 +21,15 @@ $tabBar-height: 64px;
 	flex: 0 0 $toolbar-height;
 }
 .oa-l-app--content {
-	flex: 1 0 auto;
-	max-height: calc(100vh - #{$toolbar-height} - #{$tabBar-height});
+	flex: 1 1 auto;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+.oa-l-app--contentCentered { @extend .oa-l-app--content;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
 }
 .oa-l-app--tabBar {
 	display: flex;

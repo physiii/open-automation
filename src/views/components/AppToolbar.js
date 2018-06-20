@@ -6,16 +6,11 @@ import {connect} from 'react-redux';
 import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 import '../styles/modules/_AppToolbar.scss';
 
-export const AppToolbar = (props) => (
+export const AppToolbar = () => (
 	<div className="oa-AppToolbar">
 		<Toolbar
 			leftChildren={<Button to="/">Open Automation</Button>}
-			rightChildren={[
-				<Button to="/register" key="register">Register</Button>,
-				props.isLoggedIn
-					? <Button to="/logout" key="logout">Logout</Button>
-					: <Button to="/login" key="login">Login</Button>
-			]}
+			rightChildren={<Button to="/logout" key="logout">Logout</Button>}
 		/>
 	</div>
 );

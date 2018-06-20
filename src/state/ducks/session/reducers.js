@@ -27,13 +27,13 @@ const initialState = {
 				};
 			case types.LOGOUT:
 				return {
-					...state,
+					...initialState,
 					loading: true,
 					error: false
 				};
 			case types.LOGOUT_SUCCESS:
 				return {
-					...initialState,
+					...state,
 					loading: false
 				};
 			case types.REGISTER:

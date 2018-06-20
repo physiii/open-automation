@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route, Redirect} from 'react-router-dom';
+import {Route, Redirect, Switch} from 'react-router-dom';
 import PrivateRoute from '../components/PrivateRoute.js';
 import AppToolbar from '../components/AppToolbar.js';
 import Dashboard from '../components/Dashboard.js';
@@ -16,8 +16,20 @@ import {hot} from 'react-hot-loader';
 import '../styles/layouts/_app.scss';
 
 export const App = (props) => {
-	if (props.isLoading) {
-		return <div>Loading</div>;
+	if (!props.isLoggedIn) {
+		return (
+			<div className="oa-l-app">
+				<div className="oa-l-app--contentCentered">
+					{props.isLoading
+						? <div>Loading</div>
+						: <Switch>
+							<Route exact path="/" render={() => <Redirect to="/login" />} />
+							<Route path="/login" component={LoginForm} />
+							<Route path="/register" component={RegisterForm} />
+						</Switch>}
+				</div>
+			</div>
+		);
 	}
 
 	return (
@@ -26,12 +38,14 @@ export const App = (props) => {
 				<AppToolbar />
 			</div>
 			<div className="oa-l-app--content">
-				<PrivateRoute exact path="/" render={() => <Redirect to="/dashboard" />} />
-				<PrivateRoute path="/dashboard" component={Dashboard} />
-				<PrivateRoute path="/settings" component={Settings} />
-				<Route path="/login" component={LoginForm} />
-				<Route path="/register" component={RegisterForm} />
-				<Route path="/logout" component={Logout} />
+				{props.isLoading
+					? <div>Loading</div>
+					: <Switch>
+						<Route path="/logout" component={Logout} />
+						<PrivateRoute exact path="/" render={() => <Redirect to="/dashboard" />} />
+						<PrivateRoute path="/dashboard" component={Dashboard} />
+						<PrivateRoute path="/settings" component={Settings} />
+					</Switch>}
 			</div>
 			<div className="oa-l-app--tabBar">
 				<TabBar buttons={[
@@ -54,10 +68,12 @@ export const App = (props) => {
 };
 
 App.propTypes = {
+	isLoggedIn: PropTypes.bool,
 	isLoading: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
+		isLoggedIn: isAuthenticated(state.session),
 		isLoading: state.session.loading || (isAuthenticated(state.session) && !hasInitialFetchCompleted(state.devicesList))
 	}),
 	connectedApp = connect(

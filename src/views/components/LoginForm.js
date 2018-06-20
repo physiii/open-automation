@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import TextField from './TextField.js';
+import Button from './Button.js';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as session from '../../state/ducks/session';
@@ -44,9 +46,10 @@ export class LoginForm extends React.Component {
 		return (
 			<form onSubmit={this.handleSubmit}>
 				{this.props.error}
-				<input type="text" value={this.state.username} onChange={this.handleUsernameChange} />
-				<input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
+				<TextField value={this.state.username} onChange={this.handleUsernameChange} />
+				<TextField type="password" value={this.state.password} onChange={this.handlePasswordChange} />
 				<input type="submit" value="Login" />
+				<Button to="/register">Register</Button>
 			</form>
 		);
 	}
