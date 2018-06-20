@@ -3,15 +3,22 @@ import * as devices from '../devices-list';
 import Api from '../../../api.js';
 
 const initialize = () => (dispatch) => {
-		Api.getAccessToken().then((user) => {
-			// User is logged in. Connect to API.
-			Api.connect().then(() => {
-				dispatch(loginSuccess(user));
+		const isLoggedIn = localStorage.getItem('is_logged_in');
+
+		dispatch(actions.initialize(isLoggedIn));
+
+		if (isLoggedIn) {
+			// Try to refresh the access token to make sure it's still valid.
+			Api.getAccessToken().then((user) => {
+				// User's access token is valid. Connect to API.
+				Api.connect().then(() => {
+					dispatch(loginSuccess(user));
+				});
+			}).catch(() => {
+				// User's access token is invalid. User is not logged in.
+				dispatch(actions.initialize(false));
 			});
-		}).catch(() => {
-			// User is not logged in.
-			dispatch(actions.initialize());
-		});
+		}
 
 		// When an API authentication error happens, log out.
 		Api.on('session', (data) => {
@@ -30,11 +37,15 @@ const initialize = () => (dispatch) => {
 		});
 	},
 	loginSuccess = (user) => (dispatch) => {
+		localStorage.setItem('is_logged_in', true);
+
 		dispatch(actions.loginSuccess(user));
 		dispatch(devices.operations.fetchDevices());
 	},
 	logout = () => (dispatch) => {
 		dispatch(actions.logout());
+
+		localStorage.removeItem('is_logged_in');
 
 		Api.logout().then(() => {
 			dispatch(actions.logoutSuccess());
