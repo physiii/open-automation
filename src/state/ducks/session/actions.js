@@ -1,7 +1,8 @@
 import * as types from './types';
 
-export const initialize = () => ({
-	type: types.INITIALIZE
+export const initialize = (isAuthenticated) => ({
+	type: types.INITIALIZE,
+	payload: {isAuthenticated}
 });
 
 export const login = () => ({

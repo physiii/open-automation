@@ -10,7 +10,10 @@ const initialState = {
 			case types.INITIALIZE:
 				return {
 					...state,
-					loading: false
+					user: action.payload.isAuthenticated,
+					// If user is authenticated, we still need to get the
+					// user's data, so still loading.
+					loading: action.payload.isAuthenticated
 				};
 			case types.LOGIN:
 				return {
