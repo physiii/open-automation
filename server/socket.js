@@ -268,17 +268,7 @@ function start (server) {
 			}
 
 			thermostatService.setTemp(data.temp, data.mode, data.hold);
-			/*
-			.then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
-			*/
+
 		});
 
 

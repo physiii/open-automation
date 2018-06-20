@@ -31,18 +31,10 @@ class LockService extends Service {
 			zwave_node_id: this.zwave_node_id
 		};
 	}
-/*
+
 	dbSerialize () {
 		return this.serialize();
-	}
-
-	clientSerialize () {
-		return {
-			...this.serialize(),
-			streaming_token: this.device.token
-		};
-	}
-	*/
+	}	
 }
 
 module.exports = LockService;

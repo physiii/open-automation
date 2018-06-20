@@ -22,24 +22,17 @@ class ThermostatService extends Service {
 	fanMode (Mode) {
 		this.driver.fanMode (mode);
 	}
-	/*
+
 	serialize () {
 		return {
-			...Service.prototype.serialize.apply(this, arguments)
+			...Service.prototype.serialize.apply(this, arguments),
+			ip: this.ip
 		};
 	}
 
 	dbSerialize () {
 		return this.serialize();
 	}
-
-	clientSerialize () {
-		return {
-			...this.serialize(),
-			streaming_token: this.device.token
-		};
-	}
-*/
 }
 
 module.exports = ThermostatService;
