@@ -38,7 +38,7 @@ export class CameraRecordings extends React.Component {
 							? <VideoPlayer
 								cameraServiceId={this.props.cameraService.id}
 								recording={this.props.selectedRecording}
-								streamingToken={this.props.cameraService.streaming_token}
+								streamingToken={this.props.selectedRecording.streaming_token}
 								width={this.props.selectedRecording.width}
 								height={this.props.selectedRecording.height} />
 							: <Calendar

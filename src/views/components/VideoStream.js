@@ -8,6 +8,8 @@ import '../styles/modules/_VideoStream.scss';
 export class VideoStream extends React.Component {
 	constructor (props) {
 		super(props);
+
+		this.resourceStreamingStatus = {};
 		this.canvas = React.createRef();
 	}
 
@@ -16,18 +18,28 @@ export class VideoStream extends React.Component {
 	}
 
 	shouldComponentUpdate (nextProps) {
-		// Check to see if shouldStream changed, and if so, start or stop the stream.
+		const didRecordingChange = (nextProps.recording && nextProps.recording.id) !== (this.props.recording && this.props.recording.id),
+			didCameraChange = nextProps.cameraServiceId !== this.props.cameraServiceId,
+			didTokenChange = nextProps.streamingToken !== this.props.streamingToken;
+
+		// Check to see if shouldStream changed and, if so, start or stop the stream.
 		if (!this.props.shouldStream && nextProps.shouldStream) {
 			this.start();
 		} else if (this.props.shouldStream && !nextProps.shouldStream) {
 			this.stop();
 		}
 
-		// Only re-render if the camera or recording changes. This prevents unnecessary
-		// re-bootstrapping of JSMpeg.
-		if ((nextProps.recording && nextProps.recording.id) !== (this.props.recording && this.props.recording.id) ||
-			nextProps.cameraServiceId !== this.props.cameraServiceId ||
-			nextProps.streamingToken !== this.props.streamingToken) {
+		// Only re-render if the camera or recording changes. This prevents
+		// unnecessary re-bootstrapping of JSMpeg.
+		if (didRecordingChange || didCameraChange) {
+			// Stop the stream for the current recording or camera.
+			this.stop();
+
+			return true;
+		}
+
+		// Update if the token changes so JSMpeg can bootstrap with the new token.
+		if (didTokenChange) {
 			return true;
 		}
 
@@ -35,7 +47,6 @@ export class VideoStream extends React.Component {
 	}
 
 	componentDidUpdate () {
-		this.stop();
 		this.bootstrapPlayer();
 	}
 
@@ -45,27 +56,52 @@ export class VideoStream extends React.Component {
 	}
 
 	start () {
-		this.props.startStreaming();
+		const streamId = this.getStreamIdForCurrentResource();
 
-		// Need to match exactly false because of JSMpeg quirks.
+		// Play JSMpeg. Need to match exactly false because of JSMpeg quirks.
 		if (this.player.isPlaying === false) {
 			this.player.play();
 		}
+
+		if (this.resourceStreamingStatus[streamId]) {
+			return;
+		}
+
+		this.props.startStreaming();
+
+		this.resourceStreamingStatus[streamId] = true;
 	}
 
 	stop () {
-		this.props.stopStreaming();
+		const streamId = this.getStreamIdForCurrentResource();
 
+		// Pause JSMpeg.
 		if (this.player.isPlaying) {
 			this.player.pause();
 		}
+
+		if (!this.resourceStreamingStatus[streamId]) {
+			return;
+		}
+
+		this.props.stopStreaming();
+
+		this.resourceStreamingStatus[streamId] = false;
+	}
+
+	getStreamIdForCurrentResource () {
+		return this.props.recording ? this.props.recording.id : this.props.cameraServiceId;
 	}
 
 	bootstrapPlayer () {
+		if (this.player) {
+			this.player.destroy();
+		}
+
 		// TODO: Use actual host and streaming port. Add secure socket support (wss://).
-		this.player = new JSMpeg.Player('ws://localhost:8085', {
+		this.player = new JSMpeg.Player('wss://localhost:8085', {
 			canvas: this.canvas.current,
-			oa_stream_id: this.props.recording ? this.props.recording.id : this.props.cameraServiceId,
+			oa_stream_id: this.getStreamIdForCurrentResource(),
 			oa_stream_token: this.props.streamingToken
 		});
 

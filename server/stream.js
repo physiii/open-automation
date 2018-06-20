@@ -61,10 +61,8 @@ socketServer.on('disconnect', () => {
 
 // Broadcast stream to client (front-end).
 function clientBroadcast (data, settings) {
-	// TODO: Instead of forEach, filter for the clients with the correct stream_id and stream_token.
 	socketServer.clients.forEach((client) => {
 		if (client.readyState !== WebSocket.OPEN) {
-			console.log('Client not connected (' + i + ')');
 			return;
 		}
 

@@ -46,6 +46,7 @@ const initialState = {
 			case types.FETCH_CAMERA_RECORDINGS:
 			case types.FETCH_CAMERA_RECORDINGS_SUCCESS:
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
+			case types.STREAM_CAMERA_RECORDING:
 				serviceIndex = state.services.findIndex((device) => device.id === action.payload.cameraId);
 
 				return {
@@ -55,11 +56,23 @@ const initialState = {
 						'recordingsList'
 					], recordingsReducer(state.services.get(serviceIndex).recordingsList, action))
 				};
+			case types.STREAM_CAMERA_LIVE:
+				serviceIndex = state.services.findIndex((device) => device.id === action.payload.cameraId);
+
+				return {
+					...state,
+					services: state.services.setIn([
+						serviceIndex,
+						'streaming_token'
+					], action.payload.streamToken)
+				};
 			default:
 				return state;
 		}
 	},
 	recordingsReducer = (state = null, action) => {
+		let recordingIndex, recordingToUpdate;
+
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return {
@@ -83,6 +96,20 @@ const initialState = {
 					...state,
 					loading: false,
 					error: action.payload.error.message
+				};
+			case types.STREAM_CAMERA_RECORDING:
+				recordingIndex = state.recordings.findIndex((recording) => recording.id === action.payload.recordingId);
+				recordingToUpdate = state.recordings.get(recordingIndex);
+
+				return {
+					...state,
+					recordings: state.recordings.set(
+						recordingIndex,
+						{
+							...recordingToUpdate,
+							streaming_token: action.payload.streamToken
+						}
+					)
 				};
 			default:
 				return state;

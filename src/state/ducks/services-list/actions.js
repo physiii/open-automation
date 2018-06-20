@@ -15,3 +15,13 @@ export const fetchCameraRecordingsError = (cameraId, error) => ({
 	payload: {cameraId, error},
 	error: true
 });
+
+export const streamCameraLive = (cameraId, streamToken) => ({
+	type: types.STREAM_CAMERA_LIVE,
+	payload: {cameraId, streamToken}
+});
+
+export const streamCameraRecording = (recordingId, streamToken) => ({
+	type: types.STREAM_CAMERA_RECORDING,
+	payload: {recordingId, streamToken}
+});

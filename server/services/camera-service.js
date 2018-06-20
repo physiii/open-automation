@@ -57,10 +57,7 @@ class CameraService extends Service {
 	}
 
 	clientSerialize () {
-		return {
-			...this.serialize(),
-			streaming_token: this.device.token
-		};
+		return this.serialize();
 	}
 }
 
