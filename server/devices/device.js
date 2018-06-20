@@ -7,7 +7,7 @@ const uuid = require('uuid/v4'),
 class Device {
 	constructor (data) {
 		this.id = data.id || uuid();
-		this.token = crypto.createHash('sha512').update(this.id).digest('hex'); // TODO: Salt token
+		this.token = data.token;
 		this.location = data.location || data.location_id;
 
 		this.gatewayOn = this.gatewayOn.bind(this);
@@ -58,9 +58,6 @@ class Device {
 		// Update the service drivers with the new socket.
 		this.services.setGatewaySocket(this.getGatewaySocketProxy());
 
-		// Send the gateway device the token.
-		this.gatewayEmit('token', {token: this.token});
-
 		// Update when the gateway sends new state.
 		this.gatewayOn('load', (data, callback) => {
 			this.services.updateServices(data.services);
@@ -79,14 +76,7 @@ class Device {
 			return;
 		}
 
-		this.gatewaySocket.on(event, (data, remoteCallback) => {
-			if (data.token !== this.token) {
-				console.log(TAG, this.id, 'Received event from gateway, but device token does not match.');
-				return;
-			}
-
-			localCallback(data, remoteCallback);
-		});
+		this.gatewaySocket.on(event, localCallback);
 	}
 
 	gatewayEmit (event, data, callback) {

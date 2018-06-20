@@ -97,10 +97,7 @@ function requestListener (request, response) {
 
 	// Broadcast the stream to the client (front-end).
 	request.on('data', function (data) {
-		clientBroadcast(data, {
-			stream_id: stream_id,
-			stream_token: stream_token
-		});
+		clientBroadcast(data, {stream_id, stream_token});
 	});
 }
 

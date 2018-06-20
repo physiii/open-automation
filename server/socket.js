@@ -60,10 +60,15 @@ function start (server, jwt_secret) {
 				socket.emit('authentication', {error: 'invalid token'});
 
 				socket.disconnect();
+
+				return;
 			}
 
 			// Update the socket on the device.
 			device.setGatewaySocket(socket, device_token);
+
+			// Return because the rest of this function is for connections to the client API.
+			return;
 		}
 
 
@@ -164,6 +169,8 @@ function start (server, jwt_secret) {
 						callback(null, {stream_token});
 					}
 				}).catch((error) => {
+					console.error(TAG, 'Stream error', error);
+
 					if (typeof callback === 'function') {
 						callback(error, data);
 					}
