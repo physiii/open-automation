@@ -70,9 +70,16 @@ function start (app) {
 					return;
 				}
 
+				const account = AccountsManager.getAccountById(claims.sub);
+
+				if (!account) {
+					reject('Account not found');
+					return;
+				}
+
 				// Get the account for the account ID provided by the access token.
 				resolve({
-					account: AccountsManager.getAccountById(claims.sub),
+					account,
 					refresh_token: claims.refresh_token
 				});
 			});
@@ -154,7 +161,7 @@ function start (app) {
 					access_token_expires: jwt.decode(tokens.access_token).exp * MILLISECONDS_PER_SECOND
 				});
 			}).catch((error) => {
-				console.log('Login ' + account.username + ': token signing error.', error);
+				console.log('Token signing error.', error);
 				response.sendStatus(500);
 			});
 		}
@@ -193,7 +200,7 @@ function start (app) {
 					response.sendStatus(500);
 				});
 			}).catch((error) => {
-				console.log(error);
+				console.log('Error validating access token (' + error + ').');
 				response.sendStatus(401);
 			});
 		} else {
@@ -209,21 +216,25 @@ function start (app) {
 
 	app.post('/api/account', (request, response) => {
 		const username = request.body.username,
-			password = request.body.password,
-			is_username_taken = AccountsManager.isUsernameInUse(username);
-
-		// Username is already in use.
-		if (is_username_taken) {
-			response.sendStatus(409);
-			return;
-		}
+			password = request.body.password;
 
 		AccountsManager.createAccount({username, password}).then((account) => {
 			const account_client_serialized = account.clientSerialize();
 
 			console.log('Created account.', account_client_serialized);
+
 			response.status(201).json({account: account_client_serialized});
 		}).catch((error) => {
+			if (error === 'username') {
+				response.sendStatus(409);
+				return;
+			}
+
+			if(error === 'password') {
+				response.sendStatus(422);
+				return;
+			}
+
 			console.error('Tried to create an account, but there was an error.', error);
 			response.sendStatus(500);
 		});

@@ -154,11 +154,12 @@ class Api {
 			}).then((response) => {
 				resolve(response.data.account);
 			}).catch((error) => {
-				const usernameConflictErrorCode = 409;
+				const conflictErrorCode = 409;
+
 				let errorMessage = 'An error occurred while trying to create the account.';
 
-				if (error.response && error.response.status === usernameConflictErrorCode) {
-					errorMessage = 'An account already exists with that username.';
+				if (error.response && error.response.status === conflictErrorCode) {
+					errorMessage = 'An account already exists for that email address.';
 				}
 
 				reject(new Error(errorMessage));

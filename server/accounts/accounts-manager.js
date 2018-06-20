@@ -2,6 +2,7 @@ const database = require('../database.js'),
 	Account = require('./account.js'),
 	crypto = require('crypto'),
 	accounts_list = new Map(),
+	PASSWORD_MINIMUM_LENGTH = 8,
 	TAG = 'AccountsManager';
 
 class AccountsManager {
@@ -27,6 +28,16 @@ class AccountsManager {
 			});
 
 		return new Promise((resolve, reject) => {
+			if (!this.isUsernameValid(data.username)) {
+				reject('username');
+				return;
+			}
+
+			if (!this.isPasswordValid(password)) {
+				reject('password');
+				return;
+			}
+
 			account.setPassword(password).then(() => {
 				this._addAccount(account);
 				resolve(account);
@@ -52,8 +63,16 @@ class AccountsManager {
 		}
 	}
 
-	isUsernameInUse (username) {
-		return Boolean(this.getAccountByUsername(username));
+	isUsernameValid (username) {
+		if (!username || username.length < 1) {
+			return false;
+		}
+
+		return !Boolean(this.getAccountByUsername(username));
+	}
+
+	isPasswordValid (password) {
+		return typeof password === 'string' && password.length >= PASSWORD_MINIMUM_LENGTH;
 	}
 
 	loadAccountsFromDb () {
