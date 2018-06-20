@@ -151,7 +151,6 @@ rules:
       - 0
       - 1
   no-mixed-operators: error
-  no-mixed-requires: error
   no-multi-assign: error
   no-multi-spaces: error
   no-multi-str: error

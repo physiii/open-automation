@@ -16,6 +16,11 @@ body {
 	overflow: hidden;
 }
 
+a {
+	color: #dcf7ff;
+	text-decoration: underline;
+}
+
 .oa-util-selectable,
 %util-selectable {
 	user-select: text;

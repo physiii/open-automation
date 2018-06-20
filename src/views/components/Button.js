@@ -1,26 +1,58 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
-import '../styles/modules/_Button.scss';
+import './Button.css';
 
-export const Button = (props) => {
-	if (props.to) {
-		return <Link className="oa-Button" to={props.to}>{props.children}</Link>;
+export class Button extends React.Component {
+	constructor (props) {
+		super(props);
+
+		this.submitInput = React.createRef();
 	}
 
-	return (
-		<a href="#" onClick={(event) => {
-			event.preventDefault();
+	render () {
+		let className;
 
-			if (typeof props.onClick === 'function') {
-				props.onClick(event);
-			}
-		}} className="oa-Button">{props.children}</a>
-	);
-};
+		switch (this.props.type) {
+			case 'filled':
+				className = 'filledButton';
+				break;
+			case 'outlined':
+				className = 'outlinedButton';
+				break;
+			case 'link':
+			default:
+				className = 'button';
+				break;
+		}
+
+		if (this.props.to) {
+			return <Link styleName={className} to={this.props.to}>{this.props.children}</Link>;
+		}
+
+		return [
+			<a href="#" key="button" onClick={(event) => {
+				event.preventDefault();
+
+				if (this.props.submitForm) {
+					this.submitInput.current.click();
+				}
+
+				if (typeof this.props.onClick === 'function') {
+					this.props.onClick(event);
+				}
+			}} styleName={className}>{this.props.children}</a>,
+			this.props.submitForm
+				? <input styleName="submit" type="submit" key="submit" ref={this.submitInput} />
+				: null
+		];
+	}
+}
 
 Button.propTypes = {
 	to: PropTypes.string,
+	type: PropTypes.string,
+	submitForm: PropTypes.bool,
 	onClick: PropTypes.func,
 	children: PropTypes.node.isRequired
 };

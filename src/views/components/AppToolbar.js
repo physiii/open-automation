@@ -3,24 +3,26 @@ import PropTypes from 'prop-types';
 import Toolbar from '../components/Toolbar.js';
 import Button from '../components/Button.js';
 import {connect} from 'react-redux';
-import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 import '../styles/modules/_AppToolbar.scss';
 
-export const AppToolbar = () => (
+export const AppToolbar = (props) => (
 	<div className="oa-AppToolbar">
 		<Toolbar
 			leftChildren={<Button to="/">Open Automation</Button>}
-			rightChildren={<Button to="/logout" key="logout">Logout</Button>}
+			rightChildren={[
+				<span key="username">{props.username}</span>,
+				<Button to="/logout" key="logout-button">Logout</Button>
+			]}
 		/>
 	</div>
 );
 
 AppToolbar.propTypes = {
-	isLoggedIn: PropTypes.bool
+	username: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({
-	isLoggedIn: isAuthenticated(state.session)
+	username: state.session.user && state.session.user.username
 });
 
 export default connect(mapStateToProps)(AppToolbar);

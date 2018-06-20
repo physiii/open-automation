@@ -1,0 +1,45 @@
+.calendar {
+	width: 400px;
+	display: flex;
+	flex-flow: column nowrap;
+	text-align: center;
+}
+
+.monthButton {
+	width: auto;
+}
+.previousMonthButton { composes: monthButton; }
+.nextMonthButton { composes: monthButton; }
+
+.weekHeading {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.dayHeading {
+	flex: 0 0 calc(100% / 7);
+}
+
+.week {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.firstWeek {
+	composes: week;
+	justify-content: flex-end;
+}
+
+.day {
+	flex: 0 0 calc(100% / 7);
+}
+.selectedDay {
+	color: #ffffff;
+}
+.dayHasEvent::after {
+	content: "";
+	display: block;
+	width: 7px;
+	height: 7px;
+	margin: 4px auto;
+	background: #ffffff;
+	border-radius: 100%;
+}

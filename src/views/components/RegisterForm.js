@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from './TextField.js';
+import Actions from './Actions.js';
 import Button from './Button.js';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -44,11 +45,14 @@ export class RegisterForm extends React.Component {
 
 		return (
 			<form onSubmit={this.handleSubmit}>
-				{this.props.error}
-				<TextField value={this.state.username} onChange={this.handleUsernameChange} />
-				<TextField type="password" value={this.state.password} onChange={this.handlePasswordChange} />
-				<input type="submit" value="Register" />
-				<Button to="/login">Login</Button>
+				{this.props.error
+					? <p>{this.props.error}</p>
+					: null}
+				<TextField label="Email" value={this.state.username} onChange={this.handleUsernameChange} />
+				<TextField label="Password" type="password" value={this.state.password} onChange={this.handlePasswordChange} />
+				<Actions>
+					<Button type="filled" submitForm={true}>Create Account</Button>
+				</Actions>
 			</form>
 		);
 	}
