@@ -3,7 +3,7 @@ import * as devices from '../devices-list';
 import Api from '../../../api.js';
 
 const initialize = () => (dispatch) => {
-		const isLoggedIn = localStorage.getItem('is_logged_in');
+		const isLoggedIn = Boolean(localStorage.getItem('is_logged_in'));
 
 		dispatch(actions.initialize(isLoggedIn));
 
