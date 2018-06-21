@@ -126,7 +126,7 @@ export class VideoStream extends React.Component {
 VideoStream.propTypes = {
 	cameraServiceId: PropTypes.string.isRequired,
 	recording: PropTypes.object, // TODO: Shape of recording object
-	streamingToken: PropTypes.string.isRequired,
+	streamingToken: PropTypes.string,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	shouldStream: PropTypes.bool,

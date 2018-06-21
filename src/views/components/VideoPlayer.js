@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import VideoStream from './VideoStream.js';
-import '../styles/modules/_VideoPlayer.scss';
+import PlayButtonIcon from '../icons/PlayButtonIcon.js';
+import './VideoPlayer.css';
 
 export class VideoPlayer extends React.Component {
 	constructor (props) {
@@ -22,15 +23,15 @@ export class VideoPlayer extends React.Component {
 
 	render () {
 		return (
-			<div className="oa-VideoPlayer" onClick={this.onClick}>
-				<div className="oa-VideoPlayer--overlay">
+			<div styleName="player" onClick={this.onClick}>
+				<div styleName={this.state.isPlaying ? 'overlayPlaying' : 'overlay'}>
 					{!this.state.isPlaying
-						? <button className="oa-VideoPlayer--playButton">Play</button>
+						? <PlayButtonIcon shadowed={true} />
 						: null }
 				</div>
-				<div className="oa-VideoPlayer--video" style={{width: this.props.width}}>
-					<span className="oa-VideoPlayer--aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
-					<VideoStream className="oa-VideoPlayer--canvas" {...this.props} shouldStream={this.state.isPlaying} />
+				<div styleName="video" style={{width: this.props.width}}>
+					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
+					<VideoStream styleName="canvas" {...this.props} shouldStream={this.state.isPlaying} />
 				</div>
 			</div>
 		);
@@ -40,7 +41,7 @@ export class VideoPlayer extends React.Component {
 VideoPlayer.propTypes = {
 	cameraServiceId: PropTypes.string.isRequired,
 	recording: PropTypes.object,
-	streamingToken: PropTypes.string.isRequired,
+	streamingToken: PropTypes.string,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired
 };

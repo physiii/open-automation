@@ -1,0 +1,39 @@
+@value topBarHeight: 72px;
+@value bottomBarHeight: 48px;
+
+.card {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 100%;
+	flex: 1 1 auto;
+	background-color: #444444;
+	border: 1px solid #888888;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.topBar {
+	display: flex;
+	height: topBarHeight;
+	position: relative;
+	z-index: 1;
+	background-color: rgba(56, 56, 56, 0.9);
+	font-size: 14px;
+}
+
+.bottomBar {
+	composes: topBar;
+	height: bottomBarHeight;
+}
+
+.content {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	flex: 1 1 auto;
+}
+
+.contentWithBarsOverlaid {
+	composes: content;
+	margin: calc(0px - topBarHeight) 0 calc(0px - bottomBarHeight) 0;
+}

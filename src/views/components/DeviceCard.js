@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import CameraCard from './CameraCard.js';
 import Toolbar from './Toolbar.js';
 import Button from './Button.js';
-import '../styles/modules/_Card.scss';
+import './DeviceCard.css';
 
 export const DeviceCard = (props) => {
 	let content;
@@ -17,14 +17,14 @@ export const DeviceCard = (props) => {
 	}
 
 	return (
-		<div className="oa-Card">
-			<div className="oa-Card--toolbar">
+		<div styleName="card">
+			<div styleName="topBar">
 				<Toolbar middleChildren={props.device.name || props.device.type} />
 			</div>
-			<div className="oa-Card--content">
+			<div styleName="contentWithBarsOverlaid">
 				{content}
 			</div>
-			<div className="oa-Card--toolbar">
+			<div styleName="bottomBar">
 				<Toolbar rightChildren={props.device.type === 'camera'
 					? <Button to={`${props.parentPath}/recordings/${props.device.id}`}>Recordings</Button>
 					: null

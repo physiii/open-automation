@@ -1,0 +1,43 @@
+.player {
+	position: relative;
+	max-width: 100%;
+	cursor: pointer;
+}
+
+.overlay {
+	composes: fillContext from '../styles/helpers.css';
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+	transition: background 0.15s;
+}
+.overlay:hover {
+	background-color: rgba(0, 0, 0, 0.15);
+}
+.overlayPlaying {
+	composes: overlay;
+}
+.overlayPlaying:hover {
+	background-color: transparent;
+}
+
+.video {
+	position: relative;
+	max-width: 100%;
+	max-height: 100%;
+	overflow: hidden;
+}
+.aspectRatio {
+	display: block;
+	width: 100%;
+
+	/* Default aspect ratio of 4:3. This may be overridden in DOM at run-time. */
+	padding-top: calc((3 / 4) * 100%);
+}
+.canvas {
+	composes: fillContext from '../styles/helpers.css';
+	display: block;
+	width: 100%;
+}
