@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Route} from 'react-router-dom';
-import DeviceCard from './DeviceCard.js';
+import ServiceCard from './ServiceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
 import {servicesWithoutGateways} from '../../state/ducks/services-list/selectors.js';
@@ -14,9 +14,9 @@ export const Dashboard = (props) => {
 		<div>
 			<Route exact path={props.match.path} render={() => (
 				<div className="oa-l-cardGrid">
-					{props.devices.map((device, index) => (
+					{props.services.map((service, index) => (
 						<div key={index} className="oa-l-cardGrid--card">
-							<DeviceCard device={device} parentPath={props.match.path} />
+							<ServiceCard service={service} parentPath={props.match.path} />
 						</div>
 					))}
 				</div>
@@ -29,7 +29,7 @@ export const Dashboard = (props) => {
 };
 
 Dashboard.propTypes = {
-	devices: PropTypes.oneOfType([
+	services: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.object // TODO: Immutable List
 	]),
@@ -37,7 +37,7 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-	devices: servicesWithoutGateways(state.servicesList)
+	services: servicesWithoutGateways(state.servicesList)
 });
 
 export default connect(mapStateToProps)(Dashboard);

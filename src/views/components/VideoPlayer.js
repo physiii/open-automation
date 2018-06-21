@@ -12,7 +12,15 @@ export class VideoPlayer extends React.Component {
 	}
 
 	onClick () {
-		this.setState({isPlaying: !this.state.isPlaying});
+		const isPlaying = !this.state.isPlaying;
+
+		this.setState({isPlaying});
+
+		if (isPlaying && typeof this.props.onPlay === 'function') {
+			this.props.onPlay();
+		} else if (!isPlaying && typeof this.props.onStop === 'function') {
+			this.props.onStop();
+		}
 	}
 
 	getAspectRatioPaddingTop () {
@@ -28,6 +36,9 @@ export class VideoPlayer extends React.Component {
 					{!this.state.isPlaying
 						? <PlayButtonIcon shadowed={true} />
 						: null }
+					{this.state.isPlaying && !this.props.recording
+						? <span styleName="live">Live</span>
+						: null}
 				</div>
 				<div styleName="video" style={{width: this.props.width}}>
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
@@ -43,7 +54,9 @@ VideoPlayer.propTypes = {
 	recording: PropTypes.object,
 	streamingToken: PropTypes.string,
 	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired
+	height: PropTypes.number.isRequired,
+	onPlay: PropTypes.func,
+	onStop: PropTypes.func
 };
 
 export default VideoPlayer;

@@ -14,16 +14,50 @@
 
 .topBar {
 	display: flex;
+	flex-flow: row nowrap;
 	height: topBarHeight;
+	padding: 0 16px;
 	position: relative;
 	z-index: 1;
+	opacity: 1;
 	background-color: rgba(56, 56, 56, 0.9);
 	font-size: 14px;
+	transition: opacity 0.2s;
+}
+.topBarHidden {
+	composes: topBar;
+	opacity: 0;
+	pointer-events: none;
+}
+.icon {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	width: 56px;
+	padding: 16px 16px 16px 0;
+}
+.nameWrapper {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+}
+.name {
+	line-height: 20px;
+}
+.status {
+	line-height: 20px;
+	color: #909090;
 }
 
 .bottomBar {
 	composes: topBar;
 	height: bottomBarHeight;
+	padding: 0 8px;
+}
+.bottomBarHidden {
+	composes: bottomBar;
+	composes: topBarHidden;
 }
 
 .content {
@@ -33,7 +67,7 @@
 	flex: 1 1 auto;
 }
 
-.contentWithBarsOverlaid {
+.contentBehindToolbars {
 	composes: content;
 	margin: calc(0px - topBarHeight) 0 calc(0px - bottomBarHeight) 0;
 }

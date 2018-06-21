@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import JSMpeg from '../../lib/tokenJsmpeg.js';
 import {connect} from 'react-redux';
 import {startCameraStream, stopCameraStream, startCameraRecordingStream, stopCameraRecordingStream} from '../../state/ducks/services-list/operations.js';
-import '../styles/modules/_VideoStream.scss';
+import './VideoStream.css';
 
 export class VideoStream extends React.Component {
 	constructor (props) {
@@ -115,7 +115,8 @@ export class VideoStream extends React.Component {
 	render () {
 		return (
 			<canvas
-				className={this.props.className || 'oa-VideoStream'}
+				className={this.props.className}
+				styleName="canvas"
 				width={this.props.width}
 				height={this.props.height}
 				ref={this.canvas} />
@@ -130,6 +131,7 @@ VideoStream.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	shouldStream: PropTypes.bool,
+	// className can be passed in to override the default CSS class.
 	className: PropTypes.string,
 	startStreaming: PropTypes.func.isRequired,
 	stopStreaming: PropTypes.func.isRequired

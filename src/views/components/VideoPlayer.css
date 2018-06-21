@@ -1,3 +1,5 @@
+@value liveRed: #bd2100;
+
 .player {
 	position: relative;
 	max-width: 100%;
@@ -21,6 +23,21 @@
 }
 .overlayPlaying:hover {
 	background-color: transparent;
+}
+.live {
+	display: inline-block;
+	padding: 7px 9px 5px 9px;
+	background-color: liveRed;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.85);
+	border-radius: 100px;
+	position: absolute;
+	left: 8px;
+	bottom: 8px;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
 
 .video {
