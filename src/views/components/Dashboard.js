@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route} from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import ServiceCard from './ServiceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
@@ -11,7 +11,7 @@ export const Dashboard = (props) => {
 	const cameraRecordingsBasePath = props.match.path + '/recordings';
 
 	return (
-		<div>
+		<Switch>
 			<Route exact path={props.match.path} render={() => (
 				<div className="oa-l-cardGrid">
 					{props.services.map((service, index) => (
@@ -24,7 +24,7 @@ export const Dashboard = (props) => {
 			<Route path={cameraRecordingsBasePath + '/:cameraId/:year?/:month?/:date?/:recordingId?'} render={(routeProps) => (
 				<CameraRecordings {...routeProps} basePath={cameraRecordingsBasePath} />
 			)} />
-		</div>
+		</Switch>
 	);
 };
 

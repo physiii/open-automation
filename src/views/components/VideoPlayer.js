@@ -7,7 +7,11 @@ import './VideoPlayer.css';
 export class VideoPlayer extends React.Component {
 	constructor (props) {
 		super(props);
-		this.state = {isPlaying: false};
+
+		// Copying props to state here because we specifically only care about
+		// the autoplay prop during the first render.
+		this.state = {isPlaying: this.props.autoplay};
+
 		this.onClick = this.onClick.bind(this);
 	}
 
@@ -40,9 +44,13 @@ export class VideoPlayer extends React.Component {
 						? <span styleName="live">Live</span>
 						: null}
 				</div>
-				<div styleName="video" style={{width: this.props.width}}>
+				<div styleName="video">
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
-					<VideoStream styleName="canvas" {...this.props} shouldStream={this.state.isPlaying} />
+					<VideoStream
+						styleName="canvas"
+						{...this.props}
+						shouldStream={this.state.isPlaying}
+						key={(this.props.recording && this.props.recording.id) || this.props.cameraServiceId} />
 				</div>
 			</div>
 		);
@@ -50,9 +58,12 @@ export class VideoPlayer extends React.Component {
 }
 
 VideoPlayer.propTypes = {
+	// NOTE: The VideoPlayer component should always be called with a key
+	// property set to the ID of the recording or camera that is being streamed.
 	cameraServiceId: PropTypes.string.isRequired,
 	recording: PropTypes.object,
 	streamingToken: PropTypes.string,
+	autoplay: PropTypes.bool,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	onPlay: PropTypes.func,

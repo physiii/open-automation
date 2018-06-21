@@ -42,22 +42,6 @@ export const App = (props) => {
 						<PrivateRoute path="/settings" component={Settings} />
 					</Switch>}
 			</div>
-			<div styleName="tabBar">
-				<TabBar buttons={[
-					{
-						label: 'Dashboard',
-						to: '/dashboard'
-					},
-					{
-						label: 'Rooms',
-						to: '/room'
-					},
-					{
-						label: 'Settings',
-						to: '/settings'
-					}
-				]} />
-			</div>
 		</div>
 	);
 };

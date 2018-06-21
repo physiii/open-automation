@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import Toolbar from './Toolbar.js';
 import Button from './Button.js';
 import moment from 'moment';
-import './Calendar.css';
+import './DatePicker.css';
 
-export class Calendar extends React.Component {
+export class DatePicker extends React.Component {
 	constructor (props) {
 		super(props);
 
@@ -104,58 +104,66 @@ export class Calendar extends React.Component {
 		const month = this.state.selectedMonth;
 
 		return (
-			<time styleName="calendar" dateTime={month.format('YYYY')}>
-				<Toolbar
-					leftChildren={<Button styleName="previousMonthButton" onClick={this.selectPreviousMonth}>&lt;</Button>}
-					middleChildren={month.format('MMMM YYYY')}
-					rightChildren={<Button styleName="nextMonthButton" onClick={this.selectNextMonth}>&gt;</Button>} />
-				<div styleName="weekHeading">
-					<div styleName="dayHeading">Sun</div>
-					<div styleName="dayHeading">Mon</div>
-					<div styleName="dayHeading">Tue</div>
-					<div styleName="dayHeading">Wed</div>
-					<div styleName="dayHeading">Thu</div>
-					<div styleName="dayHeading">Fri</div>
-					<div styleName="dayHeading">Sat</div>
-				</div>
-				{this.getWeeksList(month).map((week, weekIndex) => {
-					const weekDate = moment(month).add(weekIndex, 'weeks'); // Create a new Moment date based on month so we don't mutate month.
+			<div styleName="datePicker">
+				<time styleName="calendar" dateTime={month.format('YYYY')}>
+					<div styleName="monthHeading">
+						<Toolbar
+							leftChildren={<Button styleName="previousMonthButton" onClick={this.selectPreviousMonth}>&lt;</Button>}
+							middleChildren={month.format('MMMM YYYY')}
+							rightChildren={<Button styleName="nextMonthButton" onClick={this.selectNextMonth}>&gt;</Button>} />
+					</div>
+					<div styleName="weekHeading">
+						<div styleName="dayHeading">Sun</div>
+						<div styleName="dayHeading">Mon</div>
+						<div styleName="dayHeading">Tue</div>
+						<div styleName="dayHeading">Wed</div>
+						<div styleName="dayHeading">Thu</div>
+						<div styleName="dayHeading">Fri</div>
+						<div styleName="dayHeading">Sat</div>
+					</div>
+					{this.getWeeksList(month).map((week, weekIndex) => {
+						const weekDate = moment(month).add(weekIndex, 'weeks'); // Create a new Moment date based on month so we don't mutate month.
 
-					return (
-						<time
-							styleName={weekIndex === 0 ? 'firstWeek' : 'week'}
-							dateTime={weekDate.format('YYYY-[W]w')}
-							key={weekIndex}>
-							{week.map((day, dayIndex) => (
-								<time
-									styleName={
-										(day.isSame(this.state.selectedDate, 'day') ? 'selectedDay' : 'day') +
-										(this.doesDateHaveEvent(day, this.props.events) ? ' dayHasEvent' : '')
-									}
-									dateTime={day.format('YYYY-MM-DD')}
-									key={dayIndex}>
-									<Button onClick={() => this.selectDate(day)}>
-										{day.date()}
-									</Button>
-								</time>
-							))}
-						</time>
-					);
-				})}
-			</time>
+						return (
+							<time
+								styleName={weekIndex === 0 ? 'firstWeek' : 'week'}
+								dateTime={weekDate.format('YYYY-[W]w')}
+								key={weekIndex}>
+								{week.map((day, dayIndex) => (
+									<time
+										styleName={
+											(day.isSame(this.state.selectedDate, 'day') ? 'selectedDay' : 'day') +
+											(this.doesDateHaveEvent(day, this.props.events) ? ' dayWithEvent' : '')
+										}
+										dateTime={day.format('YYYY-MM-DD')}
+										key={dayIndex}>
+										<a href="#" onClick={(event) => {
+											event.preventDefault();
+											this.selectDate(day);
+										}}>
+											{day.date()}
+										</a>
+									</time>
+								))}
+							</time>
+						);
+					})}
+				</time>
+				<div styleName="aspectRatio" />
+			</div>
 		);
 	}
 }
 
-Calendar.propTypes = {
+DatePicker.propTypes = {
 	selectedDate: PropTypes.object,
 	selectedMonth: PropTypes.object,
 	events: PropTypes.object, // TODO: Immutable List proptype (also allow array)
 	onSelect: PropTypes.func
 };
 
-Calendar.defaultProps = {
+DatePicker.defaultProps = {
 	events: []
 };
 
-export default Calendar;
+export default DatePicker;

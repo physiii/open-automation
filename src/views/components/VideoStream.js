@@ -15,6 +15,10 @@ export class VideoStream extends React.Component {
 
 	componentDidMount () {
 		this.bootstrapPlayer();
+
+		if (this.props.autoplay) {
+			this.start();
+		}
 	}
 
 	shouldComponentUpdate (nextProps) {
@@ -131,6 +135,8 @@ VideoStream.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	shouldStream: PropTypes.bool,
+	// autoplay will start the stream only once when the component mounts.
+	autoplay: PropTypes.bool,
 	// className can be passed in to override the default CSS class.
 	className: PropTypes.string,
 	startStreaming: PropTypes.func.isRequired,

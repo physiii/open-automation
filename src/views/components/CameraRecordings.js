@@ -1,12 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Calendar from './Calendar.js';
+import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
 import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
 import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
+import './CameraRecordings.css';
+
+const THREE_SECONDS = 3,
+	ONE_MINUTE_IN_SECONDS = 60,
+	ONE_HOUR_IN_MINUTES = 60;
+
+
+moment.relativeTimeThreshold('s', ONE_MINUTE_IN_SECONDS);
+moment.relativeTimeThreshold('ss', THREE_SECONDS);
+moment.relativeTimeThreshold('m', ONE_HOUR_IN_MINUTES);
 
 export class CameraRecordings extends React.Component {
 	constructor (props) {
@@ -29,31 +39,43 @@ export class CameraRecordings extends React.Component {
 	}
 
 	render () {
+		let list;
+
+		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.size) {
+			list = (<List items={this.props.selectedDateRecordings.map((recording) => ({
+				id: recording.id,
+				label: moment(recording.date).format('h:mm A'),
+				meta: 'Motion detected for ' + moment.duration(recording.duration, 'seconds').humanize(),
+				link: `${this.getPathForDate(this.props.selectedDate)}/${recording.id}`
+			}))} />);
+		} else {
+			list = <p>No Recordings for the Selected Date</p>;
+		}
+
 		return (
-			<div>
-				{this.props.isLoading
-					? <div>Loading Recordings</div>
-					: <div>
+			<div styleName="screen">
+				<div styleName="top">
+					<div styleName="topCenterer">
 						{this.props.selectedRecording
 							? <VideoPlayer
 								cameraServiceId={this.props.cameraService.id}
 								recording={this.props.selectedRecording}
+								key={this.props.selectedRecording.id}
 								streamingToken={this.props.selectedRecording.streaming_token}
 								width={this.props.selectedRecording.width}
-								height={this.props.selectedRecording.height} />
-							: <Calendar
+								height={this.props.selectedRecording.height}
+								autoplay={true} />
+							: <DatePicker
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
 								onSelect={this.onDateSelect} />}
-						{this.props.selectedDateRecordings && this.props.selectedDateRecordings.size
-							? <List items={this.props.selectedDateRecordings.map((recording) => ({
-								id: recording.id,
-								label: moment(recording.date).format('h:mm A'),
-								link: `${this.getPathForDate(this.props.selectedDate)}/${recording.id}`
-							}))} />
-							: 'No Recordings for the Selected Date'}
 					</div>
-				}
+				</div>
+				<div styleName="list">
+					{this.props.isLoading
+						? <div>Loading Recordings</div>
+						: list}
+				</div>
 			</div>
 		);
 	}
