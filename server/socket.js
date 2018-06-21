@@ -190,7 +190,9 @@ function start (server) {
 			});
 		});
 
-		socket.on('lock/lock/setlock', function (data, callback) {
+		// Lock Service API
+
+		socket.on('lock/lock/set', function (data, callback) {
 			const lockService = devices.getServiceById(data.service_id);
 
 			if (!lockService) {
@@ -212,7 +214,7 @@ function start (server) {
 			});
 		});
 
-		socket.on('lock/lock/setunlock', function (data, callback) {
+		socket.on('lock/unlock/set', function (data, callback) {
 			const lockService = devices.getServiceById(data.service_id);
 
 			if (!lockService) {
@@ -234,7 +236,7 @@ function start (server) {
 			});
 		});
 
-		socket.on('lock/lock/relockDelay', function (data, callback) {
+		socket.on('lock/relockDelay/set', function (data, callback) {
 			const lockService = devices.getServiceById(data.service_id);
 
 			if (!lockService) {
@@ -256,6 +258,8 @@ function start (server) {
 			});
 		});
 
+		// Thermostat Service API
+
 		socket.on('thermostat/temp/set', function (data, callback) {
 			const thermostatService = devices.getServiceById(data.service_id);
 
@@ -267,8 +271,15 @@ function start (server) {
 				return;
 			}
 
-			thermostatService.setTemp(data.temp, data.mode, data.hold);
-
+			thermostatService.setTemp(data.temp).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
 		});
 
 

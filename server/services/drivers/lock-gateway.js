@@ -7,7 +7,7 @@ class GatewayLockDriver extends GatewayServiceDriver {
 
   lock () {
     return new Promise((resolve, reject) => {
-      this.gatewayEmit('lock/setlock', {}, (error, data) => {
+      this.gatewayEmit('lock/set', {}, (error, data) => {
         if (error) {
           reject(error);
           return;
@@ -20,7 +20,7 @@ class GatewayLockDriver extends GatewayServiceDriver {
 
   unlock () {
     return new Promise((resolve, reject) => {
-      this.gatewayEmit('lock/setunlock', {}, (error, data) => {
+      this.gatewayEmit('unlock/set', {}, (error, data) => {
         if (error) {
           reject(error);
           return;
@@ -33,7 +33,7 @@ class GatewayLockDriver extends GatewayServiceDriver {
 
   setRelockDelay (delay) {
     return new Promise((resolve, reject) => {
-      this.gatewayEmit('lock/relockDelay', {relock_delay: delay}, (error, data) => {
+      this.gatewayEmit('relockDelay/set', {relock_delay: delay}, (error, data) => {
         if (error) {
           reject(error);
           return;
