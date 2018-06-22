@@ -43,7 +43,7 @@ class GatewayThermostatDriver extends GatewayServiceDriver {
       });
     });
   }
-  }
+
 
   setFanMode (mode) {
     return new Promise((resolve, reject) => {
