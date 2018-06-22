@@ -282,9 +282,73 @@ function start (server) {
 			});
 		});
 
+		socket.on('thermostat/mode/set', function (data, callback) {
+			const thermostatService = devices.getServiceById(data.service_id);
 
+			if (!thermostatService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
 
+				return;
+			}
 
+			thermostatService.setThermostatMode(data.mode).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('thermostat/holdMode/set', function (data, callback) {
+			const thermostatService = devices.getServiceById(data.service_id);
+
+			if (!thermostatService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			thermostatService.setHoldMode(data.mode).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('thermostat/fanMode/set', function (data, callback) {
+			const thermostatService = devices.getServiceById(data.service_id);
+
+			if (!thermostatService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			thermostatService.setFanMode(data.mode).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		
 
 		socket.on('link user', function (data, callback) {
 			//console.log('!! LINK USER !!',data);
