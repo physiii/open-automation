@@ -16,19 +16,19 @@ class ThermostatService extends Service {
 	subscribeToDriver () {}
 
 	setTemp(temp) {
-		this.driver.setTemp (temp);
+		return this.driver.setTemp (temp);
 	}
 
 	setThermostatMode (mode) {
-		this.driver.setThermostatMode(mode);
+		return this.driver.setThermostatMode(mode);
 	}
 
 	setHoldMode (mode) {
-		this.driver.setHoldMode(mode);
+		return this.driver.setHoldMode(mode);
 	}
 
 	setFanMode (Mode) {
-		this.driver.setFanMode (mode);
+		return this.driver.setFanMode (mode);
 	}
 
 	serialize () {
