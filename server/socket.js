@@ -348,7 +348,119 @@ function start (server) {
 			});
 		});
 
-		
+		// Light Service mailOptions
+
+		socket.on('light/lighton/set', function (data, callback) {
+			const lightService = devices.getServiceById(data.service_id);
+
+			if (!lightService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lightService.lightOn().then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('light/lightOff/set', function (data, callback) {
+			const lightService = devices.getServiceById(data.service_id);
+
+			if (!lightService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lightService.lightOff().then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('light/brightness/set', function (data, callback) {
+			const lightService = devices.getServiceById(data.service_id);
+
+			if (!lightService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lightService.setBrightness(data.brightness).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('light/color/set', function (data, callback) {
+			const lightService = devices.getServiceById(data.service_id);
+
+			if (!lightService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lightService.setColor(data.color).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+		socket.on('light/name/set', function (data, callback) {
+			const lightService = devices.getServiceById(data.service_id);
+
+			if (!lightService) {
+				if (typeof callback === 'function') {
+					callback('Service not found.', data);
+				}
+
+				return;
+			}
+
+			lightService.setLightName(data.name).then(() => {
+				if (typeof callback === 'function') {
+					callback(null, {});
+				}
+			}).catch((error) => {
+				if (typeof callback === 'function') {
+					callback(error, data);
+				}
+			});
+		});
+
+
 
 		socket.on('link user', function (data, callback) {
 			//console.log('!! LINK USER !!',data);

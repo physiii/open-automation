@@ -4,7 +4,9 @@ const Service = require('./service.js'),
 	LockService = require('./lock-service.js'),
 	GatewayLockDriver = require('./drivers/lock-gateway.js'),
 	ThermostatService = require('./thermostat-service.js'),
-	GatewayThermostatDriver = require('./drivers/thermostat-gateway.js')
+	GatewayThermostatDriver = require('./drivers/thermostat-gateway.js'),
+	LightService = require('./light-service.js'),
+	GatewayLightDriver = require('./drivers/light-gateway.js');
 
 class ServicesManager {
 	constructor (services = [], device) {
@@ -29,7 +31,10 @@ class ServicesManager {
 				service = new LockService(data, GatewayLockDriver);
 				break;
 			case 'thermostat':
-				service = new ThermostatService(data, GatewayThermostatDriver)
+				service = new ThermostatService(data, GatewayThermostatDriver);
+				break;
+			case 'light':
+				service = new LightService(data, GatewayLightDriver);
 				break;
 			default:
 				service = new Service(data);
