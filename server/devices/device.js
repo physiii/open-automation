@@ -116,6 +116,7 @@ class Device {
 	dbSerialize () {
 		return {
 			...this.serialize(),
+			token: this.token,
 			services: this.services.getDbSerializedServices()
 		};
 	}

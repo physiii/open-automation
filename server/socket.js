@@ -48,6 +48,8 @@ function start (server, jwt_secret) {
 			// If the device doesn't exist, store the socket in escrow to be used
 			// when the device is added.
 			if (!device) {
+				console.log(TAG, 'Unknown device connected.', device_id);
+
 				DevicesManager.addToSocketEscrow(device_id, device_token, socket);
 
 				return;
@@ -63,6 +65,8 @@ function start (server, jwt_secret) {
 
 				return;
 			}
+
+			console.log(TAG, 'Device connected.', device_id);
 
 			// Update the socket on the device.
 			device.setGatewaySocket(socket, device_token);

@@ -6,17 +6,24 @@ import createHistory from 'history/createBrowserHistory';
 import Api from './api.js';
 import App from './views/layouts/App';
 import configureStore from './state/store';
+import {initialize as initializeConfig} from './state/ducks/config/operations.js';
 import {initialize as initializeSession} from './state/ducks/session/operations.js';
 import './views/styles/main.scss';
 
 const history = createHistory(), // History object to share between router and store.
 	reduxStore = configureStore(history); // Create store.
 
+// Save configuration to store.
+reduxStore.dispatch(initializeConfig(window.OpenAutomation.config));
+
 // Set up user if already logged in.
 reduxStore.dispatch(initializeSession());
 
 // Expose some utilities for use in browser console.
-window.OpenAutomation = {Api};
+window.OpenAutomation = {
+	...window.OpenAutomation,
+	Api
+};
 
 ReactDOM.render(
 	<ReduxProvider store={reduxStore}>

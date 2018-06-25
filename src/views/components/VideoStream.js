@@ -102,8 +102,7 @@ export class VideoStream extends React.Component {
 			this.player.destroy();
 		}
 
-		// TODO: Use actual host and streaming port. Add secure socket support (wss://).
-		this.player = new JSMpeg.Player('wss://localhost:8085', {
+		this.player = new JSMpeg.Player(this.props.streamingHost, {
 			canvas: this.canvas.current,
 			oa_stream_id: this.getStreamIdForCurrentResource(),
 			oa_stream_token: this.props.streamingToken
@@ -132,6 +131,7 @@ VideoStream.propTypes = {
 	cameraServiceId: PropTypes.string.isRequired,
 	recording: PropTypes.object, // TODO: Shape of recording object
 	streamingToken: PropTypes.string,
+	streamingHost: PropTypes.string,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	shouldStream: PropTypes.bool,
@@ -143,23 +143,30 @@ VideoStream.propTypes = {
 	stopStreaming: PropTypes.func.isRequired
 };
 
-export const mapDispatchToProps = (dispatch, ownProps) => {
-	return {
-		startStreaming: () => {
-			if (ownProps.recording) {
-				dispatch(startCameraRecordingStream(ownProps.recording));
-			} else {
-				dispatch(startCameraStream(ownProps.cameraServiceId));
-			}
-		},
-		stopStreaming: () => {
-			if (ownProps.recording) {
-				dispatch(stopCameraRecordingStream(ownProps.recording));
-			} else {
-				dispatch(stopCameraStream(ownProps.cameraServiceId));
-			}
-		}
-	};
-};
+export const mapStateToProps = (state) => {
+		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-export default connect(null, mapDispatchToProps)(VideoStream);
+		return {
+			streamingHost: protocol + '//' + window.location.hostname + ':' + state.config.stream_port
+		};
+	},
+	mapDispatchToProps = (dispatch, ownProps) => {
+		return {
+			startStreaming: () => {
+				if (ownProps.recording) {
+					dispatch(startCameraRecordingStream(ownProps.recording));
+				} else {
+					dispatch(startCameraStream(ownProps.cameraServiceId));
+				}
+			},
+			stopStreaming: () => {
+				if (ownProps.recording) {
+					dispatch(stopCameraRecordingStream(ownProps.recording));
+				} else {
+					dispatch(stopCameraStream(ownProps.cameraServiceId));
+				}
+			}
+		};
+	};
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoStream);

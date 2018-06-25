@@ -240,6 +240,15 @@ function start (app) {
 		});
 	});
 
+	app.get('/js/config.js', (request, response) => {
+		const client_config = {
+			app_name: config.app_name || 'Open Automation',
+			stream_port: config.video_websocket_port
+		};
+
+		response.send('window.OpenAutomation = {config: ' + JSON.stringify(client_config) + '};');
+	});
+
 	app.get('*', (request, response) => {
 		response.sendFile('/index.html', {root: __dirname + '/../public'});
 	});
