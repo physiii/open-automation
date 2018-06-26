@@ -83,7 +83,9 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 		});
 	}
 
-	listenToGateway () {}
+	listenToGateway () {
+		GatewayServiceDriver.prototype.listenToGateway.apply(this, arguments);
+	}
 }
 
 module.exports = GatewayCameraDriver;

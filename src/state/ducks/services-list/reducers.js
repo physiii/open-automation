@@ -31,6 +31,13 @@ const initialState = {
 						return Immutable.List(device.services.map((service) => {
 							return createService({
 								...service,
+								state: {
+									...service.state,
+									connected: device.state.connected &&
+										(Object.prototype.hasOwnProperty.call(service.state, 'connected')
+											? service.state.connected
+											: true)
+								},
 								device_id: device.id,
 								recordingsList: recordingsReducer(service.recordings, action)
 							});

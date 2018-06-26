@@ -12,7 +12,7 @@
 	flex-flow: column nowrap;
 	justify-content: center;
 	align-items: center;
-	z-index: 1;
+	z-index: 2;
 	transition: background 0.15s;
 }
 .overlay:hover {
@@ -49,6 +49,12 @@
 .aspectRatio {
 	/* Default aspect ratio of 4:3. This may be overridden in DOM at run-time. */
 	composes: aspectRatio43 from '../styles/helpers.css';
+}
+.poster {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1
 }
 .canvas {
 	composes: fillContext from '../styles/helpers.css';

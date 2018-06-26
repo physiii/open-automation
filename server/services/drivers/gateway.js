@@ -15,7 +15,7 @@ class GatewayServiceDriver {
 	}
 
 	listenToGateway () {
-		// no-op
+		this.gatewayOn('state', (data) => this.events.emit('state update', data.state));
 	}
 
 	setGatewaySocket (gatewaySocket) {

@@ -1,42 +1,44 @@
 const uuid = require('uuid/v4'),
 	crypto = require('crypto'),
+	utils = require('../utils.js'),
 	database = require('../database.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	TAG = '[Device]';
 
 class Device {
-	constructor (data) {
+	constructor (data, onUpdate, gatewaySocket) {
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.location = data.location || data.location_id;
 
+		this.onUpdate = onUpdate;
 		this.gatewayOn = this.gatewayOn.bind(this);
 		this.gatewayEmit = this.gatewayEmit.bind(this);
 
-		this.services = new ServicesManager(data.services, this);
+		this.services = new ServicesManager(data.services, this, () => this.onUpdate(this));
 
-		this.setStatus(data.status || {});
-		this.setSettings(data.settings || {});
-		this.setInfo(data.info || {});
+		this.setState(data.state);
+		this.setSettings(data.settings);
+		this.setInfo(data.info);
 
-		if (data.gatewaySocket) {
-			this.setGatewaySocket(data.gatewaySocket);
+		if (gatewaySocket) {
+			this.setGatewaySocket(gatewaySocket, this.token);
 		}
 	}
 
-	setStatus (status) {
-		this.status = {
-			connected: status.connected || false
-		};
+	setState (state = {}) {
+		this.state = utils.onChange({
+			connected: state.connected || false
+		}, () => this.onUpdate(this));
 	}
 
-	setSettings (settings) {
+	setSettings (settings = {}) {
 		this.settings = {
 			name: settings.name
 		};
 	}
 
-	setInfo (info) {
+	setInfo (info = {}) {
 		this.info = {
 			manufacturer: info.manufacturer
 		};
@@ -53,20 +55,20 @@ class Device {
 		}
 
 		this.gatewaySocket = socket;
-		this.status.connected = true;
+		this.state.connected = socket.connected;
 
 		// Update the service drivers with the new socket.
 		this.services.setGatewaySocket(this.getGatewaySocketProxy());
 
 		// Update when the gateway sends new state.
 		this.gatewayOn('load', (data, callback) => {
-			this.services.updateServices(data.services);
+			this.services.updateServices(data.device.services);
 			this.setInfo(data.info);
 		});
 
 		// Can't use gatewayOn with socket.io events.
 		this.gatewaySocket.on('disconnect', (data) => {
-			this.status.connected = false;
+			this.state.connected = false;
 		});
 	}
 
@@ -85,7 +87,7 @@ class Device {
 			return;
 		}
 
-		if (!this.status.connected) {
+		if (!this.state.connected) {
 			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the gateway socket is not connected.');
 		}
 
@@ -124,6 +126,7 @@ class Device {
 	clientSerialize () {
 		return {
 			...this.serialize(),
+			state: this.state,
 			services: this.services.getClientSerializedServices()
 		};
 	}

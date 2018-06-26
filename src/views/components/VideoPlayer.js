@@ -10,7 +10,10 @@ export class VideoPlayer extends React.Component {
 
 		// Copying props to state here because we specifically only care about
 		// the autoplay prop during the first render.
-		this.state = {isPlaying: this.props.autoplay};
+		this.state = {
+			isPlaying: this.props.autoplay,
+			hasPlayedOnce: false
+		};
 
 		this.onClick = this.onClick.bind(this);
 	}
@@ -18,7 +21,10 @@ export class VideoPlayer extends React.Component {
 	onClick () {
 		const isPlaying = !this.state.isPlaying;
 
-		this.setState({isPlaying});
+		this.setState({
+			isPlaying,
+			hasPlayedOnce: true
+		});
 
 		if (isPlaying && typeof this.props.onPlay === 'function') {
 			this.props.onPlay();
@@ -46,6 +52,9 @@ export class VideoPlayer extends React.Component {
 				</div>
 				<div styleName="video">
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
+					{this.props.posterUrl && !this.state.hasPlayedOnce
+						? <img styleName="poster" style={{width: this.props.width, height: this.props.height}} src={this.props.posterUrl} />
+						: null}
 					<VideoStream
 						styleName="canvas"
 						{...this.props}
@@ -63,6 +72,7 @@ VideoPlayer.propTypes = {
 	cameraServiceId: PropTypes.string.isRequired,
 	recording: PropTypes.object,
 	streamingToken: PropTypes.string,
+	posterUrl: PropTypes.string,
 	autoplay: PropTypes.bool,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,

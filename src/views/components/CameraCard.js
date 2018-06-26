@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import ServiceCardBase from './ServiceCardBase.js';
 import CameraIcon from '../icons/CameraIcon.js';
 import Button from './Button.js';
@@ -26,16 +27,20 @@ export class CameraCard extends React.Component {
 	}
 
 	render () {
-		let status = 'No movement recorded';
+		const lastRecordingDate = this.props.camera.state.last_recording_date;
 
 		return (
 			<ServiceCardBase
 				name={this.props.camera.settings.name || 'Camera'}
-				status={status}
+				status={lastRecordingDate
+					? 'Movement recorded ' + moment(lastRecordingDate).fromNow()
+					: null}
 				icon={<CameraIcon />}
+				isConnected={this.props.camera.state.connected}
 				content={<VideoPlayer
 					cameraServiceId={this.props.camera.id}
 					streamingToken={this.props.camera.streaming_token}
+					posterUrl={'data:image/jpg;base64,' + this.props.camera.state.preview_image}
 					width={this.props.camera.settings.resolution_w}
 					height={this.props.camera.settings.resolution_h}
 					onPlay={this.onStreamStart}

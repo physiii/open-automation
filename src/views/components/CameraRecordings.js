@@ -9,15 +9,6 @@ import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/s
 import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
 import './CameraRecordings.css';
 
-const THREE_SECONDS = 3,
-	ONE_MINUTE_IN_SECONDS = 60,
-	ONE_HOUR_IN_MINUTES = 60;
-
-
-moment.relativeTimeThreshold('s', ONE_MINUTE_IN_SECONDS);
-moment.relativeTimeThreshold('ss', THREE_SECONDS);
-moment.relativeTimeThreshold('m', ONE_HOUR_IN_MINUTES);
-
 export class CameraRecordings extends React.Component {
 	constructor (props) {
 		super(props);

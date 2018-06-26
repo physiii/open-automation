@@ -8,6 +8,10 @@ class Camera extends ServiceRecord({
 		resolution_w: 640,
 		resolution_h: 480,
 		rotation: 0
+	},
+	state: {
+		preview_image: null,
+		last_recording_date: null
 	}
 }) {}
 

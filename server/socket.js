@@ -19,7 +19,8 @@ const database = require('./database.js'),
 let motionStarted = false;
 
 module.exports = {
-	start: start
+	start,
+	getClientSocketsForAccountId
 };
 
 if (config.mail) {
@@ -32,6 +33,16 @@ if (config.mail) {
 			}
 		})
 	);
+}
+
+function getClientSocketsForAccountId (account_id) {
+	const account = AccountsManager.getAccountById(account_id);
+
+	if (!account) {
+		return [];
+	}
+
+	return account.getClientSockets();
 }
 
 function start (server, jwt_secret) {
@@ -137,12 +148,12 @@ function start (server, jwt_secret) {
 			}
 
 			// Store the socket object on the account object.
-			account.client_socket = socket;
+			account.client_sockets.set(socket.id, socket);
 
 			socket.on('disconnect', () => {
 				console.info(TAG, 'Client disconnected.', socket.id);
 
-				delete account.client_socket;
+				account.client_sockets.delete(socket.id);
 			});
 
 			clientEndpoint('devices/get', (data, callback) => {

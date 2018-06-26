@@ -2,8 +2,8 @@ const Service = require('./service.js'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, driverClass) {
-		super(data);
+	constructor (data, onUpdate, driverClass) {
+		super(data, onUpdate);
 
 		this.type = 'camera';
 
@@ -13,7 +13,9 @@ class CameraService extends Service {
 		this.subscribeToDriver();
 	}
 
-	subscribeToDriver () {}
+	subscribeToDriver () {
+		this.driver.on('state update', (state) => this.setState(state));
+	}
 
 	setSettings (settings) {
 		this.settings.resolution_w = settings.resolution_w || 640;
@@ -53,11 +55,15 @@ class CameraService extends Service {
 	}
 
 	dbSerialize () {
-		return this.serialize();
+		return {
+			...Service.prototype.dbSerialize.apply(this, arguments)
+		};
 	}
 
 	clientSerialize () {
-		return this.serialize();
+		return {
+			...Service.prototype.clientSerialize.apply(this, arguments)
+		};
 	}
 }
 

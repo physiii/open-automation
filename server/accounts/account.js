@@ -12,6 +12,7 @@ class Account {
 		this.password = data.password || data.token; // token is a legacy property.
 		this.salt = data.salt;
 		this.hash_algorithm = data.hash_algorithm || PASSWORD_HASH_ALGORITHM;
+		this.client_sockets = new Map();
 
 		if (data.registration_date) {
 			this.registration_date = new Date(data.registration_date);
@@ -39,6 +40,10 @@ class Account {
 				}
 			}).catch(reject);
 		});
+	}
+
+	getClientSockets () {
+		return Array.from(this.client_sockets.values());
 	}
 
 	getPasswordSalt () {

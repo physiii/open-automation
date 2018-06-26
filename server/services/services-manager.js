@@ -3,9 +3,11 @@ const Service = require('./service.js'),
 	GatewayCameraDriver = require('./drivers/camera-gateway.js');
 
 class ServicesManager {
-	constructor (services = [], device) {
+	constructor (services = [], device, onServiceUpdate) {
 		this.device = device;
 		this.services = [];
+
+		this.onServiceUpdate = onServiceUpdate;
 
 		this.updateServices(services);
 	}
@@ -14,15 +16,19 @@ class ServicesManager {
 		let service = this.getServiceById(data.id);
 
 		if (service) {
+			if (data.state) {
+				service.setState(data.state);
+			}
+
 			return service;
 		}
 
 		switch (data.type) {
 			case 'camera':
-				service = new CameraService(data, GatewayCameraDriver);
+				service = new CameraService(data, this.onServiceUpdate, GatewayCameraDriver);
 				break;
 			default:
-				service = new Service(data);
+				service = new Service(data, this.onServiceUpdate);
 				break;
 		}
 

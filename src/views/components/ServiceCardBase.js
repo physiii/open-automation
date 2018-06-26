@@ -4,21 +4,25 @@ import Toolbar from './Toolbar.js';
 import './ServiceCardBase.css';
 
 export const ServiceCardBase = (props) => {
+	const status = props.isConnected
+		? props.status
+		: 'Not Responding';
+
 	return (
 		<div styleName="card">
 			<div styleName={props.hideToolbars ? 'topBarHidden' : 'topBar'}>
 				{props.icon
-					? <div styleName="icon">
+					? <div styleName={props.isConnected ? 'icon' : 'disconnectedIcon'}>
 						{props.icon}
 					</div>
 					: null}
 				<div styleName="nameWrapper">
-					<div styleName="name">
+					<label styleName="name">
 						{props.name}
-					</div>
-					{props.status
-						? <div styleName="status">
-							{props.status}
+					</label>
+					{status
+						? <div styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>
+							{status}
 						</div>
 						: null}
 				</div>
@@ -37,6 +41,7 @@ ServiceCardBase.propTypes = {
 	name: PropTypes.string,
 	status: PropTypes.string,
 	icon: PropTypes.node,
+	isConnected: PropTypes.bool,
 	content: PropTypes.node,
 	toolbarsOverlayContent: PropTypes.bool,
 	secondaryAction: PropTypes.node,

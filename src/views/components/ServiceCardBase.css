@@ -1,5 +1,6 @@
 @value topBarHeight: 72px;
 @value bottomBarHeight: 48px;
+@value disconnectedRed: #d30808;
 
 .card {
 	display: flex;
@@ -18,7 +19,7 @@
 	height: topBarHeight;
 	padding: 0 16px;
 	position: relative;
-	z-index: 1;
+	z-index: 10;
 	opacity: 1;
 	background-color: rgba(56, 56, 56, 0.9);
 	font-size: 14px;
@@ -36,6 +37,29 @@
 	align-items: center;
 	width: 56px;
 	padding: 16px 16px 16px 0;
+	position: relative;
+}
+.disconnectedIcon {
+	composes: icon;
+}
+.disconnectedIcon::after {
+	content: "!";
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	width: 18px;
+	height: 18px;
+	padding-top: 2px;
+	position: absolute;
+	right: 16px;
+	bottom: 16px;
+	border-radius: 100%;
+	background-color: disconnectedRed;
+	color: #ffffff;
+	font-size: 15px;
+	font-weight: bold;
 }
 .nameWrapper {
 	display: flex;
@@ -48,6 +72,10 @@
 .status {
 	line-height: 20px;
 	color: #909090;
+}
+.disconnectedStatus {
+	composes: status;
+	color: disconnectedRed;
 }
 
 .bottomBar {
