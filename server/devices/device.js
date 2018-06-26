@@ -62,11 +62,23 @@ class Device {
 
 		// Update when the gateway sends new state.
 		this.gatewayOn('load', (data, callback) => {
-			this.services.updateServices(data.device.services);
-			this.setInfo(data.info);
+			if (!data.device) {
+				return;
+			}
+
+			if (data.device.services) {
+				this.services.updateServices(data.device.services);
+			}
+
+			if (data.device.info) {
+				this.setInfo(data.info);
+			}
 		});
 
 		// Can't use gatewayOn with socket.io events.
+		this.gatewaySocket.on('connect', (data) => {
+			this.state.connected = true;
+		});
 		this.gatewaySocket.on('disconnect', (data) => {
 			this.state.connected = false;
 		});

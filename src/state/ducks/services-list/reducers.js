@@ -29,7 +29,10 @@ const initialState = {
 					error: false,
 					services: Immutable.List(action.payload.devices.map((device) => {
 						return Immutable.List(device.services.map((service) => {
+							const currentServiceState = state.services ? state.services.find((stateService) => stateService.id === service.id).toObject() : {};
+
 							return createService({
+								...currentServiceState,
 								...service,
 								state: {
 									...service.state,
@@ -39,7 +42,10 @@ const initialState = {
 											: true)
 								},
 								device_id: device.id,
-								recordingsList: recordingsReducer(service.recordings, action)
+								recordingsList: recordingsReducer(currentServiceState.recordingsList, {
+									...action,
+									payload: {recordings: service.recordings}
+								})
 							});
 						}));
 					})).flatten(1) // Flatten the array of arrays.
@@ -84,7 +90,7 @@ const initialState = {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return {
 					...recordingsInitialState,
-					recordings: state ? Immutable.List(state) : recordingsInitialState.recordings
+					recordings: state ? Immutable.List(action.payload.recordings || state.recordings) : recordingsInitialState.recordings
 				};
 			case types.FETCH_CAMERA_RECORDINGS:
 				return {

@@ -1,6 +1,7 @@
 const Service = require('./service.js'),
 	CameraService = require('./camera-service.js'),
-	GatewayCameraDriver = require('./drivers/camera-gateway.js');
+	GatewayCameraDriver = require('./drivers/camera-gateway.js'),
+	TAG = '[ServicesManager]';
 
 class ServicesManager {
 	constructor (services = [], device, onServiceUpdate) {
@@ -45,6 +46,11 @@ class ServicesManager {
 	}
 
 	updateServices (services, gatewaySocket) {
+		if (!services || !services.forEach) {
+			console.error(TAG, '[updateServices] Services must be an array or map.');
+			return;
+		}
+
 		services.forEach((service) => {
 			this.addService(service, gatewaySocket);
 		});
