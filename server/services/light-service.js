@@ -16,11 +16,11 @@ class LightService extends Service {
 	subscribeToDriver () {}
 
   lightOn () {
-    return this.driver.setLightOn();
+    return this.driver.lightOn();
   };
 
-  lightOff () {
-    return this.driver.setLightOff();
+  lightOff () {    
+    return this.driver.lightOff();
   };
 
   setBrightness (brightness) {
@@ -37,8 +37,7 @@ class LightService extends Service {
 
 	serialize () {
 		return {
-			...Service.prototype.serialize.apply(this, arguments),
-			id: this.id
+			...Service.prototype.serialize.apply(this, arguments)
 		};
 	}
 

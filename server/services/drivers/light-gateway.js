@@ -1,4 +1,5 @@
-const GatewayServiceDriver = require('./gateway.js');
+const GatewayServiceDriver = require('./gateway.js'),
+  TAG = '[GatewayLightDriver]';
 
 class GatewayLightDriver extends GatewayServiceDriver {
   constructor (lightId, gatewaySocket) {
@@ -19,6 +20,7 @@ class GatewayLightDriver extends GatewayServiceDriver {
   }
 
   lightOff () {
+    console.log(TAG, 'Recieved call')
     return new Promise((resolve, reject) => {
       this.gatewayEmit('lightOff/set', {}, (error, data) => {
         if (error) {

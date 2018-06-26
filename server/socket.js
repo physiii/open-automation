@@ -381,7 +381,7 @@ function start (server) {
 				}
 
 				return;
-			}
+			}			
 
 			lightService.lightOff().then(() => {
 				if (typeof callback === 'function') {
