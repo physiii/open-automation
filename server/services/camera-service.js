@@ -7,8 +7,6 @@ class CameraService extends Service {
 
 		this.type = 'camera';
 
-		this.setSettings(data.settings || {});
-
 		this.driver = new driverClass(this.id);
 		this.subscribeToDriver();
 	}
@@ -17,10 +15,12 @@ class CameraService extends Service {
 		this.driver.on('state update', (state) => this.setState(state));
 	}
 
-	setSettings (settings) {
-		this.settings.resolution_w = settings.resolution_w || 640;
-		this.settings.resolution_h = settings.resolution_h || 480;
-		this.settings.rotation = settings.rotation || 0;
+	setSettings (settings = {}) {
+		this.settings = {
+			resolution_w: settings.resolution_w || 640,
+			resolution_h: settings.resolution_h || 480,
+			rotation: settings.rotation || 0
+		}
 	}
 
 	streamLive () {
@@ -45,25 +45,6 @@ class CameraService extends Service {
 
 	stopRecordingStream (recordingId) {
 		return this.driver.stopRecordingStream(recordingId);
-	}
-
-	serialize () {
-		return {
-			...Service.prototype.serialize.apply(this, arguments),
-			os_device_path: this.os_device_path
-		};
-	}
-
-	dbSerialize () {
-		return {
-			...Service.prototype.dbSerialize.apply(this, arguments)
-		};
-	}
-
-	clientSerialize () {
-		return {
-			...Service.prototype.clientSerialize.apply(this, arguments)
-		};
 	}
 }
 

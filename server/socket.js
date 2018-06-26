@@ -164,6 +164,43 @@ function start (server, jwt_secret) {
 				}
 			});
 
+			// Gateway Service API
+
+			clientEndpoint('gateway/command', (data, callback) => {
+				const gatewayService = DevicesManager.getServiceById(data.service_id);
+
+				if (gatewayService.device.location !== account.id) {
+					if (typeof callback === 'function') {
+						callback('Service not found.', data);
+					}
+
+					return;
+				}
+
+				if (!gatewayService.verifyCommandToken(data.command_token)) {
+					gatewayService.getCommandToken();
+
+					// NOTE: DO NOT SEND THE COMMAND TOKEN TO THE CLIENT.
+					// IT MUST BE READ FROM SERVER LOGS TO GAIN ACCESS.
+
+					if (typeof callback === 'function') {
+						callback(null, 'Command token generated.');
+					}
+
+					return;
+				}
+
+				gatewayService.command(data.command).then((result) => {
+					if (typeof callback === 'function') {
+						callback(null, result);
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error);
+					}
+				});
+			});
+
 			// Camera Service API
 
 			clientEndpoint('camera/stream/live', function (data, callback) {

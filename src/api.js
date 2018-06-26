@@ -58,6 +58,10 @@ class Api {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
+	gatewayCommand (gatewayServiceId, command, token) {
+		return Api.apiCall('gateway/command', {service_id: gatewayServiceId, command, command_token: token});
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {

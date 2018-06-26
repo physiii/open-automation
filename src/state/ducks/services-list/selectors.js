@@ -1,6 +1,9 @@
 const servicesWithoutGateways = (servicesList) => {
 		return servicesList.services.filter((service) => service.type !== 'gateway');
 	},
+	gatewayServices = (servicesList) => {
+		return servicesList.services ? servicesList.services.filter((service) => service.type === 'gateway') : [];
+	},
 	serviceById = (serviceId, servicesList) => {
 		return servicesList.services.find((service) => service.id === serviceId);
 	},
@@ -53,6 +56,7 @@ const servicesWithoutGateways = (servicesList) => {
 
 export {
 	servicesWithoutGateways,
+	gatewayServices,
 	serviceById,
 	recordingsForDate,
 	recordingById,

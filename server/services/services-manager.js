@@ -1,5 +1,7 @@
 const Service = require('./service.js'),
+	GatewayService = require('./gateway-service.js'),
 	CameraService = require('./camera-service.js'),
+	GatewayServiceDriver = require('./drivers/gateway.js'),
 	GatewayCameraDriver = require('./drivers/camera-gateway.js'),
 	TAG = '[ServicesManager]';
 
@@ -27,6 +29,9 @@ class ServicesManager {
 		switch (data.type) {
 			case 'camera':
 				service = new CameraService(data, this.onServiceUpdate, GatewayCameraDriver);
+				break;
+			case 'gateway':
+				service = new GatewayService(data, this.onServiceUpdate, GatewayServiceDriver);
 				break;
 			default:
 				service = new Service(data, this.onServiceUpdate);

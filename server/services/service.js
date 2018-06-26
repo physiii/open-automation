@@ -5,11 +5,15 @@ class Service {
 		this.id = data.id || uuid();
 		this.type = data.type;
 		this.device = data.device;
-		this.settings = {};
 
 		this.onUpdate = onUpdate;
 
+		this.setSettings(data.settings);
 		this.setState(data.state);
+	}
+
+	setSettings (settings = {}) {
+		this.settings = {...settings};
 	}
 
 	setState (state = {}) {

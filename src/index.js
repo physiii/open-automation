@@ -10,6 +10,7 @@ import configureStore from './state/store';
 import {initialize as initializeConfig} from './state/ducks/config/operations.js';
 import {initialize as initializeSession} from './state/ducks/session/operations.js';
 import {listenForDeviceChanges} from './state/ducks/devices-list/operations.js';
+import {gatewayServices as getGatewayServices} from './state/ducks/services-list/selectors.js';
 import './views/styles/main.scss';
 
 const history = createHistory(), // History object to share between router and store.
@@ -37,6 +38,30 @@ window.OpenAutomation = {
 	...window.OpenAutomation,
 	Api
 };
+
+// Add gateway command utility.
+reduxStore.subscribe(() => {
+	const state = reduxStore.getState(),
+		gateways = getGatewayServices(state.servicesList);
+
+	window.OpenAutomation.gateways = {};
+
+	gateways.forEach((gateway, index) => {
+		window.OpenAutomation.gateways[gateway.settings.name || index] = {
+			command: (token, command) => {
+				Api.gatewayCommand(gateway.get('id'), command, token).then((data) => {
+					if (data.stdout) {
+						console.log(data.stdout + data.stderr);
+					} else {
+						console.log(data);
+					}
+				}).catch((error) => {
+					console.error('Gateway command error:', error);
+				});
+			}
+		};
+	});
+});
 
 ReactDOM.render(
 	<ReduxProvider store={reduxStore}>
