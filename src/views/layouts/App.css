@@ -12,6 +12,7 @@
 	flex: 1 1 auto;
 	overflow-x: hidden;
 	overflow-y: auto;
+	height: 100%;
 }
 .contentCentered {
 	composes: content;
