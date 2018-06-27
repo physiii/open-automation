@@ -39,13 +39,13 @@ class ServicesManager {
 				service = new GatewayService(data, this.onServiceUpdate, GatewayServiceDriver);
 				break;
 			case 'lock':
-				service = new LockService(data, GatewayLockDriver);
+				service = new LockService(data, this.onServiceUpdate, GatewayLockDriver);
 				break;
 			case 'thermostat':
-				service = new ThermostatService(data, GatewayThermostatDriver);
+				service = new ThermostatService(data, this.onServiceUpdate, GatewayThermostatDriver);
 				break;
 			case 'light':
-				service = new LightService(data, GatewayLightDriver);
+				service = new LightService(data, this.onServiceUpdate, GatewayLightDriver);
 				break;
 			default:
 				service = new Service(data, this.onServiceUpdate);

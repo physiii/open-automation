@@ -1,48 +1,48 @@
 const GatewayServiceDriver = require('./gateway.js');
 
 class GatewayLockDriver extends GatewayServiceDriver {
-  constructor (lockId, gatewaySocket) {
-    super(lockId, 'lock', gatewaySocket);
-  }
+	constructor (lockId, gatewaySocket) {
+		super(lockId, 'lock', gatewaySocket);
+	}
 
-  lock () {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('lock/set', {}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+	lock () {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('lock/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 
-  unlock () {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('unlock/set', {}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+	unlock () {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('unlock/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 
-  setRelockDelay (delay) {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('relockDelay/set', {relock_delay: delay}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+	setRelockDelay (delay) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('relockDelay/set', {relock_delay: delay}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 }
 
 module.exports = GatewayLockDriver;

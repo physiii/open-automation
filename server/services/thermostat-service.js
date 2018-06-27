@@ -2,8 +2,8 @@ const Service = require('./service.js'),
 	TAG = '[ThermostatService]';
 
 class ThermostatService extends Service {
-	constructor (data, driverClass) {
-		super(data);
+	constructor (data, onUpdate, driverClass) {
+		super(data, onUpdate);
 
 		this.type = 'thermostat';
 

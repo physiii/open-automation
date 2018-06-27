@@ -2,8 +2,8 @@ const Service = require('./service.js'),
 	TAG = '[LockService]';
 
 class LockService extends Service {
-	constructor (data, driverClass) {
-		super(data);
+	constructor (data, onUpdate, driverClass) {
+		super(data, onUpdate);
 
 		this.type = 'lock';
 
@@ -34,7 +34,7 @@ class LockService extends Service {
 
 	dbSerialize () {
 		return this.serialize();
-	}	
+	}
 }
 
 module.exports = LockService;

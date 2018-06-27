@@ -2,8 +2,8 @@ const Service = require('./service.js'),
 	TAG = '[LightService]';
 
 class LightService extends Service {
-	constructor (data, driverClass) {
-		super(data);
+	constructor (data, onUpdate, driverClass) {
+		super(data, onUpdate);
 
 		this.type = 'light';
 
@@ -15,25 +15,25 @@ class LightService extends Service {
 
 	subscribeToDriver () {}
 
-  lightOn () {
-    return this.driver.lightOn();
-  };
+	lightOn () {
+		return this.driver.lightOn();
+	};
 
-  lightOff () {    
-    return this.driver.lightOff();
-  };
+	lightOff () {
+		return this.driver.lightOff();
+	};
 
-  setBrightness (brightness) {
-    return this.driver.setBrightness(brightness);
-  };
+	setBrightness (brightness) {
+		return this.driver.setBrightness(brightness);
+	};
 
-  setColor (color) {
-    return this.driver.setColor(color);
-  };
+	setColor (color) {
+		return this.driver.setColor(color);
+	};
 
-  setLightName (name) {
-    return this.driver.setLightName(name);
-  }
+	setLightName (name) {
+		return this.driver.setLightName(name);
+	}
 
 	serialize () {
 		return {

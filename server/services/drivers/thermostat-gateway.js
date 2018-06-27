@@ -1,62 +1,61 @@
 const GatewayServiceDriver = require('./gateway.js');
 
 class GatewayThermostatDriver extends GatewayServiceDriver {
-  constructor (thermostatId, gatewaySocket) {
-    super(thermostatId, 'thermostat', gatewaySocket);
-  }
+	constructor (thermostatId, gatewaySocket) {
+		super(thermostatId, 'thermostat', gatewaySocket);
+	}
 
-  setThermostatMode (mode) {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('mode/set', {mode: mode}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+	setThermostatMode (mode) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('mode/set', {mode: mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 
-  setTemp (temp) {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('temp/set', {temp: temp}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+	setTemp (temp) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('temp/set', {temp: temp}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 
 	setHoldMode (mode) {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('holdMode/set', {mode: mode}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('holdMode/set', {mode: mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 
+	setFanMode (mode) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('fanMode/set', {mode: mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-  setFanMode (mode) {
-    return new Promise((resolve, reject) => {
-      this.gatewayEmit('fanMode/set', {mode: mode}, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-
-        resolve();
-      });
-    });
-  }
+				resolve();
+			});
+		});
+	}
 }
 
 module.exports = GatewayThermostatDriver;
