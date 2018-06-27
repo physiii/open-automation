@@ -1,0 +1,98 @@
+@value topBarHeight: 72px;
+@value bottomBarHeight: 48px;
+@value disconnectedRed: #d30808;
+
+.card {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 100%;
+	flex: 1 1 auto;
+	background-color: #444444;
+	border: 1px solid #888888;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.topBar {
+	display: flex;
+	flex-flow: row nowrap;
+	height: topBarHeight;
+	padding: 0 16px;
+	position: relative;
+	z-index: 10;
+	opacity: 1;
+	background-color: rgba(56, 56, 56, 0.9);
+	font-size: 14px;
+	transition: opacity 0.2s;
+}
+.topBarHidden {
+	composes: topBar;
+	opacity: 0;
+	pointer-events: none;
+}
+.icon {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	width: 56px;
+	padding: 16px 16px 16px 0;
+	position: relative;
+}
+.disconnectedIcon {
+	composes: icon;
+}
+.disconnectedIcon::after {
+	content: "!";
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	width: 18px;
+	height: 18px;
+	padding-top: 2px;
+	position: absolute;
+	right: 16px;
+	bottom: 16px;
+	border-radius: 100%;
+	background-color: disconnectedRed;
+	color: #ffffff;
+	font-size: 15px;
+	font-weight: bold;
+}
+.nameWrapper {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+}
+.name {
+	line-height: 20px;
+}
+.status {
+	line-height: 20px;
+	color: #909090;
+}
+.disconnectedStatus {
+	composes: status;
+	color: disconnectedRed;
+}
+
+.bottomBar {
+	composes: topBar;
+	height: bottomBarHeight;
+	padding: 0 8px;
+}
+.bottomBarHidden {
+	composes: bottomBar;
+	composes: topBarHidden;
+}
+
+.content {
+	flex: 1 1 auto;
+}
+
+.contentBehindToolbars {
+	composes: content;
+	margin: calc(0px - topBarHeight) 0 calc(0px - bottomBarHeight) 0;
+}

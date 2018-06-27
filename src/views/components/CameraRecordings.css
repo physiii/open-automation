@@ -1,0 +1,21 @@
+.screen {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
+	height: 100%;
+	overflow: hidden;
+}
+.top {
+	/* This is intentionally empty. This layout needs a non-flexbox div because
+	of its descendants (video player and date picker) using the aspect ratio
+	technique.*/
+}
+.topCenterer {
+	position: relative;
+	max-width: 500px;
+	margin: 0 auto;
+}
+.list {
+	flex: 1 1 auto;
+	overflow: auto;
+}

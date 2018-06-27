@@ -1,0 +1,63 @@
+.datePicker {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	position: relative;
+}
+
+.calendar {
+	composes: fillContext from '../styles/helpers.css';
+	display: flex;
+	flex-flow: column nowrap;
+	text-align: center;
+}
+
+.monthHeading {
+	display: flex;
+	flex: 1 0 64px;
+}
+.monthButton {
+	width: auto;
+}
+.previousMonthButton { composes: monthButton; }
+.nextMonthButton { composes: monthButton; }
+
+.weekHeading {
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 1 1 24px;
+}
+.dayHeading {
+	flex: 0 0 calc(100% / 7);
+}
+
+.week {
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 1 1 24px;
+}
+.firstWeek {
+	composes: week;
+	justify-content: flex-end;
+}
+
+.day {
+	flex: 0 0 calc(100% / 7);
+}
+.selectedDay {
+	composes: day;
+	color: #ffffff;
+}
+.dayWithEvent::after {
+	content: "";
+	display: block;
+	width: 7px;
+	height: 7px;
+	margin: 4px auto;
+	background: #ffffff;
+	border-radius: 100%;
+}
+
+.aspectRatio {
+	composes: aspectRatio43 from '../styles/helpers.css';
+}

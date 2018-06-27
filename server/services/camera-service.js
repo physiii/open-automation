@@ -2,23 +2,25 @@ const Service = require('./service.js'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, driverClass) {
-		super(data);
+	constructor (data, onUpdate, driverClass) {
+		super(data, onUpdate);
 
 		this.type = 'camera';
-
-		this.setSettings(data.settings || {});
 
 		this.driver = new driverClass(this.id);
 		this.subscribeToDriver();
 	}
 
-	subscribeToDriver () {}
+	subscribeToDriver () {
+		this.driver.on('state update', (state) => this.setState(state));
+	}
 
-	setSettings (settings) {
-		this.settings.resolution_w = settings.resolution_w || 640;
-		this.settings.resolution_h = settings.resolution_h || 480;
-		this.settings.rotation = settings.rotation || 0;
+	setSettings (settings = {}) {
+		this.settings = {
+			resolution_w: settings.resolution_w || 640,
+			resolution_h: settings.resolution_h || 480,
+			rotation: settings.rotation || 0
+		}
 	}
 
 	streamLive () {
@@ -43,24 +45,6 @@ class CameraService extends Service {
 
 	stopRecordingStream (recordingId) {
 		return this.driver.stopRecordingStream(recordingId);
-	}
-
-	serialize () {
-		return {
-			...Service.prototype.serialize.apply(this, arguments),
-			os_device_path: this.os_device_path
-		};
-	}
-
-	dbSerialize () {
-		return this.serialize();
-	}
-
-	clientSerialize () {
-		return {
-			...this.serialize(),
-			streaming_token: this.device.token
-		};
 	}
 }
 

@@ -10,7 +10,10 @@ const initialState = {
 			case types.INITIALIZE:
 				return {
 					...state,
-					loading: false
+					user: action.payload.isAuthenticated,
+					// If user is authenticated, we still need to get the
+					// user's data, so still loading.
+					loading: action.payload.isAuthenticated
 				};
 			case types.LOGIN:
 				return {
@@ -21,21 +24,40 @@ const initialState = {
 			case types.LOGIN_SUCCESS:
 				return {
 					...state,
-					user: {
-						username: action.payload.username,
-						token: action.payload.token
-					},
+					user: {username: action.payload.user.username},
 					loading: false,
 					error: false
 				};
+			case types.LOGOUT:
+				return {
+					...initialState,
+					loading: true,
+					error: false
+				};
+			case types.LOGOUT_SUCCESS:
+				return {
+					...state,
+					loading: false
+				};
+			case types.REGISTER:
+				return {
+					...state,
+					loading: true,
+					error: false
+				};
 			case types.LOGIN_ERROR:
+			case types.LOGOUT_ERROR:
+			case types.REGISTER_ERROR:
 				return {
 					...state,
 					loading: false,
 					error: action.payload.error.message
 				};
-			case types.LOGOUT:
-				return initialState;
+			case '@@router/LOCATION_CHANGE':
+				return {
+					...state,
+					error: false
+				};
 			default:
 				return state;
 		}

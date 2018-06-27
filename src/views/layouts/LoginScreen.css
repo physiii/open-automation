@@ -1,0 +1,33 @@
+@value toolbarBackground from "../styles/colors.css";
+
+.root {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	max-width: 400px;
+	padding: 20px 30px;
+	background-color: toolbarBackground;
+	border-radius: 4px;
+}
+.loading {
+	composes: fillContext from "../styles/helpers.css";
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	background-color: toolbarBackground;
+	opacity: 0.8;
+}
+.footer {
+	margin: 16px 0;
+	font-size: 14px;
+}

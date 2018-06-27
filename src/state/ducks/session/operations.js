@@ -1,66 +1,71 @@
 import * as actions from './actions';
 import * as devices from '../devices-list';
 import Api from '../../../api.js';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 
-const initialize = (username = Cookies.get('user'), token = Cookies.get('token')) => (dispatch) => {
-		if (username && token) { // User is logged in.
-			dispatch(loginSuccess(username, token));
-		} else { // User is not logged in.
-			dispatch(actions.initialize());
+const initialize = () => (dispatch) => {
+		const isLoggedIn = Boolean(localStorage.getItem('is_logged_in'));
+
+		dispatch(actions.initialize(isLoggedIn));
+
+		if (isLoggedIn) {
+			// Try to refresh the access token to make sure it's still valid.
+			Api.getAccessToken().then((user) => {
+				// User's access token is valid. Connect to API.
+				Api.connect().then(() => {
+					dispatch(loginSuccess(user));
+				});
+			}).catch(() => {
+				// User's access token is invalid. User is not logged in.
+				dispatch(actions.initialize(false));
+			});
 		}
+
+		// When an API authentication error happens, log out.
+		Api.on('session', (data) => {
+			if (data.error) {
+				dispatch(logout());
+			}
+		});
 	},
 	login = (username, password) => (dispatch) => {
-		// Dispatch login action (see loginSuccess call below for the action that actually saves user to store)
 		dispatch(actions.login());
 
-		// Post credentials to login endpoint on server.
-		axios.post('/api/login', {username, password}).then((response) => {
-			const {token} = response.data;
-
-			dispatch(loginSuccess(username, token));
-
-			Cookies.set('user', username);
-			Cookies.set('token', token);
+		Api.login(username, password).then((user) => {
+			dispatch(loginSuccess(user));
 		}).catch((error) => {
-			const unauthorizedErrorCode = 401;
-			let errorMessage;
-
-			if (error.response) {
-				if (error.response.status === unauthorizedErrorCode) {
-					errorMessage = 'Username or password not correct';
-				} else {
-					errorMessage = 'An error occurred when logging in';
-				}
-			} else if (error.request) {
-				errorMessage = 'No response received when logging in';
-			} else {
-				errorMessage = 'An error occurred when logging in';
-			}
-
-			dispatch(actions.loginError({error: new Error(errorMessage)}));
-			throw error;
+			dispatch(actions.loginError(error));
 		});
 	},
-	loginSuccess = (username, token) => (dispatch) => {
-		Api.setApiToken(token);
-		Api.linkUser(username).then(() => {
-			dispatch(actions.loginSuccess(username, token));
-			dispatch(devices.operations.fetchDevices());
-		});
+	loginSuccess = (user) => (dispatch) => {
+		localStorage.setItem('is_logged_in', true);
+
+		dispatch(actions.loginSuccess(user));
+		dispatch(devices.operations.fetchDevices());
 	},
 	logout = () => (dispatch) => {
-		Api.setApiToken(null);
-
 		dispatch(actions.logout());
 
-		Cookies.remove('user');
-		Cookies.remove('token');
+		localStorage.removeItem('is_logged_in');
+
+		Api.logout().then(() => {
+			dispatch(actions.logoutSuccess());
+		}).catch((error) => {
+			dispatch(actions.logoutError(error));
+		});
+	},
+	register = (username, password) => (dispatch) => {
+		dispatch(actions.register());
+
+		Api.createAccount({username, password}).then(() => {
+			dispatch(login(username, password));
+		}).catch((error) => {
+			dispatch(actions.registerError(error));
+		});
 	};
 
 export {
 	initialize,
 	login,
-	logout
+	logout,
+	register
 };

@@ -1,9 +1,13 @@
 const database = require('../database.js'),
 	Device = require('./device.js'),
-	socketEscrow = {};
-let devicesList = [];
+	socketEscrow = {},
+	devicesList = new Map();
 
 class DevicesManager {
+	constructor () {
+		this.handleDeviceUpdate = this.handleDeviceUpdate.bind(this);
+	}
+
 	addDevice (data) {
 		let device = this.getDeviceById(data.id);
 
@@ -11,29 +15,44 @@ class DevicesManager {
 			return device;
 		}
 
-		device = new Device({
-			...data,
-			socket: data.socket || this.getFromSocketEscrow(data.id)
-		});
+		device = new Device(data, this.handleDeviceUpdate, data.gatewaySocket || this.getFromSocketEscrow(data.id, data.token));
 
-		this.removeFromSocketEscrow(data.id);
+		this.removeFromSocketEscrow(data.id, data.token);
 
-		devicesList.push(device);
-		database.store_device(device);
+		devicesList.set(device.id, device);
 
 		return device;
 	}
 
+	createDevice (data) {
+		return new Promise((resolve, reject) => {
+			const device = this.addDevice(data);
+
+			database.saveDevice(device.dbSerialize()).then(() => {
+				resolve(device);
+			}).catch(reject);
+		});
+	}
+
+	handleDeviceUpdate (device) {
+		const client_sockets = socketServer.getClientSocketsForAccountId(device.location),
+			devices = this.getClientSerializedDevices(this.getDevicesByLocation(device.location));
+
+		client_sockets.forEach((socket) => {
+			socket.emit('devices', {devices});
+		});
+	}
+
 	getDeviceById (deviceId) {
-		return devicesList.find((device) => device.id === deviceId);
+		return devicesList.get(deviceId);
 	}
 
 	getDeviceByServiceId (serviceId) {
-		return devicesList.find((device) => device.services.getServiceById(serviceId));
+		return Array.from(devicesList.values()).find((device) => device.services.getServiceById(serviceId));
 	}
 
 	getDevicesByLocation (locationId) {
-		return devicesList.filter((device) => device.location === locationId);
+		return Array.from(devicesList.values()).filter((device) => device.location === locationId);
 	}
 
 	getServiceById (serviceId) {
@@ -46,22 +65,27 @@ class DevicesManager {
 		return device.services.getServiceById(serviceId);
 	}
 
-	addToSocketEscrow (deviceId, socket) {
-		socketEscrow[deviceId] = socket;
+	addToSocketEscrow (deviceId, deviceToken, socket) {
+		socketEscrow[deviceId + deviceToken] = socket;
 	}
 
-	getFromSocketEscrow (deviceId) {
-		return socketEscrow[deviceId];
+	getFromSocketEscrow (deviceId, deviceToken) {
+		return socketEscrow[deviceId + deviceToken];
 	}
 
-	removeFromSocketEscrow (deviceId) {
-		delete socketEscrow[deviceId];
+	removeFromSocketEscrow (deviceId, deviceToken) {
+		delete socketEscrow[deviceId + deviceToken];
 	}
 
 	loadDevicesFromDb () {
 		return new Promise((resolve, reject) => {
-			database.get_devices().then((devices) => {
-				devicesList = devices.map((device) => new Device(device));
+			database.getDevices().then((devices) => {
+				devicesList.clear();
+
+				devices.forEach((device) => {
+					this.addDevice(device);
+				});
+
 				resolve(devicesList);
 			}).catch((error) => {
 				reject(error);
@@ -69,9 +93,11 @@ class DevicesManager {
 		});
 	}
 
-	getClientSerializedDevices (devices = devicesList) {
+	getClientSerializedDevices (devices = Array.from(devicesList.values())) {
 		return devices.map((device) => device.clientSerialize());
 	}
 }
 
 module.exports = new DevicesManager();
+
+const socketServer = require('../socket.js');

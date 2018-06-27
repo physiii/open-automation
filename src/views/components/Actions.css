@@ -1,0 +1,6 @@
+.actions {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: flex-end;
+	margin: 16px 0 8px 0;
+}

@@ -1,51 +1,97 @@
 // ------------------------------  OPEN-AUTOMATION ----------------------------------- //
 // -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ---------------------------------- website.js -------------------------------------- //
+// --------------------------------- website.js -------------------------------------- //
 
-var database = require('./database.js');
-var utils = require('./utils.js');
-var crypto = require('crypto');
-var express = require('express');
-var socket = require('./socket.js');
-var bodyParser = require('body-parser');
-var path = require('path');
-var url = require('url');
-var fs = require('fs');
-var https = require('https');
-var http = require('http');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var webpack = require('webpack');
-var WebpackDevMiddleware = require('webpack-dev-middleware');
-var WebpackHotMiddleware = require('webpack-hot-middleware');
-var webpack_config_file = require('../webpack.config');
+const config = require('../config.json'),
+	AccountsManager = require('./accounts/accounts-manager.js'),
+	uuid = require('uuid/v4'),
+	express = require('express'),
+	socket = require('./socket.js'),
+	bodyParser = require('body-parser'),
+	cookie = require('cookie'),
+	fs = require('fs'),
+	https = require('https'),
+	http = require('http'),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy,
+	jwt = require('jsonwebtoken'),
+	webpack = require('webpack'),
+	WebpackDevMiddleware = require('webpack-dev-middleware'),
+	WebpackHotMiddleware = require('webpack-hot-middleware'),
+	webpack_config_file = require('../webpack.config'),
+	WEBSITE_PORT = config.website_port || 5000,
+	WEBSITE_SECURE_PORT = config.website_secure_port || 4443,
+	IS_SSL_ENABLED = config.use_ssl || false,
+	IS_DEV_ENABLED = config.use_dev || false,
+	MILLISECONDS_PER_SECOND = 1000;
+
+let SSL_KEY, SSL_CERT;
 
 module.exports = {
-	start: start
-}
+	start
+};
 
 function start (app) {
-	var website_port = config.website_port || 5000,
-		website_secure_port = config.website_secure_port || 4443,
-		use_ssl = config.use_ssl || false,
-		use_domain_ssl = config.use_domain_ssl || false,
-		use_dev = config.use_dev || false,
-		key_path = use_dev ? __dirname + '/key.pem' : '/etc/letsencrypt/live/pyfi.org/privkey.pem',
-		cert_path = use_dev ? __dirname + '/cert.pem' : '/etc/letsencrypt/live/pyfi.org/fullchain.pem',
-		options = {
-			key: fs.readFileSync(key_path),
-			cert: fs.readFileSync(cert_path)
-		},
-		port,
+	var port,
 		server,
 		server_description;
 
-	// Set up webpack middleware (for automatic compiling/hot reloading)
-	if (use_dev) {
+	if (IS_SSL_ENABLED) {
+		try {
+			SSL_KEY = fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem'));
+			SSL_CERT = fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'));
+		} catch (error) {
+			console.error('There was an error when trying to load SSL files.', error);
+
+			return;
+		}
+	}
+
+	// Set JSON Web Tokens secret.
+	const JWT_SECRET = SSL_KEY || uuid();
+
+	function verifyAccessToken (access_token, xsrf_token) {
+		return new Promise((resolve, reject) => {
+			if (!access_token) {
+				reject('No access token');
+				return;
+			}
+
+			jwt.verify(access_token, JWT_SECRET, {issuer: config.api_token_issuer}, (error, claims) => {
+				// Access token is invalid.
+				if (error) {
+					reject('Invalid access token ' + error.name);
+					return;
+				}
+
+				// Access token or CSRF token is invalid.
+				if (xsrf_token !== claims.xsrf_token) {
+					reject('Invalid XSRF token');
+					return;
+				}
+
+				const account = AccountsManager.getAccountById(claims.sub);
+
+				if (!account) {
+					reject('Account not found');
+					return;
+				}
+
+				// Get the account for the account ID provided by the access token.
+				resolve({
+					account,
+					refresh_token: claims.refresh_token
+				});
+			});
+		});
+	}
+
+	// Set up webpack middleware (for automatic compiling/hot reloading).
+	if (IS_DEV_ENABLED) {
 		var webpack_env = {
 			hot: true, // Used so that in webpack config we know when webpack is running as middleware.
-			development: use_dev,
-			production: !use_dev
+			development: IS_DEV_ENABLED,
+			production: !IS_DEV_ENABLED
 		};
 		var webpack_config = webpack_config_file(webpack_env);
 		var webpack_compiler = webpack(webpack_config);
@@ -56,111 +102,172 @@ function start (app) {
 		app.use(WebpackHotMiddleware(webpack_compiler));
 	}
 
-	app.use(bodyParser.json()); // support json encoded bodies
-	app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
-	var allowCrossDomain = function (req, res, next) {
-		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-		res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-		if ('OPTIONS' == req.method) {
-			res.send(200);
-		} else {
-			next();
-		}
-	};
-	app.use(allowCrossDomain);
+	// Support json encoded bodies.
+	app.use(bodyParser.json());
+
+	// Support encoded bodies.
+	app.use(bodyParser.urlencoded({extended: true}));
 
 	app.use(passport.initialize());
 	app.use(passport.session());
-	passport.serializeUser(function (user, done) {
+	passport.serializeUser((user, done) => {
 		done(null, user);
 	});
-	passport.use(new LocalStrategy(
-		function(username, password, done) {
-			username = username.toLowerCase();
-			var index = utils.find_index(accounts, 'username', username);
 
-			if (index < 0) {
-				console.log("account not found", username);
-				return done(null, false);
-			}
+	passport.use(new LocalStrategy((username, password, done) => {
+		const account = AccountsManager.getAccountByUsername(username);
 
-			var token = crypto.createHash('sha512').update(password + accounts[index].salt).digest('hex');
-
-			if (token != accounts[index].token) {
-				console.log("passwords do not match");
-				return done(null, false);
-			}
-
-			return done(null, {token:token, username:username});
+		if (!account) {
+			console.log('Login ' + username + ': account not found.');
+			return done(null, false);
 		}
-	));
 
-	// app.set('view engine', 'ejs');
-	// app.set('views', __dirname + '/views');
+		account.isCorrectPassword(password).then((is_correct) => {
+			if (!is_correct) {
+				console.log('Login ' + username + ': incorrect password.');
+				return done(null, false);
+			}
+
+			// Password is correct.
+			return done(null, account);
+		}).catch(() => {
+			return done(null, false);
+		});
+	}));
 
 	app.use('/', express.static(__dirname + '/../public'));
 
-	app.get('/get_ip', function(req, res) {
-		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-		ip = ip.split(":");
+	app.get('/get_ip', (request, response) => {
+		let ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+
+		ip = ip.split(':');
 		ip = ip[ip.length - 1];
-		res.send(ip);
+
+		response.send(ip);
 	});
 
-	app.post('/api/login',
-		passport.authenticate('local'),
-		function(req, res) {
-			console.log("authenticated",req.user);
-			res.json(req.user);
+	app.post('/api/token', (request, response, next) => {
+		function respondWithAccessToken (account) {
+			// Generate access token and CSRF token.
+			account.generateAccessToken(config.api_token_issuer, JWT_SECRET).then((tokens) => {
+				// Store the access token in a cookie on client. This cookie
+				// MUST be set to HttpOnly; and Secure; (if SSL is configured)
+				// to protect against certain XSS and MITM attacks.
+				response.setHeader('Set-Cookie', 'access_token=' + tokens.access_token + '; path=/; HttpOnly;' + (IS_SSL_ENABLED ? ' Secure;' : ''));
+
+				response.json({
+					account: account.clientSerialize(),
+					xsrf_token: tokens.xsrf_token,
+					access_token_expires: jwt.decode(tokens.access_token).exp * MILLISECONDS_PER_SECOND
+				});
+			}).catch((error) => {
+				console.log('Token signing error.', error);
+				response.sendStatus(500);
+			});
+		}
+
+		if (request.body.grant_type === 'password') {
+			// Authenticate user credentials.
+			passport.authenticate('local', (error, account) => {
+				if (error) {
+					return next(error);
+				}
+
+				if (!account) {
+					return response.sendStatus(401);
+				}
+
+				// Login successful.
+				request.logIn(account, (error) => {
+					if (error) {
+						return next(error);
+					}
+
+					respondWithAccessToken(account);
+				});
+			})(request, response, next);
+		} else if (request.body.grant_type === 'refresh') {
+			const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
+
+			verifyAccessToken(cookies.access_token, request.headers['x-xsrf-token']).then(({account, refresh_token}) => {
+				account.verifyRefreshToken(refresh_token).then((is_refresh_token_valid) => {
+					if (is_refresh_token_valid) {
+						respondWithAccessToken(account);
+					} else {
+						response.sendStatus(401);
+					}
+				}).catch(() => {
+					response.sendStatus(500);
+				});
+			}).catch((error) => {
+				console.log('Error validating access token (' + error + ').');
+				response.sendStatus(401);
+			});
+		} else {
+			response.sendStatus(400);
+		}
+	});
+
+	app.post('/api/logout', (request, response) => {
+		// Delete the token cookies from client.
+		response.setHeader('Set-Cookie', 'access_token=null; path=/; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT;');
+		response.sendStatus(200);
+	});
+
+	app.post('/api/account', (request, response) => {
+		const username = request.body.username,
+			password = request.body.password;
+
+		AccountsManager.createAccount({username, password}).then((account) => {
+			const account_client_serialized = account.clientSerialize();
+
+			console.log('Created account.', account_client_serialized);
+
+			response.status(201).json({account: account_client_serialized});
+		}).catch((error) => {
+			if (error === 'username') {
+				response.sendStatus(409);
+				return;
+			}
+
+			if(error === 'password') {
+				response.sendStatus(422);
+				return;
+			}
+
+			console.error('Tried to create an account, but there was an error.', error);
+			response.sendStatus(500);
 		});
-
-	app.post('/api/register', function(req, res) {
-		var username = req.body.username.toLowerCase();
-		var index = utils.find_index(accounts,'username',username);
-		if (index < 0) {
-			var account_obj = {username:username};
-			account_obj.salt = Math.random().toString(36).substring(7);
-			var token = crypto.createHash('sha512').update(req.body.password + account_obj.salt).digest('hex');
-			account_obj.token = token;
-			account_obj.timestamp = Date.now();
-			database.store_account(account_obj);
-			accounts.push(account_obj);
-		} else {
-			res.json({error:"account already exists"});
-			return console.log("account already exist!");
-		}
-
-		var index = utils.find_index(groups,'group_id',username);
-		if (index < 0) {
-			var group = {group_id:username, mode:'init', user:username, device_type:['alarm'], contacts:[], members:[username]};
-			database.store_group(group);
-		} else {
-			res.json({error:"group already exists"});
-			return console.log("group already exist!");
-		}
-
-		var result = {username:username, token:token};
-		res.json(result);
-		console.log("registered account",account_obj);
 	});
 
-	app.get('*', function (req, res) {
-		res.sendFile('/index.html', {root: __dirname + '/../public'});
+	app.get('/js/config.js', (request, response) => {
+		const client_config = {
+			app_name: config.app_name || 'Open Automation',
+			stream_port: config.video_websocket_port
+		};
+
+		response.send('window.OpenAutomation = {config: ' + JSON.stringify(client_config) + '};');
 	});
 
-	// Create server
-	if (use_ssl || use_domain_ssl) { // Create secure server
-		port = website_secure_port;
-		server = https.createServer(options, app);
+	app.get('*', (request, response) => {
+		response.sendFile('/index.html', {root: __dirname + '/../public'});
+	});
+
+	// Create server.
+	if (IS_SSL_ENABLED) {
+		port = WEBSITE_SECURE_PORT;
+		server = https.createServer({
+			key: SSL_KEY,
+			cert: SSL_CERT
+		}, app);
 		server_description = 'Secure';
-	} else { // Create insecure server
-		port = website_port;
+	} else {
+		port = WEBSITE_PORT;
 		server = http.createServer(app);
 		server_description = 'Insecure';
 	}
 
-	// Start servers
+	// Start servers.
 	server.listen(port, null, () => console.log(server_description + ' server listening on port ' + port));
-	socket.start(server);
+	socket.start(server, JWT_SECRET);
 }

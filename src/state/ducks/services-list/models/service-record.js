@@ -8,6 +8,9 @@ const ServiceRecord = (defaultValues) => class extends Immutable.Record({
 	...defaultValues,
 	settings: Immutable.Map({
 		...defaultValues.settings
+	}),
+	state: Immutable.Map({
+		...defaultValues.state
 	})
 }) {};
 

@@ -1,9 +1,8 @@
-// import exec from 'script.exec.js';
-
 const path = require('path'),
 	webpack = require('webpack'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils');
+	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils'),
+	LOCAL_IDENT_NAME = '[name]__[local]___[hash:base64:5]';
 
 module.exports = (env) => {
 	const isHot = env.hot === true,
@@ -13,14 +12,20 @@ module.exports = (env) => {
 		mode: ifProduction('production', 'development'),
 		devtool: ifProduction('', 'cheap-module-eval-source-map'), // TODO: https://webpack.js.org/configuration/devtool/
 		entry: [
-			'./src/index.js',
-			'webpack-hot-middleware/client'
+			'webpack-hot-middleware/client',
+			'./src/index.js'
 		],
 		output: {
-			filename: 'js/main.js',
 			path: path.resolve(__dirname, 'public'),
+			filename: 'js/main.js',
 			publicPath: '/' // Needed for hot module reloading and webpack adjusting asset paths properly.
 		},
+		plugins: [
+			new webpack.optimize.OccurrenceOrderPlugin(),
+			new webpack.HotModuleReplacementPlugin(),
+			new webpack.NoEmitOnErrorsPlugin(),
+			new MiniCssExtractPlugin({filename: 'css/main.css'}) // TODO: Add [contenthash] to filename to invalidate cache.
+		],
 		module: {
 			// TODO: Add html-loader to generate index.html
 			rules: [
@@ -35,8 +40,20 @@ module.exports = (env) => {
 									'es2015',
 									'stage-0',
 									'react'
-								], // TODO: Get react proptypes warnings working (BABEL_ENV?)
-								plugins: ['react-hot-loader/babel']
+								],
+								cacheDirectory: false,
+								plugins: [
+									'react-hot-loader/babel',
+									[
+										'react-css-modules',
+										{
+											exclude: 'node_modules',
+											generateScopedName: LOCAL_IDENT_NAME,
+											webpackHotModuleReloading: true,
+											handleMissingStyleName: 'warn'
+										}
+									]
+								]
 							}
 						},
 						propIfNot(isHot, {
@@ -51,9 +68,14 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.scss$/,
+					include: path.resolve(__dirname, 'src'),
 					use: [
 						{
-							loader: propIf(isHot, 'style-loader', MiniCssExtractPlugin.loader) // Extract CSS to file for production.
+							loader: propIf(
+								isHot,
+								'style-loader',
+								MiniCssExtractPlugin.loader // Extract CSS to file for production.
+							)
 						},
 						{
 							loader: 'css-loader',
@@ -75,25 +97,36 @@ module.exports = (env) => {
 							}
 						}
 					]
+				},
+				{
+					test: /\.css$/,
+					include: path.resolve(__dirname, 'src'),
+					use: [
+						{
+							loader: propIf(
+								isHot,
+								'style-loader',
+								MiniCssExtractPlugin.loader // Extract CSS to file for production.
+							)
+						},
+						{
+							loader: 'css-loader',
+							options: {
+								modules: true,
+								localIdentName: LOCAL_IDENT_NAME,
+								minimize: ifProduction(),
+								sourceMap: true
+							}
+						},
+						{
+							loader: 'postcss-loader',
+							options: {
+								sourceMap: true
+							}
+						}
+					]
 				}
 			]
-		},
-		plugins: [
-			new webpack.HotModuleReplacementPlugin(),
-			new MiniCssExtractPlugin({filename: 'css/main.css'}) // TODO: Add [contenthash] to filename to invalidate cache.
-		],
-		optimization: {
-			splitChunks: {
-				cacheGroups: {
-					// This is needed to make MiniCssExtractPlugin output all of the css to one file.
-					styles: {
-						name: 'styles',
-						test: /\.css$/,
-						chunks: 'all',
-						enforce: true
-					}
-				}
-			}
 		}
 	};
 };

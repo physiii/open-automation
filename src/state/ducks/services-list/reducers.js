@@ -29,10 +29,23 @@ const initialState = {
 					error: false,
 					services: Immutable.List(action.payload.devices.map((device) => {
 						return Immutable.List(device.services.map((service) => {
+							const currentServiceState = state.services ? state.services.find((stateService) => stateService.id === service.id).toObject() : {};
+
 							return createService({
+								...currentServiceState,
 								...service,
+								state: {
+									...service.state,
+									connected: device.state.connected &&
+										(Object.prototype.hasOwnProperty.call(service.state, 'connected')
+											? service.state.connected
+											: true)
+								},
 								device_id: device.id,
-								recordingsList: recordingsReducer(service.recordings, action)
+								recordingsList: recordingsReducer(currentServiceState.recordingsList, {
+									...action,
+									payload: {recordings: service.recordings}
+								})
 							});
 						}));
 					})).flatten(1) // Flatten the array of arrays.
@@ -46,6 +59,7 @@ const initialState = {
 			case types.FETCH_CAMERA_RECORDINGS:
 			case types.FETCH_CAMERA_RECORDINGS_SUCCESS:
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
+			case types.STREAM_CAMERA_RECORDING:
 				serviceIndex = state.services.findIndex((device) => device.id === action.payload.cameraId);
 
 				return {
@@ -55,16 +69,28 @@ const initialState = {
 						'recordingsList'
 					], recordingsReducer(state.services.get(serviceIndex).recordingsList, action))
 				};
+			case types.STREAM_CAMERA_LIVE:
+				serviceIndex = state.services.findIndex((device) => device.id === action.payload.cameraId);
+
+				return {
+					...state,
+					services: state.services.setIn([
+						serviceIndex,
+						'streaming_token'
+					], action.payload.streamToken)
+				};
 			default:
 				return state;
 		}
 	},
 	recordingsReducer = (state = null, action) => {
+		let recordingIndex, recordingToUpdate;
+
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return {
 					...recordingsInitialState,
-					recordings: state ? Immutable.List(state) : recordingsInitialState.recordings
+					recordings: state ? Immutable.List(action.payload.recordings || state.recordings) : recordingsInitialState.recordings
 				};
 			case types.FETCH_CAMERA_RECORDINGS:
 				return {
@@ -83,6 +109,20 @@ const initialState = {
 					...state,
 					loading: false,
 					error: action.payload.error.message
+				};
+			case types.STREAM_CAMERA_RECORDING:
+				recordingIndex = state.recordings.findIndex((recording) => recording.id === action.payload.recordingId);
+				recordingToUpdate = state.recordings.get(recordingIndex);
+
+				return {
+					...state,
+					recordings: state.recordings.set(
+						recordingIndex,
+						{
+							...recordingToUpdate,
+							streaming_token: action.payload.streamToken
+						}
+					)
 				};
 			default:
 				return state;

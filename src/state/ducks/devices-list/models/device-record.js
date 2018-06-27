@@ -5,7 +5,8 @@ const DeviceRecord = Immutable.Record({
 	location_id: null,
 	services: Immutable.List([]),
 	settings: Immutable.Map({}),
-	info: Immutable.Map({})
+	info: Immutable.Map({}),
+	state: Immutable.Map({})
 });
 
 export default DeviceRecord;

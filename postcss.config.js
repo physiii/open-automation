@@ -1,5 +1,9 @@
-const autoprefixer = require('autoprefixer');
+const autoprefixer = require('autoprefixer'),
+	icssValues = require('postcss-icss-values');
 
 module.exports = {
-	plugins: [autoprefixer]
+	plugins: [
+		autoprefixer,
+		icssValues
+	]
 };

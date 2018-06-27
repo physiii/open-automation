@@ -15,7 +15,7 @@ class GatewayServiceDriver {
 	}
 
 	listenToGateway () {
-		// no-op
+		this.gatewayOn('state', (data) => this.events.emit('state update', data.state));
 	}
 
 	setGatewaySocket (gatewaySocket) {
@@ -29,6 +29,19 @@ class GatewayServiceDriver {
 
 	gatewayEmit (event, data, callback) {
 		this.gatewaySocket.emit(this.eventPrefix + '/' + event, data, callback);
+	}
+
+	command (command) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('command', {command}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data);
+			});
+		});
 	}
 }
 
