@@ -481,7 +481,7 @@ function start (server, jwt_secret) {
 
 			// Light Service API
 
-			clientEndpoint('light/lighton/set', function (data, callback) {
+			clientEndpoint('light/lightOn/set', function (data, callback) {
 				const lightService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lightService) {
