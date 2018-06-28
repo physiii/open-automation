@@ -7,6 +7,7 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
 import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
+import {loadScreen, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './CameraRecordings.css';
 
 export class CameraRecordings extends React.Component {
@@ -17,9 +18,15 @@ export class CameraRecordings extends React.Component {
 	}
 
 	componentDidMount () {
+		this.props.navigationLoadScreen();
+
 		if (this.props.cameraService) {
 			this.props.fetchRecordings(this.props.cameraService);
 		}
+	}
+
+	componentWillUnmount () {
+		this.props.navigationUnloadScreen();
 	}
 
 	getPathForDate (date) {
@@ -86,6 +93,8 @@ CameraRecordings.propTypes = {
 	history: PropTypes.object,
 	isLoading: PropTypes.bool,
 	fetchRecordings: PropTypes.func,
+	navigationLoadScreen: PropTypes.func,
+	navigationUnloadScreen: PropTypes.func,
 	error: PropTypes.string
 };
 
@@ -117,8 +126,21 @@ const mapStateToProps = (state, ownProps) => {
 			isLoading: cameraService.recordingsList.loading
 		};
 	},
-	mapDispatchToProps = (dispatch) => ({
+	mapDispatchToProps = (dispatch, ownProps) => ({
+		dispatch,
+		navigationUnloadScreen: () => dispatch(unloadScreen(ownProps.basePath)),
 		fetchRecordings: (cameraService) => dispatch(fetchCameraRecordings(cameraService.id))
-	});
+	}),
+	mergeProps = (stateProps, dispatchProps, ownProps) => {
+		const {dispatch, ...restOfDispatchProps} = dispatchProps,
+			cameraName = stateProps.cameraService.settings.name || 'Camera';
 
-export default connect(mapStateToProps, mapDispatchToProps)(CameraRecordings);
+		return {
+			...ownProps,
+			...stateProps,
+			...restOfDispatchProps,
+			navigationLoadScreen: () => dispatch(loadScreen(ownProps.basePath, ownProps.parentPath, cameraName + ' Recordings'))
+		};
+	};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(CameraRecordings);
