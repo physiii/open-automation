@@ -162,8 +162,4 @@ DatePicker.propTypes = {
 	onSelect: PropTypes.func
 };
 
-DatePicker.defaultProps = {
-	events: []
-};
-
 export default DatePicker;

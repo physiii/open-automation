@@ -17,7 +17,9 @@ export class CameraRecordings extends React.Component {
 	}
 
 	componentDidMount () {
-		this.props.fetchRecordings(this.props.cameraService);
+		if (this.props.cameraService) {
+			this.props.fetchRecordings(this.props.cameraService);
+		}
 	}
 
 	getPathForDate (date) {
@@ -39,6 +41,8 @@ export class CameraRecordings extends React.Component {
 				meta: 'Motion detected for ' + moment.duration(recording.duration, 'seconds').humanize(),
 				link: `${this.getPathForDate(this.props.selectedDate)}/${recording.id}`
 			}))} />);
+		} else if (this.props.error) {
+			list = <p>{this.props.error}</p>;
 		} else {
 			list = <p>No Recordings for the Selected Date</p>;
 		}
@@ -81,13 +85,12 @@ CameraRecordings.propTypes = {
 	basePath: PropTypes.string,
 	history: PropTypes.object,
 	isLoading: PropTypes.bool,
-	fetchRecordings: PropTypes.func
+	fetchRecordings: PropTypes.func,
+	error: PropTypes.string
 };
 
 const mapStateToProps = (state, ownProps) => {
 		const cameraService = serviceById(ownProps.match.params.cameraId, state.servicesList);
-
-		// TODO: Handle camera not found.
 
 		let selectedDate = moment([
 			ownProps.match.params.year,
@@ -97,6 +100,12 @@ const mapStateToProps = (state, ownProps) => {
 
 		if (!selectedDate.isValid()) {
 			selectedDate = moment();
+		}
+
+		if (!cameraService) {
+			return {
+				error: 'There was a problem with loading the camera’s recordings.'
+			};
 		}
 
 		return {
