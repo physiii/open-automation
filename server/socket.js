@@ -324,7 +324,7 @@ function start (server, jwt_secret) {
 			// Lock Service API
 
 			clientEndpoint('lock/lock/set', function (data, callback) {
-				const lockService = devices.getServiceById(data.service_id);
+				const lockService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lockService) {
 					if (typeof callback === 'function') {
@@ -346,7 +346,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('lock/unlock/set', function (data, callback) {
-				const lockService = devices.getServiceById(data.service_id);
+				const lockService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lockService) {
 					if (typeof callback === 'function') {
@@ -368,7 +368,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('lock/relockDelay/set', function (data, callback) {
-				const lockService = devices.getServiceById(data.service_id);
+				const lockService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lockService) {
 					if (typeof callback === 'function') {
@@ -392,7 +392,7 @@ function start (server, jwt_secret) {
 			// Thermostat Service API
 
 			clientEndpoint('thermostat/temp/set', function (data, callback) {
-				const thermostatService = devices.getServiceById(data.service_id);
+				const thermostatService = DevicesManager.getServiceById(data.service_id);
 
 				if (!thermostatService) {
 					if (typeof callback === 'function') {
@@ -414,7 +414,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('thermostat/mode/set', function (data, callback) {
-				const thermostatService = devices.getServiceById(data.service_id);
+				const thermostatService = DevicesManager.getServiceById(data.service_id);
 
 				if (!thermostatService) {
 					if (typeof callback === 'function') {
@@ -436,7 +436,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('thermostat/holdMode/set', function (data, callback) {
-				const thermostatService = devices.getServiceById(data.service_id);
+				const thermostatService = DevicesManager.getServiceById(data.service_id);
 
 				if (!thermostatService) {
 					if (typeof callback === 'function') {
@@ -458,7 +458,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('thermostat/fanMode/set', function (data, callback) {
-				const thermostatService = devices.getServiceById(data.service_id);
+				const thermostatService = DevicesManager.getServiceById(data.service_id);
 
 				if (!thermostatService) {
 					if (typeof callback === 'function') {
@@ -482,7 +482,7 @@ function start (server, jwt_secret) {
 			// Light Service API
 
 			clientEndpoint('light/lighton/set', function (data, callback) {
-				const lightService = devices.getServiceById(data.service_id);
+				const lightService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lightService) {
 					if (typeof callback === 'function') {
@@ -504,7 +504,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('light/lightOff/set', function (data, callback) {
-				const lightService = devices.getServiceById(data.service_id);
+				const lightService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lightService) {
 					if (typeof callback === 'function') {
@@ -526,7 +526,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('light/brightness/set', function (data, callback) {
-				const lightService = devices.getServiceById(data.service_id);
+				const lightService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lightService) {
 					if (typeof callback === 'function') {
@@ -548,7 +548,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('light/color/set', function (data, callback) {
-				const lightService = devices.getServiceById(data.service_id);
+				const lightService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lightService) {
 					if (typeof callback === 'function') {
@@ -570,7 +570,7 @@ function start (server, jwt_secret) {
 			});
 
 			clientEndpoint('light/name/set', function (data, callback) {
-				const lightService = devices.getServiceById(data.service_id);
+				const lightService = DevicesManager.getServiceById(data.service_id);
 
 				if (!lightService) {
 					if (typeof callback === 'function') {
