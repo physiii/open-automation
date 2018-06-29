@@ -10,6 +10,9 @@ export const LoginScreen = (props) => {
 	return (
 		<div styleName="root">
 			<div styleName="container">
+				{props.logoPath
+					? <img src={props.logoPath} />
+					: <h1>props.appName</h1>}
 				<Switch>
 					<Route path="/login" component={LoginForm} />
 					<Route path="/register" component={RegisterForm} />
@@ -27,11 +30,15 @@ export const LoginScreen = (props) => {
 };
 
 LoginScreen.propTypes = {
-	isLoading: PropTypes.bool
+	isLoading: PropTypes.bool,
+	appName: PropTypes.string,
+	logoPath: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({
-	isLoading: state.session.loading
+	isLoading: state.session.loading,
+	appName: state.config.app_name,
+	logoPath: state.config.logo_path
 });
 
 export default connect(mapStateToProps, null, null, {pure: false})(LoginScreen);

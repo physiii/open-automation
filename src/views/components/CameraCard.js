@@ -33,12 +33,12 @@ export class CameraCard extends React.Component {
 			<ServiceCardBase
 				name={this.props.camera.settings.name || 'Camera'}
 				status={lastRecordingDate && 'Movement recorded ' + moment(lastRecordingDate).fromNow()}
-				icon={<CameraIcon />}
+				icon={<CameraIcon size={40} />}
 				isConnected={this.props.camera.state.connected}
 				content={<VideoPlayer
 					cameraServiceId={this.props.camera.id}
 					streamingToken={this.props.camera.streaming_token}
-					posterUrl={'data:image/jpg;base64,' + this.props.camera.state.preview_image}
+					posterUrl={this.props.camera.state.preview_image && 'data:image/jpg;base64,' + this.props.camera.state.preview_image}
 					width={this.props.camera.settings.resolution_w}
 					height={this.props.camera.settings.resolution_h}
 					onPlay={this.onStreamStart}

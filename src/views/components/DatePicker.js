@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Toolbar from './Toolbar.js';
 import Button from './Button.js';
 import moment from 'moment';
 import './DatePicker.css';
@@ -76,12 +75,8 @@ export class DatePicker extends React.Component {
 		return weeksList;
 	}
 
-	doesDateHaveEvent (date, events) {
-		if (!events || !events.find) {
-			return false;
-		}
-
-		return Boolean(events.find((event) => date.isSame(event.date, 'day')));
+	doesDateHaveEvent (date) {
+		return Boolean(this.props.events.find((event) => date.isSame(event.date, 'day')));
 	}
 
 	selectDate (date) {
@@ -106,13 +101,16 @@ export class DatePicker extends React.Component {
 		return (
 			<div styleName="datePicker">
 				<time styleName="calendar" dateTime={month.format('YYYY')}>
-					<div styleName="monthHeading">
-						<Toolbar
-							leftChildren={<Button styleName="previousMonthButton" onClick={this.selectPreviousMonth}>&lt;</Button>}
-							middleChildren={month.format('MMMM YYYY')}
-							rightChildren={<Button styleName="nextMonthButton" onClick={this.selectNextMonth}>&gt;</Button>} />
+					<div styleName="monthHeader">
+						<div styleName="previousMonthButton">
+							<Button onClick={this.selectPreviousMonth}>&lt;</Button>
+						</div>
+						<h2>{month.format('MMMM YYYY')}</h2>
+						<div styleName="nextMonthButton">
+							<Button onClick={this.selectNextMonth}>&gt;</Button>
+						</div>
 					</div>
-					<div styleName="weekHeading">
+					<div styleName="weekHeader">
 						<div styleName="dayHeading">Sun</div>
 						<div styleName="dayHeading">Mon</div>
 						<div styleName="dayHeading">Tue</div>
@@ -129,22 +127,31 @@ export class DatePicker extends React.Component {
 								styleName={weekIndex === 0 ? 'firstWeek' : 'week'}
 								dateTime={weekDate.format('YYYY-[W]w')}
 								key={weekIndex}>
-								{week.map((day, dayIndex) => (
-									<time
-										styleName={
-											(day.isSame(this.state.selectedDate, 'day') ? 'selectedDay' : 'day') +
-											(this.doesDateHaveEvent(day, this.props.events) ? ' dayWithEvent' : '')
-										}
-										dateTime={day.format('YYYY-MM-DD')}
-										key={dayIndex}>
-										<a href="#" onClick={(event) => {
+								{week.map((day, dayIndex) => {
+									const isDaySelected = day.isSame(this.state.selectedDate, 'day'),
+										doesDayHaveEvent = this.doesDateHaveEvent(day),
+										onDateClick = (event) => {
 											event.preventDefault();
-											this.selectDate(day);
-										}}>
-											{day.date()}
-										</a>
-									</time>
-								))}
+
+											if (doesDayHaveEvent) {
+												this.selectDate(day);
+											}
+										};
+
+									return (
+										<time styleName="day" dateTime={day.format('YYYY-MM-DD')} key={dayIndex}>
+											<a
+												href="#"
+												styleName={
+													(isDaySelected ? 'selectedDayLink' : 'dayLink') +
+													(doesDayHaveEvent ? ' dayWithEvent' : '')
+												}
+												onClick={onDateClick}>
+												{day.date()}
+											</a>
+										</time>
+									);
+								})}
 							</time>
 						);
 					})}
@@ -160,6 +167,10 @@ DatePicker.propTypes = {
 	selectedMonth: PropTypes.object,
 	events: PropTypes.array,
 	onSelect: PropTypes.func
+};
+
+DatePicker.defaultProps = {
+	events: []
 };
 
 export default DatePicker;

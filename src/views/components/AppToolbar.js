@@ -20,18 +20,20 @@ export const AppToolbar = (props) => {
 			<img src={'/' + props.logoPath} />
 		</div>);
 	} else {
-		left = <label>{props.appName}</label>;
+		left = <h1>{props.appName}</h1>;
 	}
 
 	return (
 		<div styleName="toolbar">
 			<Toolbar
 				leftChildren={left}
-				middleChildren={props.title}
-				rightChildren={[
-					<span key="username">{props.username}</span>,
-					<Button to="/logout" key="logout-button">Logout</Button>
-				]}
+				middleChildren={props.title && <h1>{props.title}</h1>}
+				rightChildren={!props.title &&
+					<React.Fragment>
+						<span>{props.username}</span>
+						<Button to="/logout">Logout</Button>
+					</React.Fragment>
+				}
 			/>
 		</div>
 	);

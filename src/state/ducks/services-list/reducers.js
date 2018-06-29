@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 import createService from './models/service.js';
 import * as types from './types';
 import * as devicesListTypes from '../devices-list/types';
+import * as sessionTypes from '../session/types';
 
 const initialState = {
 		services: Immutable.Map(),
@@ -10,7 +11,7 @@ const initialState = {
 		error: false
 	},
 	recordingsInitialState = {
-		recordings: Immutable.Map(),
+		recordings: Immutable.OrderedMap(),
 		loading: false,
 		error: false
 	},
@@ -75,6 +76,8 @@ const initialState = {
 						'streaming_token'
 					], action.payload.streamToken)
 				};
+			case sessionTypes.LOGOUT:
+				return {...initialState};
 			default:
 				return state;
 		}
@@ -87,7 +90,7 @@ const initialState = {
 				return {
 					...recordingsInitialState,
 					recordings: action.payload.recordings
-						? mapFromArray(action.payload.recordings)
+						? orderedMapFromArray(action.payload.recordings)
 						: state.recordings
 				};
 			case types.FETCH_CAMERA_RECORDINGS:
@@ -100,7 +103,7 @@ const initialState = {
 					...state,
 					loading: false,
 					error: false,
-					recordings: mapFromArray(action.payload.recordings)
+					recordings: orderedMapFromArray(action.payload.recordings)
 				};
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
 				return {
@@ -127,11 +130,15 @@ const initialState = {
 		}
 	};
 
-function mapFromArray (array = [], mapper) {
-	return Immutable.Map(array.map((item) => [
+function mapFromArray (array = [], mapper, mapClass = Immutable.Map) {
+	return mapClass(array.map((item) => [
 		item.id,
 		typeof mapper === 'function' ? mapper(item) : item
 	]));
+}
+
+function orderedMapFromArray (array, mapper) {
+	return mapFromArray(array, mapper, Immutable.OrderedMap);
 }
 
 export default reducer;

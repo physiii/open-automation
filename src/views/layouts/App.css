@@ -1,5 +1,5 @@
 .app {
-	composes: fillContext from '../styles/helpers.css';
+	composes: fillContext from "../styles/helpers.css";
 	display: flex;
 	flex-flow: column nowrap;
 }

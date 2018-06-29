@@ -44,7 +44,7 @@ export class VideoPlayer extends React.Component {
 			<div styleName="player" onClick={this.onClick}>
 				<div styleName={this.state.isPlaying ? 'overlayPlaying' : 'overlay'}>
 					{!this.state.isPlaying &&
-						<PlayButtonIcon shadowed={true} />}
+						<PlayButtonIcon size={64} shadowed={true} />}
 					{this.state.isPlaying && !this.props.recording &&
 						<span styleName="live">Live</span>}
 				</div>

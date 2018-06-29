@@ -2,19 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
+import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
 import {connect} from 'react-redux';
 import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
 import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
 import {loadScreen, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './CameraRecordings.css';
 
+momentDurationFormatSetup(moment);
+
 export class CameraRecordings extends React.Component {
 	constructor (props) {
 		super(props);
 
-		this.onDateSelect = this.onDateSelect.bind(this);
+		this.goToDate = this.goToDate.bind(this);
 	}
 
 	componentDidMount () {
@@ -33,21 +37,29 @@ export class CameraRecordings extends React.Component {
 		return `${this.props.basePath}/${this.props.cameraService.id}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
 	}
 
-	onDateSelect (date) {
+	goToDate (date) {
 		// Update current URL to new selected date.
-		this.props.history.push(this.getPathForDate(date));
+		this.props.history.replace(this.getPathForDate(date));
+	}
+
+	playRecording (recordingId) {
+		this.props.history.replace(this.getPathForDate(this.props.selectedDate) + '/' + recordingId);
 	}
 
 	render () {
 		let list;
 
 		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
-			list = (<List items={this.props.selectedDateRecordings.map((recording) => ({
-				id: recording.id,
-				label: moment(recording.date).format('h:mm A'),
-				meta: 'Motion detected for ' + moment.duration(recording.duration, 'seconds').humanize(),
-				link: `${this.getPathForDate(this.props.selectedDate)}/${recording.id}`
-			}))} />);
+			list = (<List
+				title={this.props.selectedDate.format('MMMM DD')}
+				items={this.props.selectedDateRecordings.map((recording) => ({
+					id: recording.id,
+					label: moment(recording.date).format('h:mm A'),
+					icon: <PlayButtonIcon size={24} />,
+					meta: 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
+					onClick: () => this.playRecording(recording.id)
+				}))}
+			/>);
 		} else if (this.props.error) {
 			list = <p>{this.props.error}</p>;
 		} else {
@@ -56,7 +68,7 @@ export class CameraRecordings extends React.Component {
 
 		return (
 			<div styleName="screen">
-				<div styleName="top">
+				<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
 					<div styleName="topCenterer">
 						{this.props.selectedRecording
 							? <VideoPlayer
@@ -70,13 +82,22 @@ export class CameraRecordings extends React.Component {
 							: <DatePicker
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
-								onSelect={this.onDateSelect} />}
+								onSelect={this.goToDate} />}
 					</div>
+					{this.props.selectedRecording &&
+						<a href="#" styleName="closeButton" onClick={(event) => {
+							event.preventDefault();
+							this.goToDate(this.props.selectedDate);
+						}}>
+							Close
+						</a>}
 				</div>
-				<div styleName="list">
-					{this.props.isLoading
-						? <div>Loading Recordings</div>
-						: list}
+				<div styleName="bottom">
+					<div styleName="list">
+						{this.props.isLoading
+							? <div>Loading Recordings</div>
+							: list}
+					</div>
 				</div>
 			</div>
 		);

@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import * as types from './types';
+import * as sessionTypes from '../session/types';
 
 const initialState = {
 		currentContext: null,
@@ -31,6 +32,8 @@ const initialState = {
 						action.payload.path
 					])
 				};
+			case sessionTypes.LOGOUT:
+				return {...initialState};
 			default:
 				return state;
 		}

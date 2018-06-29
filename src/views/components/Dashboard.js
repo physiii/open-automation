@@ -9,7 +9,11 @@ import {loadContext} from '../../state/ducks/navigation/operations.js';
 import '../styles/layouts/_cardGrid.scss';
 
 export class Dashboard extends React.Component {
-	componentDidMount () {
+	constructor (props) {
+		super(props);
+
+		// Side effects should be avoided in component constructors, but this
+		// needs to be here because it must be called before rendering.
 		this.props.navigationLoadContext();
 	}
 
