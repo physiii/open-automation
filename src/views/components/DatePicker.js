@@ -158,7 +158,7 @@ export class DatePicker extends React.Component {
 DatePicker.propTypes = {
 	selectedDate: PropTypes.object,
 	selectedMonth: PropTypes.object,
-	events: PropTypes.object, // TODO: Immutable List proptype (also allow array)
+	events: PropTypes.array,
 	onSelect: PropTypes.func
 };
 

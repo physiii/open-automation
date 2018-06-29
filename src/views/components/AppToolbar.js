@@ -3,35 +3,31 @@ import PropTypes from 'prop-types';
 import Toolbar from '../components/Toolbar.js';
 import Button from '../components/Button.js';
 import {connect} from 'react-redux';
-import '../styles/modules/_AppToolbar.scss';
-
-const SECOND_TO_LAST = -2;
+import './AppToolbar.css';
 
 export const AppToolbar = (props) => {
-	const screenInfo = props.screenHistory && props.screenHistory.last(),
-		previousScreenInfo = props.screenHistory && props.screenHistory.toList().get(SECOND_TO_LAST),
-		title = screenInfo && screenInfo.get('title');
-
 	let left;
 
-	if (screenInfo) {
+	if (props.backPath) {
 		left = (
-			<Button to={screenInfo.get('backPath')}>
+			<Button to={props.backPath}>
 				&lt;
-				{previousScreenInfo
-					? previousScreenInfo.get('title')
-					: null}
+				{props.backLabel}
 			</Button>
 		);
+	} else if (props.logoPath) {
+		left = (<div styleName="logo">
+			<img src={'/' + props.logoPath} />
+		</div>);
 	} else {
 		left = <label>{props.appName}</label>;
 	}
 
 	return (
-		<div className="oa-AppToolbar">
+		<div styleName="toolbar">
 			<Toolbar
 				leftChildren={left}
-				middleChildren={title}
+				middleChildren={props.title}
 				rightChildren={[
 					<span key="username">{props.username}</span>,
 					<Button to="/logout" key="logout-button">Logout</Button>
@@ -43,14 +39,27 @@ export const AppToolbar = (props) => {
 
 AppToolbar.propTypes = {
 	appName: PropTypes.string,
-	username: PropTypes.string,
-	screenHistory: PropTypes.object
+	logoPath: PropTypes.string,
+	title: PropTypes.string,
+	backPath: PropTypes.string,
+	backLabel: PropTypes.string,
+	username: PropTypes.string
 };
 
-const mapStateToProps = (state) => ({
-	appName: state.config.app_name,
-	username: state.session.user && state.session.user.username,
-	screenHistory: state.navigation.screenHistory.get(state.navigation.currentContext)
-});
+const mapStateToProps = (state) => {
+	const SECOND_TO_LAST = -2,
+		screenHistory = state.navigation.screenHistory.get(state.navigation.currentContext),
+		screenInfo = screenHistory && screenHistory.last(),
+		previousScreenInfo = screenHistory && screenHistory.toList().get(SECOND_TO_LAST);
+
+	return {
+		appName: state.config.app_name,
+		logoPath: state.config.logo_path,
+		title: screenInfo && screenInfo.get('title'),
+		backPath: screenInfo && screenInfo.get('backPath'),
+		backLabel: previousScreenInfo && previousScreenInfo.get('title'),
+		username: state.session.user && state.session.user.username
+	};
+};
 
 export default connect(mapStateToProps)(AppToolbar);

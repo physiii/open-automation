@@ -42,9 +42,7 @@ export class Button extends React.Component {
 					this.props.onClick(event);
 				}
 			}} styleName={className}>{this.props.children}</a>,
-			this.props.submitForm
-				? <input styleName="submit" type="submit" key="submit" ref={this.submitInput} />
-				: null
+			this.props.submitForm && <input styleName="submit" type="submit" key="submit" ref={this.submitInput} />
 		];
 	}
 }

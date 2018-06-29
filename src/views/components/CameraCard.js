@@ -32,9 +32,7 @@ export class CameraCard extends React.Component {
 		return (
 			<ServiceCardBase
 				name={this.props.camera.settings.name || 'Camera'}
-				status={lastRecordingDate
-					? 'Movement recorded ' + moment(lastRecordingDate).fromNow()
-					: null}
+				status={lastRecordingDate && 'Movement recorded ' + moment(lastRecordingDate).fromNow()}
 				icon={<CameraIcon />}
 				isConnected={this.props.camera.state.connected}
 				content={<VideoPlayer

@@ -41,7 +41,7 @@ export class CameraRecordings extends React.Component {
 	render () {
 		let list;
 
-		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.size) {
+		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
 			list = (<List items={this.props.selectedDateRecordings.map((recording) => ({
 				id: recording.id,
 				label: moment(recording.date).format('h:mm A'),
@@ -84,10 +84,10 @@ export class CameraRecordings extends React.Component {
 }
 
 CameraRecordings.propTypes = {
-	cameraService: PropTypes.object, // TODO: Immutable Record proptype (also allow object)
+	cameraService: PropTypes.object,
 	selectedDate: PropTypes.object,
-	allRecordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
-	selectedDateRecordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
+	allRecordings: PropTypes.array,
+	selectedDateRecordings: PropTypes.array,
 	selectedRecording: PropTypes.object,
 	basePath: PropTypes.string,
 	history: PropTypes.object,
@@ -118,10 +118,10 @@ const mapStateToProps = (state, ownProps) => {
 		}
 
 		return {
-			cameraService,
+			cameraService: cameraService.toJS(),
 			selectedDate,
-			allRecordings: cameraService.recordingsList ? cameraService.recordingsList.recordings : null,
-			selectedDateRecordings: recordingsForDate(cameraService, selectedDate),
+			allRecordings: cameraService.recordingsList.recordings.toList().toJS(),
+			selectedDateRecordings: recordingsForDate(cameraService, selectedDate).toList().toJS(),
 			selectedRecording: recordingById(cameraService, ownProps.match.params.recordingId),
 			isLoading: cameraService.recordingsList.loading
 		};

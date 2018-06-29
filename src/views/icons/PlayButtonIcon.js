@@ -22,9 +22,8 @@ export const PlayButtonIcon = (props) => (
 				</filter>
 			</defs>
 			<g transform="translate(-166 -118)" fillRule="evenodd">
-				{props.shadowed
-					? <use filter="url(#a)" xlinkHref="#b"/>
-					: null}
+				{props.shadowed &&
+					<use filter="url(#a)" xlinkHref="#b"/>}
 				<use xlinkHref="#b"/>
 			</g>
 		</svg>

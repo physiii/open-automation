@@ -36,16 +36,13 @@ export class Dashboard extends React.Component {
 }
 
 Dashboard.propTypes = {
-	services: PropTypes.oneOfType([
-		PropTypes.array,
-		PropTypes.object // TODO: Immutable List
-	]),
+	services: PropTypes.array,
 	match: PropTypes.object,
 	navigationLoadContext: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({
-		services: servicesWithoutGateways(state.servicesList)
+		services: servicesWithoutGateways(state.servicesList).toJS()
 	}),
 	mapDispatchToProps = (dispatch) => ({
 		navigationLoadContext: () => dispatch(loadContext('dashboard'))

@@ -43,18 +43,15 @@ export class VideoPlayer extends React.Component {
 		return (
 			<div styleName="player" onClick={this.onClick}>
 				<div styleName={this.state.isPlaying ? 'overlayPlaying' : 'overlay'}>
-					{!this.state.isPlaying
-						? <PlayButtonIcon shadowed={true} />
-						: null }
-					{this.state.isPlaying && !this.props.recording
-						? <span styleName="live">Live</span>
-						: null}
+					{!this.state.isPlaying &&
+						<PlayButtonIcon shadowed={true} />}
+					{this.state.isPlaying && !this.props.recording &&
+						<span styleName="live">Live</span>}
 				</div>
 				<div styleName="video">
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
-					{this.props.posterUrl && !this.state.hasPlayedOnce
-						? <img styleName="poster" style={{width: this.props.width, height: this.props.height}} src={this.props.posterUrl} />
-						: null}
+					{this.props.posterUrl && !this.state.hasPlayedOnce &&
+						<img styleName="poster" style={{width: this.props.width, height: this.props.height}} src={this.props.posterUrl} />}
 					<VideoStream
 						styleName="canvas"
 						{...this.props}

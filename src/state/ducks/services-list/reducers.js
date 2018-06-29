@@ -4,18 +4,17 @@ import * as types from './types';
 import * as devicesListTypes from '../devices-list/types';
 
 const initialState = {
-		services: null,
+		services: Immutable.Map(),
 		loading: false,
+		fetched: false, // Whether first fetch has completed.
 		error: false
 	},
 	recordingsInitialState = {
-		recordings: null,
+		recordings: Immutable.Map(),
 		loading: false,
 		error: false
 	},
 	reducer = (state = initialState, action) => {
-		let serviceIndex;
-
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES:
 				return {
@@ -26,13 +25,14 @@ const initialState = {
 				return {
 					...state,
 					loading: false,
+					fetched: true,
 					error: false,
-					services: Immutable.List(action.payload.devices.map((device) => {
-						return Immutable.List(device.services.map((service) => {
-							const currentServiceState = state.services ? state.services.find((stateService) => stateService.id === service.id).toObject() : {};
+					services: mapFromArray(action.payload.devices, (device) => {
+						return mapFromArray(device.services, (service) => {
+							const currentServiceState = state.services.get(service.id);
 
 							return createService({
-								...currentServiceState,
+								...(currentServiceState && currentServiceState.toObject()) || {},
 								...service,
 								state: {
 									...service.state,
@@ -42,13 +42,13 @@ const initialState = {
 											: true)
 								},
 								device_id: device.id,
-								recordingsList: recordingsReducer(currentServiceState.recordingsList, {
+								recordingsList: recordingsReducer(currentServiceState && currentServiceState.recordingsList, {
 									...action,
 									payload: {recordings: service.recordings}
 								})
 							});
-						}));
-					})).flatten(1) // Flatten the array of arrays.
+						});
+					}).flatten(1) // Flatten the devices collection to get a list of just services.
 				};
 			case devicesListTypes.FETCH_DEVICES_ERROR:
 				return {
@@ -60,22 +60,18 @@ const initialState = {
 			case types.FETCH_CAMERA_RECORDINGS_SUCCESS:
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
 			case types.STREAM_CAMERA_RECORDING:
-				serviceIndex = state.services.findIndex((device) => device.id === action.payload.cameraId);
-
 				return {
 					...state,
 					services: state.services.setIn([
-						serviceIndex,
+						action.payload.cameraId,
 						'recordingsList'
-					], recordingsReducer(state.services.get(serviceIndex).recordingsList, action))
+					], recordingsReducer(state.services.get(action.payload.cameraId).recordingsList, action))
 				};
 			case types.STREAM_CAMERA_LIVE:
-				serviceIndex = state.services.findIndex((device) => device.id === action.payload.cameraId);
-
 				return {
 					...state,
 					services: state.services.setIn([
-						serviceIndex,
+						action.payload.cameraId,
 						'streaming_token'
 					], action.payload.streamToken)
 				};
@@ -83,14 +79,16 @@ const initialState = {
 				return state;
 		}
 	},
-	recordingsReducer = (state = null, action) => {
+	recordingsReducer = (state = recordingsInitialState, action) => {
 		let recordingIndex, recordingToUpdate;
 
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return {
 					...recordingsInitialState,
-					recordings: state ? Immutable.List(action.payload.recordings || state.recordings) : recordingsInitialState.recordings
+					recordings: action.payload.recordings
+						? mapFromArray(action.payload.recordings)
+						: state.recordings
 				};
 			case types.FETCH_CAMERA_RECORDINGS:
 				return {
@@ -102,7 +100,7 @@ const initialState = {
 					...state,
 					loading: false,
 					error: false,
-					recordings: Immutable.List(action.payload.recordings)
+					recordings: mapFromArray(action.payload.recordings)
 				};
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
 				return {
@@ -128,5 +126,12 @@ const initialState = {
 				return state;
 		}
 	};
+
+function mapFromArray (array = [], mapper) {
+	return Immutable.Map(array.map((item) => [
+		item.id,
+		typeof mapper === 'function' ? mapper(item) : item
+	]));
+}
 
 export default reducer;

@@ -7,7 +7,6 @@ import AppToolbar from '../components/AppToolbar.js';
 import Dashboard from '../components/Dashboard.js';
 import Settings from '../components/Settings.js';
 import Logout from '../components/Logout.js';
-import TabBar from '../components/TabBar.js';
 import {connect} from 'react-redux';
 import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 import {hasInitialFetchCompleted} from '../../state/ducks/devices-list/selectors.js';

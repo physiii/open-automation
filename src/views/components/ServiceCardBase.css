@@ -44,14 +44,11 @@
 }
 .disconnectedIcon::after {
 	content: "!";
-	display: flex;
-	flex-flow: row nowrap;
-	justify-content: center;
-	align-items: center;
+	display: table-cell;
+	vertical-align: middle;
 	box-sizing: border-box;
 	width: 18px;
 	height: 18px;
-	padding-top: 2px;
 	position: absolute;
 	right: 16px;
 	bottom: 16px;
@@ -59,7 +56,9 @@
 	background-color: disconnectedRed;
 	color: #ffffff;
 	font-size: 15px;
+	line-height: 20px;
 	font-weight: bold;
+	text-align: center;
 }
 .nameWrapper {
 	display: flex;

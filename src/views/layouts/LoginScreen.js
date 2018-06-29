@@ -15,9 +15,8 @@ export const LoginScreen = (props) => {
 					<Route path="/register" component={RegisterForm} />
 					<Route path="/" render={() => <Redirect to="/login" />} />
 				</Switch>
-				{props.isLoading
-					? <div styleName="loading">Loading</div>
-					: null}
+				{props.isLoading &&
+					<div styleName="loading">Loading</div>}
 			</div>
 			<div styleName="footer">
 				<Route path="/login" render={() => <Link to="/register">Create Account</Link>} />

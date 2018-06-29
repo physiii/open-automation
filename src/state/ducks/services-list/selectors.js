@@ -1,31 +1,19 @@
 const servicesWithoutGateways = (servicesList) => {
-		return servicesList.services.filter((service) => service.type !== 'gateway');
+		return servicesList.services.toList().filter((service) => service.type !== 'gateway');
 	},
 	gatewayServices = (servicesList) => {
-		return servicesList.services ? servicesList.services.filter((service) => service.type === 'gateway') : [];
+		return servicesList.services.toList().filter((service) => service.type === 'gateway');
 	},
 	serviceById = (serviceId, servicesList) => {
-		return servicesList.services.find((service) => service.id === serviceId);
+		return servicesList.services.get(serviceId);
 	},
 	recordingsForDate = (cameraService, date) => {
-		if (!cameraService.recordingsList || !cameraService.recordingsList.recordings) {
-			return null;
-		}
-
-		return cameraService.recordingsList.recordings.filter((recording) => date.isSame(recording.date, 'day'));
+		return cameraService.recordingsList.recordings.toList().filter((recording) => date.isSame(recording.date, 'day'));
 	},
 	recordingById = (cameraService, recordingId) => {
-		if (!cameraService.recordingsList || !cameraService.recordingsList.recordings) {
-			return null;
-		}
-
-		return cameraService.recordingsList.recordings.find((recording) => recording.id === recordingId);
+		return cameraService.recordingsList.recordings.get(recordingId);
 	},
 	cameraRecordingsDateGrouped = (cameraService) => {
-		if (!cameraService.recordingsList || !cameraService.recordingsList.recordings) {
-			return null;
-		}
-
 		// Group by year
 		let recordings = cameraService.recordingsList.recordings.groupBy((recording) => new Date(recording.date).getFullYear()).toOrderedMap();
 
@@ -51,7 +39,7 @@ const servicesWithoutGateways = (servicesList) => {
 		return recordings;
 	},
 	hasInitialFetchCompleted = (servicesList) => {
-		return Boolean(servicesList.services);
+		return servicesList.fetched;
 	};
 
 export {
