@@ -4,7 +4,9 @@
 
 const fs = require('fs'),
 	path = require('path'),
-	database = require('./database.js'),
+	express = require('express'),
+	startStreamRelay = require('./stream-relay.js'),
+	startWebsite = require('./website.js'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js');
 
@@ -34,14 +36,5 @@ try {
 AccountsManager.loadAccountsFromDb();
 DevicesManager.loadDevicesFromDb();
 
-var stream = require('./stream.js');
-var website = require('./website.js');
-var socket = require('./socket.js');
-var express = require('express');
-var http = require('http');
-var app = express();
-
-// ------------- //
-// start servers //
-// ------------- //
-website.start(app);
+startStreamRelay();
+startWebsite(express());

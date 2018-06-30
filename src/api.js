@@ -215,7 +215,7 @@ class Api {
 		});
 	}
 
-	static apiCall (event, payload) {
+	static apiCall (event, payload = {}) {
 		return new Promise((resolve, reject) => {
 			if (api.isRefreshingAccessToken) {
 				relaySocketQueue.push({event, payload, resolve, reject});

@@ -7,6 +7,8 @@ const config = require('../config.json'),
 	uuid = require('uuid/v4'),
 	express = require('express'),
 	socket = require('./socket.js'),
+	startGatewayServer = require('./gateway-server.js'),
+	startClientApi = require('./client-api.js'),
 	bodyParser = require('body-parser'),
 	cookie = require('cookie'),
 	fs = require('fs'),
@@ -26,13 +28,10 @@ const config = require('../config.json'),
 	MILLISECONDS_PER_SECOND = 1000;
 
 let logo_file_path = config.logo_path || 'logo.png',
-	ssl_key, ssl_cert;
+	ssl_key,
+	ssl_cert;
 
-module.exports = {
-	start
-};
-
-function start (app) {
+module.exports = function (app) {
 	var port,
 		server,
 		server_description;
@@ -278,5 +277,9 @@ function start (app) {
 
 	// Start servers.
 	server.listen(port, null, () => console.log(server_description + ' server listening on port ' + port));
-	socket.start(server, JWT_SECRET);
-}
+
+	const socket_server = socket(server);
+
+	startClientApi(socket_server.onClientConnection, JWT_SECRET);
+	startGatewayServer(socket_server.onDeviceConnection);
+};

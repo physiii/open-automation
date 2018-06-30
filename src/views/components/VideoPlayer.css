@@ -38,6 +38,10 @@
 	font-weight: bold;
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
+	animation: liveTransitionIn 0.5s ease 0.75s backwards;
+}
+@keyframes liveTransitionIn {
+	from { bottom: -100px; }
 }
 
 .video {
