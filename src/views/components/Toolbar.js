@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../styles/modules/_Toolbar.scss';
+import './Toolbar.css';
 
 const Toolbar = (props) => (
-	<div className="oa-Toolbar">
-		<div className="oa-Toolbar--left">{props.leftChildren}</div>
-		{props.middleChildren
-			? <div className="oa-Toolbar--middle">{props.middleChildren}</div>
-			: null}
-		{props.rightChildren || props.middleChildren
-			? <div className="oa-Toolbar--right">{props.rightChildren}</div>
-			: null}
+	<div styleName="toolbar">
+		<div styleName="left">{props.leftChildren}</div>
+		{props.middleChildren &&
+			<div styleName="middle">{props.middleChildren}</div>}
+		{(props.rightChildren || props.middleChildren) &&
+			<div styleName="right">{props.rightChildren}</div>}
 	</div>
 );
 

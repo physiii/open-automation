@@ -7,6 +7,8 @@ const config = require('../config.json'),
 	uuid = require('uuid/v4'),
 	express = require('express'),
 	socket = require('./socket.js'),
+	startGatewayServer = require('./gateway-server.js'),
+	startClientApi = require('./client-api.js'),
 	bodyParser = require('body-parser'),
 	cookie = require('cookie'),
 	fs = require('fs'),
@@ -19,27 +21,25 @@ const config = require('../config.json'),
 	WebpackDevMiddleware = require('webpack-dev-middleware'),
 	WebpackHotMiddleware = require('webpack-hot-middleware'),
 	webpack_config_file = require('../webpack.config'),
-	WEBSITE_PORT = config.website_port || 5000,
-	WEBSITE_SECURE_PORT = config.website_secure_port || 4443,
-	IS_SSL_ENABLED = config.use_ssl || false,
-	IS_DEV_ENABLED = config.use_dev || false,
+	website_port = config.website_port || 5000,
+	website_secure_port = config.website_secure_port || 4443,
+	is_ssl_enabled = config.use_ssl || false,
+	is_dev_enabled = config.use_dev || false,
 	MILLISECONDS_PER_SECOND = 1000;
 
-let SSL_KEY, SSL_CERT;
+let logo_file_path = config.logo_path || 'logo.png',
+	ssl_key,
+	ssl_cert;
 
-module.exports = {
-	start
-};
-
-function start (app) {
+module.exports = function (app) {
 	var port,
 		server,
 		server_description;
 
-	if (IS_SSL_ENABLED) {
+	if (is_ssl_enabled) {
 		try {
-			SSL_KEY = fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem'));
-			SSL_CERT = fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'));
+			ssl_key = fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem'));
+			ssl_cert = fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'));
 		} catch (error) {
 			console.error('There was an error when trying to load SSL files.', error);
 
@@ -47,8 +47,14 @@ function start (app) {
 		}
 	}
 
+	try {
+		fs.accessSync(__dirname + '/../public/' + logo_file_path);
+	} catch (error) {
+		logo_file_path = false;
+	}
+
 	// Set JSON Web Tokens secret.
-	const JWT_SECRET = SSL_KEY || uuid();
+	const JWT_SECRET = ssl_key || uuid();
 
 	function verifyAccessToken (access_token, xsrf_token) {
 		return new Promise((resolve, reject) => {
@@ -87,11 +93,11 @@ function start (app) {
 	}
 
 	// Set up webpack middleware (for automatic compiling/hot reloading).
-	if (IS_DEV_ENABLED) {
+	if (is_dev_enabled) {
 		var webpack_env = {
 			hot: true, // Used so that in webpack config we know when webpack is running as middleware.
-			development: IS_DEV_ENABLED,
-			production: !IS_DEV_ENABLED
+			development: is_dev_enabled,
+			production: !is_dev_enabled
 		};
 		var webpack_config = webpack_config_file(webpack_env);
 		var webpack_compiler = webpack(webpack_config);
@@ -153,7 +159,7 @@ function start (app) {
 				// Store the access token in a cookie on client. This cookie
 				// MUST be set to HttpOnly; and Secure; (if SSL is configured)
 				// to protect against certain XSS and MITM attacks.
-				response.setHeader('Set-Cookie', 'access_token=' + tokens.access_token + '; path=/; HttpOnly;' + (IS_SSL_ENABLED ? ' Secure;' : ''));
+				response.setHeader('Set-Cookie', 'access_token=' + tokens.access_token + '; path=/; HttpOnly;' + (is_ssl_enabled ? ' Secure;' : ''));
 
 				response.json({
 					account: account.clientSerialize(),
@@ -241,8 +247,10 @@ function start (app) {
 	});
 
 	app.get('/js/config.js', (request, response) => {
+
 		const client_config = {
 			app_name: config.app_name || 'Open Automation',
+			logo_path: logo_file_path,
 			stream_port: config.video_websocket_port
 		};
 
@@ -254,20 +262,24 @@ function start (app) {
 	});
 
 	// Create server.
-	if (IS_SSL_ENABLED) {
-		port = WEBSITE_SECURE_PORT;
+	if (is_ssl_enabled) {
+		port = website_secure_port;
 		server = https.createServer({
-			key: SSL_KEY,
-			cert: SSL_CERT
+			key: ssl_key,
+			cert: ssl_cert
 		}, app);
 		server_description = 'Secure';
 	} else {
-		port = WEBSITE_PORT;
+		port = website_port;
 		server = http.createServer(app);
 		server_description = 'Insecure';
 	}
 
 	// Start servers.
 	server.listen(port, null, () => console.log(server_description + ' server listening on port ' + port));
-	socket.start(server, JWT_SECRET);
-}
+
+	const socket_server = socket(server);
+
+	startClientApi(socket_server.onClientConnection, JWT_SECRET);
+	startGatewayServer(socket_server.onDeviceConnection);
+};

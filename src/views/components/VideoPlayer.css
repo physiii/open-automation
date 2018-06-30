@@ -7,7 +7,7 @@
 }
 
 .overlay {
-	composes: fillContext from '../styles/helpers.css';
+	composes: fillContext from "../styles/helpers.css";
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;
@@ -38,6 +38,10 @@
 	font-weight: bold;
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
+	animation: liveTransitionIn 0.5s ease 0.75s backwards;
+}
+@keyframes liveTransitionIn {
+	from { bottom: -100px; }
 }
 
 .video {
@@ -48,7 +52,7 @@
 }
 .aspectRatio {
 	/* Default aspect ratio of 4:3. This may be overridden in DOM at run-time. */
-	composes: aspectRatio43 from '../styles/helpers.css';
+	composes: aspectRatio43 from "../styles/helpers.css";
 }
 .poster {
 	position: absolute;
@@ -57,7 +61,7 @@
 	z-index: 1
 }
 .canvas {
-	composes: fillContext from '../styles/helpers.css';
+	composes: fillContext from "../styles/helpers.css";
 	display: block;
 	width: 100%;
 }

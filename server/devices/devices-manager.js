@@ -1,15 +1,22 @@
-const database = require('../database.js'),
+const EventEmitter = require('events'),
+	database = require('../database.js'),
 	Device = require('./device.js'),
 	socketEscrow = {},
 	devicesList = new Map();
 
 class DevicesManager {
 	constructor () {
+		this.events = new EventEmitter();
+
 		this.handleDeviceUpdate = this.handleDeviceUpdate.bind(this);
 	}
 
+	on () {
+		return this.events.on.apply(this.events, arguments);
+	}
+
 	addDevice (data) {
-		let device = this.getDeviceById(data.id);
+		let device = this.getDeviceById(data.id, null, true);
 
 		if (device) {
 			return device;
@@ -35,34 +42,49 @@ class DevicesManager {
 	}
 
 	handleDeviceUpdate (device) {
-		const client_sockets = socketServer.getClientSocketsForAccountId(device.location),
-			devices = this.getClientSerializedDevices(this.getDevicesByLocation(device.location));
-
-		client_sockets.forEach((socket) => {
-			socket.emit('devices', {devices});
-		});
+		this.events.emit('device/update', {device});
 	}
 
-	getDeviceById (deviceId) {
-		return devicesList.get(deviceId);
-	}
+	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
+	// originating from the client API.
+	getDeviceById (deviceId, accountId, skipAccountAccessCheck) {
+		const device = devicesList.get(deviceId);
 
-	getDeviceByServiceId (serviceId) {
-		return Array.from(devicesList.values()).find((device) => device.services.getServiceById(serviceId));
-	}
-
-	getDevicesByLocation (locationId) {
-		return Array.from(devicesList.values()).filter((device) => device.location === locationId);
-	}
-
-	getServiceById (serviceId) {
-		const device = this.getDeviceByServiceId(serviceId);
-
-		if (!device) {
-			return;
+		// Verify that this account has access to this device.
+		if ((device && (device.location === accountId)) || skipAccountAccessCheck) {
+			return device;
 		}
+	}
 
-		return device.services.getServiceById(serviceId);
+	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
+	// originating from the client API.
+	getDeviceByServiceId (serviceId, accountId, skipAccountAccessCheck) {
+		const device = Array.from(devicesList.values()).find((device) => device.services.getServiceById(serviceId));
+
+		// Verify that this account has access to this device.
+		if ((device && (device.location === accountId)) || skipAccountAccessCheck) {
+			return device;
+		}
+	}
+
+	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
+	// originating from the client API.
+	getDevicesByLocation (locationId, accountId, skipAccountAccessCheck) {
+		// Verify that this account has access to this location.
+		if ((locationId === accountId) || skipAccountAccessCheck) {
+			return Array.from(devicesList.values()).filter((device) => device.location === locationId);
+		}
+	}
+
+	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
+	// originating from the client API.
+	getServiceById (serviceId, accountId, skipAccountAccessCheck) {
+		const device = this.getDeviceByServiceId(serviceId, accountId, skipAccountAccessCheck);
+
+		// Verify that this account has access to this device.
+		if ((device && (device.location === accountId)) || skipAccountAccessCheck) {
+			return device.services.getServiceById(serviceId);
+		}
 	}
 
 	addToSocketEscrow (deviceId, deviceToken, socket) {
@@ -93,11 +115,9 @@ class DevicesManager {
 		});
 	}
 
-	getClientSerializedDevices (devices = Array.from(devicesList.values())) {
+	getClientSerializedDevices (devices = []) {
 		return devices.map((device) => device.clientSerialize());
 	}
 }
 
 module.exports = new DevicesManager();
-
-const socketServer = require('../socket.js');

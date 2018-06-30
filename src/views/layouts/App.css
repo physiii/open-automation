@@ -1,12 +1,12 @@
 .app {
-	composes: fillContext from '../styles/helpers.css';
+	composes: fillContext from "../styles/helpers.css";
 	display: flex;
 	flex-flow: column nowrap;
 }
 .toolbar {
 	display: flex;
 	flex-flow: column nowrap;
-	flex: 0 0 50px;
+	flex: 0 0 auto;
 }
 .content {
 	flex: 1 1 auto;

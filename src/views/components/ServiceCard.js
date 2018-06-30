@@ -8,7 +8,7 @@ export const ServiceCard = (props) => {
 		case 'camera':
 			return <CameraCard camera={props.service} parentPath={props.parentPath} />;
 		default:
-			return <ServiceCardBase name={props.service.settings.name} parentPath={props.parentPath} />;
+			return <ServiceCardBase name={props.service.settings.name} isConnected={props.service.state.connected} parentPath={props.parentPath} />;
 	}
 };
 

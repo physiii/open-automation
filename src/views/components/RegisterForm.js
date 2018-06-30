@@ -45,9 +45,8 @@ export class RegisterForm extends React.Component {
 
 		return (
 			<form onSubmit={this.handleSubmit}>
-				{this.props.error
-					? <p>{this.props.error}</p>
-					: null}
+				{this.props.error &&
+					<p>{this.props.error}</p>}
 				<TextField label="Email" value={this.state.username} onChange={this.handleUsernameChange} />
 				<TextField label="Password" type="password" value={this.state.password} onChange={this.handlePasswordChange} />
 				<Actions>

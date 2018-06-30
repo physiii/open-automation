@@ -21,7 +21,7 @@ const initialize = () => (dispatch) => {
 		}
 
 		// When an API authentication error happens, log out.
-		Api.on('session', (data) => {
+		Api.on('authentication', (data) => {
 			if (data.error) {
 				dispatch(logout());
 			}

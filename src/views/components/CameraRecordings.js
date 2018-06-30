@@ -2,50 +2,73 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
+import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
 import {connect} from 'react-redux';
 import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
 import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
+import {loadScreen, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './CameraRecordings.css';
+
+momentDurationFormatSetup(moment);
 
 export class CameraRecordings extends React.Component {
 	constructor (props) {
 		super(props);
 
-		this.onDateSelect = this.onDateSelect.bind(this);
+		this.goToDate = this.goToDate.bind(this);
 	}
 
 	componentDidMount () {
-		this.props.fetchRecordings(this.props.cameraService);
+		this.props.navigationLoadScreen();
+
+		if (this.props.cameraService) {
+			this.props.fetchRecordings(this.props.cameraService);
+		}
+	}
+
+	componentWillUnmount () {
+		this.props.navigationUnloadScreen();
 	}
 
 	getPathForDate (date) {
 		return `${this.props.basePath}/${this.props.cameraService.id}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
 	}
 
-	onDateSelect (date) {
+	goToDate (date) {
 		// Update current URL to new selected date.
-		this.props.history.push(this.getPathForDate(date));
+		this.props.history.replace(this.getPathForDate(date));
+	}
+
+	playRecording (recordingId) {
+		this.props.history.replace(this.getPathForDate(this.props.selectedDate) + '/' + recordingId);
 	}
 
 	render () {
 		let list;
 
-		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.size) {
-			list = (<List items={this.props.selectedDateRecordings.map((recording) => ({
-				id: recording.id,
-				label: moment(recording.date).format('h:mm A'),
-				meta: 'Motion detected for ' + moment.duration(recording.duration, 'seconds').humanize(),
-				link: `${this.getPathForDate(this.props.selectedDate)}/${recording.id}`
-			}))} />);
+		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
+			list = (<List
+				title={this.props.selectedDate.format('MMMM DD')}
+				items={this.props.selectedDateRecordings.map((recording) => ({
+					id: recording.id,
+					label: moment(recording.date).format('h:mm A'),
+					icon: <PlayButtonIcon size={24} />,
+					meta: 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
+					onClick: () => this.playRecording(recording.id)
+				}))}
+			/>);
+		} else if (this.props.error) {
+			list = <p>{this.props.error}</p>;
 		} else {
 			list = <p>No Recordings for the Selected Date</p>;
 		}
 
 		return (
 			<div styleName="screen">
-				<div styleName="top">
+				<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
 					<div styleName="topCenterer">
 						{this.props.selectedRecording
 							? <VideoPlayer
@@ -59,13 +82,22 @@ export class CameraRecordings extends React.Component {
 							: <DatePicker
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
-								onSelect={this.onDateSelect} />}
+								onSelect={this.goToDate} />}
 					</div>
+					{this.props.selectedRecording &&
+						<a href="#" styleName="closeButton" onClick={(event) => {
+							event.preventDefault();
+							this.goToDate(this.props.selectedDate);
+						}}>
+							Close
+						</a>}
 				</div>
-				<div styleName="list">
-					{this.props.isLoading
-						? <div>Loading Recordings</div>
-						: list}
+				<div styleName="bottom">
+					<div styleName="list">
+						{this.props.isLoading
+							? <div>Loading Recordings</div>
+							: list}
+					</div>
 				</div>
 			</div>
 		);
@@ -73,21 +105,22 @@ export class CameraRecordings extends React.Component {
 }
 
 CameraRecordings.propTypes = {
-	cameraService: PropTypes.object, // TODO: Immutable Record proptype (also allow object)
+	cameraService: PropTypes.object,
 	selectedDate: PropTypes.object,
-	allRecordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
-	selectedDateRecordings: PropTypes.object, // TODO: Immutable List proptype (also allow array)
+	allRecordings: PropTypes.array,
+	selectedDateRecordings: PropTypes.array,
 	selectedRecording: PropTypes.object,
 	basePath: PropTypes.string,
 	history: PropTypes.object,
 	isLoading: PropTypes.bool,
-	fetchRecordings: PropTypes.func
+	fetchRecordings: PropTypes.func,
+	navigationLoadScreen: PropTypes.func,
+	navigationUnloadScreen: PropTypes.func,
+	error: PropTypes.string
 };
 
 const mapStateToProps = (state, ownProps) => {
 		const cameraService = serviceById(ownProps.match.params.cameraId, state.servicesList);
-
-		// TODO: Handle camera not found.
 
 		let selectedDate = moment([
 			ownProps.match.params.year,
@@ -99,17 +132,36 @@ const mapStateToProps = (state, ownProps) => {
 			selectedDate = moment();
 		}
 
+		if (!cameraService) {
+			return {
+				error: 'There was a problem with loading the camera’s recordings.'
+			};
+		}
+
 		return {
-			cameraService,
+			cameraService: cameraService.toJS(),
 			selectedDate,
-			allRecordings: cameraService.recordingsList ? cameraService.recordingsList.recordings : null,
-			selectedDateRecordings: recordingsForDate(cameraService, selectedDate),
+			allRecordings: cameraService.recordingsList.recordings.toList().toJS(),
+			selectedDateRecordings: recordingsForDate(cameraService, selectedDate).toList().toJS(),
 			selectedRecording: recordingById(cameraService, ownProps.match.params.recordingId),
 			isLoading: cameraService.recordingsList.loading
 		};
 	},
-	mapDispatchToProps = (dispatch) => ({
+	mapDispatchToProps = (dispatch, ownProps) => ({
+		dispatch,
+		navigationUnloadScreen: () => dispatch(unloadScreen(ownProps.basePath)),
 		fetchRecordings: (cameraService) => dispatch(fetchCameraRecordings(cameraService.id))
-	});
+	}),
+	mergeProps = (stateProps, dispatchProps, ownProps) => {
+		const {dispatch, ...restOfDispatchProps} = dispatchProps,
+			cameraName = stateProps.cameraService.settings.name || 'Camera';
 
-export default connect(mapStateToProps, mapDispatchToProps)(CameraRecordings);
+		return {
+			...ownProps,
+			...stateProps,
+			...restOfDispatchProps,
+			navigationLoadScreen: () => dispatch(loadScreen(ownProps.basePath, ownProps.parentPath, cameraName + ' Recordings'))
+		};
+	};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(CameraRecordings);

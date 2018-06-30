@@ -6,31 +6,45 @@ import './List.css';
 
 export const List = (props) => {
 	return (
-		<ol styleName="list">
-			{props.items && (props.items.length || props.items.size)
-				? props.items.map((item, index) => {
+		<div styleName="list">
+			{props.title && <h2 styleName="title">{props.title}</h2>}
+			<ol>
+				{props.items && props.items.length && props.items.map((item, index) => {
+					const ListLink = item.link
+						? Link
+						: 'a';
+
 					return (
 						<li styleName="row" key={item.id || index}>
-							<Link styleName="link" to={item.link} onClick={(event) => {
-
+							<ListLink href="#" styleName="link" to={item.link} onClick={(event) => {
 								if (typeof item.onClick === 'function') {
+									if (!item.link) {
+										event.preventDefault();
+									}
+
 									item.onClick(item, event);
 								}
 							}}>
 								<Toolbar
-									leftChildren={<span styleName="primaryText">{item.label}</span>}
+									leftChildren={
+										<React.Fragment>
+											{item.icon && <div styleName="icon">{item.icon}</div>}
+											<span styleName="primaryText">{item.label}</span>
+										</React.Fragment>
+									}
 									rightChildren={<span styleName="metaText">{item.meta}</span>} />
-							</Link>
+							</ListLink>
 						</li>
 					);
-				})
-				: null}
-		</ol>
+				})}
+			</ol>
+		</div>
 	);
 };
 
 List.propTypes = {
-	items: PropTypes.object // TODO: Immutable List proptype (also allow array)
+	title: PropTypes.string,
+	items: PropTypes.array
 };
 
 export default List;

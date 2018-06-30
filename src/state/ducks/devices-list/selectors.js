@@ -1,17 +1,11 @@
-const devicesWithoutGateways = (devicesList) => {
-		return devicesList.devices.filter((device) => {
-			return !device.services.find((service) => service.type === 'gateway');
-		});
-	},
-	deviceById = (deviceId, devicesList) => {
-		return devicesList.devices.find((device) => device.id === deviceId);
+const deviceById = (deviceId, devicesList) => {
+		return devicesList.devices.get(deviceId);
 	},
 	hasInitialFetchCompleted = (devicesList) => {
-		return Boolean(devicesList.devices);
+		return devicesList.fetched;
 	};
 
 export {
-	devicesWithoutGateways,
 	deviceById,
 	hasInitialFetchCompleted
 };

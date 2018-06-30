@@ -1,3 +1,5 @@
+@value primary from "../styles/colors.css";
+
 .datePicker {
 	display: flex;
 	flex-flow: row nowrap;
@@ -6,29 +8,43 @@
 }
 
 .calendar {
-	composes: fillContext from '../styles/helpers.css';
+	composes: fillContext from "../styles/helpers.css";
 	display: flex;
 	flex-flow: column nowrap;
+	padding-bottom: 3%;
 	text-align: center;
 }
-
-.monthHeading {
+.cell {
 	display: flex;
-	flex: 1 0 64px;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	flex: 0 0 calc(100% / 7);
+}
+
+.monthHeader {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: center;
+	flex: 1 0 40px;
 }
 .monthButton {
+	composes: cell;
 	width: auto;
 }
 .previousMonthButton { composes: monthButton; }
 .nextMonthButton { composes: monthButton; }
 
-.weekHeading {
+.weekHeader {
 	display: flex;
 	flex-flow: row nowrap;
 	flex: 1 1 24px;
+	font-size: 12px;
+	color: #aaaaaa;
 }
 .dayHeading {
-	flex: 0 0 calc(100% / 7);
+	composes: cell;
 }
 
 .week {
@@ -42,22 +58,41 @@
 }
 
 .day {
-	flex: 0 0 calc(100% / 7);
+	composes: cell;
+	position: relative;
+	z-index: 1;
 }
-.selectedDay {
-	composes: day;
+.dayLink {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	color: inherit;
+	font-size: 14px;
+	text-decoration: none;
+	cursor: default;
+}
+.dayWithEvent {
+	color: primary;
+	cursor: pointer;
+}
+.selectedDayLink {
+	composes: dayLink;
 	color: #ffffff;
 }
-.dayWithEvent::after {
+.selectedDayLink::before {
 	content: "";
 	display: block;
-	width: 7px;
-	height: 7px;
-	margin: 4px auto;
-	background: #ffffff;
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	z-index: -1;
+	background-color: primary;
 	border-radius: 100%;
 }
 
 .aspectRatio {
-	composes: aspectRatio43 from '../styles/helpers.css';
+	composes: aspectRatio43 from "../styles/helpers.css";
 }

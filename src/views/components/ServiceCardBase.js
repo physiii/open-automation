@@ -11,20 +11,18 @@ export const ServiceCardBase = (props) => {
 	return (
 		<div styleName="card">
 			<div styleName={props.hideToolbars ? 'topBarHidden' : 'topBar'}>
-				{props.icon
-					? <div styleName={props.isConnected ? 'icon' : 'disconnectedIcon'}>
+				{props.icon &&
+					<div styleName={props.isConnected ? 'icon' : 'disconnectedIcon'}>
 						{props.icon}
-					</div>
-					: null}
+					</div>}
 				<div styleName="nameWrapper">
 					<label styleName="name">
 						{props.name}
 					</label>
-					{status
-						? <div styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>
+					{status &&
+						<div styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>
 							{status}
-						</div>
-						: null}
+						</div>}
 				</div>
 			</div>
 			<div styleName={props.toolbarsOverlayContent ? 'contentBehindToolbars' : 'content'}>

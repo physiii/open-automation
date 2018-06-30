@@ -6,16 +6,36 @@
 	overflow: hidden;
 }
 .top {
-	/* This is intentionally empty. This layout needs a non-flexbox div because
-	of its descendants (video player and date picker) using the aspect ratio
-	technique.*/
+	/* This element can't be flexbox. This layout needs a non-flexbox div
+	because of its descendants (video player and date picker) using the aspect
+	ratio technique.*/
+	flex: 0 1 auto;
+	position: relative;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.topRecordingSelected {
+	composes: top;
+	background-color: #000000;
 }
 .topCenterer {
 	position: relative;
 	max-width: 500px;
 	margin: 0 auto;
 }
-.list {
+.bottom {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
 	flex: 1 1 auto;
 	overflow: auto;
+}
+.list {
+	flex: 1 1 auto;
+}
+.closeButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 10;
 }
