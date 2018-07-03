@@ -83,8 +83,6 @@ const initialState = {
 		}
 	},
 	recordingsReducer = (state = recordingsInitialState, action) => {
-		let recordingIndex, recordingToUpdate;
-
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return {
@@ -112,15 +110,12 @@ const initialState = {
 					error: action.payload.error.message
 				};
 			case types.STREAM_CAMERA_RECORDING:
-				recordingIndex = state.recordings.findIndex((recording) => recording.id === action.payload.recordingId);
-				recordingToUpdate = state.recordings.get(recordingIndex);
-
 				return {
 					...state,
 					recordings: state.recordings.set(
-						recordingIndex,
+						action.payload.recordingId,
 						{
-							...recordingToUpdate,
+							...state.recordings.get(action.payload.recordingId),
 							streaming_token: action.payload.streamToken
 						}
 					)

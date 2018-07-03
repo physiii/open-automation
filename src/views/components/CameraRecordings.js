@@ -51,7 +51,7 @@ export class CameraRecordings extends React.Component {
 
 		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
 			list = (<List
-				title={this.props.selectedDate.format('MMMM DD')}
+				title={this.props.selectedDate.format('MMMM Do')}
 				items={this.props.selectedDateRecordings.map((recording) => ({
 					id: recording.id,
 					label: moment(recording.date).format('h:mm A'),
