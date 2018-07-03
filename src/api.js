@@ -38,6 +38,10 @@ class Api {
 		return Api.apiCall('devices/get');
 	}
 
+	initDevice (deviceId) {
+		return Api.apiCall('device/init', {device_id: deviceId});
+	}
+
 	streamCameraLive (cameraServiceId) {
 		return Api.apiCall('camera/stream/live', {service_id: cameraServiceId});
 	}

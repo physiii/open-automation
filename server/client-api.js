@@ -75,7 +75,7 @@ module.exports = function (onConnection, jwt_secret) {
 		verifyAuthentication(access_token, jwt_secret, xsrf_token).then((account_id) => {
 			const account = AccountsManager.getAccountById(account_id);
 
-			function clientEndpoint (event, callback) {
+			function clientEndpoint (event, callback, skip_device_lookup) {
 				socket.on(event, (data = {}, clientCallback) => {
 					// Verify access token at each API request. This ensures that
 					// the API will stop responding when the access token expires.
@@ -86,7 +86,7 @@ module.exports = function (onConnection, jwt_secret) {
 						};
 
 						// Hydrate device
-						if (data.device_id) {
+						if (data.device_id && !skip_device_lookup) {
 							const device = DevicesManager.getDeviceById(data.device_id, account.id);
 
 							if (!device) {
@@ -101,7 +101,7 @@ module.exports = function (onConnection, jwt_secret) {
 						}
 
 						// Hydrate service
-						if (data.service_id) {
+						if (data.service_id && !skip_device_lookup) {
 							const service = DevicesManager.getServiceById(data.service_id, account.id);
 
 							if (!service) {
@@ -141,6 +141,18 @@ module.exports = function (onConnection, jwt_secret) {
 					callback(null, {devices: DevicesManager.getClientSerializedDevices(locationDevices)});
 				}
 			});
+
+			clientEndpoint('device/init', (data, callback) => {
+				DevicesManager.loadDeviceFromDb(data.device_id).then(() => {
+					if (typeof callback === 'function') {
+						callback();
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback('There was an error initializing the device.', data);
+					}
+				});
+			}, true);
 
 			// Gateway Service API
 

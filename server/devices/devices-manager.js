@@ -109,9 +109,24 @@ class DevicesManager {
 				});
 
 				resolve(devicesList);
-			}).catch((error) => {
-				reject(error);
-			});
+			}).catch(reject);
+		});
+	}
+
+	loadDeviceFromDb (deviceId) {
+		return new Promise((resolve, reject) => {
+			database.getDevice(deviceId).then((devices) => {
+				const device = devices[0];
+
+				if (!device) {
+					reject('Device not found.');
+					return;
+				}
+
+				this.addDevice(device);
+
+				resolve();
+			}).catch(reject);
 		});
 	}
 
