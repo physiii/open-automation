@@ -8,15 +8,13 @@ class Automator {
 
 	}
 
-	addAutomation () {}
+	addAutomation (data) {}
 
-	createAutomation () {}
-
-	loadAutomationsFromDb () {}
+	createAutomation (data) {}
 
 	handleAutomationUpdate () {}
 
-	activateTrigger (data) {
+	triggerAutomation (data) {
 		switch (data.type) {
 			case 'time-of-day':
 				break;
@@ -30,6 +28,8 @@ class Automator {
 				break;
 		}
 	}
+
+	loadAutomationsFromDb () {}
 }
 
 module.exports = new Automation();
