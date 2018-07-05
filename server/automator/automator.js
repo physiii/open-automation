@@ -38,11 +38,11 @@ class Automator {
 	}
 
 	checkAutomations (automation) {
-		let scenes = SceneManager.getSceneById(automation.scenes.id),
+		let scenes = SceneManager.getSceneById(automation.scenes.id);
 
 		if (!scenes) {
 			scenes = 'none';
-		}
+		};
 
 		for (let i = 0; i < automation.triggers.length; i++) {
 			let trigger = automation.triggers[i];
@@ -112,13 +112,14 @@ class Automator {
 		};
 		automation = new Automation(data);
 		automationsList.set(automation.id, automation);
+		return automation;
 	}
 
 	createAutomation (data) {
 		return new Promise((resolve, reject) => {
 			const automation = this.addAutomation(data);
 
-			database.saveAutomation(automation.dbSerialize()).then(() => {
+			database.saveAutomation(automation.serialize()).then(() => {
 				resolve(automation);
 			}).catch(reject);
 		});
