@@ -19,7 +19,6 @@ class Automator {
 		setInterval((self) => {
 			//Check if new minute to iterate over automation triggers.
 			if (self.currentTime == moment().format('h:mm a')) {
-				console.log(TAG,'Time unchanged');
 				return;
 			};
 			//Iterate over Asutomations for trigger activations.return
