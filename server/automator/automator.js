@@ -1,4 +1,5 @@
 const database = require('../database.js'),
+	moment = require('moment'),
 	Automation = require('./automation.js'),
 	automationsList = new Map(),
 	POLLING_DELAY_MINUTE = 60 * 1000,
@@ -6,12 +7,17 @@ const database = require('../database.js'),
 
 class Automator {
 	constructor () {
+		this.currentDate = moment().format('dddd, MMMM Do YYYY');
+		this.currentTime = moment().format('h:mm a');
 		this.startPollingAutomations();
 	}
 
 	startPollingAutomations () {
 		setInterval((self) => {
-			return;
+			automationsList.forEach((automation) => {
+				return;
+				//TODO: Create For loop to iterate over Triggers to compare times.
+			});
 		}, POLLING_DELAY_MINUTE, this);
 	}
 
