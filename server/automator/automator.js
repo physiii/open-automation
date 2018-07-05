@@ -9,7 +9,9 @@ class Automator {
 	constructor () {
 		this.currentDate = moment().format('dddd, MMMM Do YYYY');
 		this.currentTime = moment().format('h:mm a');
-		this.startPollingAutomations();
+		//this.startPollingAutomations();
+		console.log(TAG, this.currentDate);
+		console.log(TAG, this.currentTime);
 	}
 
 	startPollingAutomations () {
