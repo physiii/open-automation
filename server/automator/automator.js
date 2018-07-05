@@ -72,4 +72,4 @@ class Automator {
 	}
 }
 
-module.exports = new Automation();
+module.exports = new Automator();
