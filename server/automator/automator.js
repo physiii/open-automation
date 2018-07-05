@@ -21,7 +21,7 @@ class Automator {
 			if (self.currentTime == moment().format('h:mm a')) {
 				return;
 			};
-			//Iterate over Asutomations for trigger activations.return
+			//Iterate over Automations for trigger activations.return
 			automationsList.forEach((automation) => {
 				checkAutomations(automation);
 			});
@@ -38,7 +38,7 @@ class Automator {
 	}
 
 	checkAutomations (automation) {
-		let scenes = SceneManager.getSceneById(automation.scenes.id);
+		let scenes = SceneManager.getSceneById(automation.scenes.id),
 
 		if (!scenes) {
 			scenes = 'none';
@@ -46,22 +46,20 @@ class Automator {
 
 		for (let i = 0; i < automation.triggers.length; i++) {
 			let trigger = automation.triggers[i];
+
+			if (trigger.time != this.currentTime) return;
+			if (!trigger.date || trigger.date != this.currentDate) return;
+
 			switch (trigger.type) {
 				case 'time-of-day':
-					if (trigger.time == this.currentTime) {
-						this.checkConditions(automation, trigger.type).then((conditions) => {
-							this.timeTrigger(automation, conditions, scenes);
-						});
-					};
+					this.timeTrigger(automation, scenes);
 					break;
 				case 'date':
-					if (trigger.date ==this.currentDate && trigger.time == this.currentTime) {
-						this.checkConditions(automation, trigger.type).then((conditions) => {
-							this.dateTrigger(automation, conditions, scenes);
-						});
-					};
+					this.dateTrigger(automation, scenes);
 					break;
 				case 'state':
+					break;
+				case 'NFC-tag':
 					break;
 				default:
 					break;
@@ -69,25 +67,25 @@ class Automator {
 		};
 	}
 
-	checkConditions (automation, triggerType) {
-		return new Promise ((resolve, reject) => {
-			if (automation.conditions.length > 0){
-				for (let i = 0; i < automation.conditions.length; i++) {
-					let conditions = automation.conditions[i];
+	// checkConditions (automation, triggerType) {
+	// 	return new Promise ((resolve, reject) => {
+	// 		if (automation.conditions.length > 0){
+	// 			for (let i = 0; i < automation.conditions.length; i++) {
+	// 				let conditions = automation.conditions[i];
+	//
+	// 				if (conditions.type === triggerType) {
+	// 					return resolve(conditions);
+	// 				};
+	// 				return resolve('no-match');
+	// 			};
+	// 		};
+	// 		return resolve('no-conditions');
+	// 	});
+	// }
 
-					if (conditions.type === triggerType) {
-						return resolve(conditions);
-					};
-					return resolve('no-match');
-				};
-			};
-			return resolve('no-conditions');
-		});
-	}
-
+	// Trigger Functions-----------------------------
 	dateTrigger (automation, conditions) {
-		//TODO: If no conditions go ahead and run action at appropriate time/date
-		//TODO: Else check against conditions to make sure all match.
+		//TODO: Run Scene on specified date
 		return;
 	}
 
@@ -97,6 +95,15 @@ class Automator {
 		return;
 	}
 
+	stateTrigger () {
+		return;
+	}
+
+	NFCTrigger () {
+		return;
+	}
+
+	// Automator Configurations -------------------------
 	addAutomation (data) {
 		let automation = this.getAutomationById(data.id,null,true);
 
