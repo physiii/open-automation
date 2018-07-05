@@ -8,6 +8,8 @@ module.exports = {
 	saveDevice,
 	getAccounts,
 	saveAccount,
+	getAutomations,
+	saveAutomation,
 	generateId
 };
 
@@ -53,7 +55,7 @@ function saveDevice (device) {
 				{id: device.id},
 				{$set: device},
 				{upsert: true},
-				(error, record) => {
+				(error, record) => {Device
 					db.close();
 
 					if (error) {
@@ -110,6 +112,48 @@ function saveAccount (account) {
 					}
 
 					resolve(data.upsertedId ? data.upsertedId._id.toHexString() : data.modifiedCount);
+				}, reject);
+		});
+	});
+}
+
+function getAutomations () {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('automations').find().toArray((error, result) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'getAutomations', error);
+					reject(error);
+
+					return;
+				}
+
+				resolve(result);
+			});
+		}, reject);
+	});
+}
+
+function saveAutomations (automation) {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('automations').update(
+				{id: automation.id},
+				{$set: automation},
+				{upsert: true},
+				(error, record) => {
+					db.close();
+
+					if (error) {
+						console.log(TAG, 'saveAutomation', error);
+						reject(error);
+
+						return;
+					}
+
+					resolve(record);
 				}, reject);
 		});
 	});
