@@ -1,3 +1,7 @@
+const uuid = require('uuid/v4'),
+	database = require('../database.js'),
+	TAG = '[Automation.js]';
+
 class Automation {
 	constructor (data) {
 		this.id = data.id;

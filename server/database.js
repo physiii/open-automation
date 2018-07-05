@@ -136,7 +136,7 @@ function getAutomations () {
 	});
 }
 
-function saveAutomations (automation) {
+function saveAutomation (automation) {
 	return new Promise((resolve, reject) => {
 		connect((db) => {
 			db.collection('automations').update(
