@@ -2,7 +2,8 @@ const EventEmitter = require('events'),
 	database = require('../database.js'),
 	Device = require('./device.js'),
 	socketEscrow = {},
-	devicesList = new Map();
+	devicesList = new Map(),
+	TAG = 'DeviceManager';
 
 class DevicesManager {
 	constructor () {

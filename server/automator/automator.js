@@ -22,7 +22,7 @@ class Automator {
 				console.log(TAG,'Time unchanged');
 				return;
 			};
-			//Iterate over Asutomations for trigger activations.
+			//Iterate over Asutomations for trigger activations.return
 			automationsList.forEach((automation) => {
 				checkAutomations(automation);
 			});
@@ -39,21 +39,26 @@ class Automator {
 	}
 
 	checkAutomations (automation) {
-		//let scenes = SceneManager.getSceneById(automation.scenes.id);
+		let scenes = SceneManager.getSceneById(automation.scenes.id);
+
+		if (!scenes) {
+			scenes = 'none';
+		}
+
 		for (let i = 0; i < automation.triggers.length; i++) {
 			let trigger = automation.triggers[i];
 			switch (trigger.type) {
 				case 'time-of-day':
 					if (trigger.time == this.currentTime) {
 						this.checkConditions(automation, trigger.type).then((conditions) => {
-							this.runTrigger(automation, conditions, scenes);
+							this.timeTrigger(automation, conditions, scenes);
 						});
 					};
 					break;
 				case 'date':
 					if (trigger.date ==this.currentDate && trigger.time == this.currentTime) {
 						this.checkConditions(automation, trigger.type).then((conditions) => {
-							this.runTrigger(automation, conditions, scenes);
+							this.dateTrigger(automation, conditions, scenes);
 						});
 					};
 					break;
@@ -67,22 +72,31 @@ class Automator {
 
 	checkConditions (automation, triggerType) {
 		return new Promise ((resolve, reject) => {
-			for (let i = 0; i < automation.conditions.length; i++) {
-				let conditions = automation.conditions[i];
-				if (conditions.type === triggerType) {
-					return resolve(conditions);
-				}
-				resolve();
+			if (automation.conditions.length > 0){
+				for (let i = 0; i < automation.conditions.length; i++) {
+					let conditions = automation.conditions[i];
+
+					if (conditions.type === triggerType) {
+						return resolve(conditions);
+					};
+					return resolve('no-match');
+				};
 			};
+			return resolve('no-conditions');
 		});
 	}
 
-	runTrigger (automation, conditions) {
+	dateTrigger (automation, conditions) {
 		//TODO: If no conditions go ahead and run action at appropriate time/date
 		//TODO: Else check against conditions to make sure all match.
 		return;
 	}
 
+	timeTrigger (automation, conditions) {
+		//TODO: If no conditions go ahead and run action at appropriate time/date
+		//TODO: Else check against conditions to make sure all match.
+		return;
+	}
 
 	addAutomation (data) {
 		let automation = this.getAutomationById(data.id,null,true);
