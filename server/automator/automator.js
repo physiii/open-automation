@@ -1,10 +1,18 @@
 const database = require('../database.js'),
 	Automation = require('./automation.js'),
 	automationsList = new Map(),
+	POLLING_DELAY_MINUTE = 60 * 1000,
 	TAG = '[Automator.js]';
 
 class Automator {
 	constructor () {
+		this.startPollingAutomations();
+	}
+
+	startPollingAutomations () {
+		setInterval((self) => {
+			return;
+		}, POLLING_DELAY_MINUTE, this);
 	}
 
 	addAutomation (data) {
@@ -23,28 +31,10 @@ class Automator {
 		return new Promise((resolve, reject) => {
 			const automation = this.addAutomation(data);
 
-//TODO: Need Database functionality for creating automations
-
 			database.saveAutomation(automation.dbSerialize()).then(() => {
 				resolve(automation);
 			}).catch(reject);
 		});
-	}
-
-
-	triggerAutomation (data) {
-		switch (data.type) {
-			case 'time-of-day':
-				break;
-			case 'date':
-				break;
-			case 'state':
-				break;
-			case 'NFC':
-				break;
-			default:
-				break;
-		}
 	}
 
 	getAutomationById (automationId, accountId, skipAccountAccessCheck) {
