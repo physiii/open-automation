@@ -77,11 +77,7 @@ class Automator {
 		if (trigger.time != this.currentTime) return;
 
 		if (automation.conditions) {
-			let conditionsCheck = true;
-			for (let i = 0; i < automation.conditions.length; i++) {
-				conditionsCheck = this.checkConditions(automation.conditions[i]);
-				if (!conditionsCheck) break;
-			};
+			let conditionsCheck = this.conditionsCheck(automation.conditions);
 			if (!conditionsCheck) return;
 		};
 
@@ -130,16 +126,20 @@ class Automator {
 
 	}
 
-	checkConditions (condition) {
-		if (condition.type === 'day-of-week') {
-			if (days.indexOf(this.currentWeekday) < 0) {
-				return false;
+	checkConditions (conditions) {
+		let conditionsCheck;
+
+		for (let i = 0; i < conditions.length; i++) {
+			if (conditions[i].type === 'day-of-week') {
+				if (days.indexOf(this.currentWeekday) < 0) {
+					return conditionsCheck = false;
+				};
 			};
-			return true;
+
+			if (conditions[i].type === 'state') return;
 		};
-		if (condition.type === 'state') {
-			return true;
-		};
+
+		return conditionsCheck = true;
 	}
 
 	loadAutomationsFromDb () {
