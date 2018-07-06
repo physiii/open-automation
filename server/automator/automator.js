@@ -4,12 +4,21 @@ const database = require('../database.js'),
 	SceneManager = require('../scenes/scenes-manager.js'),
 	automationsList = new Map(),
 	POLLING_DELAY = 1 * 1000,
+	DAY_OF_THE_WEEK = {
+		Monday: 1,
+		Tuesday: 2,
+		Wednesday: 3,
+		Thursday: 4,
+		Friday: 5,
+		Saturday: 6,
+		Sunday: 7
+	}
 	TAG = '[Automator]';
 
 class Automator {
 	constructor () {
 		this.currentDate = moment().format('MMMM Do YYYY');
-		this.currentWeekday = moment().format('dddd');
+		this.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
 		this.currentTime = moment().format('h:mm a');
 
 		this.startPollingAutomations();
@@ -29,7 +38,7 @@ class Automator {
 			//Update Time and Date if needed.
 			if (self.currentDate != moment().format('MMMM Do YYYY')) {
 				self.currentDate = moment().format('MMMM Do YYYY');
-				self.currentWeekday = moment().format('dddd');
+				self.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
 			};
 
 			self.currentTime = moment().format('h:mm a');
@@ -41,52 +50,44 @@ class Automator {
 		for (let i = 0; i < automation.triggers.length; i++) {
 			let trigger = automation.triggers[i];
 
-			switch (trigger.type) {
-				case 'time-of-day':
-					if (trigger.time != this.currentTime) return;
-					this.timeTrigger(automation, scenes);
-					return;
-				case 'date':
-					if (trigger.date != this.currentDate) return;
-					if (trigger.time != this.currentTime) return;
-					this.dateTrigger(automation, scenes);
-					return;
-				case 'state':
-					return;
-				case 'NFC-tag':
-					return;
-				default:
-					return;
+			if (trigger.type === 'time-of-day') {
+				return this.timeTrigger(automation, trigger);
 			};
+			if (trigger.type === 'date') {
+				return this.dateTrigger(automation, trigger);
+			};
+			if (trigger.type === 'state') return;
+			if (trigger.type === 'NFC-tag') return;
+
 		};
 	}
 
-	// checkConditions (automation, triggerType) {
-	// 	return new Promise ((resolve, reject) => {
-	// 		if (automation.conditions.length > 0){
-	// 			for (let i = 0; i < automation.conditions.length; i++) {
-	// 				let conditions = automation.conditions[i];
-	//
-	// 				if (conditions.type === triggerType) {
-	// 					return resolve(conditions);
-	// 				};
-	// 				return resolve('no-match');
-	// 			};
-	// 		};
-	// 		return resolve('no-conditions');
-	// 	});
-	// }
-
 	// Trigger Functions-----------------------------
-	dateTrigger (automation, conditions) {
-		//TODO: Run Scene on specified date
+	dateTrigger (automation, trigger) {
+		if (trigger.date != this.currentDate) return;
+		if (trigger.time != this.currentTime) return;
+		for (let i = 0; i < automation.scenes.length; i++) {
+			let scene_id = automation.scenes[i];
+			SceneManager.runAutomation(scene_id);
+		};
 		return;
 	}
 
-	timeTrigger (automation, conditions) {
-		//TODO: If no conditions go ahead and run action at appropriate time/date
-		//TODO: Else check against conditions to make sure all match.
-		return;
+	timeTrigger (automation, trigger) {
+		if (trigger.time != this.currentTime) return;
+
+		if (automation.conditions) {
+			let conditionsCheck = true;
+			for (let i = 0; i < automation.conditions.length; i++) {
+				conditionsCheck = this.checkConditions(automation.conditions[i]);
+			};
+			if (!conditionsCheck) return;
+		};
+
+		for (let i = 0; i < automation.scenes.length; i++) {
+			let scene_id = automation.scenes[i];
+			SceneManager.runAutomation(scene_id);
+		};
 	}
 
 	stateTrigger () {
@@ -95,6 +96,18 @@ class Automator {
 
 	NFCTrigger () {
 		return;
+	}
+
+	checkConditions (condition) {
+		if (condition.type === 'day-of-week') {
+			if (days.indexOf(this.currentWeekday) < 0) {
+				return false;
+			};
+			return true;
+		};
+		if (condition.type === 'state') {
+			return true;
+		};
 	}
 
 	// Automator Configurations -------------------------
