@@ -10,6 +10,8 @@ module.exports = {
 	saveAccount,
 	getAutomations,
 	saveAutomation,
+	getScenes,
+	saveScene,
 	generateId
 };
 
