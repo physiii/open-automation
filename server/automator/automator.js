@@ -12,7 +12,7 @@ const database = require('../database.js'),
 		Friday: 5,
 		Saturday: 6,
 		Sunday: 7
-	}
+	},
 	TAG = '[Automator]';
 
 class Automator {
@@ -31,9 +31,7 @@ class Automator {
 				return;
 			};
 			//Iterate over Automations for trigger activations.return
-			automationsList.forEach((automation) => {
-				checkAutomations(automation);
-			});
+			this.checkAutomations();
 
 			//Update Time and Date if needed.
 			if (self.currentDate != moment().format('MMMM Do YYYY')) {
@@ -46,20 +44,22 @@ class Automator {
 		}, POLLING_DELAY, this);
 	}
 
-	checkAutomations (automation) {
-		for (let i = 0; i < automation.triggers.length; i++) {
-			let trigger = automation.triggers[i];
+	checkAutomations () {
+		automationsList.forEach((automation) => {
+			for (let i = 0; i < automation.triggers.length; i++) {
+				let trigger = automation.triggers[i];
 
-			if (trigger.type === 'time-of-day') {
-				return this.timeTrigger(automation, trigger);
-			};
-			if (trigger.type === 'date') {
-				return this.dateTrigger(automation, trigger);
-			};
-			if (trigger.type === 'state') return;
-			if (trigger.type === 'NFC-tag') return;
+				if (trigger.type === 'time-of-day') {
+					return this.timeTrigger(automation, trigger);
+				};
+				if (trigger.type === 'date') {
+					return this.dateTrigger(automation, trigger);
+				};
+				if (trigger.type === 'state') return;
+				if (trigger.type === 'NFC-tag') return;
 
-		};
+			};
+		});
 	}
 
 	// Trigger Functions-----------------------------

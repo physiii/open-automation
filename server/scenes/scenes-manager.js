@@ -1,6 +1,7 @@
 //Placehold Scene-manager
 const database = require('../database.js'),
 	Scene = require('./scene.js'),
+	DevicesManager = require('../devices/devices-manager.js'),
 	scenesList = new Map(),
 	TAG = '[SceneManager]';
 
@@ -11,7 +12,14 @@ class SceneManager {
 	}
 
 	runAutomation(sceneId) {
-		return sceneId;
+		const scene = this.getSceneById(sceneId);
+
+		for (let i = 0; i < scene.actions.length; i++) {
+			const action = scene.actions[i],
+				service = DevicesManager.getServiceById(action.service_id);
+
+			service.action(action.property, action.value);
+		};
 	}
 
 	getSceneById (sceneId, accountId, skipAccountAccessCheck) {
