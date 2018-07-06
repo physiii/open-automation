@@ -46,13 +46,7 @@ class AccountsManager {
 	}
 
 	getAccountById (account_id) {
-		let id = account_id;
-
-		if (account_id && account_id.toHexString) {
-			id = account_id.toHexString();
-		}
-
-		return accounts_list.get(id);
+		return accounts_list.get(account_id);
 	}
 
 	getAccountByUsername (username) {

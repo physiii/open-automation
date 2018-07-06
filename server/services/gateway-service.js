@@ -12,6 +12,10 @@ class GatewayService extends Service {
 		this.driver = new driverClass(this.id, 'gateway');
 	}
 
+	getDevices () {
+		return this.driver.getDevices();
+	}
+
 	getCommandToken () {
 		return new Promise((resolve, reject) => {
 			crypto.randomBytes(COMMAND_TOKEN_SIZE, (error, token_buffer) => {
@@ -24,7 +28,7 @@ class GatewayService extends Service {
 
 				this.command_token = token;
 
-				console.log('GatewayService', this.id, 'command token', token);
+				console.log(TAG, this.id, 'command token', token);
 
 				// NOTE: DO NOT SEND THE TOKEN TO CLIENT.
 				resolve();

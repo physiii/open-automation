@@ -45,14 +45,14 @@ module.exports = function (onConnection, jwt_secret) {
 	// Push device changes.
 	DevicesManager.on('device/update', (data) => {
 		const device = data.device,
-			client_sockets = AccountsManager.getAccountById(device.location).getClientSockets(),
-			devices = DevicesManager.getClientSerializedDevices(DevicesManager.getDevicesByLocation(device.location, device.location));
+			deviceAccountId = device.account && device.account.id,
+			client_sockets = AccountsManager.getAccountById(deviceAccountId).getClientSockets(),
+			devices = DevicesManager.getClientSerializedDevices(DevicesManager.getDevicesByAccountId(deviceAccountId));
 
 		client_sockets.forEach((socket) => {
 			socket.emit('devices', {devices});
 		});
 	});
-
 
 	// Client connection
 	onConnection((socket, access_token, xsrf_token) => {
@@ -136,25 +136,61 @@ module.exports = function (onConnection, jwt_secret) {
 
 			clientEndpoint('devices/get', (data, callback) => {
 				if (typeof callback === 'function') {
-					const locationDevices = DevicesManager.getDevicesByLocation(account.id, account.id);
+					const accountDevices = DevicesManager.getDevicesByAccountId(account.id);
 
-					callback(null, {devices: DevicesManager.getClientSerializedDevices(locationDevices)});
+					callback(null, {devices: DevicesManager.getClientSerializedDevices(accountDevices)});
 				}
 			});
 
-			clientEndpoint('device/init', (data, callback) => {
-				DevicesManager.loadDeviceFromDb(data.device_id).then(() => {
+			clientEndpoint('device/add', (data, callback) => {
+				if (DevicesManager.doesDeviceExist(data.device.id)) {
 					if (typeof callback === 'function') {
-						callback();
+						callback('A device with that ID has already been added to an account.', data);
 					}
-				}).catch((error) => {
+
+					return;
+				}
+
+				// Check to make sure the device is connected.
+				if (!DevicesManager.getFromSocketEscrow(data.device.id, data.device.id)) {
 					if (typeof callback === 'function') {
-						callback('There was an error initializing the device.', data);
+						callback('No device with that ID is currently connected.', data);
+					}
+
+					return;
+				}
+
+				DevicesManager.createDevice({
+					...data.device,
+					token: data.device.id, // All device tokens should start out the same as the ID.
+					account_id: account.id
+				}).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch(() => {
+					if (typeof callback === 'function') {
+						callback('There was an error adding the device.', data);
 					}
 				});
-			}, true);
+			});
 
 			// Gateway Service API
+
+			clientEndpoint('gateway/devices-to-add/get', (data, callback) => {
+				const gatewayService = data.service;
+
+				if (typeof callback === 'function') {
+					gatewayService.getDevices().then((data) => {
+						const devices = data.devices || [],
+							newDevices = devices.filter((device) => !DevicesManager.doesDeviceExist(device.id));
+
+						callback(null, {devices: newDevices});
+					}).catch(() => {
+						callback('There was an error getting the list of the gateway’s devices.');
+					});
+				}
+			});
 
 			clientEndpoint('gateway/command', (data, callback) => {
 				const gatewayService = data.service;

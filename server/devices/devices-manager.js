@@ -1,8 +1,11 @@
 const EventEmitter = require('events'),
+	crypto = require('crypto'),
 	database = require('../database.js'),
 	Device = require('./device.js'),
+	AccountsManager = require('../accounts/accounts-manager.js'),
 	socketEscrow = {},
-	devicesList = new Map();
+	devicesList = new Map(),
+	DEVICE_TOKEN_SIZE = 256;
 
 class DevicesManager {
 	constructor () {
@@ -22,7 +25,14 @@ class DevicesManager {
 			return device;
 		}
 
-		device = new Device(data, this.handleDeviceUpdate, data.gatewaySocket || this.getFromSocketEscrow(data.id, data.token));
+		device = new Device(
+			{
+				...data,
+				account: AccountsManager.getAccountById(data.account_id)
+			},
+			this.handleDeviceUpdate,
+			data.gatewaySocket || this.getFromSocketEscrow(data.id, data.token)
+		);
 
 		this.removeFromSocketEscrow(data.id, data.token);
 
@@ -33,10 +43,31 @@ class DevicesManager {
 
 	createDevice (data) {
 		return new Promise((resolve, reject) => {
+			if (this.doesDeviceExist(data.id)) {
+				reject('A device already exists with that ID.');
+				return;
+			}
+
 			const device = this.addDevice(data);
 
-			database.saveDevice(device.dbSerialize()).then(() => {
-				resolve(device);
+			this.generateDeviceToken().then((token) => {
+				device.setToken(token).then(() => {
+					resolve(device);
+				}).catch((error) => {
+					// Since the token wasn't successfully set, delete the
+					// device so the user can try again.
+					this.deleteDevice(device.id);
+					reject(error);
+				});
+			}).catch(reject);
+		});
+	}
+
+	deleteDevice (deviceId) {
+		return new Promise((resolve, reject) => {
+			database.deleteDevice(deviceId).then(() => {
+				devicesList.delete(deviceId);
+				resolve();
 			}).catch(reject);
 		});
 	}
@@ -45,13 +76,17 @@ class DevicesManager {
 		this.events.emit('device/update', {device});
 	}
 
+	doesDeviceExist (deviceId) {
+		return Boolean(devicesList.get(deviceId));
+	}
+
 	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
 	// originating from the client API.
 	getDeviceById (deviceId, accountId, skipAccountAccessCheck) {
 		const device = devicesList.get(deviceId);
 
 		// Verify that this account has access to this device.
-		if ((device && (device.location === accountId)) || skipAccountAccessCheck) {
+		if (this.verifyAccountAccessToDevice(accountId, device, skipAccountAccessCheck)) {
 			return device;
 		}
 	}
@@ -62,18 +97,13 @@ class DevicesManager {
 		const device = Array.from(devicesList.values()).find((device) => device.services.getServiceById(serviceId));
 
 		// Verify that this account has access to this device.
-		if ((device && (device.location === accountId)) || skipAccountAccessCheck) {
+		if (this.verifyAccountAccessToDevice(accountId, device, skipAccountAccessCheck)) {
 			return device;
 		}
 	}
 
-	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
-	// originating from the client API.
-	getDevicesByLocation (locationId, accountId, skipAccountAccessCheck) {
-		// Verify that this account has access to this location.
-		if ((locationId === accountId) || skipAccountAccessCheck) {
-			return Array.from(devicesList.values()).filter((device) => device.location === locationId);
-		}
+	getDevicesByAccountId (accountId) {
+		return Array.from(devicesList.values()).filter((device) => (device.account && device.account.id) === accountId);
 	}
 
 	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
@@ -82,9 +112,29 @@ class DevicesManager {
 		const device = this.getDeviceByServiceId(serviceId, accountId, skipAccountAccessCheck);
 
 		// Verify that this account has access to this device.
-		if ((device && (device.location === accountId)) || skipAccountAccessCheck) {
+		if (this.verifyAccountAccessToDevice(accountId, device, skipAccountAccessCheck)) {
 			return device.services.getServiceById(serviceId);
 		}
+	}
+
+	// NOTE: Use "force" with caution. Never use for requests originating from
+	// the client API.
+	verifyAccountAccessToDevice (accountId, device, force) {
+		return (device && ((device.account && device.account.id) === accountId)) || force;
+	}
+
+	generateDeviceToken () {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(DEVICE_TOKEN_SIZE, (error, tokenBuffer) => {
+				if (error) {
+					reject(error);
+
+					return;
+				}
+
+				resolve(tokenBuffer.toString('hex'));
+			});
+		});
 	}
 
 	addToSocketEscrow (deviceId, deviceToken, socket) {

@@ -38,8 +38,16 @@ class Api {
 		return Api.apiCall('devices/get');
 	}
 
-	initDevice (deviceId) {
-		return Api.apiCall('device/init', {device_id: deviceId});
+	addDevice (device) {
+		return Api.apiCall('device/add', {device});
+	}
+
+	getGatewayDevicesToAdd (gatewayServiceId) {
+		return Api.apiCall('gateway/devices-to-add/get', {service_id: gatewayServiceId});
+	}
+
+	gatewayCommand (gatewayServiceId, command, token) {
+		return Api.apiCall('gateway/command', {service_id: gatewayServiceId, command, command_token: token});
 	}
 
 	streamCameraLive (cameraServiceId) {
@@ -60,10 +68,6 @@ class Api {
 
 	stopCameraRecordingStream (cameraServiceId, recordingId) {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
-	}
-
-	gatewayCommand (gatewayServiceId, command, token) {
-		return Api.apiCall('gateway/command', {service_id: gatewayServiceId, command, command_token: token});
 	}
 
 	// Session API
