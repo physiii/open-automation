@@ -10,6 +10,10 @@ class SceneManager {
 
 	}
 
+	runAutomation(sceneId) {
+		return sceneId;
+	}
+
 	getSceneById (sceneId, accountId, skipAccountAccessCheck) {
 		const scene = scenesList.get(sceneId);
 
