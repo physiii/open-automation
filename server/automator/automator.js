@@ -47,22 +47,22 @@ class Automator {
 		for (let i = 0; i < automation.triggers.length; i++) {
 			let trigger = automation.triggers[i];
 
-			if (trigger.time != this.currentTime) return;
-			if (!trigger.date || trigger.date != this.currentDate) return;
-
 			switch (trigger.type) {
 				case 'time-of-day':
+					if (trigger.time != this.currentTime) return;
 					this.timeTrigger(automation, scenes);
-					break;
+					return;
 				case 'date':
+					if (trigger.date != this.currentDate) return;
+					if (trigger.time != this.currentTime) return;
 					this.dateTrigger(automation, scenes);
-					break;
+					return;
 				case 'state':
-					break;
+					return;
 				case 'NFC-tag':
-					break;
+					return;
 				default:
-					break;
+					return;
 			};
 		};
 	}
