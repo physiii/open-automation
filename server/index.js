@@ -9,6 +9,7 @@ const fs = require('fs'),
 	startWebsite = require('./website.js'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	Automator = require('./automator/automator.js'),
+	ScenesManager = require('./scenes/scenes-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js');
 
 // Import config or create new config.json with defaults.
@@ -37,6 +38,7 @@ try {
 AccountsManager.loadAccountsFromDb();
 Automator.loadAutomationsFromDb();
 DevicesManager.loadDevicesFromDb();
+ScenesManager.loadScenesFromDb();
 
 startStreamRelay();
 startWebsite(express());

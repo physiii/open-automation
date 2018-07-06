@@ -1,10 +1,10 @@
 const database = require('../database.js'),
 	moment = require('moment'),
 	Automation = require('./automation.js'),
-	SceneManager = require('../scenes/scene-manager.js'),
+	SceneManager = require('../scenes/scenes-manager.js'),
 	automationsList = new Map(),
 	POLLING_DELAY = 1 * 1000,
-	TAG = '[Automator.js]';
+	TAG = '[Automator]';
 
 class Automator {
 	constructor () {

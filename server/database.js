@@ -159,6 +159,48 @@ function saveAutomation (automation) {
 	});
 }
 
+function getScenes () {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('scenes').find().toArray((error, result) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'getScenes', error);
+					reject(error);
+
+					return;
+				}
+
+				resolve(result);
+			});
+		}, reject);
+	});
+}
+
+function saveScene (scene) {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('scenes').update(
+				{id: scene.id},
+				{$set: scene},
+				{upsert: true},
+				(error, record) => {
+					db.close();
+
+					if (error) {
+						console.log(TAG, 'saveScene', error);
+						reject(error);
+
+						return;
+					}
+
+					resolve(record);
+				}, reject);
+		});
+	});
+}
+
 function generateId (id) {
 	return ObjectId(id);
 }
