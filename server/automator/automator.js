@@ -38,12 +38,6 @@ class Automator {
 	}
 
 	checkAutomations (automation) {
-		let scenes = SceneManager.getSceneById(automation.scenes.id);
-
-		if (!scenes) {
-			scenes = 'none';
-		};
-
 		for (let i = 0; i < automation.triggers.length; i++) {
 			let trigger = automation.triggers[i];
 
