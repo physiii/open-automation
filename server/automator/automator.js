@@ -80,13 +80,13 @@ class Automator {
 			let conditionsCheck = true;
 			for (let i = 0; i < automation.conditions.length; i++) {
 				conditionsCheck = this.checkConditions(automation.conditions[i]);
+				if (!conditionsCheck) break;
 			};
 			if (!conditionsCheck) return;
 		};
 
 		for (let i = 0; i < automation.scenes.length; i++) {
-			let scene_id = automation.scenes[i];
-			SceneManager.runAutomation(scene_id);
+			SceneManager.runAutomation(automation.scenes[i]);
 		};
 	}
 
@@ -96,18 +96,6 @@ class Automator {
 
 	NFCTrigger () {
 		return;
-	}
-
-	checkConditions (condition) {
-		if (condition.type === 'day-of-week') {
-			if (days.indexOf(this.currentWeekday) < 0) {
-				return false;
-			};
-			return true;
-		};
-		if (condition.type === 'state') {
-			return true;
-		};
 	}
 
 	// Automator Configurations -------------------------
@@ -140,6 +128,18 @@ class Automator {
 			return automation;
 		}
 
+	}
+
+	checkConditions (condition) {
+		if (condition.type === 'day-of-week') {
+			if (days.indexOf(this.currentWeekday) < 0) {
+				return false;
+			};
+			return true;
+		};
+		if (condition.type === 'state') {
+			return true;
+		};
 	}
 
 	loadAutomationsFromDb () {
