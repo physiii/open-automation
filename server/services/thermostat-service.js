@@ -15,6 +15,25 @@ class ThermostatService extends Service {
 
 	subscribeToDriver () {}
 
+	action(data) {
+		switch (data.property) {
+			case 'target_temp':
+				this.setTemp(data.value);
+				break;
+			case 'set_mode':
+				this.setThermostatMode(data.value);
+				break;
+			case 'set_hold':
+				this.setHoldMode(data.value);
+				break;
+			case 'set_fan':
+				this.setFanMode(data.value);
+				break;
+			default:
+				break;
+		};
+	}
+
 	setTemp(temp) {
 		return this.driver.setTemp(temp);
 	}

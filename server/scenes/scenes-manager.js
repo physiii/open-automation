@@ -18,7 +18,7 @@ class SceneManager {
 			const action = scene.actions[i],
 				service = DevicesManager.getServiceById(action.service_id);
 
-			service.action(action.property, action.value);
+			service.action(action);
 		};
 	}
 
