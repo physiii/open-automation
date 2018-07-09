@@ -37,7 +37,7 @@ class SceneManager {
 		if (scene) {
 			return scene;
 		};
-		automation = new Scene(data);
+		scene = new Scene(data);
 		scenesList.set(scene.id, scene);
 		return scene;
 	}

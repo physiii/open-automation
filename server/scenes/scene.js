@@ -5,7 +5,7 @@ const uuid = require('uuid/v4'),
 class Scene {
 	constructor (data) {
 		this.id = data.id || uuid();
-		this.type = data.type || ''
+		this.type = data.type || '';
 		this.actions = data.actions || [];
 	}
 

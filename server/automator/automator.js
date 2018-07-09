@@ -77,8 +77,8 @@ class Automator {
 		if (trigger.time != this.currentTime) return;
 
 		if (automation.conditions) {
-			let conditionsCheck = this.conditionsCheck(automation.conditions);
-			if (!conditionsCheck) return;
+			let checkConditions = this.checkConditions(automation.conditions);
+			if (!checkConditions) return;
 		};
 
 		for (let i = 0; i < automation.scenes.length; i++) {
@@ -131,7 +131,7 @@ class Automator {
 
 		for (let i = 0; i < conditions.length; i++) {
 			if (conditions[i].type === 'day-of-week') {
-				if (days.indexOf(this.currentWeekday) < 0) {
+				if (conditions[i].days.indexOf(this.currentWeekday) < 0) {
 					return conditionsCheck = false;
 				};
 			};
