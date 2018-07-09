@@ -3,7 +3,7 @@ const database = require('../database.js'),
 	Automation = require('./automation.js'),
 	SceneManager = require('../scenes/scenes-manager.js'),
 	automationsList = new Map(),
-	POLLING_DELAY = 1 * 1000,
+	POLLING_DELAY = 60 * 1000,
 	DAY_OF_THE_WEEK = {
 		Monday: 1,
 		Tuesday: 2,
@@ -21,26 +21,38 @@ class Automator {
 		this.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
 		this.currentTime = moment().format('h:mm a');
 
-		this.startPollingAutomations();
+		this.initPollingAutomations();
 	}
 
-	startPollingAutomations () {
-		setInterval((self) => {
+	initPollingAutomations () {
+		this.checkAutomations();
+		let init_poll = setInterval((self) => {
 			//Check if new minute to iterate over automation triggers.
 			if (self.currentTime == moment().format('h:mm a')) {
+				console.log(TAG,'Same Time');
 				return;
 			};
-			//Iterate over Automations for trigger activations.return
+
+			self.currentTime = moment().format('h:mm a');
+			this.pollingAutomation();
+			clearInterval(init_poll);
+
+		}, 1000, this);
+	}
+
+	pollingAutomation () {
+		this.checkAutomations();
+		const automationPolling = setInterval((self) => {
+			console.log(TAG,"Poll automations");
+
 			this.checkAutomations();
 
-			//Update Time and Date if needed.
 			if (self.currentDate != moment().format('MMMM Do YYYY')) {
 				self.currentDate = moment().format('MMMM Do YYYY');
 				self.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
 			};
 
 			self.currentTime = moment().format('h:mm a');
-
 		}, POLLING_DELAY, this);
 	}
 
@@ -49,11 +61,15 @@ class Automator {
 			for (let i = 0; i < automation.triggers.length; i++) {
 				let trigger = automation.triggers[i];
 
+
 				if (trigger.type === 'time-of-day') {
-					return this.timeTrigger(automation, trigger);
+					if (trigger.time != this.currentTime) return;
+					return this.timeTrigger(automation);
 				};
 				if (trigger.type === 'date') {
-					return this.dateTrigger(automation, trigger);
+					if (trigger.date != this.currentDate) return;
+					if (trigger.time != this.currentTime) return;
+					return this.dateTrigger(automation);
 				};
 				if (trigger.type === 'state') return;
 				if (trigger.type === 'NFC-tag') return;
@@ -63,9 +79,7 @@ class Automator {
 	}
 
 	// Trigger Functions-----------------------------
-	dateTrigger (automation, trigger) {
-		if (trigger.date != this.currentDate) return;
-		if (trigger.time != this.currentTime) return;
+	dateTrigger (automation) {
 		for (let i = 0; i < automation.scenes.length; i++) {
 			let scene_id = automation.scenes[i];
 			SceneManager.runAutomation(scene_id);
@@ -73,15 +87,14 @@ class Automator {
 		return;
 	}
 
-	timeTrigger (automation, trigger) {
-		if (trigger.time != this.currentTime) return;
-
+	timeTrigger (automation) {
 		if (automation.conditions) {
 			let checkConditions = this.checkConditions(automation.conditions);
 			if (!checkConditions) return;
 		};
 
 		for (let i = 0; i < automation.scenes.length; i++) {
+			console.log(TAG,'Running Automations for Scene:', automation.scenes[i]);
 			SceneManager.runAutomation(automation.scenes[i]);
 		};
 	}

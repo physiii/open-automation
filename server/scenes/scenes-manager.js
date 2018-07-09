@@ -12,13 +12,14 @@ class SceneManager {
 	}
 
 	runAutomation(sceneId) {
-		const scene = this.getSceneById(sceneId);
+		const scene = this.getSceneById(sceneId),
+			account = scene.account_id;
 
 		for (let i = 0; i < scene.actions.length; i++) {
-			const action = scene.actions[i],
-				service = DevicesManager.getServiceById(action.service_id);
+			let service_id = scene.actions[i].service_id,
+		 		service = DevicesManager.getServiceById(service_id, account, true);
 
-			service.action(action);
+			service.action(scene.actions[i]);
 		};
 	}
 

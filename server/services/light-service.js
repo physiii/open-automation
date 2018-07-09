@@ -16,6 +16,7 @@ class LightService extends Service {
 	subscribeToDriver () {}
 
 	action(data) {
+		console.log(TAG,'Recieved automation:', data);
 		switch (data.property) {
 			case 'light_on':
 				this.driver.lightOn();
