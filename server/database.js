@@ -78,7 +78,7 @@ function saveDevice (device) {
 				{id: device.id},
 				{$set: device},
 				{upsert: true},
-				(error, record) => {Device
+				(error, record) => {
 					db.close();
 
 					if (error) {
