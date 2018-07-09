@@ -33,7 +33,7 @@ class Automator {
 			};
 
 			self.currentTime = moment().format('h:mm a');
-			console.log(TAG,"Poll automations", self.currentTime);
+
 			this.pollingAutomation();
 			clearInterval(init_poll);
 
@@ -43,8 +43,6 @@ class Automator {
 	pollingAutomation () {
 		this.checkAutomations();
 		const automationPolling = setInterval((self) => {
-			console.log(TAG,"Poll automations", self.currentTime);
-
 			if (self.currentDate != moment().format('MMMM Do YYYY')) {
 				self.currentDate = moment().format('MMMM Do YYYY');
 				self.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
@@ -58,6 +56,7 @@ class Automator {
 	}
 
 	checkAutomations () {
+		console.log(TAG,"Check Automations", this.currentTime);
 		automationsList.forEach((automation) => {
 			for (let i = 0; i < automation.triggers.length; i++) {
 				let trigger = automation.triggers[i];
