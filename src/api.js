@@ -42,6 +42,10 @@ class Api {
 		return Api.apiCall('device/add', {device});
 	}
 
+	removeDevice (deviceID) {
+		return Api.apiCall('device/remove', {device_id: deviceID});
+	}
+
 	getGatewayDevicesToAdd (gatewayServiceId) {
 		return Api.apiCall('gateway/devices-to-add/get', {service_id: gatewayServiceId});
 	}

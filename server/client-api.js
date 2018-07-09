@@ -168,9 +168,27 @@ module.exports = function (onConnection, jwt_secret) {
 					if (typeof callback === 'function') {
 						callback(null, {});
 					}
-				}).catch(() => {
+				}).catch((error) => {
+					console.error(TAG, 'Add device error:', error);
+
 					if (typeof callback === 'function') {
 						callback('There was an error adding the device.', data);
+					}
+				});
+			});
+
+			clientEndpoint('device/remove', (data, callback) => {
+				const device = data.device;
+
+				DevicesManager.deleteDevice(device.id).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					console.error(TAG, 'Delete device error:', error);
+
+					if (typeof callback === 'function') {
+						callback('There was an error removing the device.');
 					}
 				});
 			});
@@ -186,7 +204,9 @@ module.exports = function (onConnection, jwt_secret) {
 							newDevices = devices.filter((device) => !DevicesManager.doesDeviceExist(device.id));
 
 						callback(null, {devices: newDevices});
-					}).catch(() => {
+					}).catch((error) => {
+						console.error(TAG, 'Get gateway attached devices error:', error);
+
 						callback('There was an error getting the list of the gateway’s devices.');
 					});
 				}

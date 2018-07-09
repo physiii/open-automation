@@ -56,6 +56,12 @@ window.OpenAutomation = {
 			settings: {name}
 		});
 	},
+	addDevice: (data) => {
+		Api.addDevice(data);
+	},
+	removeDevice: (deviceId) => {
+		Api.removeDevice(deviceId);
+	},
 	addAllConnectedDevices: () => {
 		Object.keys(window.OpenAutomation.gateways).forEach((gateway) => {
 			Api.getGatewayDevicesToAdd(window.OpenAutomation.gateways[gateway].id).then((data) => {

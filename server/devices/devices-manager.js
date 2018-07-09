@@ -66,7 +66,15 @@ class DevicesManager {
 	deleteDevice (deviceId) {
 		return new Promise((resolve, reject) => {
 			database.deleteDevice(deviceId).then(() => {
+				const device = this.getDeviceById(deviceId, null, true);
+
+				// Disconnect the socket.
+				if (device && device.gatewaySocket && device.gatewaySocket.connected) {
+					device.gatewaySocket.disconnect(true);
+				}
+
 				devicesList.delete(deviceId);
+
 				resolve();
 			}).catch(reject);
 		});
