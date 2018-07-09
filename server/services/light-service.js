@@ -15,6 +15,28 @@ class LightService extends Service {
 
 	subscribeToDriver () {}
 
+	action(data) {
+		switch (data.property) {
+			case 'light_on':
+				this.driver.lightOn();
+				break;
+			case 'light_off':
+				this.driver.lightOff();
+				break;
+			case 'set_brightness':
+				this.driver.setBrightness(data.value);
+				break;
+			case 'set_color':
+				this.driver.setColor(data.value);
+				break;
+			case 'set_light_name':
+				this.driver.setLightName(data.value);
+				break;
+			default:
+				break;
+		};
+	}
+
 	lightOn () {
 		return this.driver.lightOn();
 	};
