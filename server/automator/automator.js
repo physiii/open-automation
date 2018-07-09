@@ -32,8 +32,6 @@ class Automator {
 				return;
 			};
 
-			self.currentTime = moment().format('h:mm a');
-
 			this.pollingAutomation();
 			clearInterval(init_poll);
 
@@ -41,6 +39,7 @@ class Automator {
 	}
 
 	pollingAutomation () {
+		self.currentTime = moment().format('h:mm a');
 		this.checkAutomations();
 		const automationPolling = setInterval((self) => {
 			if (self.currentDate != moment().format('MMMM Do YYYY')) {
