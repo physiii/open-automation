@@ -20,7 +20,7 @@ const startCameraStream = (cameraServiceId) => (dispatch) => {
 	},
 	startCameraRecordingStream = (recording) => (dispatch) => {
 		Api.streamCameraRecording(recording.camera_id, recording.id).then((data) => {
-			dispatch(actions.streamCameraRecording(recording.id, data.stream_token));
+			dispatch(actions.streamCameraRecording(recording.camera_id, recording.id, data.stream_token));
 		});
 	},
 	stopCameraRecordingStream = (recording) => () => {

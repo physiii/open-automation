@@ -45,14 +45,14 @@ module.exports = function (onConnection, jwt_secret) {
 	// Push device changes.
 	DevicesManager.on('device/update', (data) => {
 		const device = data.device,
-			client_sockets = AccountsManager.getAccountById(device.location).getClientSockets(),
-			devices = DevicesManager.getClientSerializedDevices(DevicesManager.getDevicesByLocation(device.location, device.location));
+			deviceAccountId = device.account && device.account.id,
+			client_sockets = AccountsManager.getAccountById(deviceAccountId).getClientSockets(),
+			devices = DevicesManager.getClientSerializedDevices(DevicesManager.getDevicesByAccountId(deviceAccountId));
 
 		client_sockets.forEach((socket) => {
 			socket.emit('devices', {devices});
 		});
 	});
-
 
 	// Client connection
 	onConnection((socket, access_token, xsrf_token) => {
@@ -75,7 +75,7 @@ module.exports = function (onConnection, jwt_secret) {
 		verifyAuthentication(access_token, jwt_secret, xsrf_token).then((account_id) => {
 			const account = AccountsManager.getAccountById(account_id);
 
-			function clientEndpoint (event, callback) {
+			function clientEndpoint (event, callback, skip_device_lookup) {
 				socket.on(event, (data = {}, clientCallback) => {
 					// Verify access token at each API request. This ensures that
 					// the API will stop responding when the access token expires.
@@ -86,7 +86,7 @@ module.exports = function (onConnection, jwt_secret) {
 						};
 
 						// Hydrate device
-						if (data.device_id) {
+						if (data.device_id && !skip_device_lookup) {
 							const device = DevicesManager.getDeviceById(data.device_id, account.id);
 
 							if (!device) {
@@ -101,7 +101,7 @@ module.exports = function (onConnection, jwt_secret) {
 						}
 
 						// Hydrate service
-						if (data.service_id) {
+						if (data.service_id && !skip_device_lookup) {
 							const service = DevicesManager.getServiceById(data.service_id, account.id);
 
 							if (!service) {
@@ -136,13 +136,61 @@ module.exports = function (onConnection, jwt_secret) {
 
 			clientEndpoint('devices/get', (data, callback) => {
 				if (typeof callback === 'function') {
-					const locationDevices = DevicesManager.getDevicesByLocation(account.id, account.id);
+					const accountDevices = DevicesManager.getDevicesByAccountId(account.id);
 
-					callback(null, {devices: DevicesManager.getClientSerializedDevices(locationDevices)});
+					callback(null, {devices: DevicesManager.getClientSerializedDevices(accountDevices)});
 				}
 			});
 
+			clientEndpoint('device/add', (data, callback) => {
+				if (DevicesManager.doesDeviceExist(data.device.id)) {
+					if (typeof callback === 'function') {
+						callback('A device with that ID has already been added to an account.', data);
+					}
+
+					return;
+				}
+
+				// Check to make sure the device is connected.
+				if (!DevicesManager.getFromSocketEscrow(data.device.id, data.device.id)) {
+					if (typeof callback === 'function') {
+						callback('No device with that ID is currently connected.', data);
+					}
+
+					return;
+				}
+
+				DevicesManager.createDevice({
+					...data.device,
+					token: data.device.id, // All device tokens should start out the same as the ID.
+					account_id: account.id
+				}).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch(() => {
+					if (typeof callback === 'function') {
+						callback('There was an error adding the device.', data);
+					}
+				});
+			});
+
 			// Gateway Service API
+
+			clientEndpoint('gateway/devices-to-add/get', (data, callback) => {
+				const gatewayService = data.service;
+
+				if (typeof callback === 'function') {
+					gatewayService.getDevices().then((data) => {
+						const devices = data.devices || [],
+							newDevices = devices.filter((device) => !DevicesManager.doesDeviceExist(device.id));
+
+						callback(null, {devices: newDevices});
+					}).catch(() => {
+						callback('There was an error getting the list of the gateway’s devices.');
+					});
+				}
+			});
 
 			clientEndpoint('gateway/command', (data, callback) => {
 				const gatewayService = data.service;

@@ -5,7 +5,9 @@ const mongodb = require('mongodb'),
 
 module.exports = {
 	getDevices,
+	getDevice,
 	saveDevice,
+	deleteDevice,
 	getAccounts,
 	saveAccount,
 	getAutomations,
@@ -50,6 +52,25 @@ function getDevices () {
 	});
 }
 
+function getDevice (device_id) {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('devices').find({id: device_id}).toArray((error, result) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'getDevice', error);
+					reject(error);
+
+					return;
+				}
+
+				resolve(result);
+			});
+		}, reject);
+	});
+}
+
 function saveDevice (device) {
 	return new Promise((resolve, reject) => {
 		connect((db) => {
@@ -61,7 +82,7 @@ function saveDevice (device) {
 					db.close();
 
 					if (error) {
-						console.log(TAG, 'saveDevice', error);
+						console.error(TAG, 'saveDevice', error);
 						reject(error);
 
 						return;
@@ -73,20 +94,48 @@ function saveDevice (device) {
 	});
 }
 
-function getAccounts () {
+function deleteDevice (device_id) {
 	return new Promise((resolve, reject) => {
 		connect((db) => {
-			db.collection('accounts').find().toArray(function (error, result) {
+			db.collection('devices').remove({id: device_id}, (error) => {
 				db.close();
 
 				if (error) {
-					console.log(TAG, 'getAccounts', error);
+					console.error(TAG, 'deleteDevice', error);
 					reject(error);
 
 					return;
 				}
 
-				resolve(result);
+				resolve();
+			}, reject);
+		});
+	});
+}
+
+function getAccounts () {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('accounts').find().toArray((error, result = []) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'getAccounts', error);
+					reject(error);
+
+					return;
+				}
+
+				resolve(result.map((account) => {
+					const account_temp = {
+						...account,
+						id: account._id.toHexString()
+					};
+
+					delete account_temp._id;
+
+					return account_temp;
+				}));
 			}, reject);
 		});
 	});

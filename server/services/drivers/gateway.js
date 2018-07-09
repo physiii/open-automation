@@ -31,6 +31,19 @@ class GatewayServiceDriver {
 		this.gatewaySocket.emit(this.eventPrefix + '/' + event, data, callback);
 	}
 
+	getDevices (command) {
+		return new Promise((resolve, reject) => {
+			this.gatewayEmit('devices/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data);
+			});
+		});
+	}
+
 	command (command) {
 		return new Promise((resolve, reject) => {
 			this.gatewayEmit('command', {command}, (error, data) => {

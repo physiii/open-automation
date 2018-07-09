@@ -7,7 +7,7 @@ const database = require('../database.js'),
 
 class Account {
 	constructor (data) {
-		this.id = data._id ? data._id.toHexString() : data.id;
+		this.id = data.id;
 		this.username = data.username;
 		this.password = data.password || data.token; // token is a legacy property.
 		this.salt = data.salt;
