@@ -29,11 +29,11 @@ class Automator {
 		let init_poll = setInterval((self) => {
 			//Check if new minute to iterate over automation triggers.
 			if (self.currentTime == moment().format('h:mm a')) {
-				console.log(TAG,'Same Time');
 				return;
 			};
 
 			self.currentTime = moment().format('h:mm a');
+			console.log(TAG,"Poll automations", self.currentTime);
 			this.pollingAutomation();
 			clearInterval(init_poll);
 
@@ -43,9 +43,7 @@ class Automator {
 	pollingAutomation () {
 		this.checkAutomations();
 		const automationPolling = setInterval((self) => {
-			console.log(TAG,"Poll automations");
-
-			this.checkAutomations();
+			console.log(TAG,"Poll automations", self.currentTime);
 
 			if (self.currentDate != moment().format('MMMM Do YYYY')) {
 				self.currentDate = moment().format('MMMM Do YYYY');
@@ -53,6 +51,9 @@ class Automator {
 			};
 
 			self.currentTime = moment().format('h:mm a');
+
+			this.checkAutomations();
+
 		}, POLLING_DELAY, this);
 	}
 
@@ -76,6 +77,7 @@ class Automator {
 
 			};
 		});
+
 	}
 
 	// Trigger Functions-----------------------------
