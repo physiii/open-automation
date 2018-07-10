@@ -45,9 +45,16 @@ module.exports = function (onConnection, jwt_secret) {
 	// Push device changes.
 	DevicesManager.on('device/update', (data) => {
 		const device = data.device,
-			deviceAccountId = device.account && device.account.id,
-			client_sockets = AccountsManager.getAccountById(deviceAccountId).getClientSockets(),
-			devices = DevicesManager.getClientSerializedDevices(DevicesManager.getDevicesByAccountId(deviceAccountId));
+			device_account_id = device.account && device.account.id,
+			account = AccountsManager.getAccountById(device_account_id),
+			client_sockets = (account && account.getClientSockets()) || [],
+			devices = DevicesManager.getClientSerializedDevices(DevicesManager.getDevicesByAccountId(device_account_id));
+
+		if (!account) {
+			console.error(TAG, 'Device Update - Could not find account for device', device.id);
+
+			return;
+		}
 
 		client_sockets.forEach((socket) => {
 			socket.emit('devices', {devices});
@@ -126,12 +133,12 @@ module.exports = function (onConnection, jwt_secret) {
 			}
 
 			// Store the socket object on the account object.
-			account.client_sockets.set(socket.id, socket);
+			account.addClientSocket(socket);
 
 			socket.on('disconnect', () => {
 				console.info(TAG, 'Client disconnected.', socket.id);
 
-				account.client_sockets.delete(socket.id);
+				account.removeClientSocket(socket);
 			});
 
 			clientEndpoint('devices/get', (data, callback) => {

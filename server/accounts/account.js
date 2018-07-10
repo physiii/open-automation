@@ -3,7 +3,8 @@ const database = require('../database.js'),
 	jwt = require('jsonwebtoken'),
 	PASSWORD_HASH_ALGORITHM = 'sha512',
 	PASSWORD_SALT_SIZE = 64,
-	XSRF_TOKEN_SIZE = 16;
+	XSRF_TOKEN_SIZE = 16,
+	TAG = '[Account]';
 
 class Account {
 	constructor (data) {
@@ -40,6 +41,20 @@ class Account {
 				}
 			}).catch(reject);
 		});
+	}
+
+	addClientSocket (socket) {
+		if (!socket || !socket.id) {
+			console.error(TAG, 'Cannot add invalid socket.');
+
+			return;
+		}
+
+		this.client_sockets.set(socket.id, socket);
+	}
+
+	removeClientSocket (socket) {
+		this.client_sockets.delete(socket.id);
 	}
 
 	getClientSockets () {
