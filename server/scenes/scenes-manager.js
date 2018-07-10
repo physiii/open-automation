@@ -1,45 +1,34 @@
-//Placehold Scene-manager
 const database = require('../database.js'),
 	Scene = require('./scene.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
-	scenesList = new Map(),
+	scenes_list = new Map(),
 	TAG = '[SceneManager]';
 
-
 class SceneManager {
-	constructor () {
+	setScene (scene_id, account_id) {
+		const scene = this.getSceneById(scene_id, account_id);
 
-	}
-
-	runAutomation(sceneId) {
-		const scene = this.getSceneById(sceneId),
-			account = scene.account_id;
-
-		for (let i = 0; i < scene.actions.length; i++) {
-			let service_id = scene.actions[i].service_id,
-		 		service = DevicesManager.getServiceById(service_id, account, true);
-
-			service.action(scene.actions[i]);
-		};
-	}
-
-	getSceneById (sceneId, accountId, skipAccountAccessCheck) {
-		const scene = scenesList.get(sceneId);
-
-		//Verify account has the access to the automations
-		if ((scene && (scene.location === accountId)) || skipAccountAccessCheck) {
-			return scene;
+		if (!scene) {
+			console.error(TAG, 'Tried to set scene ' + scene_id + ', but scene was not found.');
+			return;
 		}
+
+		scene.actions.forEach((action) => {
+			const service = DevicesManager.getServiceById(action.service_id, scene.account_id);
+
+			service.action(action);
+		});
 	}
 
 	addScene (data) {
-		let scene = this.getSceneById(data.id,null,true);
+		let scene = this.getSceneById(data.id, null, true);
 
 		if (scene) {
 			return scene;
-		};
+		}
+
 		scene = new Scene(data);
-		scenesList.set(scene.id, scene);
+		scenes_list.set(scene.id, scene);
 		return scene;
 	}
 
@@ -53,19 +42,28 @@ class SceneManager {
 		});
 	}
 
+	// NOTE: Use skip_account_access_check with caution. Never use for requests
+	// originating from the client API.
+	getSceneById (scene_id, account_id, skip_account_access_check) {
+		const scene = scenes_list.get(scene_id);
+
+		// Verify account has the access to the scene.
+		if ((scene && (scene.account_id === account_id)) || skip_account_access_check) {
+			return scene;
+		}
+	}
+
 	loadScenesFromDb () {
 		return new Promise((resolve, reject) => {
 			database.getScenes().then((scenes) => {
-				scenesList.clear();
+				scenes_list.clear();
 
 				scenes.forEach((scene) => {
 					this.addScene(scene)
 				});
 
-				resolve(scenesList);
-			}).catch((error) => {
-				reject(error);
-			});
+				resolve(scenes_list);
+			}).catch(reject);
 		});
 	}
 }

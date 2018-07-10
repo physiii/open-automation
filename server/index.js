@@ -40,7 +40,7 @@ try {
 AccountsManager.loadAccountsFromDb();
 DevicesManager.loadDevicesFromDb();
 ScenesManager.loadScenesFromDb();
-Automator.loadAutomationsFromDb();
+Automator.init();
 
 
 startStreamRelay();

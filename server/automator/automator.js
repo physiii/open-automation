@@ -1,110 +1,77 @@
 const database = require('../database.js'),
 	moment = require('moment'),
 	Automation = require('./automation.js'),
-	SceneManager = require('../scenes/scenes-manager.js'),
-	automationsList = new Map(),
-	POLLING_DELAY = 60 * 1000,
-	DAY_OF_THE_WEEK = {
-		Monday: 1,
-		Tuesday: 2,
-		Wednesday: 3,
-		Thursday: 4,
-		Friday: 5,
-		Saturday: 6,
-		Sunday: 7
-	},
+	ScenesManager = require('../scenes/scenes-manager.js'),
+	automations_list = new Map(),
+	ONE_SECOND_IN_MILLISECONDS = 1000,
+	POLLING_DELAY = 60 * ONE_SECOND_IN_MILLISECONDS,
 	TAG = '[Automator]';
 
 class Automator {
-	constructor () {
-		this.currentDate = moment().format('MMMM Do YYYY');
-		this.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
-		this.currentTime = moment().format('h:mm a');
+	init () {
+		this.loadAutomationsFromDb().then(() => {
+			this.updateCurrentDate();
 
-		this.initPollingAutomations();
+			const init_poll = setInterval(() => {
+				// Check if new minute to start iterating over automation triggers.
+				if (this.now.isSame(moment().utc(), 'minute')) {
+					return;
+				}
+
+				clearInterval(init_poll);
+				this.startCheckingDateTriggers();
+			}, ONE_SECOND_IN_MILLISECONDS);
+		});
 	}
 
-	initPollingAutomations () {
-		this.checkAutomations();
-		let init_poll = setInterval((self) => {
-			//Check if new minute to iterate over automation triggers.
-			if (self.currentTime == moment().format('h:mm a')) {
-				return;
-			};
-
-			this.pollingAutomation();
-			clearInterval(init_poll);
-
-		}, 1000, this);
+	updateCurrentDate () {
+		this.now = moment().utc();
 	}
 
-	pollingAutomation () {
-		self.currentTime = moment().format('h:mm a');
+	startCheckingDateTriggers () {
+		this.updateCurrentDate();
 		this.checkAutomations();
-		const automationPolling = setInterval((self) => {
-			if (self.currentDate != moment().format('MMMM Do YYYY')) {
-				self.currentDate = moment().format('MMMM Do YYYY');
-				self.currentWeekday = DAY_OF_THE_WEEK[moment().format('dddd')];
-			};
 
-			self.currentTime = moment().format('h:mm a');
-
+		setInterval(() => {
+			this.updateCurrentDate();
 			this.checkAutomations();
-
-		}, POLLING_DELAY, this);
+		}, POLLING_DELAY);
 	}
 
 	checkAutomations () {
-		console.log(TAG,"Check Automations", this.currentTime);
-		automationsList.forEach((automation) => {
-			for (let i = 0; i < automation.triggers.length; i++) {
-				let trigger = automation.triggers[i];
+		console.log(TAG, 'Check Automations', this.now.toISOString());
 
-
-				if (trigger.type === 'time-of-day') {
-					if (trigger.time != this.currentTime) return;
-					return this.timeTrigger(automation);
+		automations_list.forEach((automation) => {
+			automation.triggers.forEach((trigger) => {
+				const trigger_checks = {
+					'time-of-day': moment().utc().startOf('day').add(trigger.time, 'minutes').isSame(this.now, 'minute'),
+					'date': moment(trigger.date).utc().isSame(this.now, 'minute')
 				};
-				if (trigger.type === 'date') {
-					if (trigger.date != this.currentDate) return;
-					if (trigger.time != this.currentTime) return;
-					return this.dateTrigger(automation);
-				};
-				if (trigger.type === 'state') return;
-				if (trigger.type === 'NFC-tag') return;
 
-			};
+				if (trigger_checks[trigger.type] && this.checkConditions(automation.conditions)) {
+					this.runAutomation(automation);
+				}
+			});
+		});
+	}
+
+	checkConditions (conditions = []) {
+		const any_conditions_failed = conditions.some((condition) => {
+			switch (condition.type) {
+				case 'day-of-week':
+					return condition.days.indexOf(this.now.isoWeekday()) < 0;
+			}
 		});
 
+		return !any_conditions_failed;
 	}
 
-	// Trigger Functions-----------------------------
-	dateTrigger (automation) {
-		for (let i = 0; i < automation.scenes.length; i++) {
-			let scene_id = automation.scenes[i];
-			SceneManager.runAutomation(scene_id);
-		};
-		return;
-	}
+	runAutomation (automation) {
+		automation.scenes.forEach((scene_id) => {
+			console.log(TAG, 'Setting scene:', scene_id);
 
-	timeTrigger (automation) {
-		if (automation.conditions) {
-			let checkConditions = this.checkConditions(automation.conditions);
-			if (!checkConditions) return;
-		};
-
-		for (let i = 0; i < automation.scenes.length; i++) {
-			console.log(TAG,'Running Automations for Scene:', automation.scenes[i]);
-			SceneManager.runAutomation(automation.scenes[i]);
-		};
-	}
-
-	stateTrigger () {
-		return;
-	}
-
-	NFCTrigger () {
-		return;
+			ScenesManager.setScene(scene_id, automation.account_id);
+		});
 	}
 
 	// Automator Configurations -------------------------
@@ -113,9 +80,10 @@ class Automator {
 
 		if (automation) {
 			return automation;
-		};
+		}
+
 		automation = new Automation(data);
-		automationsList.set(automation.id, automation);
+		automations_list.set(automation.id, automation);
 		return automation;
 	}
 
@@ -129,42 +97,27 @@ class Automator {
 		});
 	}
 
-	getAutomationById (automationId, accountId, skipAccountAccessCheck) {
-		const automation = automationsList.get(automationId);
+	// NOTE: Use skip_account_access_check with caution. Never use for requests
+	// originating from the client API.
+	getAutomationById (automation_id, account_id, skip_account_access_check) {
+		const automation = automations_list.get(automation_id);
 
-		//Verify account has the access to the automations
-		if ((automation && (automation.location === accountId)) || skipAccountAccessCheck) {
+		// Verify account has the access to the automations.
+		if ((automation && (automation.account_id === account_id)) || skip_account_access_check) {
 			return automation;
 		}
-
-	}
-
-	checkConditions (conditions) {
-		let conditionsCheck;
-
-		for (let i = 0; i < conditions.length; i++) {
-			if (conditions[i].type === 'day-of-week') {
-				if (conditions[i].days.indexOf(this.currentWeekday) < 0) {
-					return conditionsCheck = false;
-				};
-			};
-
-			if (conditions[i].type === 'state') return;
-		};
-
-		return conditionsCheck = true;
 	}
 
 	loadAutomationsFromDb () {
 		return new Promise((resolve, reject) => {
 			database.getAutomations().then((automations) => {
-				automationsList.clear();
+				automations_list.clear();
 
 				automations.forEach((automation) => {
 					this.addAutomation(automation)
 				});
 
-				resolve(automationsList);
+				resolve(automations_list);
 			}).catch((error) => {
 				reject(error);
 			});
