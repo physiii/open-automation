@@ -5,7 +5,8 @@ const EventEmitter = require('events'),
 	AccountsManager = require('../accounts/accounts-manager.js'),
 	socketEscrow = {},
 	devicesList = new Map(),
-	DEVICE_TOKEN_SIZE = 256;
+	DEVICE_TOKEN_SIZE = 256,
+	TAG = 'DeviceManager';
 
 class DevicesManager {
 	constructor () {

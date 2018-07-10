@@ -8,7 +8,11 @@ const fs = require('fs'),
 	startStreamRelay = require('./stream-relay.js'),
 	startWebsite = require('./website.js'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
-	DevicesManager = require('./devices/devices-manager.js');
+	DevicesManager = require('./devices/devices-manager.js'),
+	ScenesManager = require('./scenes/scenes-manager.js'),
+	Automator = require('./automator/automator.js');
+
+
 
 // Import config or create new config.json with defaults.
 try {
@@ -35,6 +39,9 @@ try {
 
 AccountsManager.loadAccountsFromDb();
 DevicesManager.loadDevicesFromDb();
+ScenesManager.loadScenesFromDb();
+Automator.loadAutomationsFromDb();
+
 
 startStreamRelay();
 startWebsite(express());

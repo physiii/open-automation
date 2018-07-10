@@ -311,6 +311,180 @@ module.exports = function (onConnection, jwt_secret) {
 				});
 			});
 
+			// Lock Service API
+
+			clientEndpoint('lock/lock', function (data, callback) {
+				const lockService = data.service;
+
+				lockService.lock().then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('lock/unlock', function (data, callback) {
+				const lockService = data.service;
+
+				lockService.unlock().then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('lock/relock-delay/set', function (data, callback) {
+				const lockService = data.service;
+
+				lockService.setRelockDelay(data.relock_delay).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			// Thermostat Service API
+
+			clientEndpoint('thermostat/temp/set', function (data, callback) {
+				const thermostatService = data.service;
+
+				thermostatService.setTemp(data.temp).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('thermostat/mode/set', function (data, callback) {
+				const thermostatService = data.service;
+
+				thermostatService.setThermostatMode(data.mode).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('thermostat/hold-mode/set', function (data, callback) {
+				const thermostatService = data.service;
+
+				thermostatService.setHoldMode(data.mode).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('thermostat/fan-mode/set', function (data, callback) {
+				const thermostatService = data.service;
+
+				thermostatService.setFanMode(data.mode).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			// Light Service API
+
+			clientEndpoint('light/on', function (data, callback) {
+				const lightService = data.service;
+
+				lightService.lightOn().then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('light/off', function (data, callback) {
+				const lightService = data.service;
+
+				lightService.lightOff().then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('light/brightness/set', function (data, callback) {
+				const lightService = data.service;
+
+				lightService.setBrightness(data.brightness).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('light/color/set', function (data, callback) {
+				const lightService = data.service;
+
+				lightService.setColor(data.color).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
+			clientEndpoint('light/name/set', function (data, callback) {
+				const lightService = data.service;
+
+				lightService.setLightName(data.name).then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
 
 			// Legacy API - DEPRECATED
 
