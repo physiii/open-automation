@@ -36,7 +36,8 @@ function connect (callback, errorHandler) {
 function getDevices () {
 	return new Promise((resolve, reject) => {
 		connect((db) => {
-			db.collection('devices').find().toArray((error, result) => {
+			// Find only devices that have an "id" property to filter out any leftover OA1 devices.
+			db.collection('devices').find({id: {$exists: true}}).toArray((error, result) => {
 				db.close();
 
 				if (error) {
