@@ -12,6 +12,10 @@ class Service {
 		this.setState(data.state);
 	}
 
+	on () {
+		// Stub
+	}
+
 	setSettings (settings = {}) {
 		this.settings = {...settings};
 	}

@@ -30,21 +30,21 @@ class Automator {
 
 	startCheckingDateTriggers () {
 		this.updateCurrentDate();
-		this.checkAutomations();
+		this.runDateAutomations();
 
 		setInterval(() => {
 			this.updateCurrentDate();
-			this.checkAutomations();
+			this.runDateAutomations();
 		}, POLLING_DELAY);
 	}
 
-	checkAutomations () {
+	runDateAutomations () {
 		console.log(TAG, 'Check Automations', this.now.toISOString());
 
 		automations_list.forEach((automation) => {
 			automation.triggers.forEach((trigger) => {
 				const trigger_checks = {
-					'time-of-day': moment().utc().startOf('day').add(trigger.time, 'minutes').isSame(this.now, 'minute'),
+					'time-of-day': moment(this.now).utc().startOf('day').add(trigger.time, 'minutes').isSame(this.now, 'minute'),
 					'date': moment(trigger.date).utc().isSame(this.now, 'minute')
 				};
 
@@ -76,7 +76,7 @@ class Automator {
 
 	// Automator Configurations -------------------------
 	addAutomation (data) {
-		let automation = this.getAutomationById(data.id,null,true);
+		let automation = this.getAutomationById(data.id, null, true);
 
 		if (automation) {
 			return automation;
