@@ -187,7 +187,7 @@ module.exports = function (onConnection, jwt_secret) {
 			clientEndpoint('device/remove', (data, callback) => {
 				const device = data.device;
 
-				DevicesManager.deleteDevice(device.id).then(() => {
+				DevicesManager.deleteDevice(device.id, account.id).then(() => {
 					if (typeof callback === 'function') {
 						callback(null, {});
 					}

@@ -5,6 +5,14 @@ const database = require('../database.js'),
 	TAG = '[SceneManager]';
 
 class SceneManager {
+	constructor () {
+		this.init = this.init.bind(this);
+	}
+
+	init () {
+		return this.loadScenesFromDb();
+	}
+
 	setScene (scene_id, account_id) {
 		const scene = this.getSceneById(scene_id, account_id);
 

@@ -1,26 +1,23 @@
 const database = require('../database.js'),
 	moment = require('moment'),
 	Automation = require('./automation.js'),
+	DevicesManager = require('../devices/devices-manager.js'),
 	ScenesManager = require('../scenes/scenes-manager.js'),
 	automations_list = new Map(),
 	ONE_SECOND_IN_MILLISECONDS = 1000,
-	POLLING_DELAY = 60 * ONE_SECOND_IN_MILLISECONDS,
 	TAG = '[Automator]';
 
 class Automator {
+	constructor () {
+		this.init = this.init.bind(this);
+	}
+
 	init () {
-		this.loadAutomationsFromDb().then(() => {
-			this.updateCurrentDate();
-
-			const init_poll = setInterval(() => {
-				// Check if new minute to start iterating over automation triggers.
-				if (this.now.isSame(moment().utc(), 'minute')) {
-					return;
-				}
-
-				clearInterval(init_poll);
+		return new Promise((resolve, reject) => {
+			this.loadAutomationsFromDb().then(() => {
 				this.startCheckingDateTriggers();
-			}, ONE_SECOND_IN_MILLISECONDS);
+				resolve();
+			}).catch(reject);
 		});
 	}
 
@@ -30,12 +27,16 @@ class Automator {
 
 	startCheckingDateTriggers () {
 		this.updateCurrentDate();
-		this.runDateAutomations();
 
 		setInterval(() => {
+			// Check to see if the minute changed.
+			if (this.now.isSame(moment().utc(), 'minute')) {
+				return;
+			}
+
 			this.updateCurrentDate();
 			this.runDateAutomations();
-		}, POLLING_DELAY);
+		}, ONE_SECOND_IN_MILLISECONDS);
 	}
 
 	runDateAutomations () {
@@ -48,18 +49,55 @@ class Automator {
 					'date': moment(trigger.date).utc().isSame(this.now, 'minute')
 				};
 
-				if (trigger_checks[trigger.type] && this.checkConditions(automation.conditions)) {
+				if (trigger_checks[trigger.type]) {
 					this.runAutomation(automation);
 				}
 			});
 		});
 	}
 
+	setUpTriggers (automation) {
+		automation.triggers.forEach((trigger) => {
+			if (trigger.type === 'event') {
+				const service = DevicesManager.getServiceById(trigger.service_id, automation.account_id);
+
+				if (!service) {
+					console.error(TAG, automation.id, 'Tried to subscribe to service events, but the service was not found.');
+					return;
+				}
+
+				service.on(trigger.event + '.' +  automation.id, () => this.runAutomation(automation));
+			}
+		});
+	}
+
+	tearDownTriggers (automation) {
+		automation.triggers.forEach((trigger) => {
+			if (trigger.type === 'event') {
+				const service = DevicesManager.getServiceById(trigger.service_id, automation.account_id);
+
+				if (!service) {
+					console.error(TAG, automation.id, 'Tried to unsubscribe from service events, but the service was not found.');
+					return;
+				}
+
+				service.off(trigger.event + '.' + automation.id);
+			}
+		});
+	}
+
+	// At any point during checking conditions, if the conditions object is not
+	// well-formed (unknown condition type, etc.), it should fail. It's better
+	// to do nothing when there's a problem than to possibly do the wrong thing.
 	checkConditions (conditions = []) {
-		const any_conditions_failed = conditions.some((condition) => {
+		const any_conditions_failed = conditions.some((condition = {}) => {
+			// This function should return true if the condition fails.
 			switch (condition.type) {
 				case 'day-of-week':
-					return condition.days.indexOf(this.now.isoWeekday()) < 0;
+					return !(condition.days && condition.days.includes && condition.days.includes(this.now.isoWeekday()));
+				default:
+					// Fail by default.
+					return true;
 			}
 		});
 
@@ -67,14 +105,17 @@ class Automator {
 	}
 
 	runAutomation (automation) {
+		if (!automation.is_enabled || !this.checkConditions(automation.conditions)) {
+			return;
+		}
+
 		automation.scenes.forEach((scene_id) => {
-			console.log(TAG, 'Setting scene:', scene_id);
+			console.log(TAG, automation.id, 'Setting scene:', scene_id);
 
 			ScenesManager.setScene(scene_id, automation.account_id);
 		});
 	}
 
-	// Automator Configurations -------------------------
 	addAutomation (data) {
 		let automation = this.getAutomationById(data.id, null, true);
 
@@ -84,6 +125,9 @@ class Automator {
 
 		automation = new Automation(data);
 		automations_list.set(automation.id, automation);
+
+		this.setUpTriggers(automation);
+
 		return automation;
 	}
 
@@ -93,6 +137,25 @@ class Automator {
 
 			database.saveAutomation(automation.serialize()).then(() => {
 				resolve(automation);
+			}).catch(reject);
+		});
+	}
+
+	deleteAutomation (automation_id, account_id) {
+		return new Promise ((resolve, reject) => {
+			const automation = this.getAutomationById(automation_id, account_id);
+
+			if (!automation) {
+				reject('No automation belonging to that account was found with that ID.');
+				return;
+			}
+
+			database.deleteAutomation(automation_id).then(() => {
+				this.tearDownTriggers(automation);
+
+				automations_list.delete(automation_id);
+
+				resolve();
 			}).catch(reject);
 		});
 	}

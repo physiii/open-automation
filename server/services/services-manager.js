@@ -4,6 +4,7 @@ const Service = require('./service.js'),
 	LockService = require('./lock-service.js'),
 	ThermostatService = require('./thermostat-service.js'),
 	LightService = require('./light-service.js'),
+	EventMockService = require('./event-mock-service.js'),
 	GatewayServiceDriver = require('./drivers/gateway.js'),
 	GatewayCameraDriver = require('./drivers/camera-gateway.js'),
 	GatewayLockDriver = require('./drivers/lock-gateway.js'),
@@ -46,6 +47,9 @@ class ServicesManager {
 				break;
 			case 'light':
 				service = new LightService(data, this.onServiceUpdate, GatewayLightDriver);
+				break;
+			case 'event-mock':
+				service = new EventMockService(data, this.onServiceUpdate);
 				break;
 			default:
 				service = new Service(data, this.onServiceUpdate);
