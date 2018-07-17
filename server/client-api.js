@@ -30,6 +30,21 @@ if (config.mail) {
 	);
 }
 
+function sendEmail (to, subject, message) {
+	const mailOptions = {
+		from: config.mail.from_user,
+		to,
+		subject,
+		html: message,
+	};
+
+	transpoter.sendMail(mailOptions, (error) => {
+		if (error) {
+			consol.log(error);
+		}
+	});
+}
+
 function verifyAuthentication (access_token, jwt_secret, xsrf_token) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(access_token, jwt_secret, {issuer: config.api_token_issuer}, (error, claims) => {
