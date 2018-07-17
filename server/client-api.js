@@ -4,6 +4,18 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	jwt = require('jsonwebtoken'),
 	nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
+	CELL_PROVIDERS = {
+		'ATT':'@txt.att.net',
+		'TMobile':'@tmomail.net',
+		'Verizon':'@vtext.com',
+		'Sprint':'@messaging.sprintpcs.com',
+		'VirginMobile':'@vmobl.com',
+		'Tracfone':'@mmst5.tracfone.com',
+		'MetroPCS':'@mymetropcs.com',
+		'Boost':'@sms.myboostmobile.com',
+		'Cricket':'@sms.cricketwireless.net',
+		'US_Cellular':'@email.uscc.net'
+	};
 	TAG = '[client-api.js]';
 
 if (config.mail) {
