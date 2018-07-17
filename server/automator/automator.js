@@ -3,6 +3,7 @@ const database = require('../database.js'),
 	Automation = require('./automation.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
 	ScenesManager = require('../scenes/scenes-manager.js'),
+	//Notifications = require('./notifications.js'),
 	automations_list = new Map(),
 	ONE_SECOND_IN_MILLISECONDS = 1000,
 	TAG = '[Automator]';

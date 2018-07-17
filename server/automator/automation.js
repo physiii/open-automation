@@ -9,6 +9,7 @@ class Automation {
 		this.triggers = data.triggers || [];
 		this.conditions = data.conditions || [];
 		this.scenes = data.scenes || [];
+		this.notifications = data.notifications || [];
 	}
 
 	serialize () {
@@ -18,7 +19,8 @@ class Automation {
 			account_id: this.account_id,
 			triggers: this.triggers,
 			conditions: this.conditions,
-			scenes: this.scenes
+			scenes: this.scenes,
+			notifications: this.notifications
 		};
 	}
 
