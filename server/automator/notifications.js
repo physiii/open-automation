@@ -33,7 +33,23 @@ class Notifications {
 	}
 
 	sendEmail (to, subject, message) {
-		const mailOptions = {
+		let mailOptions = {
+			from: config.mail.from_user,
+			to,
+			subject,
+			html: message,
+		};
+
+		transporter.sendMail(mailOptions, (error) => {
+			if (error) {
+				consol.log(error);
+			}
+		});
+	}
+
+	sendText (number, provider, subject, message) {
+		let to = number + CELL_PROVIDERS[provider];
+		let mailOptions = {
 			from: config.mail.from_user,
 			to,
 			subject,
