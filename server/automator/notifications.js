@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
-	config = require('../config.json'),
+	config = require('../../config.json'),
 	CELL_PROVIDERS = {
 	'ATT':'@mms.att.net',
 	'TMobile':'@tmomail.net',
@@ -26,6 +26,7 @@ class Notifications {
 						user: config.mail.from_user,
 						pass: config.mail.password
 					}
+					tls: { rejectUnauthorized: false }
 				})
 			);
 		}
@@ -39,7 +40,7 @@ class Notifications {
 			html: message,
 		};
 
-		transpoter.sendMail(mailOptions, (error) => {
+		transporter.sendMail(mailOptions, (error) => {
 			if (error) {
 				consol.log(error);
 			}
