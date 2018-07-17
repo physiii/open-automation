@@ -2,48 +2,7 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	config = require('../config.json'),
 	jwt = require('jsonwebtoken'),
-	nodemailer = require('nodemailer'),
-	smtpTransport = require('nodemailer-smtp-transport'),
-	CELL_PROVIDERS = {
-		'ATT':'@txt.att.net',
-		'TMobile':'@tmomail.net',
-		'Verizon':'@vtext.com',
-		'Sprint':'@messaging.sprintpcs.com',
-		'VirginMobile':'@vmobl.com',
-		'Tracfone':'@mmst5.tracfone.com',
-		'MetroPCS':'@mymetropcs.com',
-		'Boost':'@sms.myboostmobile.com',
-		'Cricket':'@sms.cricketwireless.net',
-		'US_Cellular':'@email.uscc.net'
-	};
 	TAG = '[client-api.js]';
-
-if (config.mail) {
-	var transporter = nodemailer.createTransport(
-		smtpTransport({
-			service: config.mail.service,
-			auth: {
-				user: config.mail.from_user,
-				pass: config.mail.password
-			}
-		})
-	);
-}
-
-function sendEmail (to, subject, message) {
-	const mailOptions = {
-		from: config.mail.from_user,
-		to,
-		subject,
-		html: message,
-	};
-
-	transpoter.sendMail(mailOptions, (error) => {
-		if (error) {
-			consol.log(error);
-		}
-	});
-}
 
 function verifyAuthentication (access_token, jwt_secret, xsrf_token) {
 	return new Promise((resolve, reject) => {
@@ -521,52 +480,6 @@ module.exports = function (onConnection, jwt_secret) {
 
 
 			// Legacy API - DEPRECATED
-
-			socket.on('DEPRECATED motion detected', function (data) {
-				console.log('motion detected', data.toString());
-				if (!motionStarted) {
-					motionStarted = true;
-					var mailOptions = {
-						from: config.mail.from_user,
-						to: config.mail.to_user,
-						subject: 'Motion Detected',
-						text: data.toString()
-					};
-
-					if (transporter) {
-						transporter.sendMail(mailOptions, function (error, info) {
-							if (error) {
-								console.log(error);
-							} else {
-								console.log('Email sent: ' + info.response);
-							}
-						});
-					}
-				}
-			});
-
-			socket.on('DEPRECATED motion stopped', function (data) {
-				console.log('motion stopped', data.toString());
-				if (motionStarted) {
-					motionStarted = false;
-					var mailOptions = {
-						from: config.mail.from_user,
-						to: config.mail.to_user,
-						subject: 'Motion Stopped',
-						text: data.toString()
-					};
-
-					if (transporter) {
-						transporter.sendMail(mailOptions, function (error, info) {
-							if (error) {
-								console.log(error);
-							} else {
-								console.log('Email sent: ' + info.response);
-							}
-						});
-					}
-				}
-			});
 
 			clientEndpoint('DEPRECATED get contacts', function (data) {
 				var group_index = find_index(groups, 'group_id', data.user_token);
