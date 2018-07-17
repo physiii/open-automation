@@ -7,6 +7,7 @@ import AppToolbar from '../components/AppToolbar.js';
 import Dashboard from '../components/Dashboard.js';
 import Settings from '../components/Settings.js';
 import Logout from '../components/Logout.js';
+import ConsoleInterface from '../components/ConsoleInterface.js';
 import {connect} from 'react-redux';
 import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 import {hasInitialFetchCompleted} from '../../state/ducks/devices-list/selectors.js';
@@ -41,6 +42,7 @@ export const App = (props) => {
 						<PrivateRoute path="/settings" component={Settings} />
 					</Switch>}
 			</div>
+			<ConsoleInterface />
 		</div>
 	);
 };

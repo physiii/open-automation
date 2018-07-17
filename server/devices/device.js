@@ -9,6 +9,9 @@ class Device {
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.account = data.account;
+		this.account_id = data.account_id;
+		this.gateway = data.gateway;
+		this.gateway_id = data.gateway_id;
 
 		this.onUpdate = onUpdate;
 		this.gatewayOn = this.gatewayOn.bind(this);
@@ -178,7 +181,8 @@ class Device {
 	serialize () {
 		return {
 			id: this.id,
-			account_id: this.account && this.account.id,
+			account_id: this.account_id,
+			gateway_id: this.gateway_id,
 			settings: this.settings,
 			services: this.services.getSerializedServices(),
 			info: this.info

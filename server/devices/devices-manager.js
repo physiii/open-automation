@@ -6,7 +6,7 @@ const EventEmitter = require('events'),
 	socketEscrow = {},
 	devicesList = new Map(),
 	DEVICE_TOKEN_SIZE = 256,
-	TAG = 'DeviceManager';
+	TAG = 'DevicesManager';
 
 class DevicesManager {
 	constructor () {
@@ -23,13 +23,18 @@ class DevicesManager {
 		let device = this.getDeviceById(data.id, null, true);
 
 		if (device) {
-			return device;
+			if (this.verifyAccountAccessToDevice(data.account_id, device)) {
+				return device;
+			} else {
+				return false;
+			}
 		}
 
 		device = new Device(
 			{
 				...data,
-				account: AccountsManager.getAccountById(data.account_id)
+				account: AccountsManager.getAccountById(data.account_id),
+				gateway: this.getServiceById(data.gateway_id, data.account_id)
 			},
 			this.handleDeviceUpdate,
 			data.gatewaySocket || this.getFromSocketEscrow(data.id, data.token)
@@ -50,6 +55,12 @@ class DevicesManager {
 			}
 
 			const device = this.addDevice(data);
+
+			if (!device) {
+				console.error(TAG, 'There was an error creating a device. This is most likely due to a device already existing with the ID, but the account not having access to that device.');
+				reject('There was an error creating the device.');
+				return;
+			}
 
 			this.generateDeviceToken().then((token) => {
 				device.setToken(token).then(() => {
