@@ -32,12 +32,12 @@ class Notifications {
 		}
 	}
 
-	sendEmail (to, subject, message) {
+	sendEmail (notification) {
 		let mailOptions = {
 			from: config.mail.from_user,
-			to,
-			subject,
-			html: message,
+			notification.email,
+			notification.subject,
+			html: notification.message,
 		};
 
 		transporter.sendMail(mailOptions, (error) => {
@@ -47,13 +47,12 @@ class Notifications {
 		});
 	}
 
-	sendText (number, provider, subject, message) {
-		let to = number + CELL_PROVIDERS[provider];
+	sendText (notification) {
 		let mailOptions = {
 			from: config.mail.from_user,
-			to,
-			subject,
-			html: message,
+			notification.number + CELL_PROVIDERS[notification.provider],
+			notification.subject,
+			html: notification.message,
 		};
 
 		transporter.sendMail(mailOptions, (error) => {
