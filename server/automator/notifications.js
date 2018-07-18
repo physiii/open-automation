@@ -31,6 +31,14 @@ class Notifications {
 					tls: { rejectUnauthorized: false }
 				})
 			);
+
+			this.transporter.verify(function(error, success) {
+   			if (error) {
+        	console.log(error);
+   			} else {
+        	console.log('Server is ready to take our messages');
+   			}
+			});
 		}
 	}
 
@@ -50,9 +58,9 @@ class Notifications {
 	sendEmail (notification) {
 		this.mailOptions = {
 			from: config.mail.from_user,
-			notification.email,
-			notification.subject,
-			html: notification.message,
+			to: notification.email,
+			subject: notification.subject,
+			html: notification.message
 		};
 
 		this.transporter.sendMail(mailOptions, (error) => {
@@ -65,9 +73,9 @@ class Notifications {
 	sendText (notification) {
 		this.mailOptions = {
 			from: config.mail.from_user,
-			notification.number + CELL_PROVIDERS[notification.provider],
-			notification.subject,
-			html: notification.message,
+			to: notification.number + CELL_PROVIDERS[notification.provider],
+			subject: notification.subject,
+			html: notification.message
 		};
 
 		this.transporter.sendMail(mailOptions, (error) => {
