@@ -19,7 +19,7 @@ const nodemailer = require('nodemailer'),
 class Notifications {
 	constructor () {
 		this.mailOptions = {};
-		this.email = config.smtp_transport.auth.user
+		this.email = config.smtp_transport.auth.user;
 
 		if (config.smtp_transport) {
 			this.transporter = nodemailer.createTransport(
