@@ -64,11 +64,9 @@ class Notifications {
 	}
 
 	sendText (notification) {
-		let users = notification.number + CELL_PROVIDERS[notification.provider]
-
 		this.mailOptions = {
 			from: this.email,
-			to: users,
+			to: notification.number + CELL_PROVIDERS[notification.provider],
 			subject: notification.subject,
 			html: notification.message
 		};
