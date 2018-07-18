@@ -3,7 +3,7 @@ const database = require('../database.js'),
 	Automation = require('./automation.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
 	ScenesManager = require('../scenes/scenes-manager.js'),
-	//Notifications = require('./notifications.js'),
+	Notifications = require('./notifications.js'),
 	automations_list = new Map(),
 	ONE_SECOND_IN_MILLISECONDS = 1000,
 	TAG = '[Automator]';
@@ -114,6 +114,12 @@ class Automator {
 			console.log(TAG, automation.id, 'Setting scene:', scene_id);
 
 			ScenesManager.setScene(scene_id, automation.account_id);
+		});
+
+		automation.notifications.forEach((notification) => {
+			console.log(TAG, automation.id, 'Sending Notification:', notification);
+
+			Notification.sendNotification(notification, automation.account_id);
 		});
 	}
 

@@ -306,7 +306,7 @@ module.exports = function (onConnection, jwt_secret) {
 
 			// Lock Service API
 
-			clientEndpoint('lock/lock', function (data, callback) {
+			clientEndpoint('lock/lock/set', function (data, callback) {
 				const lockService = data.service;
 
 				lockService.lock().then(() => {
@@ -320,7 +320,7 @@ module.exports = function (onConnection, jwt_secret) {
 				});
 			});
 
-			clientEndpoint('lock/unlock', function (data, callback) {
+			clientEndpoint('lock/unlock/set', function (data, callback) {
 				const lockService = data.service;
 
 				lockService.unlock().then(() => {

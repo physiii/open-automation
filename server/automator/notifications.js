@@ -18,8 +18,10 @@ const nodemailer = require('nodemailer'),
 
 class Notifications {
 	constructor () {
+		this.mailOptions = {};
+
 		if (config.mail) {
-			var transporter = nodemailer.createTransport(
+			this.transporter = nodemailer.createTransport(
 				smtpTransport({
 					service: config.mail.service,
 					auth: {
@@ -32,15 +34,28 @@ class Notifications {
 		}
 	}
 
+	sendNotification (notification) {
+		switch (notification.type) {
+			case 'email':
+				this.sendEmail(notification);
+				break;
+			case 'sms':
+				this.sendText(notification);
+				break;
+			default:
+				break;
+		}
+	}
+
 	sendEmail (notification) {
-		let mailOptions = {
+		this.mailOptions = {
 			from: config.mail.from_user,
 			notification.email,
 			notification.subject,
 			html: notification.message,
 		};
 
-		transporter.sendMail(mailOptions, (error) => {
+		this.transporter.sendMail(mailOptions, (error) => {
 			if (error) {
 				consol.log(error);
 			}
@@ -48,14 +63,14 @@ class Notifications {
 	}
 
 	sendText (notification) {
-		let mailOptions = {
+		this.mailOptions = {
 			from: config.mail.from_user,
 			notification.number + CELL_PROVIDERS[notification.provider],
 			notification.subject,
 			html: notification.message,
 		};
 
-		transporter.sendMail(mailOptions, (error) => {
+		this.transporter.sendMail(mailOptions, (error) => {
 			if (error) {
 				consol.log(error);
 			}
