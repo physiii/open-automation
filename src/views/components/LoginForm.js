@@ -7,7 +7,6 @@ import {default as FormValidator, required} from '../form-validation.js';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as session from '../../state/ducks/session';
-import './LoginForm.css';
 
 export class LoginForm extends React.Component {
 	constructor (props) {
