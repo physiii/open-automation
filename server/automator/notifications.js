@@ -20,20 +20,19 @@ class Notifications {
 	constructor () {
 		this.mailOptions = {};
 		this.email = config.smtp_transport.auth.user;
+		this.init();
+	}
 
-		if (config.smtp_transport) {
-			this.transporter = nodemailer.createTransport(
-				smtpTransport(config.smtp_transport);
-			);
+	init () {
+		this.transporter = nodemailer.createTransport(smtpTransport(config.smtp_transport));
 
-			this.transporter.verify(function(error, success) {
-   			if (error) {
-        	console.log(error);
-   			} else {
-        	console.log('Server is ready to take our messages');
-   			}
-			});
-		}
+		this.transporter.verify(function(error, success) {
+			if (error) {
+				console.log(error);
+			} else {
+				console.log('Server is ready to take our messages');
+			}
+		});
 	}
 
 	sendNotification (notification) {
@@ -57,26 +56,29 @@ class Notifications {
 			html: notification.message
 		};
 
-		this.transporter.sendMail(mailOptions, (error) => {
+		this.transporter.sendMail(this.mailOptions, (error) => {
 			if (error) {
-				consol.log(error);
+				console.log(error);
 			}
 		});
 	}
 
 	sendText (notification) {
+		let users = notification.number + CELL_PROVIDERS[notification.provider]
+
 		this.mailOptions = {
 			from: this.email,
-			to: notification.number + CELL_PROVIDERS[notification.provider],
+			to: users,
 			subject: notification.subject,
 			html: notification.message
 		};
 
-		this.transporter.sendMail(mailOptions, (error) => {
+		this.transporter.sendMail(this.mailOptions, (error) => {
 			if (error) {
-				consol.log(error);
+				console.log(error);
 			}
 		});
+
 	}
 }
 
