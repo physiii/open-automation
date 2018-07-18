@@ -3,35 +3,68 @@ import PropTypes from 'prop-types';
 import TextField from './TextField.js';
 import Actions from './Actions.js';
 import Button from './Button.js';
+import {default as FormValidator, minLength, mustMatch, isEmail} from '../form-validation.js';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as session from '../../state/ducks/session';
+
+const PASSWORD_MIN_LENGTH = 8;
 
 export class RegisterForm extends React.Component {
 	constructor (props) {
 		super(props);
 
 		this.state = {
-			username: '',
-			password: ''
+			email: '',
+			password: '',
+			confirm_password: '',
+			validation_errors: {}
 		};
 
-		this.handleUsernameChange = this.handleUsernameChange.bind(this);
-		this.handlePasswordChange = this.handlePasswordChange.bind(this);
+		this.validator = new FormValidator(this.state)
+			.field('email', 'Email', isEmail)
+			.field('password', 'Password', minLength(PASSWORD_MIN_LENGTH))
+			.field('confirm_password', 'Password Confirmation', mustMatch('password', 'Password'));
+
+		this.handleFieldChange = this.handleFieldChange.bind(this);
+		this.handleFieldBlur = this.handleFieldBlur.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	handleUsernameChange (event) {
-		this.setState({username: event.target.value});
+	componentDidUpdate () {
+		this.validator.setState(this.state);
 	}
 
-	handlePasswordChange (event) {
-		this.setState({password: event.target.value});
+	handleFieldChange (event, field) {
+		const newValue = event.target.value;
+
+		this.setState({
+			[field]: newValue,
+			validation_errors: this.validator.validateField(field, 'change', newValue)
+		});
+	}
+
+	handleFieldBlur (event, field) {
+		const newValue = event.target.value;
+
+		this.setState({
+			[field]: newValue,
+			validation_errors: this.validator.validateField(field, 'blur', newValue)
+		});
 	}
 
 	handleSubmit (event) {
 		event.preventDefault();
-		this.props.register(this.state.username, this.state.password);
+
+		const errors = this.validator.validateForm();
+
+		if (this.validator.hasErrors()) {
+			this.setState({validation_errors: errors});
+
+			return;
+		}
+
+		this.props.register(this.state.email, this.state.password);
 	}
 
 	render () {
@@ -45,10 +78,29 @@ export class RegisterForm extends React.Component {
 
 		return (
 			<form onSubmit={this.handleSubmit}>
-				{this.props.error &&
-					<p>{this.props.error}</p>}
-				<TextField label="Email" value={this.state.username} onChange={this.handleUsernameChange} />
-				<TextField label="Password" type="password" value={this.state.password} onChange={this.handlePasswordChange} />
+				<TextField
+					name="email"
+					label="Email"
+					value={this.state.email}
+					error={this.state.validation_errors.email}
+					onChange={this.handleFieldChange}
+					onBlur={this.handleFieldBlur} />
+				<TextField
+					name="password"
+					label="Password"
+					type="password"
+					value={this.state.password}
+					error={this.state.validation_errors.password}
+					onChange={this.handleFieldChange}
+					onBlur={this.handleFieldBlur} />
+				<TextField
+					name="confirm_password"
+					label="Confirm Password"
+					type="password"
+					value={this.state.confirm_password}
+					error={this.state.validation_errors.confirm_password}
+					onChange={this.handleFieldChange}
+					onBlur={this.handleFieldBlur} />
 				<Actions>
 					<Button type="filled" submitForm={true}>Create Account</Button>
 				</Actions>
@@ -60,17 +112,12 @@ export class RegisterForm extends React.Component {
 RegisterForm.propTypes = {
 	isLoggedIn: PropTypes.bool,
 	isLoading: PropTypes.bool,
-	error: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.bool
-	]),
 	register: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({
 		isLoggedIn: session.selectors.isAuthenticated(state.session),
-		isLoading: state.session.isFetching,
-		error: state.session.error
+		isLoading: state.session.isFetching
 	}),
 	mapDispatchToProps = (dispatch) => ({
 		register: (username, password) => {
