@@ -105,7 +105,7 @@ class Automator {
 		return !any_conditions_failed;
 	}
 
-	runAutomation (automation) {
+	runAutomation (automation, data = {}) {
 		if (!automation.is_enabled || !this.checkConditions(automation.conditions)) {
 			return;
 		}
@@ -119,7 +119,7 @@ class Automator {
 		automation.notifications.forEach((notification) => {
 			console.log(TAG, automation.id, 'Sending Notification:', notification);
 
-			Notification.sendNotification(notification, automation.account_id);
+			Notifications.sendNotification(data, notification, automation.account_id);
 		});
 	}
 

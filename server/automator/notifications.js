@@ -35,13 +35,16 @@ class Notifications {
 		});
 	}
 
-	sendNotification (notification) {
+	sendNotification (data, notification, account_id) {
 		switch (notification.type) {
 			case 'email':
 				this.sendEmail(notification);
 				break;
 			case 'sms':
 				this.sendText(notification);
+				break;
+			case 'motion':
+				this.sendImageAlert(data, notification);
 				break;
 			default:
 				break;
@@ -68,7 +71,24 @@ class Notifications {
 			from: this.email,
 			to: notification.number + CELL_PROVIDERS[notification.provider],
 			subject: notification.subject,
-			html: notification.message
+			text: notification.message
+		};
+
+		this.transporter.sendMail(this.mailOptions, (error) => {
+			if (error) {
+				console.log(error);
+			}
+		});
+
+	}
+
+	sendMotionAlert (data, notification) {
+		this.mailOptions = {
+			from: this.email,
+			to: notification.email,
+			subject: '!Notification Alert: Motion detected ' + data.time + '.',
+			html: data.html,
+			attachments: data.attachments
 		};
 
 		this.transporter.sendMail(this.mailOptions, (error) => {
