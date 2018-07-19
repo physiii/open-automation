@@ -30,31 +30,41 @@ export class TextField extends React.Component {
 		this.setState({is_focused: true});
 	}
 
-	handleBlur () {
+	handleBlur (event) {
 		this.setState({is_focused: false});
+
+		if (typeof this.props.onBlur === 'function') {
+			this.props.onBlur(event, this.props.name);
+		}
 	}
 
 	handleChange (event) {
 		this.setState({value: event.target.value});
 
 		if (typeof this.props.onChange === 'function') {
-			this.props.onChange(event);
+			this.props.onChange(event, this.props.name);
 		}
 	}
 
 	render () {
 		return (
-			<div styleName={this.state.is_focused ? 'fieldFocused' : 'field'}>
-				{this.state.value.length > 0
-					? null
-					: <label styleName="label">{this.props.label}</label>}
-				<input
-					styleName="input"
-					type={this.props.type}
-					value={this.state.value}
-					onChange={this.handleChange}
-					onFocus={this.handleFocus}
-					onBlur={this.handleBlur} />
+			<div styleName="container">
+				<div styleName={'field' + (this.state.is_focused ? ' fieldFocused' : '') + (this.props.error ? ' fieldError' : '')}>
+					{this.state.value.length > 0
+						? null
+						: <label styleName="label">{this.props.label}</label>}
+					<input
+						styleName="input"
+						type={this.props.type}
+						value={this.state.value}
+						onChange={this.handleChange}
+						onFocus={this.handleFocus}
+						onBlur={this.handleBlur} />
+				</div>
+				<div styleName="bottom">
+					{this.props.error &&
+						<label styleName="errorMessage">{this.props.error}</label>}
+				</div>
 			</div>
 		);
 	}
@@ -62,12 +72,15 @@ export class TextField extends React.Component {
 
 TextField.propTypes = {
 	label: PropTypes.string,
+	name: PropTypes.string,
 	value: PropTypes.string,
+	error: PropTypes.string,
 	type: PropTypes.oneOf([
 		'text',
 		'password'
 	]),
-	onChange: PropTypes.func
+	onChange: PropTypes.func,
+	onBlur: PropTypes.func
 };
 
 TextField.defaultProps = {
