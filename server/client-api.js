@@ -2,21 +2,7 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	config = require('../config.json'),
 	jwt = require('jsonwebtoken'),
-	nodemailer = require('nodemailer'),
-	smtpTransport = require('nodemailer-smtp-transport'),
 	TAG = '[client-api.js]';
-
-if (config.mail) {
-	var transporter = nodemailer.createTransport(
-		smtpTransport({
-			service: config.mail.service,
-			auth: {
-				user: config.mail.from_user,
-				pass: config.mail.password
-			}
-		})
-	);
-}
 
 function verifyAuthentication (access_token, jwt_secret, xsrf_token) {
 	return new Promise((resolve, reject) => {
@@ -187,7 +173,7 @@ module.exports = function (onConnection, jwt_secret) {
 			clientEndpoint('device/remove', (data, callback) => {
 				const device = data.device;
 
-				DevicesManager.deleteDevice(device.id).then(() => {
+				DevicesManager.deleteDevice(device.id, account.id).then(() => {
 					if (typeof callback === 'function') {
 						callback(null, {});
 					}
@@ -320,7 +306,7 @@ module.exports = function (onConnection, jwt_secret) {
 
 			// Lock Service API
 
-			clientEndpoint('lock/lock', function (data, callback) {
+			clientEndpoint('lock/lock/set', function (data, callback) {
 				const lockService = data.service;
 
 				lockService.lock().then(() => {
@@ -334,7 +320,7 @@ module.exports = function (onConnection, jwt_secret) {
 				});
 			});
 
-			clientEndpoint('lock/unlock', function (data, callback) {
+			clientEndpoint('lock/unlock/set', function (data, callback) {
 				const lockService = data.service;
 
 				lockService.unlock().then(() => {
@@ -494,52 +480,6 @@ module.exports = function (onConnection, jwt_secret) {
 
 
 			// Legacy API - DEPRECATED
-
-			socket.on('DEPRECATED motion detected', function (data) {
-				console.log('motion detected', data.toString());
-				if (!motionStarted) {
-					motionStarted = true;
-					var mailOptions = {
-						from: config.mail.from_user,
-						to: config.mail.to_user,
-						subject: 'Motion Detected',
-						text: data.toString()
-					};
-
-					if (transporter) {
-						transporter.sendMail(mailOptions, function (error, info) {
-							if (error) {
-								console.log(error);
-							} else {
-								console.log('Email sent: ' + info.response);
-							}
-						});
-					}
-				}
-			});
-
-			socket.on('DEPRECATED motion stopped', function (data) {
-				console.log('motion stopped', data.toString());
-				if (motionStarted) {
-					motionStarted = false;
-					var mailOptions = {
-						from: config.mail.from_user,
-						to: config.mail.to_user,
-						subject: 'Motion Stopped',
-						text: data.toString()
-					};
-
-					if (transporter) {
-						transporter.sendMail(mailOptions, function (error, info) {
-							if (error) {
-								console.log(error);
-							} else {
-								console.log('Email sent: ' + info.response);
-							}
-						});
-					}
-				}
-			});
 
 			clientEndpoint('DEPRECATED get contacts', function (data) {
 				var group_index = find_index(groups, 'group_id', data.user_token);
