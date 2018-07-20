@@ -12,7 +12,12 @@ class DevicesManager {
 	constructor () {
 		this.events = new EventEmitter();
 
+		this.init = this.init.bind(this);
 		this.handleDeviceUpdate = this.handleDeviceUpdate.bind(this);
+	}
+
+	init () {
+		return this.loadDevicesFromDb();
 	}
 
 	on () {
@@ -68,18 +73,23 @@ class DevicesManager {
 				}).catch((error) => {
 					// Since the token wasn't successfully set, delete the
 					// device so the user can try again.
-					this.deleteDevice(device.id);
+					this.deleteDevice(device.id, device.account && device.account.id);
 					reject(error);
 				});
 			}).catch(reject);
 		});
 	}
 
-	deleteDevice (deviceId) {
+	deleteDevice (deviceId, accountId) {
 		return new Promise((resolve, reject) => {
-			database.deleteDevice(deviceId).then(() => {
-				const device = this.getDeviceById(deviceId, null, true);
+			const device = this.getDeviceById(deviceId, accountId);
 
+			if (!device) {
+				reject('No device belonging to that account was found with that ID.');
+				return;
+			}
+
+			database.deleteDevice(deviceId).then(() => {
 				// Disconnect the socket.
 				if (device && device.gatewaySocket && device.gatewaySocket.connected) {
 					device.gatewaySocket.disconnect(true);

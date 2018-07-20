@@ -12,8 +12,6 @@ const fs = require('fs'),
 	ScenesManager = require('./scenes/scenes-manager.js'),
 	Automator = require('./automator/automator.js');
 
-
-
 // Import config or create new config.json with defaults.
 try {
 	const config = require('../config.json');
@@ -37,11 +35,11 @@ try {
 	}
 }
 
-AccountsManager.loadAccountsFromDb();
-DevicesManager.loadDevicesFromDb();
-ScenesManager.loadScenesFromDb();
-Automator.loadAutomationsFromDb();
-
-
-startStreamRelay();
-startWebsite(express());
+AccountsManager.init()
+	.then(DevicesManager.init)
+	.then(ScenesManager.init)
+	.then(Automator.init)
+	.then(() => {
+		startStreamRelay();
+		startWebsite(express());
+	});
