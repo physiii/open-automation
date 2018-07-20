@@ -1,0 +1,28 @@
+.app {
+	composes: fillContext from "../styles/helpers.css";
+	display: flex;
+	flex-flow: column nowrap;
+}
+.toolbar {
+	display: flex;
+	flex-flow: column nowrap;
+	flex: 0 0 auto;
+}
+.content {
+	flex: 1 1 auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 100%;
+}
+.contentCentered {
+	composes: content;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+}
+.tabBar {
+	display: flex;
+	flex-flow: column nowrap;
+	flex: 0 0 64px;
+}

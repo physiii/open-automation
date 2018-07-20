@@ -1,0 +1,11 @@
+/* Main app tab bar. */
+
+@value tabBarBackground from "../styles/colors.css";
+
+.tabBar {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	flex: 1 1 auto;
+	background-color: tabBarBackground;
+}

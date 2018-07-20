@@ -1,0 +1,36 @@
+* { box-sizing: border-box; }
+
+h1, h2, h3, h4, h5, h6 {
+	margin: 0;
+	font-size: 100%;
+	font-weight: normal;
+}
+a {
+	text-decoration: none;
+	cursor: pointer;
+}
+ol,
+ul,
+menu,
+li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+button {
+	padding: 0;
+	background: transparent;
+	border: 0;
+}
+svg {
+	display: inline-block;
+	pointer-events: none;
+}
+iframe { border: 0; }
+img {
+	display: inline-block;
+	max-width: 100%;
+	max-height: 100%;
+}
+figure { margin: 0; }
+label { cursor: inherit; }
