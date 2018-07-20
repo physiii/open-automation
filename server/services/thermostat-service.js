@@ -1,0 +1,65 @@
+const Service = require('./service.js'),
+	TAG = '[ThermostatService]';
+
+class ThermostatService extends Service {
+	constructor (data, onUpdate, driverClass) {
+		super(data, onUpdate);
+
+		this.type = 'thermostat';
+
+		//this.setSettings(data.settings || {});
+
+		this.driver = new driverClass(this.id);
+		this.subscribeToDriver();
+	}
+
+	subscribeToDriver () {}
+
+	action(data) {
+		switch (data.property) {
+			case 'target_temp':
+				this.setTemp(data.value);
+				break;
+			case 'set_mode':
+				this.setThermostatMode(data.value);
+				break;
+			case 'set_hold':
+				this.setHoldMode(data.value);
+				break;
+			case 'set_fan':
+				this.setFanMode(data.value);
+				break;
+			default:
+				break;
+		};
+	}
+
+	setTemp(temp) {
+		return this.driver.setTemp(temp);
+	}
+
+	setThermostatMode (mode) {
+		return this.driver.setThermostatMode(mode);
+	}
+
+	setHoldMode (mode) {
+		return this.driver.setHoldMode(mode);
+	}
+
+	setFanMode (Mode) {
+		return this.driver.setFanMode(mode);
+	}
+
+	serialize () {
+		return {
+			...Service.prototype.serialize.apply(this, arguments),
+			ip: this.ip
+		};
+	}
+
+	dbSerialize () {
+		return this.serialize();
+	}
+}
+
+module.exports = ThermostatService;
