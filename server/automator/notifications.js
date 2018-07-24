@@ -86,7 +86,7 @@ class Notifications {
 		this.mailOptions = {
 			from: this.email,
 			to: notification.email,
-			subject: '!Notification Alert: Motion detected ' + data.time + '.',
+			subject: '!Notification Alert: Motion detected ' + data.timestamp + '.',
 			html: data.html,
 			attachments: data.attachments
 		};
