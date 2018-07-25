@@ -112,7 +112,7 @@ class Device {
 			}
 
 			if (data.device.services) {
-				this.services.updateServices(data.device.services);
+				this.services.updateServices(data.device.services, this.getGatewaySocketProxy());
 			}
 
 			if (data.device.info) {
