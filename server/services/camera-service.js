@@ -13,7 +13,7 @@ class CameraService extends Service {
 
 	subscribeToDriver () {
 		this.driver.on('state update', (state) => this.setState(state));
-		this.driver.on('motion-recorded', (data) => this.on('motion-recorded', data));
+		this.driver.on('motion-recorded', (data) => this.events.emit('motion-recorded', data));
 	}
 
 	setSettings (settings = {}) {
