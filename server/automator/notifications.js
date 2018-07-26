@@ -118,7 +118,7 @@ class Notifications {
 			from: this.email,
 			to: notification.email,
 			subject: '!Notification Alert: Motion detected ' + data.time + '.',
-			html: '<img src="cid:preview_img1"/><br>' + data.html,
+			html: '<img src="cid:preview_img1"/>' + '<br>' + data.html,
 			attachments: [
 				{
 					filename: 'Preview_Image.jpg',
@@ -139,53 +139,3 @@ class Notifications {
 }
 
 module.exports = new Notifications();
-
-/*
-	Legacy API - DEPRECATED
-
-	socket.on('DEPRECATED motion detected', function (data) {
-		console.log('motion detected', data.toString());
-		if (!motionStarted) {
-			motionStarted = true;
-			var mailOptions = {
-				from: config.mail.from_user,
-				to: config.mail.to_user,
-				subject: 'Motion Detected',
-				text: data.toString()
-			};
-
-			if (transporter) {
-				transporter.sendMail(mailOptions, function (error, info) {
-					if (error) {
-						console.log(error);
-					} else {
-						console.log('Email sent: ' + info.response);
-					}
-				});
-			}
-		}
-	});
-
-	socket.on('DEPRECATED motion stopped', function (data) {
-		console.log('motion stopped', data.toString());
-		if (motionStarted) {
-			motionStarted = false;
-			var mailOptions = {
-				from: config.mail.from_user,
-				to: config.mail.to_user,
-				subject: 'Motion Stopped',
-				text: data.toString()
-			};
-
-			if (transporter) {
-				transporter.sendMail(mailOptions, function (error, info) {
-					if (error) {
-						console.log(error);
-					} else {
-						console.log('Email sent: ' + info.response);
-					}
-				});
-			}
-		}
-	});
-	*/
