@@ -117,9 +117,16 @@ class Notifications {
 		this.mailOptions = {
 			from: this.email,
 			to: notification.email,
-			subject: '!Notification Alert: Motion detected ' + data.timestamp + '.',
-			html: data.html//,
-			//attachments: data.attachments
+			subject: '!Notification Alert: Motion detected ' + data.time + '.',
+			html: '<img src="cid:preview_img1"/><br>' + data.html,
+			attachments: [
+				{
+					filename: 'Preview_Image.jpg',
+					content: data.image.split("base64,")[1],
+					encoding:'base64',
+					cid: 'preview_img1'
+				}
+			]
 		};
 
 		this.transporter.sendMail(this.mailOptions, (error) => {
