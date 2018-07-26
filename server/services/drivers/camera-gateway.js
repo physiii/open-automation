@@ -77,7 +77,7 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 					reject(error);
 					return;
 				}
-l
+
 				resolve();
 			});
 		});
