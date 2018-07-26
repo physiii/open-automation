@@ -74,6 +74,20 @@ class Api {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
+	// Set Lock Api
+
+	setLock (lockServiceId) {
+		return Api.apiCall('lock/lock', {service_id: lockServiceId});
+	}
+
+	setUnlock (lockServiceId) {
+		return Api.apiCall('lock/unlock', {service_id: lockServiceId});
+	}
+
+	setRelockDelay (lockServiceId, relockDelay) {
+		return Api.apiCall('lock/relock-delay/set', {service_id: lockServiceId, relock_delay: relockDelay});
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {
