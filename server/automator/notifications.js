@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
 	config = require('../../config.json'),
+	moment = require('mnoment'),
 	CELL_PROVIDERS = {
 	'ATT':'@mms.att.net',
 	'TMobile':'@tmomail.net',
@@ -44,12 +45,42 @@ class Notifications {
 				this.sendText(notification);
 				break;
 			case 'motion':
-				this.sendImageAlert(data, notification);
+				this.alertBuild(data).then((recording)=>{
+					this.sendImageAlert(recording, notification);
+				}).catch((err) => {
+					console.log(err);
+				});
 				break;
 			default:
 				break;
 		}
 	}
+
+	alertBuild(data = {}) {
+		return new Promise ((resolve,reject) => {
+			if (!data) {
+				reject('No Data for alert');
+			}
+
+			const file_path = config.domain_name
+			 	+ ':'
+			 	+ config.website_port.toString()
+			 	+ '/dashboard/recordings/'
+			 	+ data.recording.camera_id
+				+ moment().format('/YYYY/MM/DD/')
+			 	+ data.recording.id,
+				results = {
+			 	preview_img: data.image,
+			 	timestamp: data.time,
+			 	html: '<a href=\"'
+								+ file_path
+								+'\" target="_blank" style="font-size:20px;">Click here to Play Video</a>'
+			};
+
+			resolve(results);
+		})
+	}
+
 
 	sendEmail (notification) {
 		this.mailOptions = {
@@ -87,8 +118,8 @@ class Notifications {
 			from: this.email,
 			to: notification.email,
 			subject: '!Notification Alert: Motion detected ' + data.timestamp + '.',
-			html: data.html,
-			attachments: data.attachments
+			html: data.html//,
+			//attachments: data.attachments
 		};
 
 		this.transporter.sendMail(this.mailOptions, (error) => {
