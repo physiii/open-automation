@@ -77,7 +77,7 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 					reject(error);
 					return;
 				}
-
+l
 				resolve();
 			});
 		});
@@ -85,6 +85,8 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 
 	listenToGateway () {
 		GatewayServiceDriver.prototype.listenToGateway.apply(this, arguments);
+
+		this.gatewayOn('motion-recorded', (data) => this.events.emit('motion-recorded', data));
 	}
 }
 
