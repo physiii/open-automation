@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
 	config = require('../../config.json'),
-	moment = require('mnoment'),
+	moment = require('moment'),
 	CELL_PROVIDERS = {
 	'ATT':'@mms.att.net',
 	'TMobile':'@tmomail.net',
@@ -36,7 +36,7 @@ class Notifications {
 		});
 	}
 
-	sendNotification (data, notification, account_id) {
+	sendNotification (event_data, notification, account_id) {
 		switch (notification.type) {
 			case 'email':
 				this.sendEmail(notification);
@@ -44,9 +44,9 @@ class Notifications {
 			case 'sms':
 				this.sendText(notification);
 				break;
-			case 'motion':
-				this.alertBuild(data).then((recording)=>{
-					this.sendImageAlert(recording, notification);
+			case 'motion-recorded':
+				this.alertBuild(event_data).then((recording)=>{
+					this.sendMotionAlert(recording, notification);
 				}).catch((err) => {
 					console.log(err);
 				});
@@ -56,9 +56,9 @@ class Notifications {
 		}
 	}
 
-	alertBuild(data = {}) {
+	alertBuild(event_data = {}) {
 		return new Promise ((resolve,reject) => {
-			if (!data) {
+			if (!event_data) {
 				reject('No Data for alert');
 			}
 
@@ -66,13 +66,13 @@ class Notifications {
 			 	+ ':'
 			 	+ config.website_port.toString()
 			 	+ '/dashboard/recordings/'
-			 	+ data.recording.camera_id
+			 	+ event_data.recording.camera_id
 				+ moment().format('/YYYY/MM/DD/')
-			 	+ data.recording.id,
+			 	+ event_data.recording.id,
 				results = {
-			 	preview_img: data.image,
-			 	timestamp: data.time,
-			 	html: '<a href=\"'
+			 	preview_img: 'data:image/jpg;base64,' + event_data.image,
+			 	timestamp: event_data.time,
+			 	html: '<a href=\"http://'
 								+ file_path
 								+'\" target="_blank" style="font-size:20px;">Click here to Play Video</a>'
 			};
@@ -113,17 +113,16 @@ class Notifications {
 
 	}
 
-	sendMotionAlert (data, notification) {
+	sendMotionAlert (recording, notification) {
 		this.mailOptions = {
 			from: this.email,
 			to: notification.email,
-			subject: '!Notification Alert: Motion detected ' + data.time + '.',
-			html: '<img src="cid:preview_img1"/>' + '<br>' + data.html,
+			subject: '!Notification Alert: Motion detected ' + recording.time + '.',
+			html: '<img src="cid:preview_img1"/>' + '<br>' + recording.html,
 			attachments: [
 				{
 					filename: 'Preview_Image.jpg',
-					content: data.image.split("base64,")[1],
-					encoding:'base64',
+					content: new Buffer(recording.preview_img.split("base64,")[1], "base64"),
 					cid: 'preview_img1'
 				}
 			]
