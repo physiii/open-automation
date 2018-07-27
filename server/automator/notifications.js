@@ -20,6 +20,7 @@ const nodemailer = require('nodemailer'),
 class Notifications {
 	constructor () {
 		this.mailOptions = {};
+		this.record_path;
 		this.email = config.smtp_transport.auth.user;
 		this.init();
 	}
@@ -45,11 +46,9 @@ class Notifications {
 				this.sendText(notification);
 				break;
 			case 'motion-recorded':
-				this.alertBuild(event_data).then((recording)=>{
-					this.sendMotionAlert(recording, notification);
-				}).catch((err) => {
-					console.log(err);
-				});
+				this.record_path = this.alertBuild(event_data);
+				if (notification.number)this.sendMotionText(this.record_path, notification);
+				if (notification.email)this.sendMotionEmail(this.record_path, notification);
 				break;
 			default:
 				break;
@@ -57,9 +56,8 @@ class Notifications {
 	}
 
 	alertBuild(event_data = {}) {
-		return new Promise ((resolve,reject) => {
 			if (!event_data) {
-				reject('No Data for alert');
+				return console.log('No Data for alert');
 			}
 
 			const file_path = config.domain_name
@@ -72,13 +70,13 @@ class Notifications {
 				results = {
 			 	preview_img: 'data:image/jpg;base64,' + event_data.image,
 			 	timestamp: event_data.time,
-			 	html: '<a href=\"http://'
+				html: '<a href=\"http://'
 								+ file_path
-								+'\" target="_blank" style="font-size:20px;">Click here to Play Video</a>'
+								+'\" target="_blank" style="font-size:20px;">Click here to Play Video</a>',
+				text_link: 'http://' + file_path
 			};
 
-			resolve(results);
-		})
+			return results;
 	}
 
 
@@ -113,12 +111,35 @@ class Notifications {
 
 	}
 
-	sendMotionAlert (recording, notification) {
+	sendMotionText (recording, notification) {
+		this.mailOptions = {
+			from: this.email,
+			to: notification.number + CELL_PROVIDERS[notification.provider],
+			subject: '!Notification Alert: Motion detected.',
+			html: 'Click Link to view Recording: ' + recording.text_link + '<br>' +  '<img src="cid:preview_img1"/>',
+			attachments: [
+				{
+					filename: 'Preview_Image.jpg',
+					content: new Buffer(recording.preview_img.split("base64,")[1], "base64"),
+					cid: 'preview_img1'
+				}
+			]
+		};
+
+		this.transporter.sendMail(this.mailOptions, (error) => {
+			if (error) {
+				console.log(error);
+			}
+		});
+
+	}
+
+	sendMotionEmail (recording, notification) {
 		this.mailOptions = {
 			from: this.email,
 			to: notification.email,
-			subject: '!Notification Alert: Motion detected ' + recording.time + '.',
-			html: recording.html + '<br>' +  '<img src="cid:preview_img1"/>' + '<br>',
+			subject: '!Notification Alert: Motion detected.',
+			html: recording.html + '<br>' +  '<img src="cid:preview_img1"/>',
 			attachments: [
 				{
 					filename: 'Preview_Image.jpg',
