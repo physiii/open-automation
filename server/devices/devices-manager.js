@@ -37,7 +37,7 @@ class DevicesManager {
 				gateway: this.getServiceById(data.gateway_id, data.account_id)
 			},
 			this.handleDeviceUpdate,
-			data.gatewaySocket || this.getFromSocketEscrow(data.id, data.token)
+			data.gateway_socket || this.getFromSocketEscrow(data.id, data.token)
 		);
 
 		this.removeFromSocketEscrow(data.id, data.token);
@@ -81,8 +81,8 @@ class DevicesManager {
 				const device = this.getDeviceById(deviceId, null, true);
 
 				// Disconnect the socket.
-				if (device && device.gatewaySocket && device.gatewaySocket.connected) {
-					device.gatewaySocket.disconnect(true);
+				if (device && device.gateway_socket && device.gateway_socket.connected) {
+					device.gateway_socket.disconnect(true);
 				}
 
 				devicesList.delete(deviceId);
