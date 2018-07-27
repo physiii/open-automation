@@ -1,15 +1,16 @@
 const crypto = require('crypto'),
 	Service = require('./service.js'),
+	GatewayServiceDriver = require('./drivers/gateway.js'),
 	COMMAND_TOKEN_SIZE = 8,
 	TAG = '[GatewayService]';
 
 class GatewayService extends Service {
-	constructor (data, onUpdate, driverClass) {
+	constructor (data, onUpdate, gateway_socket) {
 		super(data, onUpdate);
 
 		this.type = 'gateway';
 
-		this.driver = new driverClass(this.id, 'gateway');
+		this.driver = new GatewayServiceDriver(this.id, 'gateway', gateway_socket);
 	}
 
 	getDevices () {

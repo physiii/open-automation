@@ -117,7 +117,7 @@ RegisterForm.propTypes = {
 
 const mapStateToProps = (state) => ({
 		isLoggedIn: session.selectors.isAuthenticated(state.session),
-		isLoading: state.session.isFetching
+		isLoading: session.selectors.isLoading(state.session)
 	}),
 	mapDispatchToProps = (dispatch) => ({
 		register: (username, password) => {

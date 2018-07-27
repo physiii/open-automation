@@ -1,13 +1,14 @@
 const Service = require('./service.js'),
+	GatewayLockDriver = require('./drivers/lock-gateway.js'),
 	TAG = '[LockService]';
 
 class LockService extends Service {
-	constructor (data, onUpdate, driverClass) {
+	constructor (data, onUpdate, gateway_socket) {
 		super(data, onUpdate);
 
 		this.type = 'lock';
 
-		this.driver = new driverClass(this.id);
+		this.driver = new GatewayLockDriver(this.id, gateway_socket);
 		this.subscribeToDriver();
 	}
 

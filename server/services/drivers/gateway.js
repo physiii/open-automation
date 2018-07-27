@@ -1,12 +1,13 @@
 const EventEmitter = require('events');
 
 class GatewayServiceDriver {
-	constructor (serviceId, eventNamespace, gatewaySocket) {
-		this.eventPrefix = eventNamespace + '/' + serviceId;
+	constructor (service_id, event_namespace, gateway_socket) {
+		this.event_prefix = event_namespace + '/' + service_id;
 		this.events = new EventEmitter();
 
-		if (gatewaySocket) {
-			this.setGatewaySocket(gatewaySocket);
+		if (gateway_socket) {
+			this.gateway_socket = gateway_socket;
+			this.listenToGateway();
 		}
 	}
 
@@ -18,17 +19,12 @@ class GatewayServiceDriver {
 		this.gatewayOn('state', (data) => this.events.emit('state update', data.state));
 	}
 
-	setGatewaySocket (gatewaySocket) {
-		this.gatewaySocket = gatewaySocket;
-		this.listenToGateway();
-	}
-
 	gatewayOn (event, callback) {
-		this.gatewaySocket.on(this.eventPrefix + '/' + event, callback);
+		this.gateway_socket.on(this.event_prefix + '/' + event, callback);
 	}
 
 	gatewayEmit (event, data, callback) {
-		this.gatewaySocket.emit(this.eventPrefix + '/' + event, data, callback);
+		this.gateway_socket.emit(this.event_prefix + '/' + event, data, callback);
 	}
 
 	getDevices (command) {

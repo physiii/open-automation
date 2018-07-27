@@ -1,13 +1,13 @@
 const GatewayServiceDriver = require('./gateway.js');
 
 class GatewayThermostatDriver extends GatewayServiceDriver {
-	constructor (thermostatId, gatewaySocket) {
-		super(thermostatId, 'thermostat', gatewaySocket);
+	constructor (thermostat_id, gateway_socket) {
+		super(thermostat_id, 'thermostat', gateway_socket);
 	}
 
 	setThermostatMode (mode) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('mode/set', {mode: mode}, (error, data) => {
+			this.gatewayEmit('mode/set', {mode}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -20,7 +20,7 @@ class GatewayThermostatDriver extends GatewayServiceDriver {
 
 	setTemp (temp) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('temp/set', {temp: temp}, (error, data) => {
+			this.gatewayEmit('temp/set', {temp}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -33,7 +33,7 @@ class GatewayThermostatDriver extends GatewayServiceDriver {
 
 	setHoldMode (mode) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('holdMode/set', {mode: mode}, (error, data) => {
+			this.gatewayEmit('holdMode/set', {mode}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -46,7 +46,7 @@ class GatewayThermostatDriver extends GatewayServiceDriver {
 
 	setFanMode (mode) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('fanMode/set', {mode: mode}, (error, data) => {
+			this.gatewayEmit('fanMode/set', {mode}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
