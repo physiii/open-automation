@@ -118,7 +118,7 @@ class Notifications {
 			from: this.email,
 			to: notification.email,
 			subject: '!Notification Alert: Motion detected ' + recording.time + '.',
-			html: '<img src="cid:preview_img1"/>' + '<br>' + recording.html,
+			html: recording.html + '<br>' +  '<img src="cid:preview_img1"/>' + '<br>',
 			attachments: [
 				{
 					filename: 'Preview_Image.jpg',
