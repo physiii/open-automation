@@ -22,7 +22,7 @@
     "getmac": "^1.4.1",
     "immutable": "^3.8.2",
     "jsonwebtoken": "^8.3.0",
-    "moment": "^2.22.1",
+    "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
     "mongodb": "^2.2.1",
     "nodemailer": "^4.6.4",

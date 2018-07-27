@@ -67,7 +67,9 @@ class Automator {
 					return;
 				}
 
-				service.on(trigger.event + '.' +  automation.id, () => this.runAutomation(automation));
+				service.on(trigger.event + '.' +  automation.id, (event_data) => {
+					this.runAutomation(automation, event_data);
+				});
 			}
 		});
 	}
@@ -105,7 +107,7 @@ class Automator {
 		return !any_conditions_failed;
 	}
 
-	runAutomation (automation, data = {}) {
+	runAutomation (automation, event_data = {}) {
 		if (!automation.is_enabled || !this.checkConditions(automation.conditions)) {
 			return;
 		}
@@ -117,9 +119,7 @@ class Automator {
 		});
 
 		automation.notifications.forEach((notification) => {
-			console.log(TAG, automation.id, 'Sending Notification:', notification);
-
-			Notifications.sendNotification(data, notification, automation.account_id);
+			Notifications.sendNotification(event_data, notification, automation.account_id);
 		});
 	}
 
