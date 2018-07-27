@@ -1,13 +1,14 @@
 const Service = require('./service.js'),
+	GatewayCameraDriver = require('./drivers/camera-gateway.js'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, onUpdate, driverClass) {
+	constructor (data, onUpdate, gateway_socket) {
 		super(data, onUpdate);
 
 		this.type = 'camera';
 
-		this.driver = new driverClass(this.id);
+		this.driver = new GatewayCameraDriver(this.id, gateway_socket);
 		this.subscribeToDriver();
 	}
 
@@ -39,12 +40,12 @@ class CameraService extends Service {
 		return this.driver.getRecordings();
 	}
 
-	streamRecording (recordingId) {
-		return this.driver.streamRecording(recordingId);
+	streamRecording (recording_id) {
+		return this.driver.streamRecording(recording_id);
 	}
 
-	stopRecordingStream (recordingId) {
-		return this.driver.stopRecordingStream(recordingId);
+	stopRecordingStream (recording_id) {
+		return this.driver.stopRecordingStream(recording_id);
 	}
 }
 

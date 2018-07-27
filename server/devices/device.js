@@ -2,47 +2,40 @@ const uuid = require('uuid/v4'),
 	utils = require('../utils.js'),
 	database = require('../database.js'),
 	ServicesManager = require('../services/services-manager.js'),
+	noOp = () => {},
 	TAG = '[Device]';
 
 class Device {
-	constructor (data, onUpdate, gatewaySocket) {
+	constructor (data, onUpdate, gateway_socket) {
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.account = data.account;
 		this.account_id = data.account_id;
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
+		this.gateway_listeners = [];
 
 		this.onUpdate = onUpdate;
-		this.gatewayOn = this.gatewayOn.bind(this);
-		this.gatewayEmit = this.gatewayEmit.bind(this);
+		this.services = new ServicesManager(data.services, this._getGatewaySocketProxy(), this, () => this.onUpdate(this));
 
-		this.services = new ServicesManager(data.services, this, () => this.onUpdate(this));
+		this._setSettings(data.settings);
+		this._setInfo(data.info);
+		this.state = utils.onChange({connected: false}, () => this.onUpdate(this));
 
-		this.setState(data.state);
-		this.setSettings(data.settings);
-		this.setInfo(data.info);
-
-		if (gatewaySocket) {
-			this.setGatewaySocket(gatewaySocket, this.token);
+		if (gateway_socket) {
+			this.setGatewaySocket(gateway_socket, this.token);
 		}
 
 		this.onUpdate(this);
 	}
 
-	setState (state = {}) {
-		this.state = utils.onChange({
-			connected: state.connected || false
-		}, () => this.onUpdate(this));
-	}
-
-	setSettings (settings = {}) {
+	_setSettings (settings = {}) {
 		this.settings = {
 			name: settings.name
 		};
 	}
 
-	setInfo (info = {}) {
+	_setInfo (info = {}) {
 		this.info = {
 			manufacturer: info.manufacturer
 		};
@@ -62,7 +55,7 @@ class Device {
 			this.token = token;
 
 			this.save().then(() => {
-				this.gatewayEmit('token', {token}, (error) => {
+				this._gatewayEmit('token', {token}, (error) => {
 					if (error) {
 						undoTokenChange();
 						reject(error);
@@ -84,27 +77,35 @@ class Device {
 	}
 
 	setGatewaySocket (socket, token) {
-		if (socket === this.gatewaySocket) {
-			return;
-		}
-
 		if (!token || !this.verifyToken(token)) {
 			console.log(TAG, this.id, 'Could not set gateway socket. Invalid device token.');
 			return;
 		}
 
-		this.gatewaySocket = socket;
+		if (socket === this.gateway_socket) {
+			return;
+		}
+
+		// Disconnect the current socket.
+		if (this.gateway_socket) {
+			this.gateway_socket.removeAllListeners();
+			this.gateway_socket.disconnect();
+		}
+
+		this.gateway_socket = socket;
 		this.state.connected = socket.connected;
 
-		// Update the service drivers with the new socket.
-		this.services.setGatewaySocket(this.getGatewaySocketProxy());
+		// Set up gateway listeners on new socket.
+		this.gateway_listeners.forEach((listener) => {
+			this._gatewayOn.apply(this, listener);
+		});
 
-		this.listenToGateway();
+		this._listenToGateway();
 	}
 
-	listenToGateway () {
+	_listenToGateway () {
 		// Update when the gateway sends new state.
-		this.gatewayOn('load', (data, callback = () => {/* no-op */}) => {
+		this._gatewayOn('load', (data, callback = noOp) => {
 			if (!data.device) {
 				callback('No device data provided.');
 
@@ -116,59 +117,53 @@ class Device {
 			}
 
 			if (data.device.info) {
-				this.setInfo(data.info);
+				this._setInfo(data.info);
 			}
 
 			this.onUpdate(this);
 			this.save();
 		});
 
-		// Can't use gatewayOn with socket.io events.
-		this.gatewaySocket.on('connect', (data) => {
-			this.state.connected = true;
-		});
-		this.gatewaySocket.on('disconnect', (data) => {
-			this.state.connected = false;
-		});
+		this._gatewayOn('connect', (data) => this.state.connected = true);
+		this._gatewayOn('disconnect', (data) => this.state.connected = false);
 	}
 
-	gatewayOn (event, localCallback) {
-		if (!this.gatewaySocket) {
+	_gatewayOn (event) {
+		if (!this.gateway_socket) {
 			console.log(TAG, this.id, 'Tried to listen for gateway event "' + event + '" but the device does not have a gateway socket.');
 			return;
 		}
 
-		this.gatewaySocket.on(event, localCallback);
+		this.gateway_socket.on.apply(this.gateway_socket, arguments);
 	}
 
-	gatewayEmit (event, data, callback, should_queue) {
-		if (!this.gatewaySocket) {
+	_gatewayEmit (event, data, callback = noOp, should_queue) {
+		if (!this.gateway_socket) {
 			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the device does not have a gateway socket.');
-
-			if (typeof callback === 'function') {
-				callback('connection');
-			}
-
+			callback('Device not connected');
 			return;
 		}
 
 		if (!this.state.connected && !should_queue) {
 			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the gateway socket is not connected.');
 
-			if (typeof callback === 'function') {
-				callback('connection');
-			}
-
+			callback('Device not connected');
 			return;
 		}
 
-		this.gatewaySocket.emit(event, data, callback);
+		this.gateway_socket.emit(event, data, callback);
 	}
 
-	getGatewaySocketProxy () {
+	_getGatewaySocketProxy () {
 		return {
-			on: this.gatewayOn,
-			emit: this.gatewayEmit
+			on: (function () {
+				this.gateway_listeners.push(arguments);
+
+				if (this.gateway_socket) {
+					this._gatewayOn.apply(this, arguments);
+				}
+			}).bind(this),
+			emit: this._gatewayEmit.bind(this)
 		};
 	}
 
