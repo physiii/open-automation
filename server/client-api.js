@@ -320,6 +320,30 @@ module.exports = function (onConnection, jwt_secret) {
 
 			// Lock Service API
 
+			clientEndpoint('lock/locked/set', function (data, callback) {
+				const lockService = data.service;
+				let action;
+
+				if (data.locked === true) {
+					action = lockService.lock;
+				} else if (data.locked === false) {
+					action = lockService.unlock;
+				} else {
+					callback('Property locked must be either true or false.', data);
+					return;
+				}
+
+				action().then(() => {
+					if (typeof callback === 'function') {
+						callback(null, {});
+					}
+				}).catch((error) => {
+					if (typeof callback === 'function') {
+						callback(error, data);
+					}
+				});
+			});
+
 			clientEndpoint('lock/lock', function (data, callback) {
 				const lockService = data.service;
 

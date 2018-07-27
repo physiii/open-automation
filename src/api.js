@@ -74,6 +74,10 @@ class Api {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
+	lockSetLocked (lockServiceId, locked) {
+		return Api.apiCall('lock/locked/set', {service_id: lockServiceId, locked});
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {
