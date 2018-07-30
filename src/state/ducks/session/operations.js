@@ -16,7 +16,7 @@ const initialize = () => (dispatch) => {
 				});
 			}).catch(() => {
 				// User's access token is invalid. User is not logged in.
-				dispatch(actions.initialize(false));
+				dispatch(logout());
 			});
 		}
 

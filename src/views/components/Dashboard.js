@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import ServiceCard from './ServiceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
@@ -33,6 +33,7 @@ export class Dashboard extends React.Component {
 				<Route path={cameraRecordingsBasePath + '/:cameraId/:year?/:month?/:date?/:recordingId?'} render={(routeProps) => (
 					<CameraRecordings {...routeProps} basePath={cameraRecordingsBasePath} parentPath={this.props.match.path} />
 				)} />
+				<Route render={() => <Redirect to={this.props.match.path} />} />
 			</Switch>
 		);
 	}
