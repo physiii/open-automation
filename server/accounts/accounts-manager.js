@@ -6,6 +6,14 @@ const database = require('../database.js'),
 	TAG = 'AccountsManager';
 
 class AccountsManager {
+	constructor () {
+		this.init = this.init.bind(this);
+	}
+
+	init () {
+		return this.loadAccountsFromDb();
+	}
+
 	_addAccount (account) {
 		if (!account instanceof Account) {
 			console.error(TAG, 'Only instanced of Account can be added to the accounts list.');
@@ -74,7 +82,8 @@ class AccountsManager {
 			database.getAccounts().then((accounts) => {
 				accounts_list.clear();
 				accounts.forEach((account) => this._addAccount(new Account(account)));
-			});
+				resolve();
+			}).catch(reject);
 		});
 	}
 }
