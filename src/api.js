@@ -46,6 +46,8 @@ class Api {
 		return Api.apiCall('device/remove', {device_id: deviceID});
 	}
 
+	// Gateway Service
+
 	getGatewayDevicesToAdd (gatewayServiceId) {
 		return Api.apiCall('gateway/devices-to-add/get', {service_id: gatewayServiceId});
 	}
@@ -53,6 +55,8 @@ class Api {
 	gatewayCommand (gatewayServiceId, command, token) {
 		return Api.apiCall('gateway/command', {service_id: gatewayServiceId, command, command_token: token});
 	}
+
+	// Camera Service
 
 	streamCameraLive (cameraServiceId) {
 		return Api.apiCall('camera/stream/live', {service_id: cameraServiceId});
@@ -72,6 +76,16 @@ class Api {
 
 	stopCameraRecordingStream (cameraServiceId, recordingId) {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
+	}
+
+	// Lock Service
+
+	lockSetLocked (lockServiceId, locked) {
+		return Api.apiCall('lock/locked/set', {service_id: lockServiceId, locked});
+	}
+
+	setRelockDelay (lockServiceId, relockDelay) {
+		return Api.apiCall('lock/relock-delay/set', {service_id: lockServiceId, relock_delay: relockDelay});
 	}
 
 	// Session API
