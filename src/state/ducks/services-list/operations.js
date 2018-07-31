@@ -31,6 +31,9 @@ const startCameraStream = (cameraServiceId) => (dispatch) => {
 	},
 	lockUnlock = (lockServiceId) => () => {
 		Api.lockSetLocked(lockServiceId, false);
+	},
+	lockSetRelockDelay = (lockServiceId, relockDelay) => () => {
+		Api.setRelockDelay(lockServiceId, relockDelay);
 	};
 
 export {
@@ -40,5 +43,6 @@ export {
 	startCameraRecordingStream,
 	stopCameraRecordingStream,
 	lockLock,
-	lockUnlock
+	lockUnlock,
+	lockSetRelockDelay
 };
