@@ -10,9 +10,14 @@ class LockService extends Service {
 
 		this.driver = new GatewayLockDriver(this.id, gateway_socket);
 		this.subscribeToDriver();
+
+		this.lock = this.lock.bind(this);
+		this.unlock = this.unlock.bind(this);
 	}
 
-	subscribeToDriver () {}
+	subscribeToDriver () {
+		this.driver.on('state update', (state) => this.setState(state));
+	}
 
 	lock () {
 		return this.driver.lock();
