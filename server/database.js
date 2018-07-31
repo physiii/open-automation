@@ -12,6 +12,7 @@ module.exports = {
 	saveAccount,
 	getAutomations,
 	saveAutomation,
+	deleteAutomation,
 	getScenes,
 	saveScene,
 	generateId
@@ -207,6 +208,25 @@ function saveAutomation (automation) {
 
 					resolve(record);
 				}, reject);
+		});
+	});
+}
+
+function deleteAutomation (automation_id) {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('automations').remove({id: automation_id}, (error) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'deleteAutomation', error);
+					reject(error);
+
+					return;
+				}
+
+				resolve();
+			}, reject);
 		});
 	});
 }

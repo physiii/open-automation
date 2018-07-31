@@ -85,6 +85,10 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 
 	listenToGateway () {
 		GatewayServiceDriver.prototype.listenToGateway.apply(this, arguments);
+
+		this.gatewayOn('motion-recorded', (event_data) => {
+			this.events.emit('motion-recorded', event_data);
+		});
 	}
 }
 
