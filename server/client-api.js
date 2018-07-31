@@ -329,39 +329,11 @@ module.exports = function (onConnection, jwt_secret) {
 				} else if (data.locked === false) {
 					action = lockService.unlock;
 				} else {
-					callback('Property locked must be either true or false.', data);
+					callback('Property "locked" must be either true or false.', data);
 					return;
 				}
 
 				action().then(() => {
-					if (typeof callback === 'function') {
-						callback(null, {});
-					}
-				}).catch((error) => {
-					if (typeof callback === 'function') {
-						callback(error, data);
-					}
-				});
-			});
-
-			clientEndpoint('lock/lock', function (data, callback) {
-				const lockService = data.service;
-
-				lockService.lock().then(() => {
-					if (typeof callback === 'function') {
-						callback(null, {});
-					}
-				}).catch((error) => {
-					if (typeof callback === 'function') {
-						callback(error, data);
-					}
-				});
-			});
-
-			clientEndpoint('lock/unlock', function (data, callback) {
-				const lockService = data.service;
-
-				lockService.unlock().then(() => {
 					if (typeof callback === 'function') {
 						callback(null, {});
 					}
