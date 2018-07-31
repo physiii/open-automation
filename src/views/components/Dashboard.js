@@ -18,16 +18,15 @@ export class Dashboard extends React.Component {
 	}
 
 	render () {
-		const cameraRecordingsBasePath = this.props.match.path + '/recordings';
+		const cameraRecordingsBasePath = this.props.match.path + '/recordings',
+			serviceCards = this.props.services.map((service) => <ServiceCard service={service} parentPath={this.props.match.path} />).filter(({props}) => ServiceCard.willRenderCard(props));
 
 		return (
 			<Switch>
 				<Route exact path={this.props.match.path} render={() => (
 					<div className="oa-l-cardGrid">
-						{this.props.services.map((service, index) => (
-							<div key={index} className="oa-l-cardGrid--card">
-								<ServiceCard service={service} parentPath={this.props.match.path} />
-							</div>
+						{serviceCards.map((card, index) => (
+							<div key={index} className="oa-l-cardGrid--card">{card}</div>
 						))}
 					</div>
 				)} />

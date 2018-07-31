@@ -11,6 +11,8 @@ export const ServiceCard = (props) => {
 	}
 };
 
+ServiceCard.willRenderCard = (props) => Boolean(ServiceCard(props));
+
 ServiceCard.propTypes = {
 	service: PropTypes.object,
 	parentPath: PropTypes.string
