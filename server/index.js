@@ -10,6 +10,7 @@ const fs = require('fs'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	ScenesManager = require('./scenes/scenes-manager.js'),
+	Notifications = require('./automator/notifications.js'),
 	Automator = require('./automator/automator.js');
 
 // Import config or create new config.json with defaults.
@@ -38,8 +39,10 @@ try {
 AccountsManager.init()
 	.then(DevicesManager.init)
 	.then(ScenesManager.init)
+	.then(Notifications.init)
 	.then(Automator.init)
 	.then(() => {
 		startStreamRelay();
 		startWebsite(express());
-	});
+	})
+	.catch((error) => console.error(error));

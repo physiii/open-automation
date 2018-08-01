@@ -5,6 +5,7 @@ class Automation {
 	constructor (data) {
 		this.id = data.id || uuid();
 		this.is_enabled = data.is_enabled || false;
+		this.name = data.name || '';
 		this.account_id = data.account_id;
 		this.triggers = data.triggers || [];
 		this.conditions = data.conditions || [];

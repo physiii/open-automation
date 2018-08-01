@@ -15,9 +15,13 @@ export class PrivateRoute extends React.Component {
 
 		return (
 			<Route {...rest} render={(props) => {
-				// TODO: Redirect back to current route after login.
 				if (!isLoggedIn) {
-					return <Redirect to="/login" />;
+					return (
+						<Redirect to={{
+							pathname: '/login',
+							state: {from: props.location}
+						}} />
+					);
 				}
 
 				if (typeof render === 'function') {

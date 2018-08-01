@@ -1,18 +1,8 @@
-const Service = require('./service.js'),
-	GatewayService = require('./gateway-service.js'),
-	CameraService = require('./camera-service.js'),
-	LockService = require('./lock-service.js'),
-	ThermostatService = require('./thermostat-service.js'),
-	LightService = require('./light-service.js'),
-	EventMockService = require('./event-mock-service.js'),
-	GatewayServiceDriver = require('./drivers/gateway.js'),
-	GatewayCameraDriver = require('./drivers/camera-gateway.js'),
-	GatewayLockDriver = require('./drivers/lock-gateway.js'),
-	GatewayThermostatDriver = require('./drivers/thermostat-gateway.js'),
-	GatewayLightDriver = require('./drivers/light-gateway.js');
+const Service = require('./service.js');
 
 class ServicesManager {
-	constructor (services = [], device, onServiceUpdate) {
+	constructor (services = [], gateway_socket, device, onServiceUpdate) {
+		this.gateway_socket = gateway_socket;
 		this.device = device;
 		this.services = [];
 
@@ -21,7 +11,8 @@ class ServicesManager {
 		this.updateServices(services);
 	}
 
-	addService (data, gatewaySocket) {
+	addService (data) {
+		const service_class = ServicesManager.classes[data.type] || Service;
 		let service = this.getServiceById(data.id);
 
 		if (service) {
@@ -32,58 +23,26 @@ class ServicesManager {
 			return service;
 		}
 
-		switch (data.type) {
-			case 'camera':
-				service = new CameraService(data, this.onServiceUpdate, GatewayCameraDriver);
-				break;
-			case 'gateway':
-				service = new GatewayService(data, this.onServiceUpdate, GatewayServiceDriver);
-				break;
-			case 'lock':
-				service = new LockService(data, this.onServiceUpdate, GatewayLockDriver);
-				break;
-			case 'thermostat':
-				service = new ThermostatService(data, this.onServiceUpdate, GatewayThermostatDriver);
-				break;
-			case 'light':
-				service = new LightService(data, this.onServiceUpdate, GatewayLightDriver);
-				break;
-			case 'event-mock':
-				service = new EventMockService(data, this.onServiceUpdate);
-				break;
-			default:
-				service = new Service(data, this.onServiceUpdate);
-				break;
-		}
+		// Create the service instance.
+		service = new service_class(
+			{...data, device: this.device},
+			this.onServiceUpdate,
+			this.gateway_socket
+		);
 
-		// If the service is using a gateway driver, pass the gateway socket to
-		// the driver.
-		if (gatewaySocket && service.driver && service.driver.setGatewaySocket) {
-			service.driver.setGatewaySocket(gatewaySocket);
-		}
-
-		service.device = this.device;
 		this.services.push(service);
 
 		return service;
 	}
 
-	updateServices (services, gatewaySocket) {
+	updateServices (services) {
 		if (!services || !services.forEach) {
 			console.error(TAG, '[updateServices] Services must be an array or map.');
 			return;
 		}
 
 		services.forEach((service) => {
-			this.addService(service, gatewaySocket);
-		});
-	}
-
-	setGatewaySocket (socket) {
-		this.services.forEach((service) => {
-			if (service.driver && service.driver.setGatewaySocket) {
-				service.driver.setGatewaySocket(socket);
-			}
+			this.addService(service);
 		});
 	}
 
@@ -103,5 +62,14 @@ class ServicesManager {
 		return this.services.map((service) => service.clientSerialize());
 	}
 }
+
+ServicesManager.classes = {
+	'gateway': require('./gateway-service.js'),
+	'camera': require('./camera-service.js'),
+	'lock': require('./lock-service.js'),
+	'thermostat': require('./thermostat-service.js'),
+	'light': require('./light-service.js'),
+	'event-mock': require('./event-mock-service.js')
+};
 
 module.exports = ServicesManager;

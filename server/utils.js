@@ -4,6 +4,7 @@
 
 module.exports = {
   onChange,
+  stripHtml,
   find_index,
   get_mac,
   get_local_ip,
@@ -97,6 +98,10 @@ function onChange (object, onChange) {
   };
 
   return new Proxy(object, handler);
+}
+
+function stripHtml (string = '') {
+	return string.replace(/(<([^>]+)>)/ig, '');
 }
 
 

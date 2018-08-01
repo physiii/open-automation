@@ -2,8 +2,8 @@ const GatewayServiceDriver = require('./gateway.js'),
 	TAG = '[GatewayLightDriver]';
 
 class GatewayLightDriver extends GatewayServiceDriver {
-	constructor (lightId, gatewaySocket) {
-		super(lightId, 'light', gatewaySocket);
+	constructor (light_id, gateway_socket) {
+		super(light_id, 'light', gateway_socket);
 	}
 
 	lightOn () {
@@ -34,7 +34,7 @@ class GatewayLightDriver extends GatewayServiceDriver {
 
 	setBrightness (brightness) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('brightness/set', {brightness: brightness}, (error, data) => {
+			this.gatewayEmit('brightness/set', {brightness}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -47,7 +47,7 @@ class GatewayLightDriver extends GatewayServiceDriver {
 
 	setColor (color) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('color/set', {color: color}, (error, data) => {
+			this.gatewayEmit('color/set', {color}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -60,7 +60,7 @@ class GatewayLightDriver extends GatewayServiceDriver {
 
 	setLightName (name) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('name/set', {name: name}, (error, data) => {
+			this.gatewayEmit('name/set', {name}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;

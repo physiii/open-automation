@@ -1,160 +1,152 @@
 const nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
 	config = require('../../config.json'),
+	utils = require('../utils.js'),
+	AccountsManager = require('../accounts/accounts-manager.js'),
 	moment = require('moment'),
 	CELL_PROVIDERS = {
-	'ATT':'@mms.att.net',
-	'TMobile':'@tmomail.net',
-	'Verizon':'@vzwpix.com',
-	'Sprint':'@pm.sprint.com',
-	'VirginMobile':'@vmpix.comm',
-	'Tracfone':'@mmst5.tracfone.com',
-	'MetroPCS':'@mymetropcs.com',
-	'Boost':'@myboostmobile.com',
-	'Cricket':'@mms.cricketwireless.net',
-	'US_Cellular':'@mms.uscc.net'
-},
+		'ATT':'@mms.att.net',
+		'TMobile':'@tmomail.net',
+		'Verizon':'@vzwpix.com',
+		'Sprint':'@pm.sprint.com',
+		'VirginMobile':'@vmpix.comm',
+		'Tracfone':'@mmst5.tracfone.com',
+		'MetroPCS':'@mymetropcs.com',
+		'Boost':'@myboostmobile.com',
+		'Cricket':'@mms.cricketwireless.net',
+		'US_Cellular':'@mms.uscc.net'
+	},
 	TAG = '[Notifications.js]';
-
 
 class Notifications {
 	constructor () {
-		this.mailOptions = {};
-		this.record_path;
-		this.email = config.smtp_transport.auth.user;
-		this.init();
+		this.init = this.init.bind(this);
 	}
 
 	init () {
-		this.transporter = nodemailer.createTransport(smtpTransport(config.smtp_transport));
+		return new Promise((resolve, reject) => {
+			if (!config.smtp_transport) {
+				console.log(TAG, 'Mail server is not configured.');
+				resolve();
 
-		this.transporter.verify(function(error, success) {
-			if (error) {
-				console.log(error);
-			} else {
-				console.log('Server is ready to take our messages');
+				return;
+			}
+
+			this.transporter = nodemailer.createTransport(smtpTransport(config.smtp_transport));
+
+			this.transporter.verify((error, success) => {
+				if (error) {
+					console.error(TAG, error);
+					reject(error);
+					return;
+				}
+
+				console.log(TAG, 'Mail server is ready to send messages.');
+				resolve();
+			});
+		});
+	}
+
+	sendNotification (type, recipient, subject, body, attachments) {
+		return new Promise((resolve, reject) => {
+			switch (type) {
+				case 'email':
+					this.sendEmail(recipient, subject, body, attachments).then(resolve).catch((error) => {
+						console.error(TAG, error);
+						reject(error);
+					});
+
+					return;
+				case 'sms':
+					this.sendText(recipient, subject, body, attachments).then(resolve).catch((error) => {
+						console.error(TAG, error);
+						reject(error);
+					});
+
+					return;
+				default:
+					const error = 'Notification type must be either "email" or "sms".';
+
+					console.error(TAG, error);
+					reject(error);
 			}
 		});
 	}
 
-	sendNotification (event_data, notification, account_id) {
-		switch (notification.type) {
-			case 'email':
-				this.sendEmail(notification);
-				break;
-			case 'sms':
-				this.sendText(notification);
-				break;
-			case 'motion-recorded':
-				this.record_path = this.alertBuild(event_data);
-				if (notification.number)this.sendMotionText(this.record_path, notification);
-				if (notification.email)this.sendMotionEmail(this.record_path, notification);
-				break;
-			default:
-				break;
-		}
-	}
+	sendEmail (recipient, subject, body, attachments) {
+		return new Promise((resolve, reject) => {
+			let email, html, text;
 
-	alertBuild(event_data = {}) {
-			if (!event_data) {
-				return console.log('No Data for alert');
+			if (typeof recipient === 'string') {
+				email = recipient;
+			} else {
+				const account = AccountsManager.getAccountById(recipient.account_id);
+
+				email = recipient.email || (account && account.email);
 			}
 
-			const file_path = config.domain_name
-			 	+ ':'
-			 	+ config.website_port.toString()
-			 	+ '/dashboard/recordings/'
-			 	+ event_data.recording.camera_id
-				+ moment().format('/YYYY/MM/DD/')
-			 	+ event_data.recording.id,
-				results = {
-			 	preview_img: 'data:image/jpg;base64,' + event_data.image,
-			 	timestamp: event_data.time,
-				html: '<a href=\"http://'
-								+ file_path
-								+'\" target="_blank" style="font-size:20px;">Click here to Play Video</a>',
-				text_link: 'http://' + file_path
+			if (!email) {
+				const error = 'Email address or account ID is required to send an email notification.';
+
+				console.error(TAG, error);
+				reject(error);
+
+				return;
+			}
+
+			if (typeof body === 'string') {
+				html = text = body;
+			} else {
+				html = '<html><body>' + body.html + '</body></html>';
+				text = body.text && utils.stripHtml(body.text);
+			}
+
+			const message = {
+				from: config.smtp_transport.auth.user,
+				to: email,
+				subject,
+				html,
+				text,
+				attachments
 			};
 
-			return results;
-	}
+			this.transporter.sendMail(message, (error, result) => {
+				if (error) {
+					console.error(TAG, error);
+					reject(error);
 
-
-	sendEmail (notification) {
-		this.mailOptions = {
-			from: this.email,
-			to: notification.email,
-			subject: notification.subject,
-			html: notification.message
-		};
-
-		this.transporter.sendMail(this.mailOptions, (error) => {
-			if (error) {
-				console.log(error);
-			}
-		});
-	}
-
-	sendText (notification) {
-		this.mailOptions = {
-			from: this.email,
-			to: notification.number + CELL_PROVIDERS[notification.provider],
-			subject: notification.subject,
-			text: notification.message
-		};
-
-		this.transporter.sendMail(this.mailOptions, (error) => {
-			if (error) {
-				console.log(error);
-			}
-		});
-
-	}
-
-	sendMotionText (recording, notification) {
-		this.mailOptions = {
-			from: this.email,
-			to: notification.number + CELL_PROVIDERS[notification.provider],
-			subject: '!Notification Alert: Motion detected.',
-			html: 'Click Link to view Recording: ' + recording.text_link + '<br>' +  '<img src="cid:preview_img1"/>',
-			attachments: [
-				{
-					filename: 'Preview_Image.jpg',
-					content: new Buffer(recording.preview_img.split("base64,")[1], "base64"),
-					cid: 'preview_img1'
+					return;
 				}
-			]
-		};
 
-		this.transporter.sendMail(this.mailOptions, (error) => {
-			if (error) {
-				console.log(error);
-			}
+				resolve();
+			});
 		});
-
 	}
 
-	sendMotionEmail (recording, notification) {
-		this.mailOptions = {
-			from: this.email,
-			to: notification.email,
-			subject: '!Notification Alert: Motion detected.',
-			html: recording.html + '<br>' +  '<img src="cid:preview_img1"/>',
-			attachments: [
-				{
-					filename: 'Preview_Image.jpg',
-					content: new Buffer(recording.preview_img.split("base64,")[1], "base64"),
-					cid: 'preview_img1'
-				}
-			]
-		};
+	sendText (recipient, subject, text, attachments) {
+		return new Promise((resolve, reject) => {
+			const account = AccountsManager.getAccountById(recipient.account_id);
+			let phone = recipient.phone_number || (account && account.phone_number),
+				provider = CELL_PROVIDERS[(recipient.phone_provider || (account && account.phone_provider))],
+				error;
 
-		this.transporter.sendMail(this.mailOptions, (error) => {
-			if (error) {
-				console.log(error);
+			if (!phone) {
+				error = 'Phone number or account ID is required to send an SMS notification.';
 			}
-		});
 
+			if (!provider) {
+				error = 'Supplied phone provider is not supported.';
+			}
+
+			if (error) {
+				console.error(TAG, error);
+				reject(error);
+
+				return;
+			}
+
+			this.sendEmail(phone + provider, subject, text, attachments).then(resolve).catch(reject);
+		});
 	}
 }
 

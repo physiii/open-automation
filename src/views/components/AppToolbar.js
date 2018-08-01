@@ -17,7 +17,7 @@ export const AppToolbar = (props) => {
 		);
 	} else if (props.logoPath) {
 		left = (<div styleName="logo">
-			<img src={'/' + props.logoPath} />
+			<img src={props.logoPath} />
 		</div>);
 	} else {
 		left = <h1>{props.appName}</h1>;

@@ -4,7 +4,6 @@ import TextField from './TextField.js';
 import Actions from './Actions.js';
 import Button from './Button.js';
 import {default as FormValidator, minLength, mustMatch, isEmail} from '../form-validation.js';
-import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as session from '../../state/ducks/session';
 
@@ -68,14 +67,6 @@ export class RegisterForm extends React.Component {
 	}
 
 	render () {
-		if (this.props.isLoggedIn) {
-			return <Redirect to="/" />;
-		}
-
-		if (this.props.isLoading) {
-			return <div>Loading</div>;
-		}
-
 		return (
 			<form onSubmit={this.handleSubmit}>
 				<TextField
@@ -110,19 +101,13 @@ export class RegisterForm extends React.Component {
 }
 
 RegisterForm.propTypes = {
-	isLoggedIn: PropTypes.bool,
-	isLoading: PropTypes.bool,
 	register: PropTypes.func
 };
 
-const mapStateToProps = (state) => ({
-		isLoggedIn: session.selectors.isAuthenticated(state.session),
-		isLoading: state.session.isFetching
-	}),
-	mapDispatchToProps = (dispatch) => ({
-		register: (username, password) => {
-			dispatch(session.operations.register(username, password));
-		}
-	});
+const mapDispatchToProps = (dispatch) => ({
+	register: (username, password) => {
+		dispatch(session.operations.register(username, password));
+	}
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
+export default connect(null, mapDispatchToProps)(RegisterForm);

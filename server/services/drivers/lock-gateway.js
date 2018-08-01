@@ -1,8 +1,8 @@
 const GatewayServiceDriver = require('./gateway.js');
 
 class GatewayLockDriver extends GatewayServiceDriver {
-	constructor (lockId, gatewaySocket) {
-		super(lockId, 'lock', gatewaySocket);
+	constructor (lock_id, gateway_socket) {
+		super(lock_id, 'lock', gateway_socket);
 	}
 
 	lock () {

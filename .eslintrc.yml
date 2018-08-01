@@ -256,7 +256,9 @@ rules:
   react/no-danger: error
   react/no-did-mount-set-state: error
   react/no-did-update-set-state: error
-  react/no-multi-comp: error
+  react/no-multi-comp:
+    - error
+    - ignoreStateless: true
   react/no-unknown-property:
     - error
     - ignore:
