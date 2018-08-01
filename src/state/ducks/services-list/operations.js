@@ -25,6 +25,15 @@ const startCameraStream = (cameraServiceId) => (dispatch) => {
 	},
 	stopCameraRecordingStream = (recording) => () => {
 		Api.stopCameraRecordingStream(recording.camera_id, recording.id);
+	},
+	lockLock = (lockServiceId) => () => {
+		Api.lockSetLocked(lockServiceId, true);
+	},
+	lockUnlock = (lockServiceId) => () => {
+		Api.lockSetLocked(lockServiceId, false);
+	},
+	lockSetRelockDelay = (lockServiceId, relockDelay) => () => {
+		Api.setRelockDelay(lockServiceId, relockDelay);
 	};
 
 export {
@@ -32,5 +41,8 @@ export {
 	stopCameraStream,
 	fetchCameraRecordings,
 	startCameraRecordingStream,
-	stopCameraRecordingStream
+	stopCameraRecordingStream,
+	lockLock,
+	lockUnlock,
+	lockSetRelockDelay
 };
