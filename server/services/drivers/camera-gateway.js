@@ -1,8 +1,8 @@
 const GatewayServiceDriver = require('./gateway.js');
 
 class GatewayCameraDriver extends GatewayServiceDriver {
-	constructor (cameraId, gatewaySocket) {
-		super(cameraId, 'camera', gatewaySocket);
+	constructor (camera_id, gateway_socket) {
+		super(camera_id, 'camera', gateway_socket);
 	}
 
 	streamLive () {
@@ -57,9 +57,9 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 		});
 	}
 
-	streamRecording (recordingId) {
+	streamRecording (recording_id) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('recording/stream', {recording_id: recordingId}, (error, data) => {
+			this.gatewayEmit('recording/stream', {recording_id}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -70,9 +70,9 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 		});
 	}
 
-	stopRecordingStream (recordingId) {
+	stopRecordingStream (recording_id) {
 		return new Promise((resolve, reject) => {
-			this.gatewayEmit('recording/stream/stop', {recording_id: recordingId}, (error, data) => {
+			this.gatewayEmit('recording/stream/stop', {recording_id}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -86,9 +86,9 @@ class GatewayCameraDriver extends GatewayServiceDriver {
 	listenToGateway () {
 		GatewayServiceDriver.prototype.listenToGateway.apply(this, arguments);
 
-		this.gatewayOn('motion-recorded', (event_data) => {
-			this.events.emit('motion-recorded', event_data);
-		});
+		this.gatewayOn('motion-started', (event_data) => this.events.emit('motion-started', event_data));
+		this.gatewayOn('motion-stopped', (event_data) => this.events.emit('motion-stopped', event_data));
+		this.gatewayOn('motion-recorded', (event_data) => this.events.emit('motion-recorded', event_data));
 	}
 }
 

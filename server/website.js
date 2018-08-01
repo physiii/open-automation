@@ -27,7 +27,7 @@ const config = require('../config.json'),
 	is_dev_enabled = config.use_dev || false,
 	MILLISECONDS_PER_SECOND = 1000;
 
-let logo_file_path = config.logo_path || 'logo.png',
+let logo_file_path = config.logo_path || '/logo.png',
 	ssl_key,
 	ssl_cert;
 

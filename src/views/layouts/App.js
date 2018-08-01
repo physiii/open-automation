@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Redirect, Switch} from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import LoginScreen from './LoginScreen.js';
 import PrivateRoute from '../components/PrivateRoute.js';
 import AppToolbar from '../components/AppToolbar.js';
@@ -15,45 +15,44 @@ import {hot} from 'react-hot-loader';
 import './App.css';
 
 export const App = (props) => {
-	if (!props.isLoggedIn) {
-		return (
-			<div styleName="app">
-				<div styleName="contentCentered">
-					<LoginScreen />
-				</div>
-			</div>
-		);
-	}
+	const renderLoginScreen = (routeProps) => (
+		<div styleName="contentCentered">
+			<LoginScreen location={routeProps.location} />
+		</div>
+	);
 
 	return (
 		<div styleName="app">
-			<div styleName="toolbar">
-				<AppToolbar />
-			</div>
-			<div styleName="content">
-				{props.isLoading
-					? <div>Loading</div>
-					: <Switch>
-						<PrivateRoute exact path="/" render={() => <Redirect to="/dashboard" />} />
-						<PrivateRoute path="/login" render={() => <Redirect to="/dashboard" />} />
-						<PrivateRoute path="/register" render={() => <Redirect to="/dashboard" />} />
-						<PrivateRoute path="/logout" component={Logout} />
-						<PrivateRoute path="/dashboard" component={Dashboard} />
-						<PrivateRoute path="/settings" component={Settings} />
-					</Switch>}
-			</div>
-			<ConsoleInterface />
+			<Switch>
+				<Route path="/login" render={renderLoginScreen} />
+				<Route path="/register" render={renderLoginScreen} />
+				<PrivateRoute render={() => (
+					<React.Fragment>
+						<div styleName="toolbar">
+							<AppToolbar />
+						</div>
+						<div styleName="content">
+							{props.isLoading
+								? <div>Loading</div>
+								: <Switch>
+									<Route path="/logout" component={Logout} />
+									<Route path="/dashboard" component={Dashboard} />
+									<Route render={() => <Redirect to="/dashboard" />} />
+								</Switch>}
+						</div>
+						<ConsoleInterface />
+					</React.Fragment>
+				)} />
+			</Switch>
 		</div>
 	);
 };
 
 App.propTypes = {
-	isLoggedIn: PropTypes.bool,
 	isLoading: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
-		isLoggedIn: isAuthenticated(state.session),
 		isLoading: state.session.loading || (isAuthenticated(state.session) && !hasInitialFetchCompleted(state.devicesList))
 	}),
 	connectedApp = connect(

@@ -1,4 +1,5 @@
 const database = require('../database.js'),
+	config = require('../../config.json'),
 	moment = require('moment'),
 	Automation = require('./automation.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
@@ -51,7 +52,7 @@ class Automator {
 				};
 
 				if (trigger_checks[trigger.type]) {
-					this.runAutomation(automation);
+					this.runAutomation(automation, {trigger, date: this.now});
 				}
 			});
 		});
@@ -67,8 +68,8 @@ class Automator {
 					return;
 				}
 
-				service.on(trigger.event + '.' +  automation.id, (event_data) => {
-					this.runAutomation(automation, event_data);
+				service.on([trigger.event, automation.id], (event_data) => {
+					this.runAutomation(automation, {trigger, service, event_data});
 				});
 			}
 		});
@@ -84,7 +85,7 @@ class Automator {
 					return;
 				}
 
-				service.off(trigger.event + '.' + automation.id);
+				service.off([trigger.event, automation.id]);
 			}
 		});
 	}
@@ -107,7 +108,7 @@ class Automator {
 		return !any_conditions_failed;
 	}
 
-	runAutomation (automation, event_data = {}) {
+	runAutomation (automation, trigger_data) {
 		if (!automation.is_enabled || !this.checkConditions(automation.conditions)) {
 			return;
 		}
@@ -119,8 +120,66 @@ class Automator {
 		});
 
 		automation.notifications.forEach((notification) => {
-			Notifications.sendNotification(event_data, notification, automation.account_id);
+			const content = this.generateNotificationContent(trigger_data, notification.type, automation);
+
+			Notifications.sendNotification(
+				notification.type,
+				{
+					account_id: notification.account_id,
+					email: notification.email,
+					phone_number: notification.phone_number,
+					phone_provider: notification.phone_provider
+				},
+				content.subject,
+				content.body,
+				content.attachments
+			);
 		});
+	}
+
+	generateNotificationContent (trigger_data, notification_type, automation) {
+		const {trigger, service, date, event_data} = trigger_data;
+		let subject, body, attachment;
+
+		switch (trigger.type) {
+			case 'time-of-day':
+			case 'date':
+				subject = 'Triggered at ' + date.clone().local().format('h:mm a');
+				body = this.getAutomationNameOrGeneric(automation) + ' was triggered at ' + date.clone().local().format('h:mm a on dddd, MMMM Do') + '.';
+				break;
+			case 'event':
+				const default_event_description = 'The "' + service.getFriendlyEventName(trigger.event) + '" event on ' + service.getNameOrType(true, false, true) + ' triggered ' + this.getAutomationNameOrGeneric(automation, false) + '.';
+
+				attachment = service.getEventAttachment(trigger.event, event_data);
+				subject = service.getFriendlyEventName(trigger.event) + ' (' + service.getNameOrType() + ')';
+
+				body = {
+					text: service.getEventDescription(trigger.event, event_data) || default_event_description,
+					html: service.getEventHtmlDescription(trigger.event, event_data, attachment) || default_event_description
+				};
+
+				break;
+		}
+
+		// Sanitize attachment for text messages.
+		if (attachment && notification_type === 'sms') {
+			delete attachment.cid;
+		}
+
+		return {
+			subject: (config.app_name ? config.app_name + ' - ' : '') + subject + ' - ' + (automation.name ? automation.name : 'Automation'),
+			body,
+			attachments: attachment && [attachment]
+		};
+	}
+
+	getAutomationNameOrGeneric (automation, capitalized = true) {
+		const the = capitalized ? 'The' : 'the',
+			an = capitalized ? 'An' : 'an';
+
+		return automation.name
+			? the + ' "' + automation.name + '" automation'
+			: an + ' automation';
 	}
 
 	addAutomation (data) {

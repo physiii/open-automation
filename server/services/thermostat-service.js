@@ -1,21 +1,18 @@
 const Service = require('./service.js'),
+	GatewayThermostatDriver = require('./drivers/thermostat-gateway.js'),
 	TAG = '[ThermostatService]';
 
 class ThermostatService extends Service {
-	constructor (data, onUpdate, driverClass) {
+	constructor (data, onUpdate, gateway_socket) {
 		super(data, onUpdate);
 
-		this.type = 'thermostat';
-
-		//this.setSettings(data.settings || {});
-
-		this.driver = new driverClass(this.id);
+		this.driver = new GatewayThermostatDriver(this.id, gateway_socket);
 		this.subscribeToDriver();
 	}
 
 	subscribeToDriver () {}
 
-	action(data) {
+	action (data) {
 		switch (data.property) {
 			case 'target_temp':
 				this.setTemp(data.value);
@@ -29,12 +26,10 @@ class ThermostatService extends Service {
 			case 'set_fan':
 				this.setFanMode(data.value);
 				break;
-			default:
-				break;
-		};
+		}
 	}
 
-	setTemp(temp) {
+	setTemp (temp) {
 		return this.driver.setTemp(temp);
 	}
 
@@ -46,7 +41,7 @@ class ThermostatService extends Service {
 		return this.driver.setHoldMode(mode);
 	}
 
-	setFanMode (Mode) {
+	setFanMode (mode) {
 		return this.driver.setFanMode(mode);
 	}
 
@@ -61,5 +56,9 @@ class ThermostatService extends Service {
 		return this.serialize();
 	}
 }
+
+ThermostatService.type = 'thermostat';
+ThermostatService.friendly_type = 'Thermostat';
+ThermostatService.indefinite_article = 'A';
 
 module.exports = ThermostatService;

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import ServiceCard from './ServiceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
@@ -18,22 +18,22 @@ export class Dashboard extends React.Component {
 	}
 
 	render () {
-		const cameraRecordingsBasePath = this.props.match.path + '/recordings';
+		const cameraRecordingsBasePath = this.props.match.path + '/recordings',
+			serviceCards = this.props.services.map((service) => <ServiceCard service={service} parentPath={this.props.match.path} />).filter(({props}) => ServiceCard.willRenderCard(props));
 
 		return (
 			<Switch>
 				<Route exact path={this.props.match.path} render={() => (
 					<div className="oa-l-cardGrid">
-						{this.props.services.map((service, index) => (
-							<div key={index} className="oa-l-cardGrid--card">
-								<ServiceCard service={service} parentPath={this.props.match.path} />
-							</div>
+						{serviceCards.map((card, index) => (
+							<div key={index} className="oa-l-cardGrid--card">{card}</div>
 						))}
 					</div>
 				)} />
 				<Route path={cameraRecordingsBasePath + '/:cameraId/:year?/:month?/:date?/:recordingId?'} render={(routeProps) => (
 					<CameraRecordings {...routeProps} basePath={cameraRecordingsBasePath} parentPath={this.props.match.path} />
 				)} />
+				<Route render={() => <Redirect to={this.props.match.path} />} />
 			</Switch>
 		);
 	}
