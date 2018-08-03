@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Route, Switch, Redirect} from 'react-router-dom';
+import Grid from './Grid.js';
+import GridColumn from './GridColumn.js';
 import ServiceCard from './ServiceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
 import {getServices} from '../../state/ducks/services-list/selectors.js';
 import {loadContext} from '../../state/ducks/navigation/operations.js';
-import '../styles/layouts/_cardGrid.scss';
 
 export class Dashboard extends React.Component {
 	constructor (props) {
@@ -24,11 +25,11 @@ export class Dashboard extends React.Component {
 		return (
 			<Switch>
 				<Route exact path={this.props.match.path} render={() => (
-					<div className="oa-l-cardGrid">
+					<Grid>
 						{serviceCards.map((card, index) => (
-							<div key={index} className="oa-l-cardGrid--card">{card}</div>
+							<GridColumn columns={4} key={index}>{card}</GridColumn>
 						))}
-					</div>
+					</Grid>
 				)} />
 				<Route path={cameraRecordingsBasePath + '/:cameraId/:year?/:month?/:date?/:recordingId?'} render={(routeProps) => (
 					<CameraRecordings {...routeProps} basePath={cameraRecordingsBasePath} parentPath={this.props.match.path} />

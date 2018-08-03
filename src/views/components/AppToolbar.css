@@ -4,7 +4,7 @@
 	display: flex;
 	flex-flow: column nowrap;
 	flex: 1 1 auto;
-	height: 50px;
+	height: 56px;
 	padding: 0 8px;
 	background-color: toolbarBackground;
 }
