@@ -16,10 +16,14 @@
 	flex: 0 1 auto;
 	position: relative;
 	background-color: rgba(255, 255, 255, 0.1);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border: solid rgba(255, 255, 255, 0.1);
+	border-width: 0 0 1px 0;
 }
 @media (orientation: landscape) {
-	.top { width: 50%; }
+	.top {
+		width: 50%;
+		border-width: 0 1px 0 0;
+	}
 }
 @media (orientation: landscape) and (min-width: 1024px) {
 	.top { width: 60%; }
