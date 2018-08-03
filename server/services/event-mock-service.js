@@ -1,18 +1,27 @@
-const Service = require('./service.js'),
+const moment = require('moment'),
+	Service = require('./service.js'),
 	EVENT_INTERVAL_DELAY = 5000;
 
 class EventMockService extends Service {
 	constructor (data, onUpdate) {
 		super (data, onUpdate);
 
-		this.type = 'event-mock';
-
 		this.setState({connected: true});
 
 		setInterval(() => {
-			this.events.emit('mock.*', {date: Date()});
+			this._emit('mock', {date: Date()});
 		}, EVENT_INTERVAL_DELAY);
 	}
 }
+
+EventMockService.type = 'event-mock';
+EventMockService.friendly_type = 'Event Mock';
+EventMockService.indefinite_article = 'An';
+EventMockService.event_strings = {
+	'mock': {
+		getFriendlyName: () => 'Event Mocked',
+		getDescription: (event_data) => 'Event mock mocked at ' + moment(event_data.date).format('h:mm a on dddd, MMMM Do.')
+	}
+};
 
 module.exports = EventMockService;

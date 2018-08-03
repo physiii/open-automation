@@ -1,11 +1,4 @@
-const Service = require('./service.js'),
-	service_classes = {
-		'gateway': require('./gateway-service.js'),
-		'camera': require('./camera-service.js'),
-		'lock': require('./lock-service.js'),
-		'thermostat': require('./thermostat-service.js'),
-		'light': require('./light-service.js')
-	};
+const Service = require('./service.js');
 
 class ServicesManager {
 	constructor (services = [], gateway_socket, device, onServiceUpdate) {
@@ -19,7 +12,7 @@ class ServicesManager {
 	}
 
 	addService (data) {
-		const service_class = service_classes[data.type] || Service;
+		const service_class = ServicesManager.classes[data.type] || Service;
 		let service = this.getServiceById(data.id);
 
 		if (service) {
@@ -69,5 +62,14 @@ class ServicesManager {
 		return this.services.map((service) => service.clientSerialize());
 	}
 }
+
+ServicesManager.classes = {
+	'gateway': require('./gateway-service.js'),
+	'camera': require('./camera-service.js'),
+	'lock': require('./lock-service.js'),
+	'thermostat': require('./thermostat-service.js'),
+	'light': require('./light-service.js'),
+	'event-mock': require('./event-mock-service.js')
+};
 
 module.exports = ServicesManager;

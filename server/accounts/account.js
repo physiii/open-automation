@@ -13,6 +13,9 @@ class Account {
 		this.password = data.password || data.token; // token is a legacy property.
 		this.salt = data.salt;
 		this.hash_algorithm = data.hash_algorithm || PASSWORD_HASH_ALGORITHM;
+		this.email = this.username;
+		this.phone_number = data.phone_number;
+		this.phone_provider = data.phone_provider;
 		this.client_sockets = new Map();
 
 		if (data.registration_date) {
@@ -159,6 +162,8 @@ class Account {
 			password: this.password,
 			salt: this.salt,
 			hash_algorithm: this.hash_algorithm,
+			phone_number: this.phone_number,
+			phone_provider: this.phone_provider,
 			registration_date: this.registration_date
 		};
 	}
