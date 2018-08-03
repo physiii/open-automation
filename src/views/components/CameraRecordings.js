@@ -5,14 +5,11 @@ import VideoPlayer from './VideoPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
 import {connect} from 'react-redux';
 import {getServiceById, getRecordingsForDate, getRecordingById} from '../../state/ducks/services-list/selectors.js';
 import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
 import {loadScreen, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './CameraRecordings.css';
-
-momentDurationFormatSetup(moment);
 
 export class CameraRecordings extends React.Component {
 	constructor (props) {
@@ -49,7 +46,9 @@ export class CameraRecordings extends React.Component {
 	render () {
 		let list;
 
-		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
+		if (this.props.error) {
+			list = <p>{this.props.error}</p>;
+		} else if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
 			list = (<List
 				title={this.props.selectedDate.format('MMMM Do')}
 				items={this.props.selectedDateRecordings.map((recording) => ({
@@ -60,18 +59,14 @@ export class CameraRecordings extends React.Component {
 					onClick: () => this.playRecording(recording.id)
 				}))}
 			/>);
-		} else if (this.props.error) {
-			list = <p>{this.props.error}</p>;
-		} else {
-			list = <p>No Recordings for the Selected Date</p>;
 		}
 
 		return (
 			<div styleName="screen">
 				<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
-					<div styleName="topCenterer">
-						{this.props.selectedRecording
-							? <VideoPlayer
+					{this.props.selectedRecording
+						? <div styleName="videoContainer">
+							<VideoPlayer
 								cameraServiceId={this.props.cameraService.id}
 								recording={this.props.selectedRecording}
 								key={this.props.selectedRecording.id}
@@ -79,11 +74,13 @@ export class CameraRecordings extends React.Component {
 								width={this.props.selectedRecording.width}
 								height={this.props.selectedRecording.height}
 								autoplay={true} />
-							: <DatePicker
+						</div>
+						: <div styleName="datePickerContainer">
+							<DatePicker
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
-								onSelect={this.goToDate} />}
-					</div>
+								onSelect={this.goToDate} />
+						</div>}
 					{this.props.selectedRecording &&
 						<a href="#" styleName="closeButton" onClick={(event) => {
 							event.preventDefault();
@@ -93,11 +90,9 @@ export class CameraRecordings extends React.Component {
 						</a>}
 				</div>
 				<div styleName="bottom">
-					<div styleName="list">
-						{this.props.isLoading
-							? <div>Loading Recordings</div>
-							: list}
-					</div>
+					{this.props.isLoading
+						? <p>Loading Recordings</p>
+						: list || <p>No Recordings for the Selected Date</p>}
 				</div>
 			</div>
 		);
