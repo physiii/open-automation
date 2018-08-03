@@ -80,7 +80,7 @@ CameraService.event_strings = {
 		getHtmlDescription: function (event_data, attachment) {
 			return (
 				'<p>' + this.getNameOrType(true, true, true) + ' recorded movement at ' + moment(event_data.recording.date).format('h:mm a on dddd, MMMM Do.') + '</p>'
-				'<p>' +
+				+ '<p>' +
 				'<a href="' + this.getRecordingLink(event_data.recording.id, event_data.recording.date) + '">' +
 				'Play Recording<br />' +
 				(attachment ? '<img src="cid:' + attachment.cid + '" />' : '') +
