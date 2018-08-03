@@ -5,6 +5,7 @@ import {ConnectedRouter} from 'connected-react-router';
 import createHistory from 'history/createBrowserHistory';
 import App from './views/layouts/App';
 import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
 import configureStore from './state/store';
 import {initialize as initializeConfig} from './state/ducks/config/operations.js';
 import {initialize as initializeSession} from './state/ducks/session/operations.js';
@@ -17,10 +18,11 @@ const history = createHistory(), // History object to share between router and s
 	ONE_MINUTE_IN_SECONDS = 60,
 	ONE_HOUR_IN_MINUTES = 60;
 
-// Configure moment relative dates thresholds.
+// Configure moment.
 moment.relativeTimeThreshold('s', ONE_MINUTE_IN_SECONDS);
 moment.relativeTimeThreshold('ss', THREE_SECONDS);
 moment.relativeTimeThreshold('m', ONE_HOUR_IN_MINUTES);
+momentDurationFormatSetup(moment);
 
 // Save configuration to store.
 reduxStore.dispatch(initializeConfig(window.OpenAutomation.config));

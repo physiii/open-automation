@@ -50,9 +50,16 @@ export class DatePicker extends React.Component {
 	getWeeksList (month) {
 		const weeksList = [[]],
 			daysInMonth = this.getNumberOfDaysInMonth(month),
-			firstDayOfWeek = 0; // 0 = Sunday
+			firstDayOfWeek = 0, // 0 = Sunday
+			week5Index = 4,
+			week6Index = 5;
 
 		let day;
+
+		// Ensure the list of weeks always has six weeks so the layout doesn't
+		// shift when switching months.
+		weeksList[week5Index] = [];
+		weeksList[week6Index] = [];
 
 		// Build list of weeks and days.
 		for (let dayIndex = 0, weekIndex = 0; dayIndex < daysInMonth; dayIndex++) {
@@ -121,6 +128,10 @@ export class DatePicker extends React.Component {
 					</div>
 					{this.getWeeksList(month).map((week, weekIndex) => {
 						const weekDate = moment(month).add(weekIndex, 'weeks'); // Create a new Moment date based on month so we don't mutate month.
+
+						if (!week.length) {
+							return <div styleName="week" key={weekIndex} />;
+						}
 
 						return (
 							<time
