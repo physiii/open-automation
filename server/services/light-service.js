@@ -6,8 +6,6 @@ class LightService extends Service {
 	constructor (data, onUpdate, gateway_socket) {
 		super(data, onUpdate);
 
-		this.type = 'light';
-
 		this.driver = new GatewayLightDriver(this.id, gateway_socket);
 		this.subscribeToDriver();
 	}
@@ -68,5 +66,9 @@ class LightService extends Service {
 		return this.serialize();
 	}
 }
+
+LightService.type = 'light';
+LightService.friendly_type = 'Light';
+LightService.indefinite_article = 'A';
 
 module.exports = LightService;

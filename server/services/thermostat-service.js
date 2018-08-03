@@ -6,8 +6,6 @@ class ThermostatService extends Service {
 	constructor (data, onUpdate, gateway_socket) {
 		super(data, onUpdate);
 
-		this.type = 'thermostat';
-
 		this.driver = new GatewayThermostatDriver(this.id, gateway_socket);
 		this.subscribeToDriver();
 	}
@@ -58,5 +56,9 @@ class ThermostatService extends Service {
 		return this.serialize();
 	}
 }
+
+ThermostatService.type = 'thermostat';
+ThermostatService.friendly_type = 'Thermostat';
+ThermostatService.indefinite_article = 'A';
 
 module.exports = ThermostatService;
