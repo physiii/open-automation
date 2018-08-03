@@ -18,19 +18,31 @@ export class VideoPlayer extends React.Component {
 		this.onClick = this.onClick.bind(this);
 	}
 
-	onClick () {
-		const isPlaying = !this.state.isPlaying;
-
-		this.setState({
-			isPlaying,
-			hasPlayedOnce: true
-		});
-
-		if (isPlaying && typeof this.props.onPlay === 'function') {
+	componentDidUpdate (previousProps, previousState) {
+		if (!previousState.isPlaying && this.state.isPlaying && typeof this.props.onPlay === 'function') {
 			this.props.onPlay();
-		} else if (!isPlaying && typeof this.props.onStop === 'function') {
+		} else if (previousState.isPlaying && !this.state.isPlaying && typeof this.props.onStop === 'function') {
 			this.props.onStop();
 		}
+	}
+
+	onClick () {
+		if (this.state.isPlaying) {
+			this.stop();
+		} else {
+			this.play();
+		}
+	}
+
+	play () {
+		this.setState({
+			isPlaying: true,
+			hasPlayedOnce: true
+		});
+	}
+
+	stop () {
+		this.setState({isPlaying: false});
 	}
 
 	getAspectRatioPaddingTop () {

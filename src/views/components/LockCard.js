@@ -20,6 +20,7 @@ export const LockCard = (props) => {
 			name={props.lockService.settings.name || 'Lock'}
 			status={props.lockService.state.locked ? 'Locked' : 'Unlocked'}
 			isConnected={props.lockService.state.connected}
+			onCardClick={toggleLock}
 			content={<Button onClick={toggleLock}>{props.lockService.state.locked ? 'Unlock' : 'Lock'}</Button>} />
 	);
 };

@@ -22,7 +22,7 @@ export class LoginScreen extends React.Component {
 		}
 
 		return (
-			<div styleName="root">
+			<div styleName="screen">
 				<div styleName="container">
 					<div styleName="branding">
 						{this.props.logoPath
