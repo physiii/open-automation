@@ -89,7 +89,7 @@ export class CameraRecordings extends React.Component {
 							Close
 						</a>}
 				</div>
-				<div styleName="bottom">
+				<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
 					{this.props.isLoading
 						? <p>Loading Recordings</p>
 						: list || <p>No Recordings for the Selected Date</p>}

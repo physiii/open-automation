@@ -1,8 +1,10 @@
+@value toolbarHeight from "./AppToolbar.css";
 @value liveRed: #bd2100;
 
 .player {
 	position: relative;
-	max-width: 100%;
+	width: 100%;
+	max-width: calc((100vh - toolbarHeight) * (4 / 3));
 	cursor: pointer;
 }
 
