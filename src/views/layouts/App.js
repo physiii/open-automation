@@ -5,11 +5,10 @@ import LoginScreen from './LoginScreen.js';
 import PrivateRoute from '../components/PrivateRoute.js';
 import AppToolbar from '../components/AppToolbar.js';
 import Dashboard from '../components/Dashboard.js';
-import Settings from '../components/Settings.js';
 import Logout from '../components/Logout.js';
 import ConsoleInterface from '../components/ConsoleInterface.js';
 import {connect} from 'react-redux';
-import {isAuthenticated} from '../../state/ducks/session/selectors.js';
+import {isAuthenticated, isLoading} from '../../state/ducks/session/selectors.js';
 import {hasInitialFetchCompleted} from '../../state/ducks/devices-list/selectors.js';
 import {hot} from 'react-hot-loader';
 import './App.css';
@@ -53,7 +52,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-		isLoading: state.session.loading || (isAuthenticated(state.session) && !hasInitialFetchCompleted(state.devicesList))
+		isLoading: isLoading(state.session) || (isAuthenticated(state.session) && !hasInitialFetchCompleted(state.devicesList))
 	}),
 	connectedApp = connect(
 		mapStateToProps,

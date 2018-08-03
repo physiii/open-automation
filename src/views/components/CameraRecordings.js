@@ -7,8 +7,8 @@ import List from './List.js';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 import {connect} from 'react-redux';
-import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
-import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
+import {getServiceById, getRecordingsForDate, getRecordingById} from '../../state/ducks/services-list/selectors.js';
+import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
 import {loadScreen, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './CameraRecordings.css';
 
@@ -120,7 +120,7 @@ CameraRecordings.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-		const cameraService = serviceById(ownProps.match.params.cameraId, state.servicesList);
+		const cameraService = getServiceById(ownProps.match.params.cameraId, state.servicesList);
 
 		let selectedDate = moment([
 			ownProps.match.params.year,
@@ -142,15 +142,15 @@ const mapStateToProps = (state, ownProps) => {
 			cameraService: cameraService.toJS(),
 			selectedDate,
 			allRecordings: cameraService.recordingsList.recordings.toList().toJS(),
-			selectedDateRecordings: recordingsForDate(cameraService, selectedDate).toList().toJS(),
-			selectedRecording: recordingById(cameraService, ownProps.match.params.recordingId),
+			selectedDateRecordings: getRecordingsForDate(cameraService, selectedDate).toList().toJS(),
+			selectedRecording: getRecordingById(cameraService, ownProps.match.params.recordingId),
 			isLoading: cameraService.recordingsList.loading
 		};
 	},
 	mapDispatchToProps = (dispatch, ownProps) => ({
 		dispatch,
 		navigationUnloadScreen: () => dispatch(unloadScreen(ownProps.basePath)),
-		fetchRecordings: (cameraService) => dispatch(fetchCameraRecordings(cameraService.id))
+		fetchRecordings: (cameraService) => dispatch(cameraFetchRecordings(cameraService.id))
 	}),
 	mergeProps = (stateProps, dispatchProps, ownProps) => {
 		const {dispatch, ...restOfDispatchProps} = dispatchProps,

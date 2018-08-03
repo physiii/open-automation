@@ -4,7 +4,7 @@ import {Link, Route, Redirect} from 'react-router-dom';
 import LoginForm from '../components/LoginForm.js';
 import RegisterForm from '../components/RegisterForm.js';
 import {connect} from 'react-redux';
-import {isAuthenticated} from '../../state/ducks/session/selectors.js';
+import {isAuthenticated, isLoading} from '../../state/ducks/session/selectors.js';
 import './LoginScreen.css';
 
 export class LoginScreen extends React.Component {
@@ -65,7 +65,7 @@ LoginScreen.defaultProps = {
 
 const mapStateToProps = (state) => ({
 	isLoggedIn: isAuthenticated(state.session),
-	isLoading: state.session.loading,
+	isLoading: isLoading(state.session),
 	appName: state.config.app_name,
 	logoPath: state.config.logo_path,
 	error: state.session.error

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Api from '../../api.js';
-import {gatewayServices as getGatewayServices} from '../../state/ducks/services-list/selectors.js';
-import {deviceById} from '../../state/ducks/devices-list/selectors.js';
+import {getGatewayServices} from '../../state/ducks/services-list/selectors.js';
+import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 
 const LABEL_STYLE = 'color: #888888; font-size: 0.9em;',
 	SECONDARY_STYLE = 'color: #888888;',
@@ -19,26 +19,26 @@ export class ConsoleInterface extends React.Component {
 			Api,
 			listDevices: () => {
 				this.props.devices.forEach((device) => {
-					console.log('%c' + (device.settings.name ? device.settings.name + ' ' : '') + '%c' + device.id + '%c ' + (device.state.connected ? '(connected)' : '(not connected)'), SECONDARY_STYLE, DEVICE_ID_STYLE, SECONDARY_STYLE);
+					console.log('%c' + (device.settings.name ? device.settings.name + ' ' : '') + '%c' + device.id + '%c ' + (device.state.connected ? '(connected)' : '(not connected)'), SECONDARY_STYLE, DEVICE_ID_STYLE, SECONDARY_STYLE); // eslint-disable-line no-console
 
 					if (device.gateway_id) {
-						console.log('	%cGateway: %c' + device.gateway_id, LABEL_STYLE, SERVICE_ID_STYLE);
-						console.log('');
+						console.log('	%cGateway: %c' + device.gateway_id, LABEL_STYLE, SERVICE_ID_STYLE); // eslint-disable-line no-console
+						console.log(''); // eslint-disable-line no-console
 					}
 
 					if (device.services.size) {
-						console.log('	%cServices:', LABEL_STYLE);
-						device.services.forEach((service) => console.log('	%c' + service.type + ' %c' + service.id, SERVICE_TYPE_STYLE, SERVICE_ID_STYLE));
+						console.log('	%cServices:', LABEL_STYLE); // eslint-disable-line no-console
+						device.services.forEach((service) => console.log('	%c' + service.type + ' %c' + service.id, SERVICE_TYPE_STYLE, SERVICE_ID_STYLE)); // eslint-disable-line no-console
 					}
 
-					console.log('');
+					console.log(''); // eslint-disable-line no-console
 				});
 			},
 			listServices: () => {
 				this.props.services.forEach((service) => {
-					console.log('%c' + service.type + '%c ' + service.id, SERVICE_TYPE_STYLE, SERVICE_ID_STYLE);
-					console.log('	%cDevice: %c' + service.device_id + '%c ' + (service.state.connected ? '(connected)' : '(not connected)'), LABEL_STYLE, DEVICE_ID_STYLE, SECONDARY_STYLE);
-					console.log('');
+					console.log('%c' + service.type + '%c ' + service.id, SERVICE_TYPE_STYLE, SERVICE_ID_STYLE); // eslint-disable-line no-console
+					console.log('	%cDevice: %c' + service.device_id + '%c ' + (service.state.connected ? '(connected)' : '(not connected)'), LABEL_STYLE, DEVICE_ID_STYLE, SECONDARY_STYLE); // eslint-disable-line no-console
+					console.log(''); // eslint-disable-line no-console
 				});
 			},
 			addDevice: (data, name) => {
@@ -61,12 +61,11 @@ export class ConsoleInterface extends React.Component {
 					const gateway = window.OpenAutomation.gateways[gatewayKey];
 
 					Api.getGatewayDevicesToAdd(gateway.id).then((data) => {
-						console.log('conn', data);
 						data.devices.forEach((device) => Api.addDevice({
 							...device,
 							gateway_id: gateway.id
 						}));
-					}).catch((error) => console.error(error));
+					}).catch((error) => console.error(error)); // eslint-disable-line no-console
 				});
 			}
 		};
@@ -75,19 +74,19 @@ export class ConsoleInterface extends React.Component {
 	render () {
 		// Add gateway command utility.
 		window.OpenAutomation.gateways = {};
-		this.props.gatewayServices.forEach((gateway, index) => {
+		this.props.getGatewayServices.forEach((gateway, index) => {
 			window.OpenAutomation.gateways[gateway.settings.name || gateway.device.settings.name || index] = {
 				id: gateway.id,
 				device_id: gateway.device.id,
 				command: (token, command) => {
 					Api.gatewayCommand(gateway.get('id'), command, token).then((data) => {
 						if (data.stdout) {
-							console.log(data.stdout + data.stderr);
+							console.log(data.stdout + data.stderr); // eslint-disable-line no-console
 						} else {
-							console.log(data);
+							console.log(data); // eslint-disable-line no-console
 						}
 					}).catch((error) => {
-						console.error('Gateway command error:', error);
+						console.error('Gateway command error:', error); // eslint-disable-line no-console
 					});
 				}
 			};
@@ -100,15 +99,15 @@ export class ConsoleInterface extends React.Component {
 ConsoleInterface.propTypes = {
 	devices: PropTypes.array,
 	services: PropTypes.array,
-	gatewayServices: PropTypes.array
+	getGatewayServices: PropTypes.array
 };
 
 const mapStateToProps = (state) => ({
 	devices: state.devicesList.devices.toArray(),
 	services: state.servicesList.services.toArray(),
-	gatewayServices: getGatewayServices(state.servicesList).toJS().map((service) => ({
+	getGatewayServices: getGatewayServices(state.servicesList).toJS().map((service) => ({
 		...service,
-		device: deviceById(service.device_id, state.devicesList)
+		device: getDeviceById(service.device_id, state.devicesList)
 	}))
 });
 
