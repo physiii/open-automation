@@ -3,10 +3,11 @@
 	flex-flow: row wrap;
 	align-items: stretch;
 
-	margin: 8px 0 16px 16px;
+	margin: 16px 0 16px 16px;
 }
 @media (min-width: 720px) {
 	.grid {
+		margin-top: 24px;
 		margin-left: 24px;
 	}
 }
@@ -14,11 +15,12 @@
 .column {
 	display: flex;
 	flex-flow: column nowrap;
-	padding-right: 16px;
+	padding: 0 16px 16px 0;
 }
 @media (min-width: 720px) {
 	.column {
 		padding-right: 24px;
+		padding-bottom: 24px;
 	}
 }
 
