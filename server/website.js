@@ -9,6 +9,7 @@ const config = require('../config.json'),
 	socket = require('./socket.js'),
 	startGatewayServer = require('./gateway-server.js'),
 	startClientApi = require('./client-api.js'),
+	startDeviceServer = require('./device-server.js'),
 	bodyParser = require('body-parser'),
 	cookie = require('cookie'),
 	fs = require('fs'),
@@ -278,8 +279,12 @@ module.exports = function (app) {
 	// Start servers.
 	server.listen(port, null, () => console.log(server_description + ' server listening on port ' + port));
 
-	const socket_server = socket(server);
+
+
+	const socket_server = socket(server),
+		device_server = http.createServer().listen(config.device_port);
 
 	startClientApi(socket_server.onClientConnection, JWT_SECRET);
 	startGatewayServer(socket_server.onDeviceConnection);
+	startDeviceServer(device_server.onConnection);
 };
