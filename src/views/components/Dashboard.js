@@ -4,7 +4,7 @@ import {Route, Switch, Redirect} from 'react-router-dom';
 import ServiceCard from './ServiceCard.js';
 import CameraRecordings from './CameraRecordings.js';
 import {connect} from 'react-redux';
-import {servicesWithoutGateways} from '../../state/ducks/services-list/selectors.js';
+import {getServices} from '../../state/ducks/services-list/selectors.js';
 import {loadContext} from '../../state/ducks/navigation/operations.js';
 import '../styles/layouts/_cardGrid.scss';
 
@@ -46,7 +46,7 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-		services: servicesWithoutGateways(state.servicesList).toJS()
+		services: getServices(state.servicesList).toJS()
 	}),
 	mapDispatchToProps = (dispatch) => ({
 		navigationLoadContext: () => dispatch(loadContext('dashboard'))

@@ -1,4 +1,4 @@
-const deviceById = (deviceId, devicesList) => {
+const getDeviceById = (deviceId, devicesList) => {
 		return devicesList.devices.get(deviceId);
 	},
 	hasInitialFetchCompleted = (devicesList) => {
@@ -6,6 +6,6 @@ const deviceById = (deviceId, devicesList) => {
 	};
 
 export {
-	deviceById,
+	getDeviceById,
 	hasInitialFetchCompleted
 };

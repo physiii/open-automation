@@ -1,30 +1,30 @@
 import * as actions from './actions';
 import Api from '../../../api.js';
 
-const startCameraStream = (cameraServiceId) => (dispatch) => {
-		Api.streamCameraLive(cameraServiceId).then((data) => {
-			dispatch(actions.streamCameraLive(cameraServiceId, data.stream_token));
+const cameraStartStream = (cameraServiceId) => (dispatch) => {
+		Api.cameraStartLiveStream(cameraServiceId).then((data) => {
+			dispatch(actions.cameraStreamLive(cameraServiceId, data.stream_token));
 		});
 	},
-	stopCameraStream = (cameraServiceId) => () => {
-		Api.stopCameraLiveStream(cameraServiceId);
+	cameraStopStream = (cameraServiceId) => () => {
+		Api.cameraStopLiveStream(cameraServiceId);
 	},
-	fetchCameraRecordings = (cameraServiceId) => (dispatch) => {
-		dispatch(actions.fetchCameraRecordings(cameraServiceId));
+	cameraFetchRecordings = (cameraServiceId) => (dispatch) => {
+		dispatch(actions.cameraFetchRecordings(cameraServiceId));
 
-		Api.getRecordings(cameraServiceId).then((data) => {
-			dispatch(actions.fetchCameraRecordingsSuccess(cameraServiceId, data.recordings));
+		Api.cameraGetRecordings(cameraServiceId).then((data) => {
+			dispatch(actions.cameraFetchRecordingsSuccess(cameraServiceId, data.recordings));
 		}).catch((error) => {
-			dispatch(actions.fetchCameraRecordingsError(cameraServiceId, error));
+			dispatch(actions.cameraFetchRecordingsError(cameraServiceId, error));
 		});
 	},
-	startCameraRecordingStream = (recording) => (dispatch) => {
-		Api.streamCameraRecording(recording.camera_id, recording.id).then((data) => {
-			dispatch(actions.streamCameraRecording(recording.camera_id, recording.id, data.stream_token));
+	cameraStartRecordingStream = (recording) => (dispatch) => {
+		Api.cameraStartRecordingStream(recording.camera_id, recording.id).then((data) => {
+			dispatch(actions.cameraStreamRecording(recording.camera_id, recording.id, data.stream_token));
 		});
 	},
-	stopCameraRecordingStream = (recording) => () => {
-		Api.stopCameraRecordingStream(recording.camera_id, recording.id);
+	cameraStopRecordingStream = (recording) => () => {
+		Api.cameraStopRecordingStream(recording.camera_id, recording.id);
 	},
 	lockLock = (lockServiceId) => () => {
 		Api.lockSetLocked(lockServiceId, true);
@@ -33,15 +33,15 @@ const startCameraStream = (cameraServiceId) => (dispatch) => {
 		Api.lockSetLocked(lockServiceId, false);
 	},
 	lockSetRelockDelay = (lockServiceId, relockDelay) => () => {
-		Api.setRelockDelay(lockServiceId, relockDelay);
+		Api.lockSetRelockDelay(lockServiceId, relockDelay);
 	};
 
 export {
-	startCameraStream,
-	stopCameraStream,
-	fetchCameraRecordings,
-	startCameraRecordingStream,
-	stopCameraRecordingStream,
+	cameraStartStream,
+	cameraStopStream,
+	cameraFetchRecordings,
+	cameraStartRecordingStream,
+	cameraStopRecordingStream,
 	lockLock,
 	lockUnlock,
 	lockSetRelockDelay
