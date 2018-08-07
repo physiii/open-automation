@@ -16,7 +16,7 @@ const nodemailer = require('nodemailer'),
 		'Cricket':'@mms.cricketwireless.net',
 		'US_Cellular':'@mms.uscc.net'
 	},
-	TAG = '[Notifications.js]';
+	TAG = '[Notifications]';
 
 class Notifications {
 	constructor () {

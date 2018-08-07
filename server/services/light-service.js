@@ -3,10 +3,10 @@ const Service = require('./service.js'),
 	TAG = '[LightService]';
 
 class LightService extends Service {
-	constructor (data, onUpdate, gateway_socket) {
+	constructor (data, onUpdate, device_socket) {
 		super(data, onUpdate);
 
-		this.driver = new GatewayLightDriver(this.id, gateway_socket);
+		this.driver = new GatewayLightDriver(this.id, device_socket);
 		this.subscribeToDriver();
 	}
 

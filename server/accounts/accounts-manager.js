@@ -3,7 +3,7 @@ const database = require('../database.js'),
 	crypto = require('crypto'),
 	accounts_list = new Map(),
 	PASSWORD_MINIMUM_LENGTH = 8,
-	TAG = 'AccountsManager';
+	TAG = '[AccountsManager]';
 
 class AccountsManager {
 	constructor () {

@@ -9,8 +9,7 @@ const config = require('../config.json'),
 	TAG = '[stream-relay.js]';
 
 module.exports = function () {
-	let socket_connection_count = 0,
-		ssl_key,
+	let ssl_key,
 		ssl_cert,
 		stream_relay_server,
 		stream_client_server;
@@ -39,10 +38,6 @@ module.exports = function () {
 
 	// Listen for new connections from front-end.
 	stream_client_server.on('connection', (socket) => {
-		socket_connection_count++;
-
-		console.log(TAG, 'Video socket opened (' + socket_connection_count + ' total).');
-
 		// TODO: Require user authentication to stream.
 
 		// Receive stream id and token from front-end.
@@ -54,9 +49,6 @@ module.exports = function () {
 
 			console.log(TAG, 'Stored token for stream', socket.stream_id);
 		}
-	});
-	stream_client_server.on('disconnect', () => {
-		socket_connection_count--;
 	});
 
 	// Broadcast stream to client (front-end).
@@ -99,6 +91,5 @@ module.exports = function () {
 		});
 	}
 
-	console.log(TAG, 'Listening for MPEG stream on ' + (is_ssl_enabled ? 'https' : 'http') + '://127.0.0.1:' + stream_relay_port + '/<stream id>/<stream token>/');
-	console.log(TAG, 'Awaiting WebSocket connections on ' + (is_ssl_enabled ? 'wss' : 'ws') + '://127.0.0.1:' + stream_client_port + '/');
+	console.log(TAG, 'Started video streaming server. Listening for incoming streams at ' + (is_ssl_enabled ? 'https' : 'http') + '://localhost:' + stream_relay_port + '/<stream id>/<stream token>. Serving streams at ' + (is_ssl_enabled ? 'wss' : 'ws') + '://localhost:' + stream_client_port + '.');
 };
