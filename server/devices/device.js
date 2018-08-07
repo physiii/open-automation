@@ -6,24 +6,24 @@ const uuid = require('uuid/v4'),
 	TAG = '[Device]';
 
 class Device {
-	constructor (data, onUpdate, gateway_socket) {
+	constructor (data, onUpdate, socket) {
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.account = data.account;
 		this.account_id = data.account_id;
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
-		this.gateway_listeners = [];
+		this.socket_listeners = [];
 
 		this.onUpdate = onUpdate;
-		this.services = new ServicesManager(data.services, this._getGatewaySocketProxy(), this, () => this.onUpdate(this));
+		this.services = new ServicesManager(this, data.services, this._getSocketProxy(), () => this.onUpdate(this));
 
 		this._setSettings(data.settings);
 		this._setInfo(data.info);
 		this.state = utils.onChange({connected: false}, () => this.onUpdate(this));
 
-		if (gateway_socket) {
-			this.setGatewaySocket(gateway_socket, this.token);
+		if (socket) {
+			this.setSocket(socket, this.token);
 		}
 
 		this.onUpdate(this);
@@ -42,33 +42,41 @@ class Device {
 	}
 
 	setToken (token) {
-		const current_token = this.token,
-			undoTokenChange = (should_save = true) => {
-				this.token = current_token;
-
-				if (should_save) {
-					this.save();
-				}
-			};
-
 		return new Promise((resolve, reject) => {
-			this.token = token;
+			const current_token = this.token;
 
-			this.save().then(() => {
-				this._gatewayEmit('token', {token}, (error) => {
-					if (error) {
-						undoTokenChange();
-						reject(error);
+			if (!this.socket || !this.socket.connected) {
+				console.log(TAG, this.id, 'Cannot set device token without a connected socket.');
+				reject('Socket not connected.');
 
-						return;
-					}
+				return;
+			}
 
+			// Send new token to device.
+			this._socketEmit('token', {token}, (error) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				// Save the new token locally.
+				this.token = token;
+				this.save().then(() => {
 					resolve(this.token);
-				}, true);
-			}).catch((error) => {
-				undoTokenChange(false);
-				reject(error);
-			});
+				}).catch((error) => {
+					// Undo token change locally.
+					this.token = current_token;
+
+					// Undo token change on device.
+					this._socketEmit('token', {token: current_token}, (undo_error) => {
+						console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
+					});
+
+					console.error(TAG, this.id, 'Error saving device token to database.', error);
+
+					reject(error);
+				});
+			}, true);
 		});
 	}
 
@@ -76,36 +84,36 @@ class Device {
 		return token === this.token;
 	}
 
-	setGatewaySocket (socket, token) {
+	setSocket (socket, token) {
 		if (!token || !this.verifyToken(token)) {
-			console.log(TAG, this.id, 'Could not set gateway socket. Invalid device token.');
+			console.log(TAG, this.id, 'Could not set socket. Invalid device token.');
 			return;
 		}
 
-		if (socket === this.gateway_socket) {
+		if (socket === this.socket) {
 			return;
 		}
 
 		// Disconnect the current socket.
-		if (this.gateway_socket) {
-			this.gateway_socket.removeAllListeners();
-			this.gateway_socket.disconnect();
+		if (this.socket) {
+			this.socket.removeAllListeners();
+			this.socket.disconnect();
 		}
 
-		this.gateway_socket = socket;
+		this.socket = socket;
 		this.state.connected = socket.connected;
 
-		// Set up gateway listeners on new socket.
-		this.gateway_listeners.forEach((listener) => {
-			this._gatewayOn.apply(this, listener);
+		// Set up listeners on new socket.
+		this.socket_listeners.forEach((listener) => {
+			this._socketOn.apply(this, listener);
 		});
 
-		this._listenToGateway();
+		this._listenToSocket();
 	}
 
-	_listenToGateway () {
-		// Update when the gateway sends new state.
-		this._gatewayOn('load', (data, callback = noOp) => {
+	_listenToSocket () {
+		// Update when the device sends new state.
+		this._socketOn('load', (data, callback = noOp) => {
 			if (!data.device) {
 				callback('No device data provided.');
 
@@ -124,46 +132,46 @@ class Device {
 			this.save();
 		});
 
-		this._gatewayOn('connect', (data) => this.state.connected = true);
-		this._gatewayOn('disconnect', (data) => this.state.connected = false);
+		this._socketOn('connect', (data) => this.state.connected = true);
+		this._socketOn('disconnect', (data) => this.state.connected = false);
 	}
 
-	_gatewayOn (event) {
-		if (!this.gateway_socket) {
-			console.log(TAG, this.id, 'Tried to listen for gateway event "' + event + '" but the device does not have a gateway socket.');
+	_socketOn (event) {
+		if (!this.socket) {
+			console.log(TAG, this.id, 'Tried to listen for socket event "' + event + '" but the device does not have a socket.');
 			return;
 		}
 
-		this.gateway_socket.on.apply(this.gateway_socket, arguments);
+		this.socket.on.apply(this.socket, arguments);
 	}
 
-	_gatewayEmit (event, data, callback = noOp, should_queue) {
-		if (!this.gateway_socket) {
-			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the device does not have a gateway socket.');
+	_socketEmit (event, data, callback = noOp, should_queue) {
+		if (!this.socket) {
+			console.log(TAG, this.id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
 			callback('Device not connected');
 			return;
 		}
 
 		if (!this.state.connected && !should_queue) {
-			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the gateway socket is not connected.');
+			console.log(TAG, this.id, 'Tried to emit socket event "' + event + '" but the socket is not connected.');
 
 			callback('Device not connected');
 			return;
 		}
 
-		this.gateway_socket.emit(event, data, callback);
+		this.socket.emit(event, data, callback);
 	}
 
-	_getGatewaySocketProxy () {
+	_getSocketProxy () {
 		return {
 			on: (function () {
-				this.gateway_listeners.push(arguments);
+				this.socket_listeners.push(arguments);
 
-				if (this.gateway_socket) {
-					this._gatewayOn.apply(this, arguments);
+				if (this.socket) {
+					this._socketOn.apply(this, arguments);
 				}
 			}).bind(this),
-			emit: this._gatewayEmit.bind(this)
+			emit: this._socketEmit.bind(this)
 		};
 	}
 
@@ -198,6 +206,12 @@ class Device {
 			state: this.state,
 			services: this.services.getClientSerializedServices()
 		};
+	}
+
+	destroy () {
+		if (this.socket && this.socket.connected) {
+			this.socket.disconnect(true);
+		}
 	}
 }
 

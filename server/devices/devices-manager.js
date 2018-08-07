@@ -6,13 +6,14 @@ const EventEmitter = require('events'),
 	socketEscrow = {},
 	devicesList = new Map(),
 	DEVICE_TOKEN_SIZE = 256,
-	TAG = 'DevicesManager';
+	TAG = '[DevicesManager]';
 
 class DevicesManager {
 	constructor () {
 		this.events = new EventEmitter();
 
 		this.init = this.init.bind(this);
+		this.handleDeviceConnection = this.handleDeviceConnection.bind(this);
 		this.handleDeviceUpdate = this.handleDeviceUpdate.bind(this);
 	}
 
@@ -42,7 +43,7 @@ class DevicesManager {
 				gateway: this.getServiceById(data.gateway_id, data.account_id)
 			},
 			this.handleDeviceUpdate,
-			data.gateway_socket || this.getFromSocketEscrow(data.id, data.token)
+			data.socket || this.getFromSocketEscrow(data.id, data.token)
 		);
 
 		this.removeFromSocketEscrow(data.id, data.token);
@@ -90,11 +91,7 @@ class DevicesManager {
 			}
 
 			database.deleteDevice(deviceId).then(() => {
-				// Disconnect the socket.
-				if (device && device.gateway_socket && device.gateway_socket.connected) {
-					device.gateway_socket.disconnect(true);
-				}
-
+				device.destroy();
 				devicesList.delete(deviceId);
 
 				resolve();
@@ -102,8 +99,40 @@ class DevicesManager {
 		});
 	}
 
+	handleDeviceConnection (deviceId, deviceToken, socket) {
+		const device = this.getDeviceById(deviceId, null, true);
+
+		// If the device doesn't exist, store the socket in escrow to be used
+		// when the device is added.
+		if (!device) {
+			console.log(TAG, 'Unknown device connected.', deviceId);
+
+			this.addToSocketEscrow(deviceId, deviceToken, socket);
+
+			return;
+		}
+
+		// Device token is invalid.
+		if (!device.verifyToken(deviceToken)) {
+			console.log(TAG, 'Closing device socket connection due to invalid device token.', socket.id);
+
+			socket.emit('authentication', {error: 'invalid token'});
+
+			socket.disconnect();
+
+			return;
+		}
+
+		console.log(TAG, 'Device connected.', deviceId);
+
+		// Update the socket on the device.
+		device.setSocket(socket, deviceToken);
+	}
+
 	handleDeviceUpdate (device) {
-		this.events.emit('device/update', {device});
+		const accountDevices = this.getClientSerializedDevices(this.getDevicesByAccountId(device.account_id));
+
+		this.events.emit('devices-update/account/' + device.account_id, {devices: accountDevices});
 	}
 
 	doesDeviceExist (deviceId) {
@@ -177,6 +206,10 @@ class DevicesManager {
 
 	removeFromSocketEscrow (deviceId, deviceToken) {
 		delete socketEscrow[deviceId + deviceToken];
+	}
+
+	isDeviceReadyToAdd (deviceId, deviceToken) {
+		return Boolean(this.getFromSocketEscrow(deviceId, deviceToken));
 	}
 
 	loadDevicesFromDb () {

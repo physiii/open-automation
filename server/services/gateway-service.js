@@ -5,12 +5,12 @@ const crypto = require('crypto'),
 	TAG = '[GatewayService]';
 
 class GatewayService extends Service {
-	constructor (data, onUpdate, gateway_socket) {
+	constructor (data, onUpdate, device_socket) {
 		super(data, onUpdate);
 
 		this.type = 'gateway';
 
-		this.driver = new GatewayServiceDriver(this.id, 'gateway', gateway_socket);
+		this.driver = new GatewayServiceDriver(this.id, 'gateway', device_socket);
 	}
 
 	getDevices () {

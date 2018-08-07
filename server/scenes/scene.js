@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4'),
-	TAG = '[Scene.js]';
+	TAG = '[Scene]';
 
 class Scene {
 	constructor (data) {

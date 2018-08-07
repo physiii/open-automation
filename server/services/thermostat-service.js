@@ -3,10 +3,10 @@ const Service = require('./service.js'),
 	TAG = '[ThermostatService]';
 
 class ThermostatService extends Service {
-	constructor (data, onUpdate, gateway_socket) {
+	constructor (data, onUpdate, device_socket) {
 		super(data, onUpdate);
 
-		this.driver = new GatewayThermostatDriver(this.id, gateway_socket);
+		this.driver = new GatewayThermostatDriver(this.id, device_socket);
 		this.subscribeToDriver();
 	}
 

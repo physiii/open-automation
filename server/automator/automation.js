@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4'),
-	TAG = '[Automation.js]';
+	TAG = '[Automation]';
 
 class Automation {
 	constructor (data) {

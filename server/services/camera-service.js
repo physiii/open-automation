@@ -5,10 +5,10 @@ const moment = require('moment'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, onUpdate, gateway_socket) {
+	constructor (data, onUpdate, device_socket) {
 		super(data, onUpdate);
 
-		this.driver = new GatewayCameraDriver(this.id, gateway_socket);
+		this.driver = new GatewayCameraDriver(this.id, device_socket);
 		this.subscribeToDriver();
 	}
 
