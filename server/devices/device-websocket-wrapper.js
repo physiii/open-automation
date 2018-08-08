@@ -40,7 +40,6 @@ class DeviceWebSocketWrapper extends EventEmitter {
 			this.handleEvent(message);
 		} else if (message.callback) {
 			this.handleCallback(message);
-			return;
 		}
 	}
 
@@ -60,6 +59,7 @@ class DeviceWebSocketWrapper extends EventEmitter {
 
 	handleOpen () {
 		this.connected = true;
+		EventEmitter.prototype.emit.call(this, 'connect');
 	}
 
 	handleClose () {

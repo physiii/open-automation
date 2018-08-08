@@ -63,7 +63,7 @@ class DevicesManager {
 			const device = this.addDevice(data);
 
 			if (!device) {
-				console.error(TAG, 'There was an error creating a device. This is most likely due to a device already existing with the ID, but the account not having access to that device.');
+				console.error(TAG, 'There was an error creating a device. This is most likely due to a device already existing with the ID but the account not having access to that device.');
 				reject('There was an error creating the device.');
 				return;
 			}

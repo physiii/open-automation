@@ -18,7 +18,5 @@ module.exports = (server) => {
 		}
 
 		DevicesManager.handleDeviceConnection(device_id, device_token, new DeviceWebSocketWrapper(socket));
-
-		socket.on('message', (message) => console.log(JSON.parse(message)));
 	});
 };
