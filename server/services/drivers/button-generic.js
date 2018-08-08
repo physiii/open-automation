@@ -9,7 +9,7 @@ const GatewayServiceDriver = require('./gateway.js'),
 		6: 'top',
 		7: 'right',
 		8: 'down',
-		9: 'left',
+		9: 'left'
 	};
 
 class GenericButtonDriver extends GatewayServiceDriver {
