@@ -26,16 +26,21 @@ class LigerService extends Service {
 		this.deviceOn('pressed', (data) => {
 			let button_pressed = BUTTON_NAMES[data.value];
 
-			if (button_pressed === 'up' || button_pressed === 'down') {
+			if (!this.fadeInterval && button_pressed === 'up' || button_pressed === 'down') {
 				return this.fadeInterval = setInterval(() => this._emit('pressed/' + button_pressed), 1000);
+			}
 
-			} else if (this.fadeInterval && button_pressed != 'up' || button_pressed != 'down') {
+			if (this.fadeInterval) {
 				clearInterval(this.fadeInterval);
-				return this._emit('pressed/' + button_pressed);
 
-			} else {
+				if (button_pressed === 'up' || button_pressed === 'down') {
+					return this.fadeInterval = setInterval(() => this._emit('pressed/' + button_pressed), 1000);
+				}
+
 				return this._emit('pressed/' + button_pressed);
 			}
+
+			return this._emit('pressed/' + button_pressed);
 
 		});
 	}
