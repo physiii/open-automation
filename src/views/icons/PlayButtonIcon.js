@@ -17,8 +17,7 @@ export const PlayButtonIcon = (props) => (
 					y="-3.1%"
 					width="112.5%"
 					height="112.5%"
-					filterUnits="objectBoundingBox"
-				>
+					filterUnits="objectBoundingBox">
 					<feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
 					<feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
 					<feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0" in="shadowBlurOuter1"/>

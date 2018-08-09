@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import VideoStream from './VideoStream.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
+import StopButtonIcon from '../icons/StopButtonIcon.js';
+import ExpandIcon from '../icons/ExpandIcon.js';
+import fscreen from 'fscreen';
 import './VideoPlayer.css';
 
 export class VideoPlayer extends React.Component {
@@ -12,10 +15,20 @@ export class VideoPlayer extends React.Component {
 		// the autoplay prop during the first render.
 		this.state = {
 			isPlaying: this.props.autoplay,
+			isFullScreen: false,
 			hasPlayedOnce: false
 		};
 
-		this.onClick = this.onClick.bind(this);
+		this.wrapper = React.createRef();
+
+		this.handleClick = this.handleClick.bind(this);
+		this.handleFullScreenClick = this.handleFullScreenClick.bind(this);
+		this.handleCloseClick = this.handleCloseClick.bind(this);
+		this.updateFullScreenState = this.updateFullScreenState.bind(this);
+	}
+
+	componentDidMount () {
+		fscreen.addEventListener('fullscreenchange', this.updateFullScreenState);
 	}
 
 	componentDidUpdate (previousProps, previousState) {
@@ -24,13 +37,55 @@ export class VideoPlayer extends React.Component {
 		} else if (previousState.isPlaying && !this.state.isPlaying && typeof this.props.onStop === 'function') {
 			this.props.onStop();
 		}
+
+		if (!previousState.isFullScreen && this.state.isFullScreen) {
+			this.enterFullScreen();
+		} else if (previousState.isFullScreen && !this.state.isFullScreen) {
+			this.exitFullScreen();
+		}
 	}
 
-	onClick () {
+	componentWillUnmount () {
+		fscreen.removeEventListener('fullscreenchange', this.updateFullScreenState);
+	}
+
+	handleClick () {
 		if (this.state.isPlaying) {
 			this.stop();
 		} else {
 			this.play();
+		}
+	}
+
+	handleFullScreenClick (event) {
+		event.stopPropagation();
+
+		this.setState({isFullScreen: !this.state.isFullScreen});
+	}
+
+	handleCloseClick (event) {
+		event.stopPropagation();
+
+		this.exitFullScreen();
+	}
+
+	updateFullScreenState () {
+		this.setState({isFullScreen: this.isFullScreen()});
+	}
+
+	isFullScreen () {
+		return this.wrapper.current === fscreen.fullscreenElement;
+	}
+
+	enterFullScreen () {
+		if (fscreen.fullscreenEnabled) {
+			fscreen.requestFullscreen(this.wrapper.current);
+		}
+	}
+
+	exitFullScreen () {
+		if (fscreen.fullscreenEnabled) {
+			fscreen.exitFullscreen();
 		}
 	}
 
@@ -48,27 +103,35 @@ export class VideoPlayer extends React.Component {
 	getAspectRatioPaddingTop () {
 		const aspectRatio = this.props.height / this.props.width;
 
-		return (aspectRatio * 100) + '%'; // eslint-disable-line no-magic-numbers
+		return (aspectRatio * 100) + '%';
 	}
 
 	render () {
 		return (
-			<div styleName="player" onClick={this.onClick}>
-				<div styleName={this.state.isPlaying ? 'overlayPlaying' : 'overlay'}>
-					{!this.state.isPlaying &&
-						<PlayButtonIcon size={64} shadowed={true} />}
-					{this.state.isPlaying && !this.props.recording &&
-						<span styleName="live">Live</span>}
-				</div>
-				<div styleName="video">
-					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
-					{this.props.posterUrl && !this.state.hasPlayedOnce &&
-						<img styleName="poster" style={{width: this.props.width, height: this.props.height}} src={this.props.posterUrl} />}
-					<VideoStream
-						styleName="canvas"
-						{...this.props}
-						shouldStream={this.state.isPlaying}
-						key={(this.props.recording && this.props.recording.id) || this.props.cameraServiceId} />
+			<div styleName={this.state.isFullScreen ? 'wrapperFullScreen' : 'wrapper'} ref={this.wrapper}>
+				{this.state.isFullScreen &&
+					<span styleName="closeButton" onClick={this.handleCloseClick}><ExpandIcon size={18} /></span>}
+				<div styleName={this.state.isFullScreen ? 'playerFullScreen' : 'player'} onClick={this.handleClick}>
+					<div styleName={this.state.isPlaying ? 'overlayPlaying' : 'overlay'}>
+						{!this.state.isPlaying &&
+							<PlayButtonIcon size={64} shadowed={true} />}
+						{this.state.isPlaying &&
+							<StopButtonIcon size={64} shadowed={true} />}
+						{this.state.isPlaying && !this.props.recording &&
+							<span styleName="live">Live</span>}
+						{this.state.isPlaying && fscreen.fullscreenEnabled &&
+							<span onClick={this.handleFullScreenClick}><ExpandIcon size={18} /></span>}
+					</div>
+					<div styleName="video">
+						<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
+						{this.props.posterUrl && !this.state.hasPlayedOnce &&
+							<img styleName="poster" src={this.props.posterUrl} />}
+						<VideoStream
+							styleName="canvas"
+							{...this.props}
+							shouldStream={this.state.isPlaying}
+							key={(this.props.recording && this.props.recording.id) || this.props.cameraServiceId} />
+					</div>
 				</div>
 			</div>
 		);

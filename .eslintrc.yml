@@ -151,6 +151,7 @@ rules:
     - ignore:
       - 0
       - 1
+      - 100
   no-mixed-operators: error
   no-multi-assign: error
   no-multi-spaces: error
