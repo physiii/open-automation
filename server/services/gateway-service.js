@@ -1,20 +1,20 @@
 const crypto = require('crypto'),
 	Service = require('./service.js'),
-	GatewayServiceDriver = require('./drivers/gateway.js'),
 	COMMAND_TOKEN_SIZE = 8,
 	TAG = '[GatewayService]';
 
 class GatewayService extends Service {
-	constructor (data, onUpdate, device_socket) {
-		super(data, onUpdate);
-
-		this.type = 'gateway';
-
-		this.driver = new GatewayServiceDriver(this.id, 'gateway', device_socket);
-	}
-
 	getDevices () {
-		return this.driver.getDevices();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('devices/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data);
+			});
+		});
 	}
 
 	getCommandToken () {
@@ -42,7 +42,16 @@ class GatewayService extends Service {
 	}
 
 	command (command) {
-		return this.driver.command(command);
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('command', {command}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data);
+			});
+		});
 	}
 
 	clientSerialize () {
@@ -51,5 +60,9 @@ class GatewayService extends Service {
 		};
 	}
 }
+
+GatewayService.type = 'gateway';
+GatewayService.friendly_type = 'Gateway';
+GatewayService.indefinite_article = 'A';
 
 module.exports = GatewayService;

@@ -2,12 +2,15 @@ const uuid = require('uuid/v4'),
 	EventEmitter2 = require('eventemitter2').EventEmitter2;
 
 class Service {
-	constructor (data, onUpdate) {
+	constructor (data, onUpdate, deviceOn, deviceEmit) {
 		this.id = data.id || uuid();
 		this.type = this.constructor.type || data.type;
 		this.device = data.device;
 		this.events = new EventEmitter2({wildcard: true, newListener: false, maxListeners: 0});
 		this.onUpdate = onUpdate;
+		this.originalDeviceOn = deviceOn;
+		this.originalDeviceEmit = deviceEmit;
+		this.device_event_prefix = this.type + '/' + this.id + '/';
 
 		this.setSettings(data.settings);
 		this.setState(data.state);
@@ -15,6 +18,14 @@ class Service {
 
 	on (event, listener) {
 		this.events.on(event, listener);
+	}
+
+	off (event, listener) {
+		if (listener) {
+			this.events.off(event, listener);
+		} else {
+			this.events.removeAllListeners(event);
+		}
 	}
 
 	_emit (event, data) {
@@ -25,12 +36,12 @@ class Service {
 		this.events.emit([event, '*'], data);
 	}
 
-	off (event, listener) {
-		if (listener) {
-			this.events.off(event, listener);
-		} else {
-			this.events.removeAllListeners(event);
-		}
+	deviceOn (event, callback) {
+		this.originalDeviceOn(this.device_event_prefix + event, callback);
+	}
+
+	deviceEmit (event, data, callback) {
+		this.originalDeviceEmit(this.device_event_prefix + event, data, callback);
 	}
 
 	setSettings (settings = {}) {

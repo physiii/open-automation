@@ -1,9 +1,10 @@
 const Service = require('./service.js');
 
 class ServicesManager {
-	constructor (device, services = [], device_socket, onServiceUpdate) {
+	constructor (device, services = [], deviceOn, deviceEmit, onServiceUpdate) {
 		this.device = device;
-		this.device_socket = device_socket;
+		this.deviceOn = deviceOn;
+		this.deviceEmit = deviceEmit;
 		this.services = [];
 
 		this.onServiceUpdate = onServiceUpdate;
@@ -27,7 +28,8 @@ class ServicesManager {
 		service = new service_class(
 			{...data, device: this.device},
 			this.onServiceUpdate,
-			this.device_socket
+			this.deviceOn,
+			this.deviceEmit
 		);
 
 		this.services.push(service);

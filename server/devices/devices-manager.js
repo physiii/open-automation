@@ -50,6 +50,8 @@ class DevicesManager {
 
 		devicesList.set(device.id, device);
 
+		this.handleDeviceUpdate(device);
+
 		return device;
 	}
 
