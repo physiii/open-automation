@@ -1,12 +1,10 @@
 const Service = require('./service.js'),
-	GatewayLockDriver = require('./drivers/lock-gateway.js'),
 	TAG = '[LockService]';
 
 class LockService extends Service {
-	constructor (data, onUpdate, device_socket) {
-		super(data, onUpdate);
+	constructor (data, onUpdate, deviceOn, deviceEmit) {
+		super(data, onUpdate, deviceOn, deviceEmit);
 
-		this.driver = new GatewayLockDriver(this.id, device_socket);
 		this.subscribeToDriver();
 
 		this.lock = this.lock.bind(this);
@@ -14,19 +12,46 @@ class LockService extends Service {
 	}
 
 	subscribeToDriver () {
-		this.driver.on('state update', (state) => this.setState(state));
+		this.deviceOn('state update', (state) => this.setState(state));
 	}
 
 	lock () {
-		return this.driver.lock();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('lock/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	unlock () {
-		return this.driver.unlock();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('unlock/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	setRelockDelay (delay) {
-		return this.driver.setRelockDelay(delay);
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('relockDelay/set', {relock_delay: delay}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	serialize () {

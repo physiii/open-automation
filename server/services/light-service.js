@@ -1,69 +1,68 @@
 const Service = require('./service.js'),
-	GatewayLightDriver = require('./drivers/light-gateway.js'),
 	TAG = '[LightService]';
 
 class LightService extends Service {
-	constructor (data, onUpdate, device_socket) {
-		super(data, onUpdate);
-
-		this.driver = new GatewayLightDriver(this.id, device_socket);
-		this.subscribeToDriver();
-	}
-
-	subscribeToDriver () {}
-
 	action (data) {
-		console.log(TAG, 'Recieved action:', data);
-
 		switch (data.property) {
-			case 'light_on':
-				this.driver.lightOn();
-				break;
-			case 'light_off':
-				this.driver.lightOff();
-				break;
-			case 'set_brightness':
-				this.driver.setBrightness(data.value);
-				break;
-			case 'set_color':
-				this.driver.setColor(data.value);
-				break;
-			case 'set_light_name':
-				this.driver.setLightName(data.value);
-				break;
-			default:
-				break;
-		};
+			case 'power':
+				return data.value ? this.lightOn() : this.lightOff();
+			case 'brightness':
+				return this.setBrightness(data.value);
+			case 'color':
+				return this.setColor(data.value);
+		}
 	}
 
 	lightOn () {
-		return this.driver.lightOn();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('lightOn/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	lightOff () {
-		return this.driver.lightOff();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('lightOff/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	setBrightness (brightness) {
-		return this.driver.setBrightness(brightness);
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('brightness/set', {brightness}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	setColor (color) {
-		return this.driver.setColor(color);
-	}
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('color/set', {color}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-	setLightName (name) {
-		return this.driver.setLightName(name);
-	}
-
-	serialize () {
-		return {
-			...Service.prototype.serialize.apply(this, arguments)
-		};
-	}
-
-	dbSerialize () {
-		return this.serialize();
+				resolve();
+			});
+		});
 	}
 }
 

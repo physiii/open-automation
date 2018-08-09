@@ -1,32 +1,35 @@
 const uuid = require('uuid/v4'),
 	utils = require('../utils.js'),
 	database = require('../database.js'),
+	GatewayDeviceDriver = require('./drivers/gateway-driver.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
 	TAG = '[Device]';
 
 class Device {
 	constructor (data, onUpdate, socket) {
+		const driver_class = Device.drivers[data.type] || GatewayDeviceDriver;
+
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.account = data.account;
 		this.account_id = data.account_id;
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
-		this.socket_listeners = [];
 
-		this.onUpdate = onUpdate;
-		this.services = new ServicesManager(this, data.services, this._getSocketProxy(), () => this.onUpdate(this));
+		this.onUpdate = () => onUpdate(this);
+		this.driver = new driver_class();
+		this.services = new ServicesManager(this, data.services, this.driver.on.bind(this.driver), this.driver.emit.bind(this.driver), this.onUpdate);
 
 		this._setSettings(data.settings);
 		this._setInfo(data.info);
-		this.state = utils.onChange({connected: false}, () => this.onUpdate(this));
+		this.state = utils.onChange({connected: false}, this.onUpdate);
 
 		if (socket) {
 			this.setSocket(socket, this.token);
 		}
 
-		this.onUpdate(this);
+		this.subscribeToDriver();
 	}
 
 	_setSettings (settings = {}) {
@@ -41,79 +44,10 @@ class Device {
 		};
 	}
 
-	setToken (token) {
-		return new Promise((resolve, reject) => {
-			const current_token = this.token;
-
-			if (!this.socket || !this.socket.connected) {
-				console.log(TAG, this.id, 'Cannot set device token without a connected socket.');
-				reject('Socket not connected.');
-
-				return;
-			}
-
-			// Send new token to device.
-			this._socketEmit('token', {token}, (error) => {
-				if (error) {
-					reject(error);
-					return;
-				}
-
-				// Save the new token locally.
-				this.token = token;
-				this.save().then(() => {
-					resolve(this.token);
-				}).catch((error) => {
-					// Undo token change locally.
-					this.token = current_token;
-
-					// Undo token change on device.
-					this._socketEmit('token', {token: current_token}, (undo_error) => {
-						console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
-					});
-
-					console.error(TAG, this.id, 'Error saving device token to database.', error);
-
-					reject(error);
-				});
-			}, true);
-		});
-	}
-
-	verifyToken (token) {
-		return token === this.token;
-	}
-
-	setSocket (socket, token) {
-		if (!token || !this.verifyToken(token)) {
-			console.log(TAG, this.id, 'Could not set socket. Invalid device token.');
-			return;
-		}
-
-		if (socket === this.socket) {
-			return;
-		}
-
-		// Disconnect the current socket.
-		if (this.socket) {
-			this.socket.removeAllListeners();
-			this.socket.disconnect();
-		}
-
-		this.socket = socket;
-		this.state.connected = socket.connected;
-
-		// Set up listeners on new socket.
-		this.socket_listeners.forEach((listener) => {
-			this._socketOn.apply(this, listener);
-		});
-
-		this._listenToSocket();
-	}
-
-	_listenToSocket () {
-		// Update when the device sends new state.
-		this._socketOn('load', (data, callback = noOp) => {
+	subscribeToDriver () {
+		this.driver.on('connect', (data) => this.state.connected = true);
+		this.driver.on('disconnect', (data) => this.state.connected = false);
+		this.driver.on('load', (data, callback = noOp) => {
 			if (!data.device) {
 				callback('No device data provided.');
 
@@ -128,51 +62,62 @@ class Device {
 				this._setInfo(data.info);
 			}
 
-			this.onUpdate(this);
+			this.onUpdate();
 			this.save();
 		});
-
-		this._socketOn('connect', (data) => this.state.connected = true);
-		this._socketOn('disconnect', (data) => this.state.connected = false);
 	}
 
-	_socketOn (event) {
-		if (!this.socket) {
-			console.log(TAG, this.id, 'Tried to listen for socket event "' + event + '" but the device does not have a socket.');
-			return;
-		}
+	setToken (token) {
+		return new Promise((resolve, reject) => {
+			const current_token = this.token;
 
-		this.socket.on.apply(this.socket, arguments);
-	}
+			if (!this.state.connected) {
+				console.log(TAG, this.id, 'Cannot set device token when the device is not connected.');
+				reject('Device not connected.');
 
-	_socketEmit (event, data, callback = noOp, should_queue) {
-		if (!this.socket) {
-			console.log(TAG, this.id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
-			callback('Device not connected');
-			return;
-		}
+				return;
+			}
 
-		if (!this.state.connected && !should_queue) {
-			console.log(TAG, this.id, 'Tried to emit socket event "' + event + '" but the socket is not connected.');
-
-			callback('Device not connected');
-			return;
-		}
-
-		this.socket.emit(event, data, callback);
-	}
-
-	_getSocketProxy () {
-		return {
-			on: (function () {
-				this.socket_listeners.push(arguments);
-
-				if (this.socket) {
-					this._socketOn.apply(this, arguments);
+			// Send new token to device.
+			this.driver.emit('token', {token}, (error) => {
+				if (error) {
+					reject(error);
+					return;
 				}
-			}).bind(this),
-			emit: this._socketEmit.bind(this)
-		};
+
+				// Save the new token locally.
+				this.token = token;
+				this.save().then(() => {
+					resolve(this.token);
+				}).catch((error) => {
+					// Undo token change locally.
+					this.token = current_token;
+
+					// Undo token change on device.
+					this.driver.emit('token', {token: current_token}, (undo_error) => {
+						console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
+					});
+
+					console.error(TAG, this.id, 'Error saving device token to database.', error);
+
+					reject(error);
+				});
+			});
+		});
+	}
+
+	verifyToken (token) {
+		return token === this.token;
+	}
+
+	setSocket (socket, token) {
+		if (!token || !this.verifyToken(token)) {
+			console.log(TAG, this.id, 'Could not set socket. Invalid device token.');
+			return;
+		}
+
+		this.driver.setSocket(socket);
+		this.state.connected = socket.connected;
 	}
 
 	save () {
@@ -209,10 +154,12 @@ class Device {
 	}
 
 	destroy () {
-		if (this.socket && this.socket.connected) {
-			this.socket.disconnect(true);
-		}
+		this.driver.destroy();
 	}
 }
+
+Device.drivers = {
+	'gateway': GatewayDeviceDriver
+};
 
 module.exports = Device;
