@@ -66,45 +66,6 @@ class LightService extends Service {
 	}
 }
 
-startFadeUp () {
-	return new Promise ((resolve, reject) => {
-		this.deviceEmit('fade/up/set', {}, (error, data) => {
-			if (error) {
-				reject(error);
-				return;
-			}
-
-			resolve();
-		});
-	});
-}
-
-startFadedown () {
-	return new Promise ((resolve, reject) => {
-		this.deviceEmit('fade/down/set', {}, (error, data) => {
-			if (error) {
-				reject(error);
-				return;
-			}
-
-			resolve();
-		});
-	});
-}
-
-stopFade () {
-	return new Promise ((resolve, reject) => {
-		this.deviceEmit('fade/remove', {}, (error, data) => {
-			if (error) {
-				reject(error);
-				return;
-			}
-
-			resolve();
-		});
-	});
-}
-
 LightService.type = 'light';
 LightService.friendly_type = 'Light';
 LightService.indefinite_article = 'A';

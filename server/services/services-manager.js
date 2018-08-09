@@ -72,7 +72,7 @@ ServicesManager.classes = {
 	'thermostat': require('./thermostat-service.js'),
 	'light': require('./light-service.js'),
 	'event-mock': require('./event-mock-service.js'),
-	'button': require('./button-service.js')
+	'liger': require('./liger-service.js')
 };
 
 module.exports = ServicesManager;
