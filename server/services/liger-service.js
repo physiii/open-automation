@@ -24,23 +24,16 @@ class LigerService extends Service {
 
 	subscribeToDevice () {
 		this.deviceOn('pressed', (data) => {
-			let button_pressed = BUTTON_NAMES[data.value]
+			let button_pressed = BUTTON_NAMES[data.value];
 
-			if (data.event_type === 'dpad') {
-				this._emit('pressed/dpad/' + button_pressed);
-			};
+			if (button_pressed === 'up' || button_pressed === 'down') {
+				return this.fadeInterval = setInterval(() => this._emit('pressed/' + button_pressed), 1000);
 
-			if (data.event_type === 'switch') {
-				if (button_pressed === 'left' || button_pressed === 'right') {
-					return this.fadeInterval = setInterval(() => this._emit('pressed/switch/' + button_pressed), 1000);
-				}
+			} else if (this.fadeInterval && button_pressed === 'release') {
+				return clearInterval(this.fadeInterval);
 
-				if (button_pressed === 'release') {
-					return clearInterval(this.fadeInterval);
-				}
-
-				this._emit('pressed/switch/' + button_pressed)
-
+			} else {
+				return this._emit('pressed/' + button_pressed);
 			}
 
 		});
@@ -48,8 +41,8 @@ class LigerService extends Service {
 
 }
 
-ButtonService.type = 'button';
-ButtonService.friendly_type = 'Button';
+ButtonService.type = 'liger';
+ButtonService.friendly_type = 'Liger';
 ButtonService.indefinite_article = 'A';
 
 module.exports = LigerService;
