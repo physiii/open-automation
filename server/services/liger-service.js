@@ -31,15 +31,17 @@ class LigerService extends Service {
 			};
 
 			if (data.event_type === 'switch') {
-				if (button_pressed === 'down') {
-					this.fadeInterval = setInterval(() => this._emit('pressed/switch/' + button_pressed), 1000);
+				if (button_pressed === 'left' || button_pressed === 'right') {
+					return this.fadeInterval = setInterval(() => this._emit('pressed/switch/' + button_pressed), 1000);
+				}
 
-				if (button_pressed === 'up') {
-					this.fadeInterval = setInterval(() => this._emit('pressed/switch/' + button_pressed), 1000);
+				if (button_pressed === 'release') {
+					return clearInterval(this.fadeInterval);
+				}
 
-				if (button_pressed === 'release') clearInterval(this.fadeInterval);
+				this._emit('pressed/switch/' + button_pressed)
 
-			};
+			}
 
 		});
 	}
