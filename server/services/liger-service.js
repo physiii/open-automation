@@ -26,8 +26,7 @@ class LigerService extends Service {
 		this.deviceOn('pressed', (data) => {
 			let button_pressed = BUTTON_NAMES[data.value];
 
-			if (this.fadeInterval) {
-				clearInterval(this.fadeInterval);
+			if (this.fadeInterval) clearInterval(this.fadeInterval);
 
 			if (!this.fadeInterval && button_pressed === 'up' || button_pressed === 'down') {
 				return this.fadeInterval = setInterval(() => this._emit('pressed/' + button_pressed), 1000);
