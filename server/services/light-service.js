@@ -66,9 +66,22 @@ class LightService extends Service {
 	}
 }
 
-startFade () {
+startFadeUp () {
 	return new Promise ((resolve, reject) => {
-		this.deviceEmit('fade/set', {}, (error, data) => {
+		this.deviceEmit('fade/up/set', {}, (error, data) => {
+			if (error) {
+				reject(error);
+				return;
+			}
+
+			resolve();
+		});
+	});
+}
+
+startFadedown () {
+	return new Promise ((resolve, reject) => {
+		this.deviceEmit('fade/down/set', {}, (error, data) => {
 			if (error) {
 				reject(error);
 				return;
