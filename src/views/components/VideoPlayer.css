@@ -1,11 +1,34 @@
 @value toolbarHeight from "./AppToolbar.css";
 @value liveRed: #bd2100;
 
+.wrapper {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+.wrapperFullScreen {
+	composes: wrapper;
+	height: 100%;
+}
+
 .player {
 	position: relative;
+	overflow: hidden;
 	width: 100%;
 	max-width: calc((100vh - toolbarHeight) * (4 / 3));
 	cursor: pointer;
+}
+.playerFullScreen {
+	composes: player;
+	max-width: calc(100vh * (4 / 3));
+}
+
+.closeButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
 }
 
 .overlay {
@@ -15,16 +38,17 @@
 	justify-content: center;
 	align-items: center;
 	z-index: 2;
-	transition: background 0.15s;
+	transition: background 0.15s, opacity 0.15s;
 }
 .overlay:hover {
 	background-color: rgba(0, 0, 0, 0.15);
 }
 .overlayPlaying {
 	composes: overlay;
+	opacity: 0;
 }
 .overlayPlaying:hover {
-	background-color: transparent;
+	opacity: 1;
 }
 .live {
 	display: inline-block;
@@ -60,7 +84,8 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 1
+	z-index: 1;
+	width: 100%;
 }
 .canvas {
 	composes: fillContext from "../styles/helpers.css";
