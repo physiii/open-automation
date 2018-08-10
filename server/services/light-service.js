@@ -11,9 +11,11 @@ class LightService extends Service {
 					return this.lightOn();
 				}
 			case 'brightness':
+				if (data.mode === 'add' && this.state.brightness >= 100) return this.state.brightness = 100;
 				if (data.mode === 'add') return this.setBrightness(this.state.brightness + data.value);
+				if (data.mode === 'subtract' && this.state.brightness <= 0) return this.state.brightness = 0;
 				if (data.mode === 'subtract') return this.setBrightness(this.state.brightness - data.value);
-				if (!data.mode) return this.setBrightness(data.value);
+				if (!data.mode && !(data.value < 0) || !(data.value > 100)) return this.setBrightness(data.value);
 			case 'color':
 				return this.setColor(data.value);
 		}
