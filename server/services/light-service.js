@@ -5,11 +5,11 @@ class LightService extends Service {
 	action (data) {
 		switch (data.property) {
 			case 'power':
-				if (toggle)	return this.state.power ? this.lightOff() : this.lightOn();
+				if (data.toggle)	return this.state.power ? this.lightOff() : this.lightOn();
 
-				if (data.value === "true") {
+				if (data.value === true) {
 					return this.lightOn();
-				} else if (data.value === "false") {
+				} else if (data.value === false) {
 					return this.lightOff();
 				} else {
 					return console.log(TAG, 'action value invalid. Must be true or false');
