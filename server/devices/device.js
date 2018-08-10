@@ -2,6 +2,7 @@ const uuid = require('uuid/v4'),
 	utils = require('../utils.js'),
 	database = require('../database.js'),
 	GatewayDeviceDriver = require('./drivers/gateway-driver.js'),
+	LigerDeviceDriver = require('./drivers/liger-driver.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
 	TAG = '[Device]';
@@ -18,7 +19,7 @@ class Device {
 		this.gateway_id = data.gateway_id;
 
 		this.onUpdate = () => onUpdate(this);
-		this.driver = new driver_class();
+		this.driver = new driver_class(socket, this.id, data.services);
 		this.services = new ServicesManager(this, data.services, this.driver.on.bind(this.driver), this.driver.emit.bind(this.driver), this.onUpdate);
 
 		this._setSettings(data.settings);
@@ -45,8 +46,8 @@ class Device {
 	}
 
 	subscribeToDriver () {
-		this.driver.on('connect', (data) => this.state.connected = true);
-		this.driver.on('disconnect', (data) => this.state.connected = false);
+		this.driver.on('connect', () => this.state.connected = true);
+		this.driver.on('disconnect', () => this.state.connected = false);
 		this.driver.on('load', (data, callback = noOp) => {
 			if (!data.device) {
 				callback('No device data provided.');
@@ -64,6 +65,9 @@ class Device {
 
 			this.onUpdate();
 			this.save();
+		});
+		this.driver.on('driver-settings', (data) => {
+			// TODO: Save driver data to DB
 		});
 	}
 
@@ -159,7 +163,8 @@ class Device {
 }
 
 Device.drivers = {
-	'gateway': GatewayDeviceDriver
+	'gateway': GatewayDeviceDriver,
+	'liger': LigerDeviceDriver
 };
 
 module.exports = Device;

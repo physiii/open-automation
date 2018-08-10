@@ -58,14 +58,20 @@ class DevicesManager {
 	createDevice (data) {
 		return new Promise((resolve, reject) => {
 			if (this.doesDeviceExist(data.id)) {
-				reject('A device already exists with that ID.');
+				reject('A device with that ID already exists.');
+				return;
+			}
+
+			// Check to make sure the device is connected.
+			if (!this.isDeviceReadyToAdd(data.id, data.token)) {
+				reject('No device with that ID is currently connected or the device already belongs to an account.', data);
 				return;
 			}
 
 			const device = this.addDevice(data);
 
 			if (!device) {
-				console.error(TAG, 'There was an error creating a device. This is most likely due to a device already existing with the ID but the account not having access to that device.');
+				console.error(TAG, 'There was an error creating a device.');
 				reject('There was an error creating the device.');
 				return;
 			}
@@ -211,7 +217,9 @@ class DevicesManager {
 	}
 
 	isDeviceReadyToAdd (deviceId, deviceToken) {
-		return Boolean(this.getFromSocketEscrow(deviceId, deviceToken));
+		const socket = this.getFromSocketEscrow(deviceId, deviceToken);
+
+		return Boolean(socket && socket.connected);
 	}
 
 	loadDevicesFromDb () {

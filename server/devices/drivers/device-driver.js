@@ -1,17 +1,40 @@
-const TAG = '[DeviceDriver]';
-
 class DeviceDriver {
-	constructor (socket) {
-		this.socket = socket;
-		this.device_listeners = [];
+	constructor (socket, device_id) {
+		this.device_id = device_id;
 	}
 
-	on (event) {
-		this.device_listeners.push(arguments);
+	on () {
+		// no-op
 	}
 
 	emit () {
-		// No-op
+		// no-op
+	}
+
+	setSocket () {
+		if (socket === this.socket) {
+			return;
+		}
+
+		// Disconnect the current socket.
+		if (this.socket) {
+			this.socket.removeAllListeners();
+			this.socket.disconnect();
+		}
+
+		this.socket = socket;
+
+		this._subscribeToSocket();
+	}
+
+	_subscribeToSocket () {
+		// no-op
+	}
+
+	destroy () {
+		if (this.socket && this.socket.connected) {
+			this.socket.disconnect(true);
+		}
 	}
 }
 
