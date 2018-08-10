@@ -12,7 +12,7 @@ const Service = require('./service.js'),
 		9: 'left',
 		10: 'switch'
 	},
-	TAG = '[LigerServicee]';
+	TAG = '[LigerService]';
 
 class LigerService extends Service {
 	constructor (data, onUpdate, deviceOn, deviceEmit) {
