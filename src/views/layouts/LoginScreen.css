@@ -1,7 +1,7 @@
 @value toolbarBackground from "../styles/colors.css";
 @value error from "../styles/colors.css";
 
-.root {
+.screen {
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;

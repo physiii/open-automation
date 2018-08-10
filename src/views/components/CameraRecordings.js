@@ -5,14 +5,11 @@ import VideoPlayer from './VideoPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
 import {connect} from 'react-redux';
-import {serviceById, recordingsForDate, recordingById} from '../../state/ducks/services-list/selectors.js';
-import {fetchCameraRecordings} from '../../state/ducks/services-list/operations.js';
+import {getServiceById, getRecordingsForDate, getRecordingById} from '../../state/ducks/services-list/selectors.js';
+import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
 import {loadScreen, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './CameraRecordings.css';
-
-momentDurationFormatSetup(moment);
 
 export class CameraRecordings extends React.Component {
 	constructor (props) {
@@ -49,7 +46,9 @@ export class CameraRecordings extends React.Component {
 	render () {
 		let list;
 
-		if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
+		if (this.props.error) {
+			list = <p>{this.props.error}</p>;
+		} else if (this.props.selectedDateRecordings && this.props.selectedDateRecordings.length) {
 			list = (<List
 				title={this.props.selectedDate.format('MMMM Do')}
 				items={this.props.selectedDateRecordings.map((recording) => ({
@@ -60,18 +59,14 @@ export class CameraRecordings extends React.Component {
 					onClick: () => this.playRecording(recording.id)
 				}))}
 			/>);
-		} else if (this.props.error) {
-			list = <p>{this.props.error}</p>;
-		} else {
-			list = <p>No Recordings for the Selected Date</p>;
 		}
 
 		return (
 			<div styleName="screen">
 				<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
-					<div styleName="topCenterer">
-						{this.props.selectedRecording
-							? <VideoPlayer
+					{this.props.selectedRecording
+						? <div styleName="videoContainer">
+							<VideoPlayer
 								cameraServiceId={this.props.cameraService.id}
 								recording={this.props.selectedRecording}
 								key={this.props.selectedRecording.id}
@@ -79,11 +74,13 @@ export class CameraRecordings extends React.Component {
 								width={this.props.selectedRecording.width}
 								height={this.props.selectedRecording.height}
 								autoplay={true} />
-							: <DatePicker
+						</div>
+						: <div styleName="datePickerContainer">
+							<DatePicker
 								selectedDate={this.props.selectedDate}
 								events={this.props.allRecordings}
-								onSelect={this.goToDate} />}
-					</div>
+								onSelect={this.goToDate} />
+						</div>}
 					{this.props.selectedRecording &&
 						<a href="#" styleName="closeButton" onClick={(event) => {
 							event.preventDefault();
@@ -92,12 +89,10 @@ export class CameraRecordings extends React.Component {
 							Close
 						</a>}
 				</div>
-				<div styleName="bottom">
-					<div styleName="list">
-						{this.props.isLoading
-							? <div>Loading Recordings</div>
-							: list}
-					</div>
+				<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
+					{this.props.isLoading
+						? <p>Loading Recordings</p>
+						: list || <p>No Recordings for the Selected Date</p>}
 				</div>
 			</div>
 		);
@@ -120,7 +115,7 @@ CameraRecordings.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-		const cameraService = serviceById(ownProps.match.params.cameraId, state.servicesList);
+		const cameraService = getServiceById(ownProps.match.params.cameraId, state.servicesList);
 
 		let selectedDate = moment([
 			ownProps.match.params.year,
@@ -142,15 +137,15 @@ const mapStateToProps = (state, ownProps) => {
 			cameraService: cameraService.toJS(),
 			selectedDate,
 			allRecordings: cameraService.recordingsList.recordings.toList().toJS(),
-			selectedDateRecordings: recordingsForDate(cameraService, selectedDate).toList().toJS(),
-			selectedRecording: recordingById(cameraService, ownProps.match.params.recordingId),
+			selectedDateRecordings: getRecordingsForDate(cameraService, selectedDate).toList().toJS(),
+			selectedRecording: getRecordingById(cameraService, ownProps.match.params.recordingId),
 			isLoading: cameraService.recordingsList.loading
 		};
 	},
 	mapDispatchToProps = (dispatch, ownProps) => ({
 		dispatch,
 		navigationUnloadScreen: () => dispatch(unloadScreen(ownProps.basePath)),
-		fetchRecordings: (cameraService) => dispatch(fetchCameraRecordings(cameraService.id))
+		fetchRecordings: (cameraService) => dispatch(cameraFetchRecordings(cameraService.id))
 	}),
 	mergeProps = (stateProps, dispatchProps, ownProps) => {
 		const {dispatch, ...restOfDispatchProps} = dispatchProps,

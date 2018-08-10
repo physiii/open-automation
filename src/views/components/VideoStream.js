@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import JSMpeg from '../../lib/tokenJsmpeg.js';
 import {connect} from 'react-redux';
-import {startCameraStream, stopCameraStream, startCameraRecordingStream, stopCameraRecordingStream} from '../../state/ducks/services-list/operations.js';
+import {cameraStartStream, cameraStopStream, cameraStartRecordingStream, cameraStopRecordingStream} from '../../state/ducks/services-list/operations.js';
 import './VideoStream.css';
 
 export class VideoStream extends React.Component {
@@ -154,16 +154,16 @@ export const mapStateToProps = (state) => {
 		return {
 			startStreaming: () => {
 				if (ownProps.recording) {
-					dispatch(startCameraRecordingStream(ownProps.recording));
+					dispatch(cameraStartRecordingStream(ownProps.recording));
 				} else {
-					dispatch(startCameraStream(ownProps.cameraServiceId));
+					dispatch(cameraStartStream(ownProps.cameraServiceId));
 				}
 			},
 			stopStreaming: () => {
 				if (ownProps.recording) {
-					dispatch(stopCameraRecordingStream(ownProps.recording));
+					dispatch(cameraStopRecordingStream(ownProps.recording));
 				} else {
-					dispatch(stopCameraStream(ownProps.cameraServiceId));
+					dispatch(cameraStopStream(ownProps.cameraServiceId));
 				}
 			}
 		};
