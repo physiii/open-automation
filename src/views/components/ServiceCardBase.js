@@ -9,29 +9,29 @@ export const ServiceCardBase = (props) => {
 		: 'Not Responding';
 
 	return (
-		<div styleName="card">
+		<section styleName="card" onClick={props.onCardClick}>
 			<div styleName={props.hideToolbars ? 'topBarHidden' : 'topBar'}>
 				{props.icon &&
 					<div styleName={props.isConnected ? 'icon' : 'disconnectedIcon'}>
 						{props.icon}
 					</div>}
 				<div styleName="nameWrapper">
-					<label styleName="name">
+					<h1 styleName="name">
 						{props.name}
-					</label>
+					</h1>
 					{status &&
-						<div styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>
+						<span styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>
 							{status}
-						</div>}
+						</span>}
 				</div>
 			</div>
 			<div styleName={props.toolbarsOverlayContent ? 'contentBehindToolbars' : 'content'}>
 				{props.content}
 			</div>
 			<div styleName={props.hideToolbars ? 'bottomBarHidden' : 'bottomBar'}>
-				<Toolbar leftChildren={props.secondaryAction} />
+				<Toolbar leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>} />
 			</div>
-		</div>
+		</section>
 	);
 };
 
@@ -43,7 +43,8 @@ ServiceCardBase.propTypes = {
 	content: PropTypes.node,
 	toolbarsOverlayContent: PropTypes.bool,
 	secondaryAction: PropTypes.node,
-	hideToolbars: PropTypes.bool
+	hideToolbars: PropTypes.bool,
+	onCardClick: PropTypes.func
 };
 
 export default ServiceCardBase;

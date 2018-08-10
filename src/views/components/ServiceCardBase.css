@@ -11,6 +11,7 @@
 	border: 1px solid #888888;
 	border-radius: 4px;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 .topBar {
@@ -66,10 +67,16 @@
 	justify-content: center;
 }
 .name {
-	line-height: 20px;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	min-height: 20px;
 }
 .status {
-	line-height: 20px;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	min-height: 20px;
 	color: #909090;
 }
 .disconnectedStatus {

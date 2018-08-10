@@ -20,7 +20,7 @@ class Api {
 
 				resolve();
 			}).catch((error) => {
-				console.error(error);
+				console.error(error); // eslint-disable-line no-console
 				reject(new Error(error));
 			});
 		});
@@ -58,23 +58,23 @@ class Api {
 
 	// Camera Service
 
-	streamCameraLive (cameraServiceId) {
+	cameraStartLiveStream (cameraServiceId) {
 		return Api.apiCall('camera/stream/live', {service_id: cameraServiceId});
 	}
 
-	stopCameraLiveStream (cameraServiceId) {
+	cameraStopLiveStream (cameraServiceId) {
 		return Api.apiCall('camera/stream/stop', {service_id: cameraServiceId});
 	}
 
-	getRecordings (cameraServiceId) {
+	cameraGetRecordings (cameraServiceId) {
 		return Api.apiCall('camera/recordings/get', {service_id: cameraServiceId});
 	}
 
-	streamCameraRecording (cameraServiceId, recordingId) {
+	cameraStartRecordingStream (cameraServiceId, recordingId) {
 		return Api.apiCall('camera/recording/stream', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
-	stopCameraRecordingStream (cameraServiceId, recordingId) {
+	cameraStopRecordingStream (cameraServiceId, recordingId) {
 		return Api.apiCall('camera/recording/stream/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
@@ -84,7 +84,7 @@ class Api {
 		return Api.apiCall('lock/locked/set', {service_id: lockServiceId, locked});
 	}
 
-	setRelockDelay (lockServiceId, relockDelay) {
+	lockSetRelockDelay (lockServiceId, relockDelay) {
 		return Api.apiCall('lock/relock-delay/set', {service_id: lockServiceId, relock_delay: relockDelay});
 	}
 
@@ -105,7 +105,7 @@ class Api {
 				this.connect().then(() => {
 					resolve(response.data.account);
 				}).catch((error) => {
-					console.error(error);
+					console.error(error); // eslint-disable-line no-console
 					reject(error);
 				});
 			}).catch((error) => {
