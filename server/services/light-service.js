@@ -5,9 +5,15 @@ class LightService extends Service {
 	action (data) {
 		switch (data.property) {
 			case 'power':
-				return data.value ? this.lightOn() : this.lightOff();
+				if (this.state.power === 'on') {
+					return this.lightOff();
+				} else {
+					return this.lightOn();
+				}
 			case 'brightness':
-				return this.setBrightness(data.value);
+				if (data.mode === 'add') return this.setBrightness(this.state.brightness + data.value);
+				if (data.mode === 'subtract') return this.setBrightness(this.state.brightness - data.value);
+				if (!data.mode) return this.setBrightness(data.value);
 			case 'color':
 				return this.setColor(data.value);
 		}
