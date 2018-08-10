@@ -1,8 +1,11 @@
-const noOp = () => {},
+const DeviceDriver = require('./device-driver.js'),
+	noOp = () => {},
 	TAG = '[GatewayDeviceDriver]';
 
-class GatewayDeviceDriver {
-	constructor (socket) {
+class GatewayDeviceDriver extends DeviceDriver {
+	constructor (socket, device_id) {
+		super(socket, device_id);
+
 		this.device_listeners = [];
 
 		if (socket) {
@@ -10,7 +13,7 @@ class GatewayDeviceDriver {
 		}
 	}
 
-	on (event) {
+	on () {
 		this.device_listeners.push(arguments);
 
 		if (this.socket) {
@@ -20,14 +23,13 @@ class GatewayDeviceDriver {
 
 	emit (event, data, callback = noOp) {
 		if (!this.socket) {
-			console.log(TAG, this.id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
+			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
 			callback('Device not connected');
 			return;
 		}
 
 		if (!this.socket.connected) {
-			console.log(TAG, this.id, 'Tried to emit socket event "' + event + '" but the socket is not connected.');
-
+			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the socket is not connected.');
 			callback('Device not connected');
 			return;
 		}
@@ -35,29 +37,11 @@ class GatewayDeviceDriver {
 		this.socket.emit(event, data, callback);
 	}
 
-	setSocket (socket) {
-		if (socket === this.socket) {
-			return;
-		}
-
-		// Disconnect the current socket.
-		if (this.socket) {
-			this.socket.removeAllListeners();
-			this.socket.disconnect();
-		}
-
-		this.socket = socket;
-
+	_subscribeToSocket () {
 		// Set up listeners on new socket.
 		this.device_listeners.forEach((listener) => {
 			this.socket.on.apply(this.socket, listener);
 		});
-	}
-
-	destroy () {
-		if (this.socket && this.socket.connected) {
-			this.socket.disconnect(true);
-		}
 	}
 }
 

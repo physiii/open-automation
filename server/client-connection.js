@@ -74,23 +74,6 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('device/add', (data, callback) => {
-			if (DevicesManager.doesDeviceExist(data.device.id)) {
-				if (typeof callback === 'function') {
-					callback('A device with that ID has already been added to an account.', data);
-				}
-
-				return;
-			}
-
-			// Check to make sure the device is connected.
-			if (!DevicesManager.isDeviceReadyToAdd(data.device.id, data.device.id)) {
-				if (typeof callback === 'function') {
-					callback('No device with that ID is currently connected or the device already belongs to an account.', data);
-				}
-
-				return;
-			}
-
 			DevicesManager.createDevice({
 				...data.device,
 				token: data.device.id, // All device tokens should start out the same as the ID.
@@ -103,7 +86,7 @@ class ClientConnection {
 				console.error(TAG, 'Add device error:', error);
 
 				if (typeof callback === 'function') {
-					callback('There was an error adding the device.', data);
+					callback(error, data);
 				}
 			});
 		});
