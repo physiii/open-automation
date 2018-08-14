@@ -201,7 +201,7 @@ class Api {
 		return new Promise((resolve, reject) => {
 			this.closeSocket();
 
-			api.relaySocket = io({
+			api.relaySocket = io('/client-api', {
 				transportOptions: {
 					polling: {
 						extraHeaders: {

@@ -223,8 +223,7 @@ module.exports = function (is_ssl_enabled, jwt_secret) {
 	app.get('/js/config.js', (request, response) => {
 		response.send('window.OpenAutomation = {config: ' + JSON.stringify({
 			app_name: config.app_name || 'Open Automation',
-			logo_path: logo_file_path,
-			stream_port: config.video_websocket_port
+			logo_path: logo_file_path
 		}) + '};');
 	});
 

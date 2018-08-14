@@ -147,7 +147,7 @@ export const mapStateToProps = (state) => {
 		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
 		return {
-			streamingHost: protocol + '//' + window.location.hostname + ':' + state.config.stream_port
+			streamingHost: protocol + '//' + window.location.hostname + ':' + state.config.stream_port + '/stream-relay'
 		};
 	},
 	mapDispatchToProps = (dispatch, ownProps) => {

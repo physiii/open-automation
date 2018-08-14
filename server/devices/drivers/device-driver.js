@@ -15,7 +15,7 @@ class DeviceDriver {
 		// no-op
 	}
 
-	setSocket () {
+	setSocket (socket) {
 		if (socket === this.socket) {
 			return;
 		}
