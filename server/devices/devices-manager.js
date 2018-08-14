@@ -3,7 +3,7 @@ const EventEmitter = require('events'),
 	database = require('../database.js'),
 	Device = require('./device.js'),
 	AccountsManager = require('../accounts/accounts-manager.js'),
-	socketEscrow = {},
+	socketEscrow = new Map(),
 	devicesList = new Map(),
 	DEVICE_TOKEN_SIZE = 256,
 	TAG = '[DevicesManager]';
@@ -40,14 +40,17 @@ class DevicesManager {
 			}
 		}
 
+		const escrowData = this.getFromSocketEscrow(data.id, data.token) || {};
+
 		device = new Device(
 			{
 				...data,
+				type: data.type || escrowData.type,
 				account: AccountsManager.getAccountById(data.account_id),
 				gateway: this.getServiceById(data.gateway_id, data.account_id)
 			},
 			this.handleDeviceUpdate,
-			data.socket || this.getFromSocketEscrow(data.id, data.token)
+			data.socket || escrowData.socket
 		);
 
 		this.removeFromSocketEscrow(data.id, data.token);
@@ -111,7 +114,7 @@ class DevicesManager {
 		});
 	}
 
-	handleDeviceConnection (deviceId, deviceToken, socket) {
+	handleDeviceConnection (deviceId, deviceToken, deviceType, socket) {
 		const device = this.getDeviceById(deviceId, null, true);
 
 		// If the device doesn't exist, store the socket in escrow to be used
@@ -119,7 +122,7 @@ class DevicesManager {
 		if (!device) {
 			console.log(TAG, 'Unknown device connected.', deviceId);
 
-			this.addToSocketEscrow(deviceId, deviceToken, socket);
+			this.addToSocketEscrow(deviceId, deviceToken, deviceType, socket);
 
 			return;
 		}
@@ -208,22 +211,25 @@ class DevicesManager {
 		});
 	}
 
-	addToSocketEscrow (deviceId, deviceToken, socket) {
-		socketEscrow[deviceId + deviceToken] = socket;
+	addToSocketEscrow (deviceId, deviceToken, deviceType, socket) {
+		socketEscrow.set(deviceId + deviceToken, {
+			socket,
+			type: deviceType
+		});
 	}
 
 	getFromSocketEscrow (deviceId, deviceToken) {
-		return socketEscrow[deviceId + deviceToken];
+		return socketEscrow.get(deviceId + deviceToken);
 	}
 
 	removeFromSocketEscrow (deviceId, deviceToken) {
-		delete socketEscrow[deviceId + deviceToken];
+		socketEscrow.delete(deviceId + deviceToken);
 	}
 
 	isDeviceReadyToAdd (deviceId, deviceToken) {
-		const socket = this.getFromSocketEscrow(deviceId, deviceToken);
+		const escrowData = this.getFromSocketEscrow(deviceId, deviceToken);
 
-		return Boolean(socket && socket.connected);
+		return Boolean(escrowData && escrowData.socket && escrowData.socket.connected);
 	}
 
 	loadDevicesFromDb () {
@@ -250,7 +256,10 @@ class DevicesManager {
 					return;
 				}
 
-				this.addDevice(device);
+				this.addDevice({
+					...device,
+					is_saveable: true
+				});
 
 				resolve();
 			}).catch(reject);

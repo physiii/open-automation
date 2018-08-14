@@ -28,8 +28,12 @@ class LigerDeviceDriver extends DeviceDriver {
 		this.device_events.on.apply(this.device_events, arguments);
 	}
 
-	emit () {
+	emit (event, data, callback) {
 		// Map relay service events to corresponding messages to the liger.
+		switch (event) {
+			default:
+				this.socket.emit(event, data, callback);
+		}
 	}
 
 	_setUpServices (services) {
