@@ -9,7 +9,8 @@ const config = require('../config.json'),
 
 function handleDeviceConnection (socket, headers) {
 	const device_id = headers['x-device-id'],
-		device_token = headers['x-device-token'];
+		device_token = headers['x-device-token'],
+		device_type = headers['x-device-type'];
 
 	socket.on('error', (error) => console.error(TAG, device_id, 'Connection error:', error));
 
@@ -18,7 +19,7 @@ function handleDeviceConnection (socket, headers) {
 		return;
 	}
 
-	DevicesManager.handleDeviceConnection(device_id, device_token, socket);
+	DevicesManager.handleDeviceConnection(device_id, device_token, device_type, socket);
 }
 
 module.exports = (http_server, socket_io_server) => {

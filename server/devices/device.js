@@ -17,6 +17,7 @@ class Device {
 		this.account_id = data.account_id;
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
+		this.is_saveable = data.is_saveable || false;
 
 		this.onUpdate = () => onUpdate(this);
 
@@ -95,11 +96,13 @@ class Device {
 
 				// Save the new token locally.
 				this.token = token;
+				this.is_saveable = true;
 				this.save().then(() => {
 					resolve(this.token);
 				}).catch((error) => {
 					// Undo token change locally.
 					this.token = current_token;
+					this.is_saveable = false;
 
 					// Undo token change on device.
 					this.driver.emit('token', {token: current_token}, (undo_error) => {
@@ -130,6 +133,11 @@ class Device {
 
 	save () {
 		return new Promise((resolve, reject) => {
+			if (!this.is_saveable) {
+				reject();
+				return;
+			}
+
 			database.saveDevice(this.dbSerialize()).then(resolve).catch(reject);
 		});
 	}
