@@ -67,12 +67,12 @@ class ServicesManager {
 
 ServicesManager.classes = {
 	'gateway': require('./gateway-service.js'),
+	'button': require('./button-service.js'),
 	'camera': require('./camera-service.js'),
 	'lock': require('./lock-service.js'),
 	'thermostat': require('./thermostat-service.js'),
 	'light': require('./light-service.js'),
-	'event-mock': require('./event-mock-service.js'),
-	'liger': require('./liger-service.js')
+	'event-mock': require('./event-mock-service.js')
 };
 
 module.exports = ServicesManager;

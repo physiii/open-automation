@@ -3,7 +3,7 @@ const DeviceDriver = require('./device-driver.js'),
 	TAG = '[GatewayDeviceDriver]';
 
 class GatewayDeviceDriver extends DeviceDriver {
-	constructor (socket, device_id) {
+	constructor (data, socket, device_id) {
 		super(socket, device_id);
 
 		this.device_listeners = [];
