@@ -1,9 +1,9 @@
-const uuid = require('uuid/v4'),
+const uuidv4 = require('uuid/v4'),
 	EventEmitter2 = require('eventemitter2').EventEmitter2;
 
 class Service {
 	constructor (data, onUpdate, deviceOn, deviceEmit) {
-		this.id = data.id || uuid();
+		this.id = data.id || uuidv4();
 		this.type = this.constructor.type || data.type;
 		this.device = data.device;
 		this.events = new EventEmitter2({wildcard: true, newListener: false, maxListeners: 0});

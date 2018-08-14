@@ -1,6 +1,10 @@
 class DeviceDriver {
-	constructor (socket, device_id) {
+	constructor (data, socket, device_id) {
 		this.device_id = device_id;
+	}
+
+	init () {
+		// no-op
 	}
 
 	on () {

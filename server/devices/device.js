@@ -19,7 +19,9 @@ class Device {
 		this.gateway_id = data.gateway_id;
 
 		this.onUpdate = () => onUpdate(this);
-		this.driver = new driver_class(socket, this.id, data.services);
+
+		this.driver_data = data.driver_data;
+		this.driver = new driver_class(this.driver_data, socket, this.id, data.services);
 		this.services = new ServicesManager(this, data.services, this.driver.on.bind(this.driver), this.driver.emit.bind(this.driver), this.onUpdate);
 
 		this._setSettings(data.settings);
@@ -31,6 +33,7 @@ class Device {
 		}
 
 		this.subscribeToDriver();
+		this.driver.init();
 	}
 
 	_setSettings (settings = {}) {
@@ -66,8 +69,9 @@ class Device {
 			this.onUpdate();
 			this.save();
 		});
-		this.driver.on('driver-settings', (data) => {
-			// TODO: Save driver data to DB
+		this.driver.on('driver-data', (data) => {
+			this.driver_data = data.driver_data;
+			this.save();
 		});
 	}
 
@@ -145,7 +149,8 @@ class Device {
 		return {
 			...this.serialize(),
 			token: this.token,
-			services: this.services.getDbSerializedServices()
+			services: this.services.getDbSerializedServices(),
+			driver_data: this.driver_data
 		};
 	}
 
