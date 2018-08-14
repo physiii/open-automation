@@ -328,7 +328,7 @@ class ClientConnection {
 		this.clientEndpoint('light/on', function (data, callback) {
 			const lightService = data.service;
 
-			lightService.lightOn().then(() => {
+			lightService.setPower(true).then(() => {
 				if (typeof callback === 'function') {
 					callback(null, {});
 				}
@@ -342,7 +342,7 @@ class ClientConnection {
 		this.clientEndpoint('light/off', function (data, callback) {
 			const lightService = data.service;
 
-			lightService.lightOff().then(() => {
+			lightService.setPower(false).then(() => {
 				if (typeof callback === 'function') {
 					callback(null, {});
 				}

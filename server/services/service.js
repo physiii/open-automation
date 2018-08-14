@@ -1,5 +1,7 @@
 const uuidv4 = require('uuid/v4'),
-	EventEmitter2 = require('eventemitter2').EventEmitter2;
+	utils = require('../utils.js'),
+	EventEmitter2 = require('eventemitter2').EventEmitter2,
+	TAG = '[Service]';
 
 class Service {
 	constructor (data, onUpdate, deviceOn, deviceEmit) {
@@ -52,6 +54,68 @@ class Service {
 		this.state = {...state};
 
 		this.onUpdate();
+	}
+
+	action (action) {
+		const property_definition = this.constructor.state_definitions[action.property],
+			setProperty = this[property_definition.setter].bind(this);
+
+		switch (property_definition.type) {
+			case 'boolean':
+				this._performBooleanAction(action, setProperty);
+				break;
+			case 'percentage':
+				this._performPercentageAction(action, setProperty);
+				break;
+			case 'color':
+				this._performColorAction(action, setProperty);
+				break;
+		}
+	}
+
+	_performBooleanAction (action, setProperty) {
+		if (action.toggle) {
+			return setProperty(!this.state[action.property]);
+		}
+
+		if (typeof action.value !== 'boolean') {
+			return this._actionValueError(action, 'Must be either true or false.');
+		}
+
+		return setProperty(action.value);
+	}
+
+	_performPercentageAction (action, setProperty) {
+		const current_value = this.state[action.property] || 0;
+
+		if (!utils.isValidPercentage(action.value)) {
+			return this._actionValueError(action, 'Must be a number between 0 and 1.');
+		}
+
+		if (action.mode === 'add') {
+			return setProperty(Math.min(current_value + action.value, 1));
+		} else if (action.mode === 'subtract') {
+			return setProperty(Math.max(current_value - action.value, 0));
+		}
+
+		return setProperty(action.value);
+	}
+
+	_performColorAction (action, setProperty) {
+		if (!utils.isValidRgbArray(action.value)) {
+			return this._actionValueError(action, 'Must be an RGB array (e.g. [255, 255, 255]).');
+		}
+
+		return setProperty(action.value);
+	}
+
+	_actionValueError (action, error) {
+		return new Promise((resolve, reject) => {
+			const full_error = 'Action value for "' + action.property + '" is invalid. ' + error;
+
+			console.log(TAG, this.id, full_error);
+			reject(full_error);
+		});
 	}
 
 	getNameOrType (include_article, capitalized = true, quotation_marks) {
