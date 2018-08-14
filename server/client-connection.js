@@ -29,8 +29,10 @@ class ClientConnection {
 			this.listenToClient();
 
 			// Push device changes to client.
-			DevicesManager.on('devices-update/account/' + this.account.id, (data) => this.socket.emit('devices', {devices: data.devices}));
+			DevicesManager.on('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
 		});
+
+		this.handleAccountDevicesUpdate = this.handleAccountDevicesUpdate.bind(this);
 	}
 
 	verifyAuthentication () {
@@ -62,6 +64,10 @@ class ClientConnection {
 		// Closing socket connection on authentication error because the
 		// client must reconnect for socket server to get latest cookies.
 		this.destroy();
+	}
+
+	handleAccountDevicesUpdate (data) {
+		this.socket.emit('devices', {devices: data.devices});
 	}
 
 	listenToClient () {
@@ -442,7 +448,11 @@ class ClientConnection {
 	}
 
 	destroy () {
+		DevicesManager.off('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
+
+		this.socket.removeAllListeners();
 		this.socket.disconnect();
+
 		delete this.socket;
 		delete this.access_token;
 		delete this.xsrf_token;

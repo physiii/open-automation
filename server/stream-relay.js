@@ -1,40 +1,25 @@
 const config = require('../config.json'),
 	WebSocket = require('ws'),
+	url = require('url'),
 	http = require('http'),
 	https = require('https'),
 	fs = require('fs'),
-	is_ssl_enabled = config.use_ssl || false,
-	stream_relay_port = config.video_stream_port || 5054,
-	stream_client_port = config.video_websocket_port || 8085,
+	WEBSOCKET_STREAM_PATH = '/stream-relay',
 	TAG = '[stream-relay.js]';
 
-module.exports = function () {
-	let ssl_key,
-		ssl_cert,
-		stream_relay_server,
-		stream_client_server;
-
-	if (is_ssl_enabled) {
-		try {
-			ssl_key = fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem'));
-			ssl_cert = fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'));
-		} catch (error) {
-			console.error('There was an error when trying to load SSL files.', error);
-
-			return;
-		}
-	}
-
-	const credentials = {key: ssl_key, cert: ssl_cert};
+module.exports = function (website_server) {
+	let stream_relay_server;
 
 	// Websocket server for video-streaming client on front-end.
-	if (is_ssl_enabled) {
-		stream_client_server = new WebSocket.Server({
-			server: https.createServer(credentials).listen(stream_client_port)
-		});
-	} else {
-		stream_client_server = new WebSocket.Server({port: stream_client_port, perMessageDeflate: false});
-	}
+	const stream_client_server = new WebSocket.Server({noServer: true});
+	website_server.on('upgrade', (request, ws, head) => {
+		// Only listen to stream relay connections.
+		if (url.parse(request.url).pathname !== WEBSOCKET_STREAM_PATH) {
+			return;
+		}
+
+		stream_client_server.handleUpgrade(request, ws, head, (socket) => stream_client_server.emit('connection', socket, request));
+	});
 
 	// Listen for new connections from front-end.
 	stream_client_server.on('connection', (socket) => {
@@ -65,14 +50,27 @@ module.exports = function () {
 		});
 	};
 
-	// HTTP Server to accept incomming MPEG streams.
-	if (is_ssl_enabled) {
+	// HTTP Server to accept incoming MPEG streams.
+	if (config.use_ssl) {
+		let credentials;
+
+		try {
+			credentials = {
+				key: fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem')),
+				cert: fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'))
+			};
+		} catch (error) {
+			console.error('There was an error when trying to load SSL files.', error);
+
+			return;
+		}
+
 		stream_relay_server = https.createServer(credentials, requestListener);
 	} else {
 		stream_relay_server = http.createServer(requestListener);
 	}
 
-	stream_relay_server.listen(stream_relay_port);
+	stream_relay_server.listen(config.video_stream_port || 5054);
 
 	function requestListener (request, response) {
 		const params = request.url.substr(1).split('/'),
@@ -91,5 +89,5 @@ module.exports = function () {
 		});
 	}
 
-	console.log(TAG, 'Started video streaming server. Listening for incoming streams at ' + (is_ssl_enabled ? 'https' : 'http') + '://localhost:' + stream_relay_port + '/<stream id>/<stream token>. Serving streams at ' + (is_ssl_enabled ? 'wss' : 'ws') + '://localhost:' + stream_client_port + '.');
+	console.log(TAG, 'Listening for incoming video streams at ' + (config.use_ssl ? 'https' : 'http') + '://localhost:' + stream_relay_server.address().port + '/<stream id>/<stream token>. Serving video streams at ' + (config.use_ssl ? 'wss' : 'ws') + '://localhost:' + website_server.address().port + WEBSOCKET_STREAM_PATH + '.');
 };

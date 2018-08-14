@@ -25,6 +25,10 @@ class DevicesManager {
 		return this.events.on.apply(this.events, arguments);
 	}
 
+	off () {
+		return this.events.off.apply(this.events, arguments);
+	}
+
 	addDevice (data) {
 		let device = this.getDeviceById(data.id, null, true);
 

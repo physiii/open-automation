@@ -4,7 +4,10 @@ const initialState = null,
 	reducer = (state = initialState, action) => {
 		switch (action.type) {
 			case types.INITIALIZE:
-				return action.payload.config;
+				return {
+					...action.payload.config,
+					stream_port: action.payload.config.stream_port || window.location.port
+				};
 			default:
 				return state;
 		}

@@ -4,12 +4,12 @@
 
 const fs = require('fs'),
 	path = require('path'),
-	https = require('https'),
-	http = require('http'),
-	uuid = require('uuid/v4'),
+	io = require('socket.io'),
+	uuidv4 = require('uuid/v4'),
 	setUpWebsite = require('./website.js'),
-	startSocketServer = require('./socket-server.js'),
-	startDeviceServer = require('./device-server.js'),
+	startHttpServer = require('./http-server.js'),
+	startClientApi = require('./client-api.js'),
+	startDeviceRelay = require('./device-relay.js'),
 	startStreamRelay = require('./stream-relay.js'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
@@ -24,13 +24,14 @@ try {
 	config = require('../config.json');
 } catch (read_error) {
 	config = {
+		app_name: 'Open Automation',
 		use_ssl: false,
 		ssl_key_path: '',
 		ssl_cert_path: '',
 		api_token_issuer: null,
+		domain_name: 'localhost',
 		website_port: 5000,
 		website_secure_port: 443,
-		video_websocket_port: 8084,
 		video_stream_port: 8082
 	};
 
@@ -39,14 +40,10 @@ try {
 	console.log('Created config.json with default configuration.');
 }
 
-const website_port = config.website_port || 5000,
-	website_secure_port = config.website_secure_port || 4443,
-	is_ssl_enabled = config.use_ssl || false;
-
 let key,
 	cert;
 
-if (is_ssl_enabled) {
+if (config.use_ssl) {
 	key = fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem'));
 	cert = fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'));
 }
@@ -57,17 +54,13 @@ AccountsManager.init()
 	.then(Notifications.init)
 	.then(Automator.init)
 	.then(() => {
-		const jwt_secret = key || uuid(),
-			website = setUpWebsite(is_ssl_enabled, jwt_secret),
-			server = is_ssl_enabled
-				? https.createServer({key, cert}, website)
-				: http.createServer(website),
-			port = is_ssl_enabled ? website_secure_port : website_port;
+		const jwt_secret = key || uuidv4(),
+			website = setUpWebsite(config.use_ssl, jwt_secret),
+			http_server = startHttpServer(website, key, cert),
+			socket_io_server = io.listen(http_server);
 
-		// Start servers.
-		server.listen(port, null, () => console.log((is_ssl_enabled ? 'Secure' : 'Insecure') + ' server listening on port ' + port));
-		startSocketServer(server, jwt_secret);
-		startDeviceServer(server);
-		startStreamRelay();
+		startClientApi(socket_io_server, jwt_secret);
+		startDeviceRelay(http_server, socket_io_server);
+		startStreamRelay(http_server);
 	})
 	.catch((error) => console.error(error));
