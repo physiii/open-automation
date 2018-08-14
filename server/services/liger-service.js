@@ -9,8 +9,7 @@ const Service = require('./service.js'),
 		6: 'top',
 		7: 'right',
 		8: 'down',
-		9: 'left',
-		10: 'switch'
+		9: 'left'
 	},
 	TAG = '[LigerService]';
 
@@ -39,8 +38,8 @@ class LigerService extends Service {
 
 }
 
-ButtonService.type = 'liger';
-ButtonService.friendly_type = 'Liger';
-ButtonService.indefinite_article = 'A';
+LigerService.type = 'liger';
+LigerService.friendly_type = 'Liger';
+LigerService.indefinite_article = 'A';
 
 module.exports = LigerService;
