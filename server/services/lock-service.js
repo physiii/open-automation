@@ -5,14 +5,8 @@ class LockService extends Service {
 	constructor (data, onUpdate, deviceOn, deviceEmit) {
 		super(data, onUpdate, deviceOn, deviceEmit);
 
-		this.subscribeToDriver();
-
 		this.lock = this.lock.bind(this);
 		this.unlock = this.unlock.bind(this);
-	}
-
-	subscribeToDriver () {
-		this.deviceOn('state update', (state) => this.setState(state));
 	}
 
 	lock () {

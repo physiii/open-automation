@@ -11,7 +11,6 @@ class CameraService extends Service {
 	}
 
 	subscribeToDevice () {
-		this.deviceOn('state update', (state) => this.setState(state));
 		this.deviceOn('motion-started', (event_data) => this._emit('motion-started', event_data));
 		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
 		this.deviceOn('motion-recorded', (event_data) => this._emit('motion-recorded', event_data));
