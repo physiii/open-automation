@@ -17,7 +17,7 @@ class Service {
 		this.setSettings(data.settings);
 		this.setState(data.state);
 
-		this.deviceOn('state update', (state) => this.setState(state));
+		this.deviceOn('state', (data) => this.setState(data.state));
 	}
 
 	on (event, listener) {
