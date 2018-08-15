@@ -16,6 +16,8 @@ class Service {
 
 		this.setSettings(data.settings);
 		this.setState(data.state);
+
+		this.deviceOn('state update', (state) => this.setState(state));
 	}
 
 	on (event, listener) {
@@ -173,7 +175,6 @@ class Service {
 		const event_strings = this.constructor.event_strings;
 
 		if (event_strings && event_strings[event] && event_strings[event].getAttachment) {
-			// console.log('camera', this);
 			return event_strings[event].getAttachment.call(this, event_data);
 		}
 	}
