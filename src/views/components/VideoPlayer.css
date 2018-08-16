@@ -1,28 +1,19 @@
 @value toolbarHeight from "./AppToolbar.css";
 @value liveRed: #bd2100;
 
-.wrapper {
+.player {
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
-}
-.wrapperFullScreen {
-	composes: wrapper;
-	height: 100%;
-}
-
-.player {
 	position: relative;
-	overflow: hidden;
 	width: 100%;
-	max-width: calc((100vh - toolbarHeight) * (4 / 3));
+	background-color: #000000;
+	overflow: hidden;
 	cursor: pointer;
 }
-.playerFullScreen {
-	composes: player;
-	max-width: calc(100vh * (4 / 3));
+.isFullScreen {
+	height: 100%;
 }
 
 .closeButton {
@@ -43,13 +34,30 @@
 .overlay:hover {
 	background-color: rgba(0, 0, 0, 0.15);
 }
-.overlayPlaying {
-	composes: overlay;
+.isPlaying .overlay {
 	opacity: 0;
 }
-.overlayPlaying:hover {
+/* Hide the stop button icon in fullscreen. */
+.isPlaying:not(.isFullScreen) .overlay:hover {
 	opacity: 1;
 }
+
+.toolbar {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 3;
+	padding: 8px;
+	background-color: rgba(0, 0, 0, 0.5);
+	opacity: 1;
+	transition: opacity 0.15s;
+}
+.toolbar.isHidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
 .live {
 	display: inline-block;
 	padding: 7px 9px 5px 9px;
@@ -59,6 +67,7 @@
 	position: absolute;
 	left: 8px;
 	bottom: 8px;
+	z-index: 4;
 	color: #ffffff;
 	font-size: 12px;
 	font-weight: bold;
@@ -72,14 +81,20 @@
 
 .video {
 	position: relative;
-	max-width: 100%;
-	max-height: 100%;
 	overflow: hidden;
+	width: 100%;
+	max-width: calc((100vh - toolbarHeight) * (4 / 3));
+	max-height: 100%;
 }
+.isFullScreen .video {
+	max-width: calc(100vh * (4 / 3));
+}
+
 .aspectRatio {
 	/* Default aspect ratio of 4:3. This may be overridden in DOM at run-time. */
 	composes: aspectRatio43 from "../styles/helpers.css";
 }
+
 .poster {
 	position: absolute;
 	top: 0;
@@ -87,6 +102,7 @@
 	z-index: 1;
 	width: 100%;
 }
+
 .canvas {
 	composes: fillContext from "../styles/helpers.css";
 	display: block;

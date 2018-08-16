@@ -52,6 +52,7 @@ export class CameraCard extends React.Component {
 					cameraServiceId={this.props.camera.id}
 					streamingToken={this.props.camera.streaming_token}
 					posterUrl={this.props.camera.state.preview_image && 'data:image/jpg;base64,' + this.props.camera.state.preview_image}
+					showControlsWhenStopped={false}
 					width={this.props.camera.settings.resolution_w}
 					height={this.props.camera.settings.resolution_h}
 					onPlay={this.onStreamStart}
