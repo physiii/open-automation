@@ -39,7 +39,7 @@
 
 .topCenterer {
 	position: relative;
-	max-width: 500px;
+	max-width: 60vh;
 	margin: 0 auto;
 }
 .videoContainer,
