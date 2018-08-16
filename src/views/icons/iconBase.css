@@ -1,0 +1,7 @@
+.wrapper {
+	display: inline-flex;
+}
+
+.icon {
+	fill: currentColor;
+}

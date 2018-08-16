@@ -1,2 +1,31 @@
-.topArrow {}
-.bottomArrow {}
+.arrow {
+	transition: all 0.15s;
+}
+
+.topArrow {
+	composes: arrow;
+	transform-origin: 15px 7.75px;
+}
+.isHovered .topArrow {
+	transform: translate(1px, -1px);
+}
+.isExpanded .topArrow {
+	transform: rotate(-180deg) translate(-2.5px, 2.5px);
+}
+.isExpanded.isHovered .topArrow {
+	transform: rotate(-180deg) translate(-1.5px, 1.5px);
+}
+
+.bottomArrow {
+	composes: arrow;
+	transform-origin: 7.75px 15px;
+}
+.isHovered .bottomArrow {
+	transform: translate(-1px, 1px);
+}
+.isExpanded .bottomArrow {
+	transform: rotate(180deg) translate(2.5px, -2.5px);
+}
+.isExpanded.isHovered .bottomArrow {
+	transform: rotate(180deg) translate(1.5px, -1.5px);
+}

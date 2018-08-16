@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import VideoStream from './VideoStream.js';
+import Toolbar from './Toolbar.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import StopButtonIcon from '../icons/StopButtonIcon.js';
 import ExpandIcon from '../icons/ExpandIcon.js';
 import fscreen from 'fscreen';
 import './VideoPlayer.css';
+
+const controlsHideDelay = 3000;
 
 export class VideoPlayer extends React.Component {
 	constructor (props) {
@@ -16,19 +19,25 @@ export class VideoPlayer extends React.Component {
 		this.state = {
 			isPlaying: this.props.autoplay,
 			isFullScreen: false,
-			hasPlayedOnce: false
+			hasPlayedOnce: false,
+			shouldShowControls: this.props.showControlsWhenStopped || this.props.autoplay
 		};
 
-		this.wrapper = React.createRef();
+		this.element = React.createRef();
 
 		this.handleClick = this.handleClick.bind(this);
 		this.handleFullScreenClick = this.handleFullScreenClick.bind(this);
-		this.handleCloseClick = this.handleCloseClick.bind(this);
 		this.updateFullScreenState = this.updateFullScreenState.bind(this);
+		this.showHideControls = this.showHideControls.bind(this);
 	}
 
 	componentDidMount () {
 		fscreen.addEventListener('fullscreenchange', this.updateFullScreenState);
+
+		// For autoplay, hide controls after delay.
+		if (this.state.shouldShowControls) {
+			this.showHideControls();
+		}
 	}
 
 	componentDidUpdate (previousProps, previousState) {
@@ -47,6 +56,7 @@ export class VideoPlayer extends React.Component {
 
 	componentWillUnmount () {
 		fscreen.removeEventListener('fullscreenchange', this.updateFullScreenState);
+		clearTimeout(this.controlsTimeout);
 	}
 
 	handleClick () {
@@ -63,30 +73,34 @@ export class VideoPlayer extends React.Component {
 		this.setState({isFullScreen: !this.state.isFullScreen});
 	}
 
-	handleCloseClick (event) {
-		event.stopPropagation();
-
-		this.exitFullScreen();
-	}
-
 	updateFullScreenState () {
 		this.setState({isFullScreen: this.isFullScreen()});
 	}
 
 	isFullScreen () {
-		return this.wrapper.current === fscreen.fullscreenElement;
+		return this.element.current === fscreen.fullscreenElement;
 	}
 
 	enterFullScreen () {
 		if (fscreen.fullscreenEnabled) {
-			fscreen.requestFullscreen(this.wrapper.current);
+			fscreen.requestFullscreen(this.element.current);
 		}
 	}
 
 	exitFullScreen () {
 		if (fscreen.fullscreenEnabled) {
 			fscreen.exitFullscreen();
+			this.showHideControls();
 		}
+	}
+
+	showHideControls (forceShow) {
+		this.setState({shouldShowControls: this.state.isPlaying || this.props.showControlsWhenStopped || this.state.isFullScreen || forceShow});
+
+		clearTimeout(this.controlsTimeout);
+		this.controlsTimeout = setTimeout(() => {
+			this.setState({shouldShowControls: (!this.state.isPlaying && (this.props.showControlsWhenStopped || this.state.isFullScreen)) || false});
+		}, controlsHideDelay);
 	}
 
 	play () {
@@ -94,10 +108,15 @@ export class VideoPlayer extends React.Component {
 			isPlaying: true,
 			hasPlayedOnce: true
 		});
+
+		this.showHideControls(true);
 	}
 
 	stop () {
-		this.setState({isPlaying: false});
+		this.setState({
+			isPlaying: false,
+			shouldShowControls: this.props.showControlsWhenStopped || this.state.isFullScreen
+		});
 	}
 
 	getAspectRatioPaddingTop () {
@@ -108,30 +127,31 @@ export class VideoPlayer extends React.Component {
 
 	render () {
 		return (
-			<div styleName={this.state.isFullScreen ? 'wrapperFullScreen' : 'wrapper'} ref={this.wrapper}>
-				{this.state.isFullScreen &&
-					<span styleName="closeButton" onClick={this.handleCloseClick}><ExpandIcon size={18} /></span>}
-				<div styleName={this.state.isFullScreen ? 'playerFullScreen' : 'player'} onClick={this.handleClick}>
-					<div styleName={this.state.isPlaying ? 'overlayPlaying' : 'overlay'}>
-						{!this.state.isPlaying &&
-							<PlayButtonIcon size={64} shadowed={true} />}
-						{this.state.isPlaying &&
-							<StopButtonIcon size={64} shadowed={true} />}
-						{this.state.isPlaying && !this.props.recording &&
-							<span styleName="live">Live</span>}
-						{this.state.isPlaying && fscreen.fullscreenEnabled &&
-							<span onClick={this.handleFullScreenClick}><ExpandIcon size={18} /></span>}
-					</div>
-					<div styleName="video">
-						<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
-						{this.props.posterUrl && !this.state.hasPlayedOnce &&
-							<img styleName="poster" src={this.props.posterUrl} />}
-						<VideoStream
-							styleName="canvas"
-							{...this.props}
-							shouldStream={this.state.isPlaying}
-							key={(this.props.recording && this.props.recording.id) || this.props.cameraServiceId} />
-					</div>
+			<div
+				styleName={'player' + (this.state.isPlaying ? ' isPlaying' : '') + (this.state.isFullScreen ? ' isFullScreen' : '')}
+				ref={this.element}
+				onClick={this.handleClick}
+				onMouseMove={() => this.showHideControls()}>
+				<div styleName="overlay">
+					{this.state.isPlaying
+						? <StopButtonIcon size={64} shadowed={true} />
+						: <PlayButtonIcon size={64} shadowed={true} />}
+				</div>
+				<div styleName={'toolbar' + (this.state.shouldShowControls ? '' : ' isHidden')}>
+					<Toolbar rightChildren={fscreen.fullscreenEnabled &&
+						<ExpandIcon size={22} isExpanded={this.state.isFullScreen} onClick={this.handleFullScreenClick} />} />
+				</div>
+				{this.state.isPlaying && !this.props.recording &&
+					<span styleName="live">Live</span>}
+				<div styleName="video">
+					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
+					{this.props.posterUrl && !this.state.hasPlayedOnce &&
+						<img styleName="poster" src={this.props.posterUrl} />}
+					<VideoStream
+						styleName="canvas"
+						{...this.props}
+						shouldStream={this.state.isPlaying}
+						key={(this.props.recording && this.props.recording.id) || this.props.cameraServiceId} />
 				</div>
 			</div>
 		);
@@ -146,10 +166,15 @@ VideoPlayer.propTypes = {
 	streamingToken: PropTypes.string,
 	posterUrl: PropTypes.string,
 	autoplay: PropTypes.bool,
+	showControlsWhenStopped: PropTypes.bool,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	onPlay: PropTypes.func,
 	onStop: PropTypes.func
+};
+
+VideoPlayer.defaultProps = {
+	showControlsWhenStopped: true
 };
 
 export default VideoPlayer;
