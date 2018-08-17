@@ -2,6 +2,14 @@ const uuidv4 = require('uuid/v4'),
 	EventEmitter = require('events'),
 	DeviceDriver = require('./device-driver.js'),
 	BUTTON_HOLD_INTERVAL_DELAY = 300,
+	COLORS = {
+		'red':[255,0,0],
+		'green':[0,255,0],
+		'blue':[0,0,255],
+		'purple':[255,0,255],
+		'yellow':[255,255,0],
+		'white':[255,255,255]
+	},
 	TAG = '[LigerDeviceDriver]';
 
 class LigerDeviceDriver extends DeviceDriver {
@@ -11,6 +19,7 @@ class LigerDeviceDriver extends DeviceDriver {
 		this.service_ids = new Map(data.service_ids);
 		this.services = relay_services;
 		this.device_events = new EventEmitter();
+		this.current_color;
 
 		if (socket) {
 			this.setSocket(socket);
@@ -102,11 +111,39 @@ class LigerDeviceDriver extends DeviceDriver {
 			return;
 		}
 
+		//Button color Cycling left and right
+		if ('button-' + data.value === 'button-7') {
+			this.current_color = setNextColor();
+			return this._serviceEmit(button_service, 'cycle', COLORS[this.current_color]); //Next color
+		}
+		if ('button-' + data.value === 'button-9') {
+			this.current_color = setPrevColor();
+			return this._serviceEmit(button_service, 'cycle', COLORS[this.current_color]); //Previous color
+		}
+
 		// Emit the pressed event to the service.
 		this._serviceEmit(button_service, 'pressed');
 
 		// Emit the pressed event repeatedly while the button is being pressed.
 		this.button_hold_interval = setInterval(() => this._serviceEmit(button_service, 'pressed'), BUTTON_HOLD_INTERVAL_DELAY);
+	}
+
+	setNextColor() {
+		if (this.current_color === 'red') return 'green';
+		if (this.current_color === 'green') return 'blue';
+		if (this.current_color === 'blue') return 'purple';
+		if (this.current_color === 'purple') return 'yellow';
+		if (this.current_color === 'yellow') return 'white';
+		if (this.current_color === 'white') return 'red';
+	}
+
+	setPrevColor () {
+		if (this.current_color === 'red') return 'white';
+		if (this.current_color === 'green') return 'red';
+		if (this.current_color === 'blue') return 'green';
+		if (this.current_color === 'purple') return 'blue';
+		if (this.current_color === 'yellow') return 'purple';
+		if (this.current_color === 'white') return 'yellow';
 	}
 
 	_emitLoadToRelay () {
