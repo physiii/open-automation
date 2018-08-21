@@ -13,7 +13,7 @@ class SceneManager {
 		return this.loadScenesFromDb();
 	}
 
-	setScene (scene_id, account_id) {
+	setScene (scene_id, account_id, fallback_values = {}) {
 		const scene = this.getSceneById(scene_id, account_id);
 
 		if (!scene) {
@@ -23,6 +23,11 @@ class SceneManager {
 
 		scene.actions.forEach((action) => {
 			const service = DevicesManager.getServiceById(action.service_id, scene.account_id);
+
+			// If there's no value for the action, use the fallback value.
+			if (!action.hasOwnProperty('value')) {
+				action.value = fallback_values[service.constructor.type];
+			}
 
 			service.action(action);
 		});
