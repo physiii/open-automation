@@ -22,11 +22,12 @@ class SceneManager {
 		}
 
 		scene.actions.forEach((action) => {
-			const service = DevicesManager.getServiceById(action.service_id, scene.account_id);
+			const service = DevicesManager.getServiceById(action.service_id, scene.account_id),
+				action_fallback_values = fallback_values[service.constructor.type] || {};
 
 			// If there's no value for the action, use the fallback value.
 			if (!action.hasOwnProperty('value')) {
-				action.value = fallback_values[service.constructor.type];
+				action.value = action_fallback_values[action.property];
 			}
 
 			service.action(action);

@@ -3,12 +3,12 @@ const uuidv4 = require('uuid/v4'),
 	DeviceDriver = require('./device-driver.js'),
 	BUTTON_HOLD_INTERVAL_DELAY = 300,
 	COLORS = {
-		red: [255,0,0],
-		green: [0,255,0],
-		blue: [0,0,255],
-		purple: [255,0,255],
-		yellow: [255,255,0],
-		white: [255,255,255]
+		red: [255, 0, 0],
+		green: [0, 255, 0],
+		blue: [0, 0, 255],
+		purple: [255, 0, 255],
+		yellow: [255, 255, 0],
+		white: [255, 255, 255]
 	},
 	TAG = '[LigerDeviceDriver]';
 
