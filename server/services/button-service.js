@@ -9,7 +9,7 @@ class ButtonService extends Service {
 	}
 
 	_subscribeToDevice () {
-		this.deviceOn('pressed', () => this._emit('pressed'));
+		this.deviceOn('pressed', (event_data) => this._emit('pressed', event_data));
 	}
 }
 

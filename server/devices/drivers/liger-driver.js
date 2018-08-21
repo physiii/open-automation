@@ -3,12 +3,12 @@ const uuidv4 = require('uuid/v4'),
 	DeviceDriver = require('./device-driver.js'),
 	BUTTON_HOLD_INTERVAL_DELAY = 300,
 	COLORS = {
-		'red':[255,0,0],
-		'green':[0,255,0],
-		'blue':[0,0,255],
-		'purple':[255,0,255],
-		'yellow':[255,255,0],
-		'white':[255,255,255]
+		red: [255,0,0],
+		green: [0,255,0],
+		blue: [0,0,255],
+		purple: [255,0,255],
+		yellow: [255,255,0],
+		white: [255,255,255]
 	},
 	TAG = '[LigerDeviceDriver]';
 
@@ -114,15 +114,19 @@ class LigerDeviceDriver extends DeviceDriver {
 		//Button color Cycling left and right
 		if ('button-' + data.value === 'button-7') {
 			this.current_color = this.setNextColor();
-
 		}
 		if ('button-' + data.value === 'button-9') {
 			this.current_color = this.setPrevColor();
-
 		}
 
 		// Emit the pressed event to the service.
-		this._serviceEmit(button_service, 'pressed', COLORS[this.current_color]);
+		this._serviceEmit(button_service, 'pressed', {
+			service_values: {
+				light: {
+					color: COLORS[this.current_color]
+				}
+			}
+		});
 
 		// Emit the pressed event repeatedly while the button is being pressed.
 		this.button_hold_interval = setInterval(() => this._serviceEmit(button_service, 'pressed', COLORS[this.current_color]), BUTTON_HOLD_INTERVAL_DELAY);

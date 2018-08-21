@@ -68,7 +68,7 @@ class Automator {
 					return;
 				}
 
-				service.on([trigger.event, automation.id], (event_data) => {
+				service.on([trigger.event, automation.id], (event_data = {}) => {
 					this.runAutomation(automation, {trigger, service, event_data});
 				});
 			}
@@ -116,7 +116,7 @@ class Automator {
 		automation.scenes.forEach((scene_id) => {
 			console.log(TAG, automation.id, 'Setting scene:', scene_id);
 
-			ScenesManager.setScene(scene_id, automation.account_id);
+			ScenesManager.setScene(scene_id, automation.account_id, trigger_data.event_data.service_values);
 		});
 
 		automation.notifications.forEach((notification) => {
