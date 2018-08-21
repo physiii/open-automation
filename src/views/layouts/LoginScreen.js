@@ -27,7 +27,7 @@ export class LoginScreen extends React.Component {
 					<div styleName="branding">
 						{this.props.logoPath
 							? <img src={this.props.logoPath} />
-							: <h1>this.props.appName</h1>}
+							: <h1>{this.props.appName}</h1>}
 					</div>
 					{this.props.error &&
 						<p styleName="errorMessage">{this.props.error}</p>}
