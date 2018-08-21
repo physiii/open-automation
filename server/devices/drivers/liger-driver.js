@@ -111,11 +111,10 @@ class LigerDeviceDriver extends DeviceDriver {
 			return;
 		}
 
-		//Button color Cycling left and right
-		if ('button-' + data.value === 'button-7') {
+		// Button color cycling left and right.
+		if (data.value === 7) {
 			this.current_color = this.setNextColor();
-		}
-		if ('button-' + data.value === 'button-9') {
+		} else if (data.value === 9) {
 			this.current_color = this.setPrevColor();
 		}
 
