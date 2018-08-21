@@ -135,6 +135,7 @@ class LigerDeviceDriver extends DeviceDriver {
 		if (this.current_color === 'purple') return 'yellow';
 		if (this.current_color === 'yellow') return 'white';
 		if (this.current_color === 'white') return 'red';
+		return 'white';
 	}
 
 	setPrevColor () {
@@ -144,6 +145,7 @@ class LigerDeviceDriver extends DeviceDriver {
 		if (this.current_color === 'purple') return 'blue';
 		if (this.current_color === 'yellow') return 'purple';
 		if (this.current_color === 'white') return 'yellow';
+		return 'white';
 	}
 
 	_emitLoadToRelay () {
