@@ -25,15 +25,14 @@ class SceneManager {
 			const service = DevicesManager.getServiceById(action.service_id, scene.account_id),
 				action_fallback_values = fallback_values[service.constructor.type] || {};
 
-			console.log('action', action);
+			let value = action.value;
 
 			// If there's no value for the action, use the fallback value.
 			if (!action.hasOwnProperty('value')) {
-				console.log('fallback', action_fallback_values[action.property]);
-				action.value = action_fallback_values[action.property];
+				value = action_fallback_values[action.property];
 			}
 
-			service.action(action);
+			service.action({...action, value});
 		});
 	}
 
