@@ -45,7 +45,7 @@ class LigerDeviceDriver extends DeviceDriver {
 		}
 	}
 
-	_setUpServices (services) {
+	_setUpServices () {
 		if (!this._getServiceByLigerId('button-1')) {
 			this._addService('button', 'button-1', 'Center Button');
 		}
