@@ -33,8 +33,12 @@ class GenericDeviceDriver extends DeviceDriver {
 
 	_setUpServices (services) {
 		services.forEach((service) => {
-			if (!this._getServiceByPyfiId(service.id)) {
-				this._addService(service.type, service.id);
+			const device_service = this._getServiceByPyfiId(service.id);
+
+			if (!device_service) {
+				this._addService(service.type, service.id, service.state);
+			} else {
+				device_service.state = service.state;
 			}
 		});
 
@@ -84,10 +88,11 @@ class GenericDeviceDriver extends DeviceDriver {
 		return this.services.find((service) => service.id === this.service_ids.get(pyfi_id));
 	}
 
-	_addService (type, pyfi_id, name) {
+	_addService (type, pyfi_id, state, name) {
 		const new_service = {
 			id: uuidv4(),
 			type,
+			state,
 			settings: {name}
 		};
 
