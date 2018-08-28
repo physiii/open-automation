@@ -19,8 +19,8 @@ export class TextField extends React.Component {
 	static getDerivedStateFromProps (nextProps, previousState) {
 		const nextState = {...previousState};
 
-		if (nextProps.value) {
-			nextState.value = nextProps.value;
+		if (typeof nextProps.value !== 'undefined') {
+			nextState.value = nextProps.value && nextProps.value.toString && nextProps.value.toString();
 		}
 
 		return nextState;
@@ -50,7 +50,7 @@ export class TextField extends React.Component {
 		return (
 			<div styleName="container">
 				<div styleName={'field' + (this.state.is_focused ? ' fieldFocused' : '') + (this.props.error ? ' fieldError' : '')}>
-					{this.state.value.length > 0
+					{this.state.value && this.state.value.length > 0
 						? null
 						: <label styleName="label">{this.props.label}</label>}
 					<input
@@ -73,7 +73,10 @@ export class TextField extends React.Component {
 TextField.propTypes = {
 	label: PropTypes.string,
 	name: PropTypes.string,
-	value: PropTypes.string,
+	value: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number
+	]),
 	error: PropTypes.string,
 	type: PropTypes.oneOf([
 		'text',
@@ -84,6 +87,7 @@ TextField.propTypes = {
 };
 
 TextField.defaultProps = {
+	value: '',
 	type: 'text'
 };
 

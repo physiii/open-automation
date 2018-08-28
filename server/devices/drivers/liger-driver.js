@@ -50,36 +50,36 @@ class LigerDeviceDriver extends DeviceDriver {
 			this._addService('button', 'button-1', 'Center Button');
 		}
 
-		if (!this._getServiceByLigerId('button-2')) {
-			this._addService('button', 'button-2', 'Up-Right Button');
-		}
-
-		if (!this._getServiceByLigerId('button-3')) {
-			this._addService('button', 'button-3', 'Down-Right Button');
-		}
-
-		if (!this._getServiceByLigerId('button-4')) {
-			this._addService('button', 'button-4', 'Down-Left Button');
-		}
-
-		if (!this._getServiceByLigerId('button-5')) {
-			this._addService('button', 'button-5', 'Up-Left Button');
-		}
-
 		if (!this._getServiceByLigerId('button-6')) {
-			this._addService('button', 'button-6', 'Up Button');
+			this._addService('button', 'button-6', 'Top Button');
+		}
+
+		if (!this._getServiceByLigerId('button-8')) {
+			this._addService('button', 'button-8', 'Bottom Button');
+		}
+
+		if (!this._getServiceByLigerId('button-9')) {
+			this._addService('button', 'button-9', 'Left Button');
 		}
 
 		if (!this._getServiceByLigerId('button-7')) {
 			this._addService('button', 'button-7', 'Right Button');
 		}
 
-		if (!this._getServiceByLigerId('button-8')) {
-			this._addService('button', 'button-8', 'Down Button');
+		if (!this._getServiceByLigerId('button-5')) {
+			this._addService('button', 'button-5', 'Top-Left Button');
 		}
 
-		if (!this._getServiceByLigerId('button-9')) {
-			this._addService('button', 'button-9', 'Left Button');
+		if (!this._getServiceByLigerId('button-2')) {
+			this._addService('button', 'button-2', 'Top-Right Button');
+		}
+
+		if (!this._getServiceByLigerId('button-4')) {
+			this._addService('button', 'button-4', 'Bottom-Left Button');
+		}
+
+		if (!this._getServiceByLigerId('button-3')) {
+			this._addService('button', 'button-3', 'Bottom-Right Button');
 		}
 
 		this.save();

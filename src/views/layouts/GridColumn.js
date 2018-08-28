@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Grid.css';
+import './GridColumn.css';
 
 export const GridColumn = (props) => (
 	<div styleName={'column' + (props.columns || '')}>

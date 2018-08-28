@@ -1,18 +1,18 @@
 import * as types from './types';
 
-export const loadContext = (context) => ({
+export const loadContext = (path, currentFullPath, title, shouldShowTitle) => ({
 		type: types.LOAD_CONTEXT,
-		payload: {context}
+		payload: {path, currentFullPath, title, shouldShowTitle}
 	}),
-	loadScreen = (path, backPath, title) => ({
-		type: types.LOAD_SCREEN,
-		payload: {
-			path,
-			backPath,
-			title
-		}
-	}),
-	unloadScreen = (path) => ({
-		type: types.UNLOAD_SCREEN,
+	unloadContext = (path) => ({
+		type: types.UNLOAD_CONTEXT,
 		payload: {path}
+	}),
+	loadScreen = (context, path, currentFullPath, title, shouldShowTitle) => ({
+		type: types.LOAD_SCREEN,
+		payload: {context, path, currentFullPath, title, shouldShowTitle}
+	}),
+	unloadScreen = (context, path) => ({
+		type: types.UNLOAD_SCREEN,
+		payload: {context, path}
 	});

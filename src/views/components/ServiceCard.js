@@ -4,21 +4,21 @@ import CameraCard from './CameraCard.js';
 import LockCard from './LockCard.js';
 
 export const ServiceCard = (props) => {
-	switch (props.service.type) {
-		case 'camera':
-			return <CameraCard camera={props.service} parentPath={props.parentPath} />;
-		case 'lock':
-			return <LockCard lockService={props.service} parentPath={props.parentPath} />;
-		default:
-			return null;
-	}
+	const Card = ServiceCard.cardClasses[props.service.type];
+
+	return Card && <Card {...props} />;
 };
 
-ServiceCard.willRenderCard = (props) => Boolean(ServiceCard(props));
+ServiceCard.willRenderCard = ({type}) => Boolean(ServiceCard.cardClasses[type]);
 
 ServiceCard.propTypes = {
 	service: PropTypes.object,
 	parentPath: PropTypes.string
+};
+
+ServiceCard.cardClasses = {
+	'camera': CameraCard,
+	'lock': LockCard
 };
 
 export default ServiceCard;

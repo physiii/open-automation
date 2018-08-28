@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Api from '../../api.js';
-import {getGatewayServices} from '../../state/ducks/services-list/selectors.js';
+import {getServicesByType} from '../../state/ducks/services-list/selectors.js';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 
 const LABEL_STYLE = 'color: #888888; font-size: 0.9em;',
@@ -53,8 +53,8 @@ export class ConsoleInterface extends React.Component {
 
 				Api.addDevice(device);
 			},
-			removeDevice: (deviceId) => {
-				Api.removeDevice(deviceId);
+			deleteDevice: (deviceId) => {
+				Api.deleteDevice(deviceId);
 			},
 			addAllConnectedDevices: () => {
 				Object.keys(window.OpenAutomation.gateways).forEach((gatewayKey) => {
@@ -75,6 +75,10 @@ export class ConsoleInterface extends React.Component {
 		// Add gateway command utility.
 		window.OpenAutomation.gateways = {};
 		this.props.getGatewayServices.forEach((gateway, index) => {
+			if (!gateway.device) {
+				return;
+			}
+
 			window.OpenAutomation.gateways[gateway.settings.name || gateway.device.settings.name || index] = {
 				id: gateway.id,
 				device_id: gateway.device.id,
@@ -103,11 +107,11 @@ ConsoleInterface.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-	devices: state.devicesList.devices.toArray(),
-	services: state.servicesList.services.toArray(),
-	getGatewayServices: getGatewayServices(state.servicesList).toJS().map((service) => ({
+	devices: state.devicesList.get('devices').toArray(),
+	services: state.servicesList.get('services').toArray(),
+	getGatewayServices: getServicesByType(state.servicesList, 'gateway').map((service) => ({
 		...service,
-		device: getDeviceById(service.device_id, state.devicesList)
+		device: getDeviceById(state, service.device_id)
 	}))
 });
 

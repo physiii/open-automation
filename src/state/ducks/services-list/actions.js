@@ -1,5 +1,16 @@
 import * as types from './types';
 
+export const setSettings = (serviceId, settings) => ({
+	type: types.SET_SETTINGS,
+	payload: {serviceId, settings}
+});
+
+export const setSettingsError = (serviceId, originalSettings, error) => ({
+	type: types.SET_SETTINGS_ERROR,
+	payload: {serviceId, originalSettings, error},
+	error: true
+});
+
 export const cameraFetchRecordings = (cameraId) => ({
 	type: types.FETCH_CAMERA_RECORDINGS,
 	payload: {cameraId}

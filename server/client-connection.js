@@ -72,11 +72,9 @@ class ClientConnection {
 
 	listenToClient () {
 		this.clientEndpoint('devices/get', (data, callback) => {
-			if (typeof callback === 'function') {
-				const accountDevices = DevicesManager.getDevicesByAccountId(this.account.id);
+			const accountDevices = DevicesManager.getDevicesByAccountId(this.account.id);
 
-				callback(null, {devices: DevicesManager.getClientSerializedDevices(accountDevices)});
-			}
+			callback(null, {devices: DevicesManager.getClientSerializedDevices(accountDevices)});
 		});
 
 		this.clientEndpoint('device/add', (data, callback) => {
@@ -84,52 +82,50 @@ class ClientConnection {
 				...data.device,
 				token: data.device.id, // All device tokens should start out the same as the ID.
 				account_id: this.account.id
-			}).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				console.error(TAG, 'Add device error:', error);
-
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			})
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Add device error:', error);
+					callback('There was an error adding the device.');
+				});
 		});
 
-		this.clientEndpoint('device/remove', (data, callback) => {
-			const device = data.device;
+		this.clientEndpoint('device/settings/set', (data, callback) => {
+			data.device.setSettings(data.settings)
+				.then(() => callback())
+				.catch(callback);
+		});
 
-			DevicesManager.deleteDevice(device.id, this.account.id).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				console.error(TAG, 'Delete device error:', error);
-
-				if (typeof callback === 'function') {
+		this.clientEndpoint('device/delete', (data, callback) => {
+			DevicesManager.deleteDevice(data.device.id, this.account.id)
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Delete device error:', error);
 					callback('There was an error removing the device.');
-				}
-			});
+				});
+		});
+
+		this.clientEndpoint('service/settings/set', (data, callback) => {
+			data.service.setSettings(data.settings)
+				.then(() => callback())
+				.catch(callback);
 		});
 
 		// Gateway Service API
 
 		this.clientEndpoint('gateway/devices-to-add/get', (data, callback) => {
-			const gatewayService = data.service;
-
-			if (typeof callback === 'function') {
-				gatewayService.getDevices().then((data) => {
+			data.service.getDevices()
+				.then((data) => {
 					const devices = data.devices || [],
 						newDevices = devices.filter((device) => !DevicesManager.doesDeviceExist(device.id));
 
 					callback(null, {devices: newDevices});
-				}).catch((error) => {
+				})
+				.catch((error) => {
 					console.error(TAG, 'Get gateway attached devices error:', error);
 
 					callback('There was an error getting the list of the gateway’s devices.');
 				});
-			}
 		});
 
 		this.clientEndpoint('gateway/command', (data, callback) => {
@@ -141,94 +137,50 @@ class ClientConnection {
 				// NOTE: DO NOT SEND THE COMMAND TOKEN TO THE CLIENT.
 				// IT MUST BE READ FROM SERVER LOGS TO GAIN ACCESS.
 
-				if (typeof callback === 'function') {
-					callback(null, 'Command token generated.');
-				}
+				callback(null, 'Command token generated.');
 
 				return;
 			}
 
-			gatewayService.command(data.command).then((result) => {
-				if (typeof callback === 'function') {
-					callback(null, result);
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error);
-				}
-			});
+			gatewayService.command(data.command)
+				.then((result) => callback(null, result))
+				.catch((error) => callback(error));
 		});
 
 		// Camera Service API
 
 		this.clientEndpoint('camera/stream/live', function (data, callback) {
-			const cameraService = data.service;
+			data.service.streamLive()
+				.then((stream_token) => callback(null, {stream_token}))
+				.catch((error) => {
+					console.error(TAG, 'Stream error', error);
 
-			cameraService.streamLive().then((stream_token) => {
-				if (typeof callback === 'function') {
-					callback(null, {stream_token});
-				}
-			}).catch((error) => {
-				console.error(TAG, 'Stream error', error);
-
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+					callback(error);
+				});
 		});
 
 		this.clientEndpoint('camera/stream/stop', function (data, callback) {
-			const cameraService = data.service;
-
-			cameraService.stopLiveStream().then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.stopLiveStream()
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('camera/recordings/get', function (data, callback) {
-			const cameraService = data.service;
-
-			if (typeof callback === 'function') {
-				cameraService.getRecordings().then((recordings) => {
-					callback(null, {recordings});
-				}).catch((error) => {
-					callback(error, data);
-				});
-			}
+			data.service.getRecordings()
+				.then((recordings) => callback(null, {recordings}))
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('camera/recording/stream', function (data, callback) {
-			const cameraService = data.service;
-
-			cameraService.streamRecording(data.recording_id).then((stream_token) => {
-				if (typeof callback === 'function') {
-					callback(null, {stream_token});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.streamRecording(data.recording_id)
+				.then((stream_token) => callback(null, {stream_token}))
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('camera/recording/stream/stop', function (data, callback) {
-			const cameraService = data.service;
-
-			cameraService.stopRecordingStream(data.recording_id).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.stopRecordingStream(data.recording_id)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		// Lock Service API
@@ -242,168 +194,70 @@ class ClientConnection {
 			} else if (data.locked === false) {
 				action = lockService.unlock;
 			} else {
-				callback('Property "locked" must be either true or false.', data);
+				callback('Property "locked" must be either true or false.');
 				return;
 			}
 
-			action().then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
-		});
-
-		this.clientEndpoint('lock/relock-delay/set', function (data, callback) {
-			const lockService = data.service;
-
-			lockService.setRelockDelay(data.relock_delay).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			action()
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		// Thermostat Service API
 
 		this.clientEndpoint('thermostat/temp/set', function (data, callback) {
-			const thermostatService = data.service;
-
-			thermostatService.setTemp(data.temp).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setTemp(data.temp)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('thermostat/mode/set', function (data, callback) {
-			const thermostatService = data.service;
-
-			thermostatService.setThermostatMode(data.mode).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setThermostatMode(data.mode)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('thermostat/hold-mode/set', function (data, callback) {
-			const thermostatService = data.service;
-
-			thermostatService.setHoldMode(data.mode).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setHoldMode(data.mode)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('thermostat/fan-mode/set', function (data, callback) {
-			const thermostatService = data.service;
-
-			thermostatService.setFanMode(data.mode).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setFanMode(data.mode)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		// Light Service API
 
 		this.clientEndpoint('light/on', function (data, callback) {
-			const lightService = data.service;
-
-			lightService.setPower(true).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setPower(true)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('light/off', function (data, callback) {
-			const lightService = data.service;
-
-			lightService.setPower(false).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setPower(false)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('light/brightness/set', function (data, callback) {
-			const lightService = data.service;
-
-			lightService.setBrightness(data.brightness).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setBrightness(data.brightness)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 
 		this.clientEndpoint('light/color/set', function (data, callback) {
-			const lightService = data.service;
-
-			lightService.setColor(data.color).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
-		});
-
-		this.clientEndpoint('light/name/set', function (data, callback) {
-			const lightService = data.service;
-
-			lightService.setLightName(data.name).then(() => {
-				if (typeof callback === 'function') {
-					callback(null, {});
-				}
-			}).catch((error) => {
-				if (typeof callback === 'function') {
-					callback(error, data);
-				}
-			});
+			data.service.setColor(data.color)
+				.then(() => callback())
+				.catch((error) => callback(error));
 		});
 	}
 
 	clientEndpoint (event, callback, skip_device_lookup) {
-		this.socket.on(event, (data = {}, clientCallback) => {
+		this.socket.on(event, (data = {}, clientCallback = () => { /* no-op */ }) => {
 			// Verify access token at each API request. This ensures that
 			// the API will stop responding when the access token expires.
 			this.verifyAuthentication().then(() => {
@@ -417,9 +271,7 @@ class ClientConnection {
 					const device = DevicesManager.getDeviceById(data.device_id, this.account.id);
 
 					if (!device) {
-						if (typeof clientCallback === 'function') {
-							clientCallback('Device ' + data.device_id + ' not found.', data);
-						}
+						clientCallback('Device ' + data.device_id + ' not found.');
 
 						return;
 					}
@@ -432,9 +284,7 @@ class ClientConnection {
 					const service = DevicesManager.getServiceById(data.service_id, this.account.id);
 
 					if (!service) {
-						if (typeof clientCallback === 'function') {
-							clientCallback('Service ' + data.service_id + ' not found.', data);
-						}
+						clientCallback('Service ' + data.service_id + ' not found.');
 
 						return;
 					}

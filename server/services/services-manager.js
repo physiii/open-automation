@@ -1,25 +1,27 @@
 const Service = require('./service.js');
 
 class ServicesManager {
-	constructor (device, services = [], deviceOn, deviceEmit, onServiceUpdate) {
+	constructor (device, services = [], deviceOn, deviceEmit, onServiceUpdate, saveService) {
 		this.device = device;
 		this.deviceOn = deviceOn;
 		this.deviceEmit = deviceEmit;
-		this.services = [];
-
 		this.onServiceUpdate = onServiceUpdate;
+		this.saveService = saveService;
+		this.services = [];
 
 		this.updateServices(services);
 	}
 
-	addService (data) {
+	addService (data, should_update_existing = false) {
 		const service_class = ServicesManager.classes[data.type] || Service;
 		let service = this.getServiceById(data.id);
 
 		if (service) {
-			if (data.state) {
-				service.setState(data.state);
+			if (!should_update_existing) {
+				return service;
 			}
+
+			service.update(data);
 
 			return service;
 		}
@@ -29,7 +31,8 @@ class ServicesManager {
 			{...data, device: this.device},
 			this.onServiceUpdate,
 			this.deviceOn,
-			this.deviceEmit
+			this.deviceEmit,
+			this.saveService
 		);
 
 		this.services.push(service);
@@ -44,7 +47,7 @@ class ServicesManager {
 		}
 
 		services.forEach((service) => {
-			this.addService(service);
+			this.addService(service, true);
 		});
 	}
 
@@ -62,6 +65,10 @@ class ServicesManager {
 
 	getClientSerializedServices () {
 		return this.services.map((service) => service.clientSerialize());
+	}
+
+	destroy () {
+		this.services.forEach((service) => service.destroy());
 	}
 }
 
