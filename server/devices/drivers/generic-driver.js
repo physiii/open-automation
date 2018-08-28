@@ -10,7 +10,6 @@ class GenericDeviceDriver extends DeviceDriver {
 		this.service_ids = new Map(data.service_ids);
 		this.services = relay_services;
 		this.device_events = new EventEmitter();
-		this.current_color;
 
 		if (socket) {
 			this.setSocket(socket);
