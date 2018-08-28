@@ -1,9 +1,9 @@
 const uuidv4 = require('uuid/v4'),
 	EventEmitter = require('events'),
 	DeviceDriver = require('./device-driver.js'),
-	TAG = '[GenericDeviceDriver]';
+	TAG = '[PyfiDeviceDriver]';
 
-class GenericDeviceDriver extends DeviceDriver {
+class PyfiDeviceDriver extends DeviceDriver {
 	constructor (data = {}, socket, device_id, relay_services = []) {
 		super(socket, device_id);
 
@@ -113,4 +113,4 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 }
 
-module.exports = GenericDeviceDriver;
+module.exports = PyfiDeviceDriver;

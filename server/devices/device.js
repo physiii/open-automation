@@ -3,7 +3,7 @@ const uuid = require('uuid/v4'),
 	database = require('../database.js'),
 	GatewayDeviceDriver = require('./drivers/gateway-driver.js'),
 	LigerDeviceDriver = require('./drivers/liger-driver.js'),
-	GenericDeviceDriver = require('./drivers/generic-driver.js'),
+	PyfiDeviceDriver = require('./drivers/pyfi-driver.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
 	TAG = '[Device]';
@@ -179,7 +179,7 @@ class Device {
 Device.drivers = {
 	'gateway': GatewayDeviceDriver,
 	'liger': LigerDeviceDriver,
-	'generic': GenericDeviceDriver
+	'generic': PyfiDeviceDriver
 };
 
 module.exports = Device;
