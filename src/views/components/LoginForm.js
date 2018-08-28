@@ -22,7 +22,6 @@ export class LoginForm extends React.Component {
 			.field('password', 'Password', required);
 
 		this.handleFieldChange = this.handleFieldChange.bind(this);
-		this.handleFieldBlur = this.handleFieldBlur.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -35,16 +34,7 @@ export class LoginForm extends React.Component {
 
 		this.setState({
 			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'change', newValue)
-		});
-	}
-
-	handleFieldBlur (event, field) {
-		const newValue = event.target.value;
-
-		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'blur', newValue)
+			validation_errors: this.validator.validateField(field, event.type, newValue)
 		});
 	}
 
@@ -71,7 +61,7 @@ export class LoginForm extends React.Component {
 					value={this.state.email}
 					error={this.state.validation_errors.email}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<TextField
 					name="password"
 					label="Password"
@@ -79,7 +69,7 @@ export class LoginForm extends React.Component {
 					value={this.state.password}
 					error={this.state.validation_errors.password}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<Actions>
 					<Button type="filled" submitForm={true}>Login</Button>
 				</Actions>

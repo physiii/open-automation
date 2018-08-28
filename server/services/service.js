@@ -1,23 +1,37 @@
 const uuidv4 = require('uuid/v4'),
 	utils = require('../utils.js'),
 	EventEmitter2 = require('eventemitter2').EventEmitter2,
+	DeviceSettings = require('../devices/device-settings.js'),
 	TAG = '[Service]';
 
 class Service {
-	constructor (data, onUpdate, deviceOn, deviceEmit) {
+	constructor (data, onUpdate, deviceOn, deviceEmit, save) {
 		this.id = data.id || uuidv4();
 		this.type = this.constructor.type || data.type;
-		this.device = data.device;
-		this.events = new EventEmitter2({wildcard: true, newListener: false, maxListeners: 0});
-		this.onUpdate = onUpdate;
-		this.originalDeviceOn = deviceOn;
-		this.originalDeviceEmit = deviceEmit;
-		this.device_event_prefix = this.type + '/' + this.id + '/';
+		this.device_id = data.device_id;
 
-		this.setSettings(data.settings);
+		const device_event_prefix = this.type + '/' + this.id + '/';
+
+		this.events = new EventEmitter2({wildcard: true, newListener: false, maxListeners: 0});
+		this.deviceOn = (event, callback) => deviceOn(device_event_prefix + event, callback);
+		this.deviceEmit = (event, data, callback) => deviceEmit(device_event_prefix + event, data, callback);
+		this.onUpdate = onUpdate;
+
+		this.settings = new DeviceSettings(
+			data.settings,
+			data.settings_definitions,
+			this.constructor.settings_definitions,
+			this.deviceEmit,
+			save
+		);
+
 		this.setState(data.state);
 
-		this.deviceOn('state', (data) => this.setState(data.state));
+		this.subscribeToDevice();
+	}
+
+	subscribeToDevice () {
+		this.deviceOn('state', ({state}) => this.setState(state));
 	}
 
 	on (event, listener) {
@@ -40,22 +54,28 @@ class Service {
 		this.events.emit([event, '*'], data);
 	}
 
-	deviceOn (event, callback) {
-		this.originalDeviceOn(this.device_event_prefix + event, callback);
+	update ({state, settings_definitions}) {
+		if (state) {
+			this.setState(state);
+		}
+
+		if (settings_definitions) {
+			this.settings.setDefinitions(settings_definitions);
+		}
 	}
 
-	deviceEmit (event, data, callback) {
-		this.originalDeviceEmit(this.device_event_prefix + event, data, callback);
-	}
+	setState (state) {
+		if (!state) {
+			return;
+		}
 
-	setSettings (settings = {}) {
-		this.settings = {...settings};
-	}
-
-	setState (state = {}) {
 		this.state = {...state};
 
 		this.onUpdate();
+	}
+
+	setSettings (settings) {
+		return this.settings.set(settings);
 	}
 
 	action (action) {
@@ -121,10 +141,11 @@ class Service {
 	}
 
 	getNameOrType (include_article, capitalized = true, quotation_marks) {
-		const quot = quotation_marks ? '"' : '';
+		const quot = quotation_marks ? '"' : '',
+			name = this.settings.get('name');
 
-		return this.settings.name
-			? quot + this.settings.name + quot
+		return name
+			? quot + name + quot
 			: ((include_article || '') && this.getIndefiniteArticle(capitalized) + ' ') + this.getFriendlyType(!include_article);
 	}
 
@@ -143,13 +164,19 @@ class Service {
 	}
 
 	getFriendlyEventName (event) {
-		return (this.constructor.event_strings && this.constructor.event_strings[event].getFriendlyName.call(this)) || event;
+		const event_strings = this.constructor.event_strings;
+
+		if (event_strings && event_strings[event] && typeof event_strings[event].getFriendlyName === 'function') {
+			return event_strings[event].getFriendlyName.call(this)
+		} else {
+			return event;
+		}
 	}
 
 	getEventDescription (event, event_data) {
 		const event_strings = this.constructor.event_strings;
 
-		if (event_strings && event_strings[event] && event_strings[event].getDescription) {
+		if (event_strings && event_strings[event] && typeof event_strings[event].getDescription === 'function') {
 			return event_strings[event].getDescription.call(this, event_data);
 		}
 	}
@@ -157,7 +184,7 @@ class Service {
 	getEventHtmlDescription (event, event_data, attachment) {
 		const event_strings = this.constructor.event_strings;
 
-		if (event_strings && event_strings[event] && event_strings[event].getHtmlDescription) {
+		if (event_strings && event_strings[event] && typeof event_strings[event].getHtmlDescription === 'function') {
 			return event_strings[event].getHtmlDescription.call(this, event_data, attachment);
 		} else {
 			const plain_text_description = this.getEventDescription(event, event_data);
@@ -174,7 +201,7 @@ class Service {
 	getEventAttachment (event, event_data) {
 		const event_strings = this.constructor.event_strings;
 
-		if (event_strings && event_strings[event] && event_strings[event].getAttachment) {
+		if (event_strings && event_strings[event] && typeof event_strings[event].getAttachment === 'function') {
 			return event_strings[event].getAttachment.call(this, event_data);
 		}
 	}
@@ -183,7 +210,7 @@ class Service {
 		return {
 			id: this.id,
 			type: this.type,
-			settings: this.settings
+			...this.settings.serialize()
 		};
 	}
 
@@ -194,12 +221,25 @@ class Service {
 	clientSerialize () {
 		return {
 			...this.serialize(),
-			device_id: this.device.id,
-			state: this.state
+			device_id: this.device_id,
+			state: {...this.state},
+			strings: {
+				friendly_type: this.getFriendlyType(),
+				indefinite_article: this.getIndefiniteArticle()
+			}
 		};
+	}
+
+	destroy () {
+		this.events.removeAllListeners();
 	}
 }
 
 Service.indefinite_article = 'A';
+Service.settings_definitions = new Map()
+	.set('name', {
+		type: 'string',
+		is_required: true
+	});
 
 module.exports = Service;

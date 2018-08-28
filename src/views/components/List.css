@@ -19,11 +19,21 @@
 	color: inherit;
 	text-decoration: none;
 }
+.rowText {
+	display: flex;
+	flex-flow: column nowrap;
+}
 .icon {
 	display: flex;
 	margin-right: 16px;
+	align-self: flex-start;
 }
 .primaryText {}
+.secondaryText,
+.tertiaryText {
+	font-size: 14px;
+	color: #b6b6b6;
+}
 .metaText {
 	font-size: 13px;
 }
