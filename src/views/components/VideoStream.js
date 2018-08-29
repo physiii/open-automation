@@ -104,6 +104,7 @@ export class VideoStream extends React.Component {
 
 		this.player = new JSMpeg.Player(this.props.streamingHost, {
 			canvas: this.canvas.current,
+			disableGl: true,
 			oa_stream_id: this.getStreamIdForCurrentResource(),
 			oa_stream_token: this.props.streamingToken
 		});
@@ -112,6 +113,20 @@ export class VideoStream extends React.Component {
 			this.start();
 		} else {
 			this.stop();
+		}
+
+		// Make the background black.
+		if (this.player.renderer) {
+			setTimeout(() => {
+				const {context, canvas} = this.player.renderer;
+
+				if (!context || !canvas) {
+					return;
+				}
+
+				context.fillStyle = '#000000';
+				context.fillRect(0, 0, canvas.width, canvas.height);
+			}, 100);
 		}
 	}
 
