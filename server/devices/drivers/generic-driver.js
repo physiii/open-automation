@@ -33,7 +33,7 @@ class GenericDeviceDriver extends DeviceDriver {
 
 	_setUpServices (services) {
 		services.forEach((service) => {
-			const device_service = this._getServiceByPyfiId(service.id);
+			const device_service = this._getServiceByGenericId(service.id);
 
 			if (!device_service) {
 				this._addService(service.type, service.id, service.state);
@@ -47,7 +47,10 @@ class GenericDeviceDriver extends DeviceDriver {
 
 	_subscribeToSocket () {
 		// Map events to corresponding relay events.
-		this.socket.on('connect', () => this.device_events.emit('connect'));
+		this.socket.on('connect', () => {
+			console.log(TAG, 'Driver in use');
+			this.device_events.emit('connect');
+		});
 		this.socket.on('disconnect', () => this.device_events.emit('disconnect'));
 		this.socket.on('load', (services) => {
 			this._setUpServices(services);
@@ -58,7 +61,7 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_handleServiceState (data) {
-		const device_service = this._getServiceByPyfiId(data.id);
+		const device_service = this._getServiceByGenericId(data.id);
 
 		if (!device_service) return;
 
@@ -66,7 +69,7 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_handleButtonPress (data) {
-		const button_service = this._getServiceByPyfiId(data.id);
+		const button_service = this._getServiceByGenericId(data.id);
 
 		if (!button_service) return;
 
@@ -84,11 +87,11 @@ class GenericDeviceDriver extends DeviceDriver {
 		});
 	}
 
-	_getServiceByPyfiId (pyfi_id) {
-		return this.services.find((service) => service.id === this.service_ids.get(pyfi_id));
+	_getServiceByGenericId (generic_id) {
+		return this.services.find((service) => service.id === this.service_ids.get(generic_id));
 	}
 
-	_addService (type, pyfi_id, state, name) {
+	_addService (type, generic_id, state, name) {
 		const new_service = {
 			id: uuidv4(),
 			type,
@@ -97,7 +100,7 @@ class GenericDeviceDriver extends DeviceDriver {
 		};
 
 		this.services.push(new_service);
-		this.service_ids.set(pyfi_id, new_service.id);
+		this.service_ids.set(generic_id, new_service.id);
 	}
 
 	_serviceEmit (service, event, data = {}) {
