@@ -34,11 +34,11 @@
 .overlay:hover {
 	background-color: rgba(0, 0, 0, 0.15);
 }
-.isPlaying .overlay {
+.isPlaying > .overlay {
 	opacity: 0;
 }
 /* Hide the stop button icon in fullscreen. */
-.isPlaying:not(.isFullScreen) .overlay:hover {
+.isPlaying:not(.isFullScreen) > .overlay:hover {
 	opacity: 1;
 }
 
