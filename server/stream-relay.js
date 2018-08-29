@@ -22,18 +22,13 @@ module.exports = function (website_server) {
 	});
 
 	// Listen for new connections from front-end.
-	stream_client_server.on('connection', (socket) => {
+	stream_client_server.on('connection', (socket, request) => {
+		const query_parameters = url.parse(request.url, true).query;
+
 		// TODO: Require user authentication to stream.
 
-		// Receive stream id and token from front-end.
-		socket.onmessage = function (event) {
-			const data = JSON.parse(event.data);
-
-			socket.stream_id = data.stream_id;
-			socket.stream_token = data.stream_token;
-
-			console.log(TAG, 'Stored token for stream', socket.stream_id);
-		}
+		socket.stream_id = query_parameters.stream_id;
+		socket.stream_token = query_parameters.stream_token;
 	});
 
 	// Broadcast stream to client (front-end).
