@@ -179,7 +179,7 @@ class Device {
 Device.drivers = {
 	'gateway': GatewayDeviceDriver,
 	'liger': LigerDeviceDriver,
-	'generic': GenericDeviceDriver
+	'contact-sensor': GenericDeviceDriver
 };
 
 module.exports = Device;
