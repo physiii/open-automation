@@ -38,9 +38,6 @@ Uses motion to trigger recording to local disk and local disk can be proxied (wo
 3. NodeJS for generating, setting, and retreiving tokens
 4. Websockets on microcontrollers
 
-## thanks to...
-<a href="http://browserstack.com" target="_blank" title="Thanks to BrowserStack for providing testing tools."><img src="https://user-images.githubusercontent.com/37374957/44550363-9a3bc800-a6e9-11e8-914b-eeacbc9d90cf.png" alt="BrowserStack logo" width="200" /></a>
-
 ## System Overview
 ![Alt text](https://github.com/physiii/home-gateway/blob/master/screenshots/system_overview.png?raw=true "system overview")
 
