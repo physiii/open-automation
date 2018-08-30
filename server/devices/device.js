@@ -89,6 +89,7 @@ class Device {
 			}
 
 			// Send new token to device.
+
 			this.driver.emit('token', {token}, (error) => {
 				if (error) {
 					reject(error);
@@ -179,7 +180,7 @@ class Device {
 Device.drivers = {
 	'gateway': GatewayDeviceDriver,
 	'liger': LigerDeviceDriver,
-	'contact-sensor': GenericDeviceDriver
+	'generic': GenericDeviceDriver
 };
 
 module.exports = Device;
