@@ -32,7 +32,7 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_setUpServices (services) {
-		services.forEach((service) => {
+		services.services.forEach((service) => {
 			const device_service = this._getServiceByGenericId(service.id);
 
 			if (!device_service) {
