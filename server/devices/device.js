@@ -3,6 +3,7 @@ const uuid = require('uuid/v4'),
 	database = require('../database.js'),
 	GatewayDeviceDriver = require('./drivers/gateway-driver.js'),
 	LigerDeviceDriver = require('./drivers/liger-driver.js'),
+	GenericDeviceDriver = require('./drivers/generic-driver.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
 	TAG = '[Device]';
@@ -88,6 +89,7 @@ class Device {
 			}
 
 			// Send new token to device.
+
 			this.driver.emit('token', {token}, (error) => {
 				if (error) {
 					reject(error);
@@ -179,7 +181,8 @@ class Device {
 
 Device.drivers = {
 	'gateway': GatewayDeviceDriver,
-	'liger': LigerDeviceDriver
+	'liger': LigerDeviceDriver,
+	'generic': GenericDeviceDriver
 };
 
 module.exports = Device;
