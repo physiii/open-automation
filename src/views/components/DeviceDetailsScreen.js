@@ -2,60 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import NavigationScreen from './NavigationScreen.js';
-import TextField from './TextField.js';
+import SettingsField from './SettingsField.js';
 import List from './List.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
 import ServiceDetailsScreen from './ServiceDetailsScreen.js';
+import withSettingsSaver from './withSettingsSaver.js';
 import {connect} from 'react-redux';
-import {debounce} from 'debounce';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import {setDeviceSettings, deleteDevice} from '../../state/ducks/devices-list/operations.js';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
-
-const FIELD_DEBOUNCE_DELAY = 500;
 
 export class DeviceDetailsScreen extends React.Component {
 	constructor (props) {
 		super(props);
 
-		if (!props.device) {
-			return;
-		}
-
-		this.originalSettings = props.device.settings;
-
-		this.state = {
-			settings: {...props.device.settings}
-		};
-
-		this.handleFieldChange = this.handleFieldChange.bind(this);
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
-		this.setSettings = debounce(this.setSettings, FIELD_DEBOUNCE_DELAY);
-	}
-
-	handleFieldChange (event, field) {
-		const settings = {
-			...this.state.settings,
-			[field]: event.target.value
-		};
-
-		let shouldSaveSettings = event.type === 'change';
-
-		// If name is empty, use the original name.
-		if (field === 'name' && !settings.name) {
-			if (event.type === 'blur') {
-				settings.name = this.originalSettings.name;
-				shouldSaveSettings = settings.name !== this.props.device.settings.name;
-			} else if (event.type === 'change') {
-				shouldSaveSettings = false;
-			}
-		}
-
-		this.setState({settings});
-
-		if (shouldSaveSettings) {
-			this.setSettings(settings);
-		}
 	}
 
 	handleDeleteClick () {
@@ -64,37 +25,29 @@ export class DeviceDetailsScreen extends React.Component {
 		}
 	}
 
-	setSettings (settings) {
-		this.props.setSettings(settings);
-	}
-
 	render () {
-		if (!this.props.device) {
+		const device = this.props.device;
+
+		if (!device) {
 			return <Redirect to={this.props.baseUrl} />;
 		}
 
-		const device = this.props.device,
-			services = device.services.filter(({type}) => type === 'button' ||
-				type === 'camera' ||
-				type === 'light' ||
-				type === 'lock' ||
-				type === 'thermostat');
-
 		return (
-			<NavigationScreen path={this.props.match.url} title={device.settings.name || 'Device'} toolbarActions={<span onClick={this.handleDeleteClick}>Delete</span>}>
+			<NavigationScreen path={this.props.match.url} title={this.props.settings.name || 'Device'} toolbarActions={<span onClick={this.handleDeleteClick}>Delete</span>}>
 				<Switch>
 					<Route exact path={this.props.match.path} render={() => (
 						<React.Fragment>
 							{device.error && <p>{device.error}</p>}
-							<TextField
-								name="name"
+							<SettingsField
+								property="name"
 								label="Device Name"
-								value={this.state.settings.name}
-								onChange={this.handleFieldChange}
-								onBlur={this.handleFieldChange} />
-							{Boolean(services.length) && <List
+								definition={device.settings_definitions.name}
+								value={this.props.settings.name}
+								originalValue={this.props.originalSettings.name}
+								onChange={this.props.onSettingChange} />
+							{Boolean(device.services.length) && <List
 								title="Features"
-								items={services.map((service) => ({
+								items={device.services.map((service) => ({
 									key: service.id,
 									label: service.settings.name,
 									icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
@@ -124,36 +77,41 @@ DeviceDetailsScreen.propTypes = {
 	device: PropTypes.object,
 	match: PropTypes.object.isRequired,
 	baseUrl: PropTypes.string,
-	setSettings: PropTypes.func.isRequired,
-	deleteDevice: PropTypes.func.isRequired
+	deleteDevice: PropTypes.func.isRequired,
+	// Props from withSettingsSaver.
+	settings: PropTypes.object.isRequired,
+	originalSettings: PropTypes.object.isRequired,
+	onSettingChange: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, {match}) => {
-		const device = getDeviceById(state, match.params.deviceId),
+const mapStateToProps = ({devicesList, servicesList}, {match}) => {
+		const device = getDeviceById(devicesList, match.params.deviceId),
 			urlParts = match.url.split('/');
 
-		urlParts.pop(); // Remove the device ID from the URL.
-
-		const baseUrl = urlParts.join('/');
-
 		if (!device) {
-			return {baseUrl};
+			// Remove the device ID from the URL.
+			urlParts.pop();
+
+			return {baseUrl: urlParts.join('/')};
 		}
 
 		return {
 			device: {
 				...device,
-				services: device.services.map(({id}) => getServiceById(id, state.servicesList))
+				// Hydrate services.
+				services: device.services.map(({id}) => getServiceById(servicesList, id))
 			},
-			baseUrl
+			// Props for settings saver HOC.
+			settings: device.settings,
+			settings_definitions: device.settings_definitions
 		};
 	},
-	mapDispatchToProps = (dispatch) => ({dispatch}),
 	mergeProps = (stateProps, {dispatch}, ownProps) => ({
 		...ownProps,
 		...stateProps,
-		setSettings: (settings) => dispatch(setDeviceSettings(stateProps.device.id, settings, stateProps.device.settings)),
-		deleteDevice: () => dispatch(deleteDevice(stateProps.device))
+		deleteDevice: () => dispatch(deleteDevice(stateProps.device)),
+		// Props for settings saver HOC.
+		saveSettings: (settings) => dispatch(setDeviceSettings(stateProps.device.id, settings, stateProps.device.settings))
 	});
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeviceDetailsScreen);
+export default connect(mapStateToProps, null, mergeProps)(withSettingsSaver(DeviceDetailsScreen));

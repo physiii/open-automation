@@ -46,10 +46,10 @@ DevicesListScreen.propTypes = {
 	match: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => ({
-		devices: getDevices(state).map((device) => ({
+const mapStateToProps = ({devicesList, servicesList}) => ({
+		devices: getDevices(devicesList).map((device) => ({
 			...device,
-			services: device.services.map(({id}) => getServiceById(id, state.servicesList))
+			services: device.services.map(({id}) => getServiceById(servicesList, id))
 		}))
 	}),
 	mergeProps = (stateProps, dispatchProps, ownProps) => ({

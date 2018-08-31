@@ -119,7 +119,7 @@ CameraRecordingsScreen.defaultProps = {
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-		const cameraService = getServiceById(match.params.cameraServiceId, servicesList);
+		const cameraService = getServiceById(servicesList, match.params.cameraServiceId);
 
 		if (!cameraService) {
 			return {error: 'There was a problem loading the camera’s recordings.'};
@@ -130,16 +130,16 @@ const mapStateToProps = ({servicesList}, {match}) => {
 		}
 
 		return {
+			servicesList,
 			cameraService,
 			cameraServiceId: cameraService.id,
-			cameraName: getServiceNameById(cameraService.id, servicesList),
-			allRecordings: cameraGetRecordings(cameraService),
-			selectedRecording: cameraGetRecordingById(cameraService, match.params.recordingId),
-			isLoading: cameraIsRecordingsListLoading(cameraService)
+			cameraName: getServiceNameById(servicesList, cameraService.id),
+			allRecordings: cameraGetRecordings(servicesList, cameraService.id),
+			selectedRecording: cameraGetRecordingById(servicesList, cameraService.id, match.params.recordingId),
+			isLoading: cameraIsRecordingsListLoading(servicesList, cameraService.id)
 		};
 	},
-	mapDispatchToProps = (dispatch) => ({dispatch}),
-	mergeProps = ({cameraService, ...stateProps}, {dispatch, ...dispatchProps}, {match, ...ownProps}) => {
+	mergeProps = ({servicesList, cameraService, ...stateProps}, {dispatch, ...dispatchProps}, {match, ...ownProps}) => {
 		let selectedDate = moment([
 			match.params.year,
 			match.params.month - 1, // Subtract 1 from month because moment months are zero-based.
@@ -156,9 +156,9 @@ const mapStateToProps = ({servicesList}, {match}) => {
 			...dispatchProps,
 			basePath: match.path.replace(CameraRecordingsScreen.routeParams, ''),
 			selectedDate,
-			selectedDateRecordings: cameraService && cameraGetRecordingsByDate(cameraService, selectedDate),
+			selectedDateRecordings: cameraService && cameraGetRecordingsByDate(servicesList, cameraService.id, selectedDate),
 			fetchRecordings: () => cameraService && cameraService.state.connected && dispatch(cameraFetchRecordings(cameraService.id))
 		};
 	};
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(CameraRecordingsScreen);
+export default connect(mapStateToProps, null, mergeProps)(CameraRecordingsScreen);

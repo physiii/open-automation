@@ -1,4 +1,4 @@
-const getDevices = ({devicesList}, toJs = true) => {
+const getDevices = (devicesList, toJs = true) => {
 		const devices = devicesList.get('devices');
 
 		return toJs
@@ -7,7 +7,7 @@ const getDevices = ({devicesList}, toJs = true) => {
 			}).toList().toJS()
 			: devices;
 	},
-	getDeviceById = ({devicesList}, deviceId, toJs = true) => {
+	getDeviceById = (devicesList, deviceId, toJs = true) => {
 		const device = devicesList.getIn(['devices', deviceId]);
 
 		if (!device) {
@@ -16,7 +16,7 @@ const getDevices = ({devicesList}, toJs = true) => {
 
 		return toJs ? device.set('services', device.services.toList()).toJS() : device;
 	},
-	hasInitialFetchCompleted = ({devicesList}) => {
+	hasInitialFetchCompleted = (devicesList) => {
 		return devicesList.get('fetched');
 	};
 

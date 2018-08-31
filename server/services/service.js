@@ -239,7 +239,10 @@ Service.indefinite_article = 'A';
 Service.settings_definitions = new Map()
 	.set('name', {
 		type: 'string',
-		is_required: true
+		validation: {
+			is_required: true,
+			max_length: 24
+		}
 	});
 
 module.exports = Service;

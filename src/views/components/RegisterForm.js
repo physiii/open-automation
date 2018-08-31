@@ -34,21 +34,12 @@ export class RegisterForm extends React.Component {
 		this.validator.setState(this.state);
 	}
 
-	handleFieldChange (event, field) {
+	handleFieldChange (event) {
 		const newValue = event.target.value;
 
 		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'change', newValue)
-		});
-	}
-
-	handleFieldBlur (event, field) {
-		const newValue = event.target.value;
-
-		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'blur', newValue)
+			[event.target.name]: newValue,
+			validation_errors: this.validator.validateField(event.target.name, 'change', newValue)
 		});
 	}
 
@@ -75,7 +66,7 @@ export class RegisterForm extends React.Component {
 					value={this.state.email}
 					error={this.state.validation_errors.email}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<TextField
 					name="password"
 					label="Password"
@@ -83,7 +74,7 @@ export class RegisterForm extends React.Component {
 					value={this.state.password}
 					error={this.state.validation_errors.password}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<TextField
 					name="confirm_password"
 					label="Confirm Password"
@@ -91,7 +82,7 @@ export class RegisterForm extends React.Component {
 					value={this.state.confirm_password}
 					error={this.state.validation_errors.confirm_password}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<Actions>
 					<Button type="filled" submitForm={true}>Create Account</Button>
 				</Actions>

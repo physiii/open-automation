@@ -3,63 +3,14 @@ import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import NavigationScreen from './NavigationScreen.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
-import TextField from './TextField.js';
+import SettingsField from './SettingsField.js';
+import SettingsForm from './SettingsForm.js';
+import withSettingsSaver from './withSettingsSaver.js';
 import {connect} from 'react-redux';
-import {debounce} from 'debounce';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
 import {setServiceSettings} from '../../state/ducks/services-list/operations.js';
 
-const FIELD_DEBOUNCE_DELAY = 500;
-
 export class ServiceDetailsScreen extends React.Component {
-	constructor (props) {
-		super(props);
-
-		if (!props.service) {
-			return;
-		}
-
-		this.originalSettings = props.service.settings;
-
-		this.state = {
-			settings: {...props.service.settings}
-		};
-
-		this.handleFieldChange = this.handleFieldChange.bind(this);
-		this.setSettings = debounce(this.setSettings, FIELD_DEBOUNCE_DELAY);
-	}
-
-	handleFieldChange (event, field) {
-		const settingsDefinitions = this.props.service.settings_definitions[field],
-			fieldIsNumber = settingsDefinitions.type === 'integer' || settingsDefinitions.type === 'number',
-			settings = {
-				...this.state.settings,
-				[field]: fieldIsNumber ? Number(event.target.value) : event.target.value
-			};
-
-		let shouldSaveSettings = event.type === 'change';
-
-		// If name is empty, reset to the original name.
-		if (field === 'name' && !settings.name) {
-			if (event.type === 'blur') {
-				settings.name = this.originalSettings.name;
-				shouldSaveSettings = settings.name !== this.props.service.settings.name;
-			} else if (event.type === 'change') {
-				shouldSaveSettings = false;
-			}
-		}
-
-		this.setState({settings});
-
-		if (shouldSaveSettings) {
-			this.setSettings(settings);
-		}
-	}
-
-	setSettings (settings) {
-		this.props.setSettings(settings);
-	}
-
 	render () {
 		const service = this.props.service;
 
@@ -67,35 +18,32 @@ export class ServiceDetailsScreen extends React.Component {
 			return <Redirect to={this.props.baseUrl} />;
 		}
 
-		const serviceName = service.settings.name || service.strings.friendly_type;
-
 		return (
-			<NavigationScreen path={this.props.match.url} title={serviceName}>
-				<ServiceIcon service={service} size={32} />
+			<NavigationScreen path={this.props.match.url} title={this.props.settings.name || service.strings.friendly_type}>
 				{service.error && <p>{service.error}</p>}
-				<TextField
-					name="name"
+				<ServiceIcon service={service} size={32} />
+				<SettingsField
+					property="name"
 					label="Feature Name"
-					value={this.state.settings.name}
-					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldChange} />
-				{Object.keys(service.settings_definitions).map((property) => {
-					const definition = service.settings_definitions[property];
+					definition={service.settings_definitions.name}
+					value={this.props.settings.name}
+					originalValue={this.props.originalSettings.name}
+					onChange={this.props.onSettingChange} />
+				<h2>Settings</h2>
+				<SettingsForm
+					fields={Object.keys(service.settings_definitions).map((property) => {
+						if (property === 'name') {
+							return null;
+						}
 
-					if (definition.type !== 'integer') {
-						return null;
-					}
-
-					return (
-						<TextField
-							name={property}
-							label={definition.label}
-							value={this.state.settings[property]}
-							onChange={this.handleFieldChange}
-							onBlur={this.handleFieldChange}
-							key={property} />
-					);
-				})}
+						return {
+							property,
+							definition: service.settings_definitions[property],
+							value: this.props.settings[property],
+							originalValue: this.props.originalSettings[property]
+						};
+					})}
+					onFieldChange={this.props.onSettingChange} />
 			</NavigationScreen>
 		);
 	}
@@ -107,11 +55,14 @@ ServiceDetailsScreen.propTypes = {
 	service: PropTypes.object,
 	match: PropTypes.object.isRequired,
 	baseUrl: PropTypes.string,
-	setSettings: PropTypes.func.isRequired
+	// Props from withSettingsSaver.
+	settings: PropTypes.object.isRequired,
+	originalSettings: PropTypes.object.isRequired,
+	onSettingChange: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, {match}) => {
-		const service = getServiceById(match.params.serviceId, state.servicesList),
+const mapStateToProps = ({servicesList}, {match}) => {
+		const service = getServiceById(servicesList, match.params.serviceId),
 			urlParts = match.url.split('/');
 
 		if (!service) {
@@ -121,13 +72,18 @@ const mapStateToProps = (state, {match}) => {
 			return {baseUrl: urlParts.join('/')};
 		}
 
-		return {service};
+		return {
+			service,
+			// Props for settings saver HOC.
+			settings: service.settings,
+			settings_definitions: service.settings_definitions
+		};
 	},
-	mapDispatchToProps = (dispatch) => ({dispatch}),
 	mergeProps = (stateProps, {dispatch}, ownProps) => ({
 		...ownProps,
 		...stateProps,
-		setSettings: (settings) => dispatch(setServiceSettings(stateProps.service.id, settings, stateProps.service.settings))
+		// Props for settings saver HOC.
+		saveSettings: (settings) => dispatch(setServiceSettings(stateProps.service.id, settings, stateProps.service.settings))
 	});
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ServiceDetailsScreen);
+export default connect(mapStateToProps, null, mergeProps)(withSettingsSaver(ServiceDetailsScreen));

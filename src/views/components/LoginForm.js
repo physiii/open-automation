@@ -29,12 +29,12 @@ export class LoginForm extends React.Component {
 		this.validator.setState(this.state);
 	}
 
-	handleFieldChange (event, field) {
+	handleFieldChange (event) {
 		const newValue = event.target.value;
 
 		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, event.type, newValue)
+			[event.target.name]: newValue,
+			validation_errors: this.validator.validateField(event.target.name, event.type, newValue)
 		});
 	}
 
