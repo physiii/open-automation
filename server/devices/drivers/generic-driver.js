@@ -33,10 +33,10 @@ class GenericDeviceDriver extends DeviceDriver {
 
 	_setUpServices (services) {
 		services.services.forEach((service) => {
-			const device_service = this._getServiceByGenericId(service.id);
+			const device_service = this._getServiceByGenericId('service-'+service.id);
 
 			if (!device_service) {
-				this._addService(service.type, service.id, service.state);
+				this._addService(service.type, 'service-'+service.id, service.state);
 			} else {
 				device_service.state = service.state;
 			}
@@ -57,24 +57,29 @@ class GenericDeviceDriver extends DeviceDriver {
 			this._emitLoadToRelay();
 		});
 		this.socket.on('service/state', this._handleServiceState);
-		this.socket.on('button/pressed', this._handleButtonPress);
+		//this.socket.on('button/pressed', this._handleButtonPress);
 	}
 
 	_handleServiceState (data) {
-		const device_service = this._getServiceByGenericId(data.id);
+		const device_service = this._getServiceByGenericId('service-' + data.id);
 
-		if (!device_service) return;
+		if (!device_service) return console.log(TAG, "State Event. No Service Found");
 
-		this._serviceEmit(device_service, 'state', {state: data.state});
+		if (device_service.state != data.state) {
+			device_service.state = data.state;
+			this._serviceEmit(device_service, 'state', data);
+		}
 	}
 
 	_handleButtonPress (data) {
-		const button_service = this._getServiceByGenericId(data.id);
+		//const button_service = this._getServiceByGenericId(data.id);
 
-		if (!button_service) return;
+		//if (!button_service) return;
 
 		// Emit the pressed event to the service.
-		this._serviceEmit(button_service, 'pressed');
+		console.log(TAG, "Button Pressed. Chirping Siren 3 times. . .")
+		this.socket.emit('siren', {chirp:3});
+
 	}
 
 
