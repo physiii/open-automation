@@ -98,6 +98,8 @@ class Device {
 				this.token = token;
 				this.is_saveable = true;
 				this.save().then(() => {
+					this.driver.emit('reconnect-to-relay');
+
 					resolve(this.token);
 				}).catch((error) => {
 					// Undo token change locally.
