@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {isEmpty} from '../../utilities.js';
 import TextField from './TextField.js';
-import Checkbox from './Checkbox.js';
-import SelectList from './SelectList.js';
+import SwitchField from './SwitchField.js';
+import SelectField from './SelectField.js';
 
 export const SettingsField = (props) => {
 	const fieldProps = {
@@ -26,11 +26,11 @@ export const SettingsField = (props) => {
 			);
 		case 'boolean':
 			return (
-				<Checkbox {...fieldProps} checked={props.value} />
+				<SwitchField {...fieldProps} checked={props.value} />
 			);
 		case 'one-of':
 			return (
-				<SelectList
+				<SelectField
 					{...fieldProps}
 					value={props.value}
 					options={props.definition.value_options.map((option) => ({

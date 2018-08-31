@@ -9,6 +9,7 @@ import withSettingsSaver from './withSettingsSaver.js';
 import {connect} from 'react-redux';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
 import {setServiceSettings} from '../../state/ducks/services-list/operations.js';
+import './ServiceDetailsScreen.css';
 
 export class ServiceDetailsScreen extends React.Component {
 	render () {

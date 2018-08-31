@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {getUniqueId} from '../../utilities.js';
-import './Checkbox.css';
+import './SelectField.css';
 
-export class Checkbox extends React.Component {
+export class SelectField extends React.Component {
 	constructor (props) {
 		super(props);
 
@@ -36,32 +36,39 @@ export class Checkbox extends React.Component {
 			<div styleName="container">
 				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
 					<label htmlFor={inputId} styleName="label">{this.props.label}</label>
-					<input
+					<select
 						styleName="input"
-						type="checkbox"
 						id={inputId}
 						name={this.props.name}
-						checked={this.props.checked}
+						value={this.props.value}
 						onChange={this.props.onChange}
 						onFocus={this.handleFocus}
-						onBlur={this.handleBlur} />
+						onBlur={this.handleBlur}>
+						{this.props.options.map((option, index) => {
+							return (
+								<option value={option.value} key={index}>
+									{option.label || option.value}
+								</option>
+							);
+						})}
+					</select>
 				</div>
 			</div>
 		);
 	}
 }
 
-Checkbox.propTypes = {
+SelectField.propTypes = {
 	label: PropTypes.string,
 	name: PropTypes.string,
-	checked: PropTypes.bool,
+	value: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number
+	]),
+	options: PropTypes.array,
 	onChange: PropTypes.func,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func
 };
 
-Checkbox.defaultProps = {
-	checked: false
-};
-
-export default Checkbox;
+export default SelectField;
