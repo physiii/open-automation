@@ -67,7 +67,6 @@ const SAVE_DEBOUNCE_DELAY = 500,
 			}
 
 			setSettings (settings) {
-				console.log('saveSettings', settings);
 				this.props.saveSettings(settings);
 			}
 

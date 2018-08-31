@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {getUniqueId} from '../../utilities.js';
-import './SelectList.css';
+import './SwitchField.css';
 
-export class SelectList extends React.Component {
+export class SwitchField extends React.Component {
 	constructor (props) {
 		super(props);
 
@@ -36,39 +36,32 @@ export class SelectList extends React.Component {
 			<div styleName="container">
 				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
 					<label htmlFor={inputId} styleName="label">{this.props.label}</label>
-					<select
+					<input
 						styleName="input"
+						type="checkbox"
 						id={inputId}
 						name={this.props.name}
-						value={this.props.value}
+						checked={this.props.checked}
 						onChange={this.props.onChange}
 						onFocus={this.handleFocus}
-						onBlur={this.handleBlur}>
-						{this.props.options.map((option, index) => {
-							return (
-								<option value={option.value} key={index}>
-									{option.label || option.value}
-								</option>
-							);
-						})}
-					</select>
+						onBlur={this.handleBlur} />
 				</div>
 			</div>
 		);
 	}
 }
 
-SelectList.propTypes = {
+SwitchField.propTypes = {
 	label: PropTypes.string,
 	name: PropTypes.string,
-	value: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.number
-	]),
-	options: PropTypes.array,
+	checked: PropTypes.bool,
 	onChange: PropTypes.func,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func
 };
 
-export default SelectList;
+SwitchField.defaultProps = {
+	checked: false
+};
+
+export default SwitchField;

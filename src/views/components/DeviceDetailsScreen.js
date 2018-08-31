@@ -4,6 +4,7 @@ import {Route, Switch, Redirect} from 'react-router-dom';
 import NavigationScreen from './NavigationScreen.js';
 import SettingsField from './SettingsField.js';
 import List from './List.js';
+import Button from './Button.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
 import ServiceDetailsScreen from './ServiceDetailsScreen.js';
 import withSettingsSaver from './withSettingsSaver.js';
@@ -33,7 +34,7 @@ export class DeviceDetailsScreen extends React.Component {
 		}
 
 		return (
-			<NavigationScreen path={this.props.match.url} title={this.props.settings.name || 'Device'} toolbarActions={<span onClick={this.handleDeleteClick}>Delete</span>}>
+			<NavigationScreen path={this.props.match.url} title={this.props.settings.name || 'Device'} toolbarActions={<Button onClick={this.handleDeleteClick}>Delete</Button>}>
 				<Switch>
 					<Route exact path={this.props.match.path} render={() => (
 						<React.Fragment>

@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SettingsField from './SettingsField.js';
+import './SettingsForm.css';
 
 export const SettingsForm = (props) => {
 	return (
-		<form>
+		<form styleName="form">
 			{props.fields.map((field) => {
 				return field && (
 					<SettingsField
