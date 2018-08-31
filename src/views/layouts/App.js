@@ -62,9 +62,9 @@ App.propTypes = {
 	getTabPath: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => ({
-		isLoading: isLoading(state.session) || (isAuthenticated(state.session) && !hasInitialFetchCompleted(state)),
-		getTabPath: (defaultTabPath) => getContextCurrentFullPath(state.navigation, defaultTabPath) || defaultTabPath
+const mapStateToProps = ({session, navigation, devicesList}) => ({
+		isLoading: isLoading(session) || (isAuthenticated(session) && !hasInitialFetchCompleted(devicesList)),
+		getTabPath: (defaultTabPath) => getContextCurrentFullPath(navigation, defaultTabPath) || defaultTabPath
 	}),
 	connectedApp = connect(mapStateToProps, null, null, {pure: false})(App);
 

@@ -37,10 +37,6 @@ const initialState = Immutable.Map({
 										? service.state.connected
 										: true)
 							},
-							settings: {
-								...service.settings,
-								name: service.settings.name || service.strings.friendly_type // Default name to the service type.
-							},
 							recordingsList: recordingsReducer(
 								currentServiceState && currentServiceState.recordingsList,
 								{
@@ -99,7 +95,7 @@ const initialState = Immutable.Map({
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return state.set('recordings', action.payload.recordings
 					? orderedMapFromArray(action.payload.recordings)
-					: state.recordings);
+					: state.get('recordings'));
 			case types.FETCH_CAMERA_RECORDINGS:
 				return state.set('loading', true);
 			case types.FETCH_CAMERA_RECORDINGS_SUCCESS:

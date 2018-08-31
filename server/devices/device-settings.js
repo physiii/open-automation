@@ -14,7 +14,7 @@ class DeviceSettings {
 		const settings_with_defaults = {...settings};
 
 		this.definitions.forEach((definition, property) => {
-			if (!this._isSettingEmpty(settings[property])) {
+			if (!this._isSettingUnset(settings[property])) {
 				return;
 			}
 
@@ -36,25 +36,28 @@ class DeviceSettings {
 		return false;
 	}
 
-	_isSettingEmpty (value) {
-			if (typeof value === 'number' || typeof value === 'boolean') {
-				return false;
-			}
+	_isSettingUnset (value) {
+		// TODO: Only consider unset if undefined or null.
 
-			if (typeof value === 'undefined' || value === null) {
-				return true;
-			}
+		if (typeof value === 'number' || typeof value === 'boolean') {
+			return false;
+		}
 
-			// Arrays and strings.
-			if (typeof value.length !== 'undefined' && value.length === 0) {
-				return true;
-			}
+		if (typeof value === 'undefined' || value === null) {
+			return true;
+		}
+
+		// Arrays and strings.
+		if (typeof value.length !== 'undefined' && value.length === 0) {
+			return true;
+		}
 	}
 
 	setDefinitions (definitions = new Map()) {
 		this.definitions = new Map([
+			...this.base_definitions, // Set first so base definitions come first.
 			...definitions,
-			...this.base_definitions
+			...this.base_definitions // Set again so base definitions aren't overwritten.
 		]);
 	}
 

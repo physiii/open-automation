@@ -18,13 +18,7 @@ const initialState = Immutable.Map({
 					loading: false,
 					fetched: true,
 					error: false,
-					devices: orderedMapFromArray(action.payload.devices, (device) => new Device({
-						...device,
-						services: orderedMapFromArray(device.services, (service) => ({
-							id: service.id,
-							type: service.type
-						}))
-					}))
+					devices: orderedMapFromArray(action.payload.devices, (device) => new Device(device))
 				});
 			case types.FETCH_DEVICES_ERROR:
 				return state.merge({

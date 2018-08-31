@@ -71,6 +71,10 @@ class Device {
 				this.services.updateServices(data.device.services);
 			}
 
+			if (data.device.settings_definitions) {
+				this.settings.setDefinitions(data.device.settings_definitions);
+			}
+
 			if (data.device.info) {
 				this.setInfo(data.info);
 			}
@@ -207,7 +211,10 @@ class Device {
 Device.settings_definitions = new Map()
 	.set('name', {
 		type: 'string',
-		is_required: true
+		validation: {
+			is_required: true,
+			max_length: 24
+		}
 	});
 
 Device.drivers = {

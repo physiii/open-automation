@@ -36,8 +36,8 @@ Dashboard.propTypes = {
 	match: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => ({
-	services: getServices(state.servicesList)
+const mapStateToProps = ({servicesList}) => ({
+	services: getServices(servicesList)
 });
 
 export default connect(mapStateToProps)(Dashboard);

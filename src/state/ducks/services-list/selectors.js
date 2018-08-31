@@ -8,7 +8,7 @@ const getServices = (servicesList, toJs = true) => {
 
 		return toJs ? gatewayServices.toList().toJS() : gatewayServices;
 	},
-	getServiceById = (serviceId, servicesList, toJs = true) => {
+	getServiceById = (servicesList, serviceId, toJs = true) => {
 		const service = servicesList.getIn(['services', serviceId]);
 
 		if (!service) {
@@ -17,8 +17,10 @@ const getServices = (servicesList, toJs = true) => {
 
 		return toJs ? service.toJS() : service;
 	},
-	getServiceNameById = (serviceId, servicesList) => getServiceById(serviceId, servicesList).settings.name,
-	cameraGetRecordings = (cameraService, toJs = true) => {
+	getServiceNameById = (servicesList, serviceId) => getServiceById(servicesList, serviceId).settings.name,
+	cameraGetRecordings = (servicesList, cameraServiceId, toJs = true) => {
+		const cameraService = getServiceById(servicesList, cameraServiceId, false);
+
 		if (!cameraService) {
 			return;
 		}
@@ -27,7 +29,9 @@ const getServices = (servicesList, toJs = true) => {
 
 		return toJs ? recordings.toList().toJS() : recordings;
 	},
-	cameraGetRecordingsByDate = (cameraService, date, toJs = true) => {
+	cameraGetRecordingsByDate = (servicesList, cameraServiceId, date, toJs = true) => {
+		const cameraService = getServiceById(servicesList, cameraServiceId, false);
+
 		if (!cameraService) {
 			return;
 		}
@@ -41,14 +45,22 @@ const getServices = (servicesList, toJs = true) => {
 
 		return toJs ? recordings.toList().toJS() : recordings;
 	},
-	cameraGetRecordingById = (cameraService, recordingId) => {
+	cameraGetRecordingById = (servicesList, cameraServiceId, recordingId) => {
+		const cameraService = getServiceById(servicesList, cameraServiceId, false);
+
 		if (!cameraService) {
 			return;
 		}
 
 		return cameraService.recordingsList.getIn(['recordings', recordingId]);
 	},
-	cameraIsRecordingsListLoading = (cameraService) => {
+	cameraIsRecordingsListLoading = (servicesList, cameraServiceId) => {
+		const cameraService = getServiceById(servicesList, cameraServiceId, false);
+
+		if (!cameraService) {
+			return;
+		}
+
 		return cameraService.recordingsList.get('loading');
 	},
 	hasInitialFetchCompleted = (servicesList) => {

@@ -32,6 +32,12 @@ class ClientConnection {
 			DevicesManager.on('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
 		});
 
+		this.socket.on('disconnect', (reason) => {
+			if (reason === 'transport close') {
+				this.destroy();
+			}
+		});
+
 		this.handleAccountDevicesUpdate = this.handleAccountDevicesUpdate.bind(this);
 	}
 
@@ -300,8 +306,10 @@ class ClientConnection {
 	destroy () {
 		DevicesManager.off('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
 
-		this.socket.removeAllListeners();
-		this.socket.disconnect();
+		if (this.socket) {
+			this.socket.removeAllListeners();
+			this.socket.disconnect();
+		}
 
 		delete this.socket;
 		delete this.access_token;

@@ -111,7 +111,7 @@ const mapStateToProps = (state) => ({
 	services: state.servicesList.get('services').toArray(),
 	getGatewayServices: getServicesByType(state.servicesList, 'gateway').map((service) => ({
 		...service,
-		device: getDeviceById(state, service.device_id)
+		device: getDeviceById(state.devicesList, service.device_id)
 	}))
 });
 
