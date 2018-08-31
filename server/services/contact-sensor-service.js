@@ -3,7 +3,7 @@ const Service = require('./service.js'),
 
 class ContactSensorService extends Service {}
 
-ContactSensorService.type = 'contact-sensor';
+ContactSensorService.type = 'contact_sensor';
 ContactSensorService.friendly_type = 'Contact Sensor';
 ContactSensorService.indefinite_article = 'A';
 
