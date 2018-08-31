@@ -254,7 +254,7 @@ module.exports = function (app) {
 			stream_port: config.video_websocket_port
 		};
 
-		response.send('window.OpenAutomation = {config: ' + JSON.stringify(client_config) + '};');
+		response.type('.js').send('window.OpenAutomation = {config: ' + JSON.stringify(client_config) + '};');
 	});
 
 	app.get('*', (request, response) => {
