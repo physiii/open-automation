@@ -120,7 +120,11 @@ class DevicesManager {
 		// If the device doesn't exist, store the socket in escrow to be used
 		// when the device is added.
 		if (!device) {
-			console.log(TAG, 'Unknown device connected.', deviceId);
+			if (deviceId !== deviceToken) {
+				console.log(TAG, 'Unknown Device connected.', deviceId, '- Device token mismatch...');
+			} else {
+				console.log(TAG, 'Unknown device connected.', deviceId, '- Device token match');
+			}
 
 			this.addToSocketEscrow(deviceId, deviceToken, deviceType, socket);
 

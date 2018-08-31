@@ -99,6 +99,8 @@ class Automator {
 			switch (condition.type) {
 				case 'day-of-week':
 					return !(condition.days && condition.days.includes && condition.days.includes(this.now.isoWeekday()));
+				case 'state':
+					break;
 				default:
 					// Fail by default.
 					return true;

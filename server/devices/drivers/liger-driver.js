@@ -45,7 +45,7 @@ class LigerDeviceDriver extends DeviceDriver {
 		}
 	}
 
-	_setUpServices (services) {
+	_setUpServices () {
 		if (!this._getServiceByLigerId('button-1')) {
 			this._addService('button', 'button-1', 'Center Button');
 		}
@@ -128,7 +128,9 @@ class LigerDeviceDriver extends DeviceDriver {
 		});
 
 		// Emit the pressed event repeatedly while the button is being pressed.
-		this.button_hold_interval = setInterval(() => this._serviceEmit(button_service, 'pressed', COLORS[this.current_color]), BUTTON_HOLD_INTERVAL_DELAY);
+		if(data.value === 6 || data.value === 8) {
+			this.button_hold_interval = setInterval(() => this._serviceEmit(button_service, 'pressed'), BUTTON_HOLD_INTERVAL_DELAY);
+		}
 	}
 
 	setNextColor() {
