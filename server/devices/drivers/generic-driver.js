@@ -27,16 +27,16 @@ class GenericDeviceDriver extends DeviceDriver {
 		// Map relay service events to corresponding messages to the liger.
 		switch (event) {
 			default:
-				this.socket.emit(event, data, callback);
+				this.socket.emit(event, {...data, id: this.service_ids.get(data.service_id)}, callback);
 		}
 	}
 
 	_setUpServices (services) {
 		services.services.forEach((service) => {
-			const device_service = this._getServiceByGenericId('service-'+service.id);
+			const device_service = this._getServiceByGenericId(service.id);
 
 			if (!device_service) {
-				this._addService(service.type, 'service-'+service.id, service.state);
+				this._addService(service.type, service.id, service.state);
 			} else {
 				device_service.state = service.state;
 			}
@@ -61,11 +61,12 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_handleServiceState (data) {
-		const device_service = this._getServiceByGenericId('service-' + data.id);
+		const device_service = this._getServiceByGenericId(data.id);
 
-		if (!device_service) return console.log(TAG, "State Event. No Service Found");
+		if (!device_service) {
+			return console.log(TAG, "State Event. No Service Found");
 
-		if (device_service.state != data.state) {
+		} else if (device_service.state != data.state) {
 			device_service.state = data.state;
 			this._serviceEmit(device_service, 'state', data);
 		}
@@ -106,6 +107,7 @@ class GenericDeviceDriver extends DeviceDriver {
 
 		this.services.push(new_service);
 		this.service_ids.set(generic_id, new_service.id);
+		this.service_ids.set(new_service.id, generic_id);
 	}
 
 	_serviceEmit (service, event, data = {}) {

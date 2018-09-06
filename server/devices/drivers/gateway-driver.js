@@ -34,7 +34,7 @@ class GatewayDeviceDriver extends DeviceDriver {
 			return;
 		}
 
-		this.socket.emit(event, data, callback);
+		this.socket.emit(data.service_type + '/' + data.service_id + '/' + event, data, callback);
 	}
 
 	_subscribeToSocket () {
