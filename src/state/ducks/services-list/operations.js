@@ -72,5 +72,14 @@ export {
 	cameraStopRecordingStream,
 	lockLock,
 	lockUnlock,
-	lockSetRelockDelay
+	lockSetRelockDelay,
+	thermostatSetTemp,
+	thermostatCool,
+	thermostatHeat,
+	thermostatOff,
+	thermostatAuto,
+	thermostatRemoveHold,
+	thermostatSetHold,
+	thermostatFanOn,
+	thermostatFanAuto
 };
