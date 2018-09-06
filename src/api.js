@@ -88,6 +88,24 @@ class Api {
 		return Api.apiCall('lock/relock-delay/set', {service_id: lockServiceId, relock_delay: relockDelay});
 	}
 
+	// Thermostat Services
+
+	thermostatSetTemp (thermostatServiceId, temp) {
+		return Api.apiCall('thermostat/temp/set', {service_id: thermostatServiceId, temp});
+	}
+
+	thermostatSetMode (thermostatServiceId, mode) {
+		return Api.apiCall('thermostat/mode/set', {service_id: thermostatServiceId, mode});
+	}
+
+	thermostatSetHold (thermostatServiceId, holdMode) {
+		return Api.apiCall('thermostat/hold-mode/set', {service_id: thermostatServiceId, holdMode});
+	}
+
+	thermostatSetFan (thermostatServiceId, fanMode) {
+		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fanMode});
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {

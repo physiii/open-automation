@@ -34,7 +34,35 @@ const cameraStartStream = (cameraServiceId) => (dispatch) => {
 	},
 	lockSetRelockDelay = (lockServiceId, relockDelay) => () => {
 		Api.lockSetRelockDelay(lockServiceId, relockDelay);
+	},
+	thermostatSetTemp = (thermostatServiceId, temp) => () => {
+		Api.thermostatSetTemp(thermostatServiceId, temp);
+	},
+	thermostatCool = (thermostatServiceId) => () => {
+		Api.thermostatSetMode(thermostatServiceId, 'cool');
+	},
+	thermostatHeat = (thermostatServiceId) => () => {
+		Api.thermostatSetMode(thermostatServiceId, 'heat');
+	},
+	thermostatOff = (thermostatServiceId) => () => {
+		Api.thermostatSetMode(thermostatServiceId, 'off');
+	},
+	thermostatAuto = (thermostatServiceId) => () => {
+		Api.thermostatSetMode(thermostatServiceId, 'auto');
+	},
+	thermostatRemoveHold = (thermostatServiceId) => () => {
+		Api.thermostatSetHold(thermostatServiceId, 'off');
+	},
+	thermostatSetHold = (thermostatServiceId) => () => {
+		Api.thermostatSetHold(thermostatServiceId, 'on');
+	},
+	thermostatFanOn = (thermostatServiceId) => () => {
+		Api.thermostatSetFan(thermostatServiceId, 'on');
+	},
+	thermostatFanAuto = (thermostatServiceId) => () => {
+		Api.thermostatSetFan(thermostatServiceId, 'auto');
 	};
+
 
 export {
 	cameraStartStream,
