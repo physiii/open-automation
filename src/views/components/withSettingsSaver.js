@@ -29,7 +29,8 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				this.originalSettings = {...settings};
 				this.state.saved = this.getSavedStateOfFields();
 
-				this.initValidation();
+				this.validator = new FormValidator(this.state.settings);
+				this.setValidationRules();
 
 				this.handleFieldChange = this.handleFieldChange.bind(this);
 				this.saveSettings = debounce(this.saveSettings, SAVE_DEBOUNCE_DELAY);
@@ -61,6 +62,8 @@ const SAVE_DEBOUNCE_DELAY = 500,
 
 				const settings = {...this.state.settings};
 
+				this.setValidationRules();
+
 				let settingsDiffer = false;
 
 				// Find changes and errors in current settings state.
@@ -87,11 +90,7 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				this.saveSettings.flush();
 			}
 
-			initValidation () {
-				// TODO: Update field validations if settings definitions change.
-
-				this.validator = new FormValidator(this.state.settings);
-
+			setValidationRules () {
 				// Add settings definitions to validator.
 				if (this.props.settingProperty) { // Single setting
 					this.addSettingValidation(this.props.settingProperty, this.props.settingDefinition);
@@ -176,7 +175,9 @@ const SAVE_DEBOUNCE_DELAY = 500,
 						}
 
 						if (event.target.value) {
-							return !isEmpty(Number(event.target.value)) ? Number(event.target.value) : event.target.value;
+							return !isEmpty(Number(event.target.value))
+								? Number(event.target.value)
+								: event.target.value;
 						}
 
 						return null;
@@ -185,7 +186,9 @@ const SAVE_DEBOUNCE_DELAY = 500,
 					case 'one-of':
 						return definition.value_options.find((option) => option.value.toString() === event.target.value).value;
 					case 'string':
-						return normalize ? event.target.value.trim() : event.target.value;
+						return normalize
+							? event.target.value.trim()
+							: event.target.value;
 					default:
 						return event.target.value;
 				}

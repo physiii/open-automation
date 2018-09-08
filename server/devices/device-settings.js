@@ -2,8 +2,8 @@ const utils = require('../utils.js'),
 	TAG = '[DeviceSettings]';
 
 class DeviceSettings {
-	constructor (settings, definitions, base_definitions, deviceEmit, save) {
-		this.base_definitions = base_definitions;
+	constructor (settings, definitions, base_definitions = new Map(), deviceEmit, save) {
+		this.base_definitions = new Map(base_definitions);
 		this.deviceEmit = deviceEmit;
 		this.save = save;
 
@@ -19,7 +19,7 @@ class DeviceSettings {
 				return;
 			}
 
-			if (definition.default_value) {
+			if (definition.hasOwnProperty('default_value')) {
 				settings_with_defaults[property] = definition.default_value;
 			} else {
 				delete settings_with_defaults[property];
@@ -40,6 +40,11 @@ class DeviceSettings {
 
 		this.definitions.forEach((definition, property) => {
 			const validations = {...definition.validation};
+
+			// Don't validate the property if it has no value and it's not required.
+			if ((typeof settings[property] === 'undefined' || settings[property] === null) && !validations.is_required) {
+				return;
+			}
 
 			// Add a validation that verifies that the value is the correct data type.
 			validations[definition.type] = this._getPropertyTypeValidationValue(definition);
@@ -71,10 +76,20 @@ class DeviceSettings {
 	}
 
 	setDefinitions (definitions = new Map()) {
+		const name_definition = new Map(definitions).get('name'),
+			base_name_definition = this.base_definitions.get('name'),
+			merged_name_definition = {...base_name_definition};
+
+		// Copy default_value for name property.
+		if (name_definition && name_definition.default_value) {
+			merged_name_definition.default_value = name_definition.default_value;
+		}
+
 		this.definitions = new Map([
 			...this.base_definitions, // Set first so base definitions come first.
 			...definitions,
-			...this.base_definitions // Set again so base definitions aren't overwritten.
+			...this.base_definitions, // Set again so base definitions aren't overwritten.
+			...new Map().set('name', merged_name_definition)
 		]);
 	}
 

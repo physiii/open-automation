@@ -61,6 +61,11 @@ export default class FormValidator {
 		}
 
 		this.validations[name] = (state) => {
+			// Skip validation for a property that's not required and has no value.
+			if ((typeof state[name] === 'undefined' || state[name] === null) && !_rules.includes(required)) {
+				return null;
+			}
+
 			for (const validateRule of _rules) {
 				if (typeof validateRule === 'function') {
 					const errorMessage = validateRule(state[name], label || name, state);
