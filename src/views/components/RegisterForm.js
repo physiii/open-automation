@@ -26,7 +26,6 @@ export class RegisterForm extends React.Component {
 			.field('confirm_password', 'Password Confirmation', mustMatch('password', 'Password'));
 
 		this.handleFieldChange = this.handleFieldChange.bind(this);
-		this.handleFieldBlur = this.handleFieldBlur.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -39,7 +38,7 @@ export class RegisterForm extends React.Component {
 
 		this.setState({
 			[event.target.name]: newValue,
-			validation_errors: this.validator.validateField(event.target.name, 'change', newValue)
+			validation_errors: this.validator.validateField(event.target.name, newValue, event.type)
 		});
 	}
 
@@ -63,6 +62,8 @@ export class RegisterForm extends React.Component {
 				<TextField
 					name="email"
 					label="Email"
+					type="email"
+					autoComplete="email"
 					value={this.state.email}
 					error={this.state.validation_errors.email}
 					onChange={this.handleFieldChange}
@@ -71,6 +72,7 @@ export class RegisterForm extends React.Component {
 					name="password"
 					label="Password"
 					type="password"
+					autoComplete="new-password"
 					value={this.state.password}
 					error={this.state.validation_errors.password}
 					onChange={this.handleFieldChange}
@@ -79,6 +81,7 @@ export class RegisterForm extends React.Component {
 					name="confirm_password"
 					label="Confirm Password"
 					type="password"
+					autoComplete="new-password"
 					value={this.state.confirm_password}
 					error={this.state.validation_errors.confirm_password}
 					onChange={this.handleFieldChange}

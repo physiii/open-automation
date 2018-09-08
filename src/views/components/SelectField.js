@@ -7,6 +7,7 @@ export class SelectField extends React.Component {
 	constructor (props) {
 		super(props);
 
+		this.inputId = getUniqueId();
 		this.state = {is_focused: false};
 
 		this.handleFocus = this.handleFocus.bind(this);
@@ -30,17 +31,16 @@ export class SelectField extends React.Component {
 	}
 
 	render () {
-		const inputId = getUniqueId();
-
 		return (
 			<div styleName="container">
 				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
-					<label htmlFor={inputId} styleName="label">{this.props.label}</label>
+					<label htmlFor={this.inputId} styleName="label">{this.props.label}</label>
 					<select
 						styleName="input"
-						id={inputId}
+						id={this.inputId}
 						name={this.props.name}
 						value={this.props.value}
+						disabled={this.props.disabled}
 						onChange={this.props.onChange}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -65,6 +65,7 @@ SelectField.propTypes = {
 		PropTypes.string,
 		PropTypes.number
 	]),
+	disabled: PropTypes.bool,
 	options: PropTypes.array,
 	onChange: PropTypes.func,
 	onFocus: PropTypes.func,

@@ -1,0 +1,21 @@
+.header {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	margin: 8px 16px;
+}
+
+.iconContainer {
+	margin: 8px 0 16px 0;
+	padding: 16px 16px 16px 0;
+}
+
+.nameContainer {
+	flex: 1 0 auto;
+}
+
+.settingsHeading {
+	margin: 32px 16px 24px 16px;
+	font-size: 14px;
+	line-height: 24px;
+}

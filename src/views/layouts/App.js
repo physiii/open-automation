@@ -7,6 +7,8 @@ import AppToolbar, {AppToolbarContextProvider} from '../components/AppToolbar.js
 import DashboardScreen from '../components/DashboardScreen.js';
 import SettingsScreen from '../components/SettingsScreen.js';
 import TabBar from '../components/TabBar.js';
+import DashboardIcon from '../icons/DashboardIcon.js';
+import SettingsIcon from '../icons/SettingsIcon.js';
 import Logout from '../components/Logout.js';
 import ConsoleInterface from '../components/ConsoleInterface.js';
 import {connect} from 'react-redux';
@@ -18,7 +20,7 @@ import './App.css';
 
 export const App = (props) => {
 	const renderLoginScreen = (routeProps) => (
-		<div styleName="contentCentered">
+		<div styleName="content">
 			<LoginScreen location={routeProps.location} />
 		</div>
 	);
@@ -45,8 +47,16 @@ export const App = (props) => {
 						</div>
 						{!props.isLoading && <div styleName="tabBar">
 							<TabBar buttons={[
-								{label: 'Dashboard', to: props.getTabPath('/dashboard')},
-								{label: 'Settings', to: props.getTabPath('/settings')}
+								{
+									label: 'Dashboard',
+									icon: <DashboardIcon size={24} />,
+									to: props.getTabPath('/dashboard')
+								},
+								{
+									label: 'Settings',
+									icon: <SettingsIcon size={24} />,
+									to: props.getTabPath('/settings')
+								}
 							]} />
 						</div>}
 						<ConsoleInterface />

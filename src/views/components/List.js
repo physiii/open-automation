@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
-import Toolbar from './Toolbar.js';
 import './List.css';
 
 export const List = (props) => {
@@ -12,34 +11,39 @@ export const List = (props) => {
 			{props.title && <h2 styleName="title">{props.title}</h2>}
 			<ListElement>
 				{props.items && Boolean(props.items.length) && props.items.map((item, index) => {
-					const ListLink = item.link
-						? Link
-						: 'a';
+					const LinkComponent = item.link ? Link : 'a',
+						itemContent = (
+							<div styleName="rowContentInner">
+								{item.icon && <div styleName="rowIcon">{item.icon}</div>}
+								<div styleName="rowText">
+									<span styleName="primaryText">
+										{item.label}
+										{item.meta && <span styleName="metaText">{item.meta}</span>}
+									</span>
+									{item.secondaryText && <span styleName="secondaryText">{item.secondaryText}</span>}
+									{item.tertiaryText && <span styleName="tertiaryText">{item.tertiaryText}</span>}
+								</div>
+							</div>
+						);
 
 					return (
 						<li styleName="row" key={item.key || index}>
-							<ListLink href="#" styleName="link" to={item.link} onClick={(event) => {
-								if (!item.link) {
-									event.preventDefault();
-								}
-
-								if (typeof item.onClick === 'function') {
-									item.onClick(item, event);
-								}
-							}}>
-								<Toolbar
-									leftChildren={
-										<React.Fragment>
-											{item.icon && <div styleName="icon">{item.icon}</div>}
-											<div styleName="rowText">
-												<span styleName="primaryText">{item.label}</span>
-												{item.secondaryText && <span styleName="secondaryText">{item.secondaryText}</span>}
-												{item.tertiaryText && <span styleName="tertiaryText">{item.tertiaryText}</span>}
-											</div>
-										</React.Fragment>
+							{item.link || item.onClick
+								? <LinkComponent href="#" styleName="rowContent" to={item.link} onClick={(event) => {
+									if (!item.link) {
+										event.preventDefault();
 									}
-									rightChildren={<span styleName="metaText">{item.meta}</span>} />
-							</ListLink>
+
+									if (typeof item.onClick === 'function') {
+										item.onClick(item, event);
+									}
+								}}>
+									{itemContent}
+								</LinkComponent>
+								: <div styleName="rowContent">
+									{itemContent}
+								</div>
+							}
 						</li>
 					);
 				})}
@@ -50,7 +54,15 @@ export const List = (props) => {
 
 List.propTypes = {
 	title: PropTypes.string,
-	items: PropTypes.array,
+	items: PropTypes.arrayOf(PropTypes.shape({
+		label: PropTypes.node,
+		secondaryText: PropTypes.node,
+		tertiaryText: PropTypes.node,
+		icon: PropTypes.node,
+		meta: PropTypes.node,
+		link: PropTypes.string,
+		onClick: PropTypes.func
+	})),
 	isOrdered: PropTypes.bool
 };
 

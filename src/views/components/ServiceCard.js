@@ -4,19 +4,19 @@ import CameraCard from './CameraCard.js';
 import LockCard from './LockCard.js';
 
 export const ServiceCard = (props) => {
-	const Card = ServiceCard.cardClasses[props.service.type];
+	const Card = ServiceCard.cardComponents[props.service.type];
 
 	return Card && <Card {...props} />;
 };
 
-ServiceCard.willRenderCard = ({type}) => Boolean(ServiceCard.cardClasses[type]);
+ServiceCard.willRenderCard = ({type}) => Boolean(ServiceCard.cardComponents[type]);
 
 ServiceCard.propTypes = {
 	service: PropTypes.object,
 	parentPath: PropTypes.string
 };
 
-ServiceCard.cardClasses = {
+ServiceCard.cardComponents = {
 	'camera': CameraCard,
 	'lock': LockCard
 };

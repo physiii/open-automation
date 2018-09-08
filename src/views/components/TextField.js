@@ -3,18 +3,20 @@ import PropTypes from 'prop-types';
 import {getUniqueId} from '../../utilities.js';
 import './TextField.css';
 
-export class TextField extends React.Component {
+export class TextField extends React.PureComponent {
 	constructor (props) {
 		super(props);
 
-		this.state = {is_focused: false};
+		this.state = {isFocused: false};
+
+		this.inputId = getUniqueId();
 
 		this.handleFocus = this.handleFocus.bind(this);
 		this.handleBlur = this.handleBlur.bind(this);
 	}
 
 	handleFocus (event) {
-		this.setState({is_focused: true});
+		this.setState({isFocused: true});
 
 		if (typeof this.props.onFocus === 'function') {
 			this.props.onFocus(event);
@@ -22,40 +24,65 @@ export class TextField extends React.Component {
 	}
 
 	handleBlur (event) {
-		this.setState({is_focused: false});
+		this.setState({isFocused: false});
 
 		if (typeof this.props.onBlur === 'function') {
 			this.props.onBlur(event);
 		}
 	}
 
+	getFieldClasses (inputProps) {
+		let fieldClasses = 'field';
+
+		if (this.state.isFocused) {
+			fieldClasses += ' isFocused';
+		}
+
+		if (this.props.error) {
+			fieldClasses += ' hasError';
+		}
+
+		if (inputProps.value.length > 0) {
+			fieldClasses += ' isPopulated';
+		}
+
+		if (inputProps.disabled) {
+			fieldClasses += ' isDisabled';
+		}
+
+		return fieldClasses;
+	}
+
 	render () {
-		const inputId = getUniqueId(),
-			value = this.props.value !== null && this.props.value.toString
-				? this.props.value.toString()
+		const {label, mask, error, ...inputProps} = this.props,
+			fieldMask = mask !== null && mask.toString
+				? mask.toString()
 				: '',
-			mask = this.props.mask !== null && this.props.mask.toString
-				? this.props.mask.toString()
-				: '';
+			shouldShowMask = fieldMask && this.state.isFocused;
+
+		inputProps.value = typeof this.props.value !== 'undefined' && this.props.value !== null && this.props.value.toString
+			? this.props.value.toString()
+			: '';
+
+		// Delete props we don't want applied to the <input> element.
+		delete inputProps.onFocus;
+		delete inputProps.onBlur;
 
 		return (
 			<div styleName="container">
-				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '') + (this.props.error ? ' hasError' : '') + (value.length > 0 || mask ? ' isPopulated' : '')}>
-					<label htmlFor={inputId} styleName="label">{this.props.label}</label>
-					{mask && <span styleName="mask">{mask}</span>}
+				<div styleName={this.getFieldClasses(inputProps)}>
+					<label htmlFor={this.inputId} styleName="label">{label}</label>
+					{shouldShowMask && <span styleName="mask">{fieldMask}</span>}
 					<input
-						styleName={mask ? 'inputMasked' : 'input'}
-						id={inputId}
-						type={this.props.type}
-						name={this.props.name}
-						value={value}
-						onChange={this.props.onChange}
+						{...inputProps}
+						styleName="input"
+						id={this.inputId}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur} />
 				</div>
 				<div styleName="bottom">
-					{this.props.error &&
-						<span styleName="errorMessage">{this.props.error}</span>}
+					{error && !inputProps.disabled &&
+						<span styleName="errorMessage">{error}</span>}
 				</div>
 			</div>
 		);
@@ -76,9 +103,13 @@ TextField.propTypes = {
 	error: PropTypes.string,
 	type: PropTypes.oneOf([
 		'text',
+		'search',
+		'tel',
+		'url',
+		'email',
 		'password'
 	]),
-	onChange: PropTypes.func,
+	disabled: PropTypes.bool,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func
 };

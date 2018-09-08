@@ -1,5 +1,13 @@
 export const isEmpty = (value) => {
-		if (typeof value === 'number' || typeof value === 'boolean') {
+		if (typeof value === 'number') {
+			if (Object.is(value, NaN)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (typeof value === 'boolean') {
 			return false;
 		}
 

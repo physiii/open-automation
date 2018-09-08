@@ -99,7 +99,7 @@ class Device {
 	}
 
 	setSettings (settings) {
-		return this.settings.set(settings);
+		return this.settings.set(settings).then(this.onUpdate);
 	}
 
 	setToken (token) {
@@ -211,6 +211,7 @@ class Device {
 Device.settings_definitions = new Map()
 	.set('name', {
 		type: 'string',
+		label: 'Name',
 		validation: {
 			is_required: true,
 			max_length: 24

@@ -38,6 +38,18 @@ class LigerDeviceDriver extends DeviceDriver {
 	}
 
 	emit (event, data, callback) {
+		if (!this.socket) {
+			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
+			callback('Device not connected');
+			return;
+		}
+
+		if (!this.socket.connected) {
+			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the socket is not connected.');
+			callback('Device not connected');
+			return;
+		}
+
 		// Map relay service events to corresponding messages to the liger.
 		switch (event) {
 			default:

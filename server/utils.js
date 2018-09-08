@@ -1,5 +1,26 @@
-module.exports = {
-	onChange: (object, onChange) => {
+const isEmpty = (value) => {
+		if (typeof value === 'number') {
+			if (Object.is(value, NaN)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (typeof value === 'boolean') {
+			return false;
+		}
+
+		if (typeof value === 'undefined' || value === null) {
+			return true;
+		}
+
+		// Arrays and strings.
+		if (typeof value.length !== 'undefined' && value.length === 0) {
+			return true;
+		}
+	},
+	onChange = (object, onChange) => {
 		const handler = {
 			get (target, property, receiver) {
 				let value = target[property];
@@ -35,10 +56,10 @@ module.exports = {
 
 		return new Proxy(object, handler);
 	},
-	stripHtml: (string = '') => {
+	stripHtml = (string = '') => {
 		return string.replace(/(<([^>]+)>)/ig, '');
 	},
-	isValidRgbArray: (array) => {
+	isValidRgbArray = (array) => {
 		if (!Array.isArray(array)) return false;
 		if (array.length !== 3) return false;
 		if (typeof array[0] !== 'number') return false;
@@ -50,7 +71,29 @@ module.exports = {
 
 		return true;
 	},
-	isValidPercentage: (number, scale = 1) => {
-		return typeof number === 'number' && number >= 0 && number <= scale;
-	}
+	validators = {
+		'string': () => (value, label) => typeof value === 'string' ? null : label + ' must be a string.',
+		'boolean': () => (value, label) => typeof value === 'boolean' ? null : label + ' must be boolean.',
+		'decimal': () => (value, label) => Number.isFinite(value) ? null : label + ' must be a number.',
+		'integer': () => (value, label) => Number.isInteger(value) ? null : label + ' must be a whole number.',
+		'percentage': (scale = 1) => (value, label) => typeof value === 'number' && value >= 0 && value <= scale ? null : label + ' must be a number between 0 and ' + scale + '.',
+		'color': () => (value, label) => isValidRgbArray(value) ? null : label + ' must be an RGB array (e.g. [255, 255, 255]).',
+		'one-of': (options = []) => (value, label) => {
+			return options.some((option) => option === value)
+				? null
+				: label + ' must be one of these: ' + options.map((option) => option + ' (' + typeof option + ')').join(', ') + '.';
+		},
+		'is_required': (is_required) => (value, label) => !is_required || !isEmpty(value) ? null : label + ' is required.',
+		'min': (min) => (value, label) => value >= min ? null : label + ' must be at least ' + min + '.',
+		'max': (max) => (value, label) => value <= max ? null : label + ' must be no more than ' + max + '.',
+		'min_length': (min_length) => (value, label) => value.length >= min_length ? null : label + ' must be at least ' + min_length + ' characters long.',
+		'max_length': (max_length) => (value, label) => value.length <= max_length ? null : label + ' must be no more than ' + max_length + ' characters long.',
+	};
+
+module.exports = {
+	isEmpty,
+	onChange,
+	stripHtml,
+	isValidRgbArray,
+	validators
 };

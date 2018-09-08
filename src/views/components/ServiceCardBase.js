@@ -33,7 +33,7 @@ export const ServiceCardBase = (props) => {
 				<Toolbar
 					leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>}
 					rightChildren={<div onClick={(event) => event.stopPropagation()}>
-						<Button to={`${props.parentPath}/service/${props.service.id}`}>Details</Button>
+						<Button to={`${props.parentPath}/service/${props.service.id}`}>Settings</Button>
 					</div>} />
 			</div>
 		</section>

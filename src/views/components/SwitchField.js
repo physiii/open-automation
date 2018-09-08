@@ -7,6 +7,7 @@ export class SwitchField extends React.Component {
 	constructor (props) {
 		super(props);
 
+		this.inputId = getUniqueId();
 		this.state = {is_focused: false};
 
 		this.handleFocus = this.handleFocus.bind(this);
@@ -30,18 +31,17 @@ export class SwitchField extends React.Component {
 	}
 
 	render () {
-		const inputId = getUniqueId();
-
 		return (
 			<div styleName="container">
 				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
-					<label htmlFor={inputId} styleName="label">{this.props.label}</label>
+					<label htmlFor={this.inputId} styleName="label">{this.props.label}</label>
 					<input
 						styleName="input"
 						type="checkbox"
-						id={inputId}
+						id={this.inputId}
 						name={this.props.name}
 						checked={this.props.checked}
+						disabled={this.props.disabled}
 						onChange={this.props.onChange}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur} />
@@ -55,6 +55,7 @@ SwitchField.propTypes = {
 	label: PropTypes.string,
 	name: PropTypes.string,
 	checked: PropTypes.bool,
+	disabled: PropTypes.bool,
 	onChange: PropTypes.func,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func

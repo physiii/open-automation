@@ -1,4 +1,5 @@
-const TAG = '[DeviceSettings]';
+const utils = require('../utils.js'),
+	TAG = '[DeviceSettings]';
 
 class DeviceSettings {
 	constructor (settings, definitions, base_definitions, deviceEmit, save) {
@@ -28,28 +29,44 @@ class DeviceSettings {
 		return settings_with_defaults;
 	}
 
-	_getValidationError (settings) {
-		for (const [property, definition] of this.definitions) {
-			// TODO: Validate value. If invalid, return error for invalid property value.
-		}
-
-		return false;
-	}
-
 	_isSettingUnset (value) {
-		// TODO: Only consider unset if undefined or null.
-
-		if (typeof value === 'number' || typeof value === 'boolean') {
-			return false;
-		}
-
 		if (typeof value === 'undefined' || value === null) {
 			return true;
 		}
+	}
 
-		// Arrays and strings.
-		if (typeof value.length !== 'undefined' && value.length === 0) {
-			return true;
+	_getValidationErrors (settings) {
+		const errors = {};
+
+		this.definitions.forEach((definition, property) => {
+			const validations = {...definition.validation};
+
+			// Add a validation that verifies that the value is the correct data type.
+			validations[definition.type] = this._getPropertyTypeValidationValue(definition);
+
+			const rule_names = Object.keys(validations);
+
+			// Make sure the property data type validation is performed before all others.
+			rule_names.sort((a, b) => a === definition.type ? -1 : 1);
+
+			// Run validation rules for the property.
+			rule_names.forEach((rule) => {
+				const rule_value = validations[rule],
+					validator = utils.validators[rule](rule_value, definition),
+					error = validator(settings[property], definition.label || property);
+
+				if (error) {
+					errors[property] = errors[property] || error; // If there's already an error for this property, keep it.
+				}
+			});
+		});
+
+		return Object.keys(errors).length ? errors : false;
+	}
+
+	_getPropertyTypeValidationValue (definition) {
+		if (definition.type === 'one-of' && Array.isArray(definition.value_options)) {
+			return definition.value_options.map((option) => option.value);
 		}
 	}
 
@@ -68,10 +85,10 @@ class DeviceSettings {
 	set (settings) {
 		return new Promise((resolve, reject) => {
 			const original_settings = {...this.settings},
-				validation_error = this._getValidationError(settings);
+				validation_errors = this._getValidationErrors(settings);
 
-			if (validation_error) {
-				reject(validation_error);
+			if (validation_errors) {
+				reject(validation_errors);
 
 				return;
 			}

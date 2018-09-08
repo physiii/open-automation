@@ -21,7 +21,7 @@
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-color: primary;
+	background-color: currentColor;
 	opacity: 0;
 	transition: opacity 0.15s;
 }
@@ -46,6 +46,27 @@
 }
 .filledButton:hover::before {
 	opacity: 0.08;
+}
+
+.tabButton {
+	composes: button;
+	display: flex;
+	flex-flow: column nowrap;
+	height: auto;
+	margin: 4px 0; /* TODO: Move this to tab bar styling */ ;
+	color: inherit;
+}
+
+.label {}
+.tabButton .label {
+	font-size: 12px;
+}
+
+.icon {
+	display: flex;
+}
+.tabButton .icon {
+	margin-bottom: 10px;
 }
 
 .submit {

@@ -118,7 +118,6 @@ rules:
   no-buffer-constructor: error
   no-caller: error
   no-catch-shadow: error
-  no-confusing-arrow: error
   no-console: warn
   no-continue: error
   no-div-regex: error
