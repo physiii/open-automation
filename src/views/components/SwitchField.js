@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Switch from './Switch.js';
 import {getUniqueId} from '../../utilities.js';
 import './SwitchField.css';
 
@@ -35,12 +36,10 @@ export class SwitchField extends React.Component {
 			<div styleName="container">
 				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
 					<label htmlFor={this.inputId} styleName="label">{this.props.label}</label>
-					<input
-						styleName="input"
-						type="checkbox"
+					<Switch
 						id={this.inputId}
 						name={this.props.name}
-						checked={this.props.checked}
+						isOn={this.props.isOn}
 						disabled={this.props.disabled}
 						onChange={this.props.onChange}
 						onFocus={this.handleFocus}
@@ -54,15 +53,11 @@ export class SwitchField extends React.Component {
 SwitchField.propTypes = {
 	label: PropTypes.string,
 	name: PropTypes.string,
-	checked: PropTypes.bool,
+	isOn: PropTypes.bool,
 	disabled: PropTypes.bool,
 	onChange: PropTypes.func,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func
-};
-
-SwitchField.defaultProps = {
-	checked: false
 };
 
 export default SwitchField;

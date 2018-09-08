@@ -52,7 +52,7 @@ export class DeviceDetailsScreen extends React.Component {
 				toolbarActions={<Button onClick={this.handleDeleteClick}>Delete</Button>}>
 				<Switch>
 					<Route exact path={this.props.match.path} render={() => (
-						<React.Fragment>
+						<div styleName="container">
 							{!device.state.connected && (
 								<List items={[
 									{
@@ -99,7 +99,7 @@ export class DeviceDetailsScreen extends React.Component {
 								{device.info.serial && 'Serial Number: ' + device.info.serial}
 								ID: {device.id}
 							</div>
-						</React.Fragment>
+						</div>
 					)} />
 					<Route path={this.props.match.path + ServiceDetailsScreen.routeParams} component={ServiceDetailsScreen} />
 					<Route render={() => <Redirect to={this.props.match.path} />} />

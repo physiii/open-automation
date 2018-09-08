@@ -70,7 +70,7 @@ export const AppToolbarContextProvider = (_props) => (
 
 export const withSetScreenActions = (Component) => (_props) => (
 	<Context.Consumer>
-		{(context) => <Component setScreenActions={context.setScreenActionsForPath} {..._props} />}
+		{(context) => <Component setScreenActions={context ? context.setScreenActionsForPath : () => { /* no-op */ }} {..._props} />}
 	</Context.Consumer>
 );
 

@@ -53,8 +53,11 @@
 	display: flex;
 	flex-flow: column nowrap;
 	height: auto;
-	margin: 4px 0; /* TODO: Move this to tab bar styling */ ;
 	color: inherit;
+}
+.tabButton:focus {
+	outline: none;
+	color: primary;
 }
 
 .label {}

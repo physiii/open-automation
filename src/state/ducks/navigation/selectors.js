@@ -9,13 +9,16 @@ const SECOND_TO_LAST = -2,
 		return toJs ? context.toJS() : context;
 	},
 	getCurrentContext = (navigation, toJs = true) => {
-		const context = getContext(navigation, navigation.currentContext, toJs);
+		return getContext(navigation, navigation.currentContext, toJs);
+	},
+	getCurrentContextPath = (navigation) => {
+		const context = getContext(navigation, navigation.currentContext, false);
 
 		if (!context) {
 			return;
 		}
 
-		return toJs ? context.toJS() : context;
+		return context.get('path');
 	},
 	getContextScreens = (navigation, contextPath, toJs = true) => {
 		const screens = navigation.contexts.getIn([
@@ -81,7 +84,9 @@ const SECOND_TO_LAST = -2,
 	};
 
 export {
+	getContext,
 	getCurrentContext,
+	getCurrentContextPath,
 	getContextScreens,
 	getContextCurrentFullPath,
 	getCurrentScreenInfo,
