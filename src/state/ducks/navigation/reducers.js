@@ -22,7 +22,7 @@ const initialState = {
 							Immutable.Map({
 								path: contextPath,
 								currentFullPath: action.payload.currentFullPath,
-								screens: Immutable.OrderedMap().set(action.payload.path, generateScreenMap(action.payload.path, action.payload.title, action.payload.shouldShowTitle))
+								screens: Immutable.OrderedMap()
 							})
 					)
 				};
@@ -49,13 +49,24 @@ const initialState = {
 							'screens',
 							action.payload.path
 						],
-						generateScreenMap(action.payload.path, action.payload.title, action.payload.shouldShowTitle)
+						Immutable.Map({
+							path: action.payload.path,
+							depth: action.payload.depth,
+							title: action.payload.title,
+							shouldShowTitle: action.payload.shouldShowTitle
+						})
 					).setIn(
 						[
 							contextPath,
 							'currentFullPath'
 						],
 						action.payload.currentFullPath
+					).updateIn(
+						[
+							contextPath,
+							'screens'
+						],
+						(screens) => screens.sortBy((screen) => screen.get('depth'))
 					)
 				};
 			case types.UNLOAD_SCREEN:
@@ -100,9 +111,5 @@ const initialState = {
 				return state;
 		}
 	};
-
-function generateScreenMap (path, title, shouldShowTitle) {
-	return Immutable.Map({path, title, shouldShowTitle});
-}
 
 export default reducer;

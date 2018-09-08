@@ -9,6 +9,7 @@ export const SettingsField = (props) => {
 	const fieldProps = {
 		name: props.property,
 		label: props.label || props.definition.label || props.property,
+		disabled: props.disabled,
 		onChange: props.onChange
 	};
 
@@ -22,7 +23,9 @@ export const SettingsField = (props) => {
 					{...fieldProps}
 					value={props.value}
 					mask={isEmpty(props.value) && props.definition.validation.is_required ? props.originalValue : ''}
-					onBlur={props.onChange} />
+					error={props.error}
+					onBlur={props.onChange}
+					spellCheck="false" />
 			);
 		case 'boolean':
 			return (
@@ -53,6 +56,7 @@ SettingsField.propTypes = {
 	label: PropTypes.string,
 	value: PropTypes.any,
 	originalValue: PropTypes.any,
+	disabled: PropTypes.bool,
 	onChange: PropTypes.func
 };
 

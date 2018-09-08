@@ -10,6 +10,7 @@ export const SettingsForm = (props) => {
 				return field && (
 					<SettingsField
 						{...field}
+						disabled={props.disabled}
 						onChange={props.onFieldChange}
 						key={field.property} />
 				);
@@ -25,6 +26,7 @@ SettingsForm.propTypes = {
 		value: PropTypes.any,
 		originalValue: PropTypes.any
 	})),
+	disabled: PropTypes.bool,
 	onFieldChange: PropTypes.func
 };
 

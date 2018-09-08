@@ -34,7 +34,7 @@ export class LoginForm extends React.Component {
 
 		this.setState({
 			[event.target.name]: newValue,
-			validation_errors: this.validator.validateField(event.target.name, event.type, newValue)
+			validation_errors: this.validator.validateField(event.target.name, newValue, event.type)
 		});
 	}
 
@@ -58,6 +58,8 @@ export class LoginForm extends React.Component {
 				<TextField
 					name="email"
 					label="Email"
+					type="email"
+					autoComplete="email"
 					value={this.state.email}
 					error={this.state.validation_errors.email}
 					onChange={this.handleFieldChange}
@@ -66,6 +68,7 @@ export class LoginForm extends React.Component {
 					name="password"
 					label="Password"
 					type="password"
+					autoComplete="current-password"
 					value={this.state.password}
 					error={this.state.validation_errors.password}
 					onChange={this.handleFieldChange}

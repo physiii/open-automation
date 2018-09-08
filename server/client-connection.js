@@ -30,12 +30,14 @@ class ClientConnection {
 
 			// Push device changes to client.
 			DevicesManager.on('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
-		});
 
-		this.socket.on('disconnect', (reason) => {
-			if (reason === 'transport close') {
-				this.destroy();
-			}
+			this.destroy = this.destroy.bind(this, this.account.id);
+
+			this.socket.on('disconnect', (reason) => {
+				if (reason === 'transport close') {
+					this.destroy();
+				}
+			});
 		});
 
 		this.handleAccountDevicesUpdate = this.handleAccountDevicesUpdate.bind(this);
@@ -303,8 +305,8 @@ class ClientConnection {
 		});
 	}
 
-	destroy () {
-		DevicesManager.off('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
+	destroy (accountId) {
+		DevicesManager.off('devices-update/account/' + accountId, this.handleAccountDevicesUpdate);
 
 		if (this.socket) {
 			this.socket.removeAllListeners();

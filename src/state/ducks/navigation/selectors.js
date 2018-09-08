@@ -23,6 +23,10 @@ const SECOND_TO_LAST = -2,
 			'screens'
 		]);
 
+		if (!screens) {
+			return;
+		}
+
 		return toJs ? screens.toList().toJS() : screens;
 	},
 	getContextCurrentFullPath = (navigation, contextPath) => {

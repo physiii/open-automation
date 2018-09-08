@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Route, Switch, Redirect} from 'react-router-dom';
-import NavigationContext from './NavigationContext.js';
+import NavigationScreen from './NavigationScreen.js';
 import Grid from '../layouts/Grid.js';
 import GridColumn from '../layouts/GridColumn.js';
 import ServiceCard from './ServiceCard.js';
@@ -14,7 +14,7 @@ export const Dashboard = (props) => {
 	const serviceCards = props.services.filter(ServiceCard.willRenderCard).map((service) => <ServiceCard service={service} parentPath={props.match.path} />);
 
 	return (
-		<NavigationContext path={props.match.url} title="Dashboard" shouldShowTitle={false}>
+		<NavigationScreen isContextRoot={true} path={props.match.url} title="Dashboard" shouldShowTitle={false}>
 			<Switch>
 				<Route exact path={props.match.path} render={() => (
 					<Grid>
@@ -27,7 +27,7 @@ export const Dashboard = (props) => {
 				<Route path={props.match.path + '/recordings' + CameraRecordingsScreen.routeParams} component={CameraRecordingsScreen} />
 				<Route render={() => <Redirect to={props.match.path} />} />
 			</Switch>
-		</NavigationContext>
+		</NavigationScreen>
 	);
 };
 

@@ -9,3 +9,8 @@
 	flex: 1 1 auto;
 	background-color: tabBarBackground;
 }
+
+.tab {
+	display: flex;
+	margin: 0 8px;
+}

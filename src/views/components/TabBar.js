@@ -5,7 +5,11 @@ import './TabBar.css';
 
 export const TabBar = (props) => (
 	<div styleName="tabBar">
-		{props.buttons.map((button, index) => <Button key={index} to={button.to}>{button.label}</Button>)}
+		{props.buttons.map((button, index) => (
+			<span styleName="tab" key={index}>
+				<Button type="tab" to={button.to} icon={button.icon}>{button.label}</Button>
+			</span>
+		))}
 	</div>
 );
 

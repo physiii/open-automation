@@ -2,16 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import NavigationScreen from './NavigationScreen.js';
-import SettingsField from './SettingsField.js';
+import SettingsForm from './SettingsForm.js';
 import List from './List.js';
 import Button from './Button.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
+import ServiceDetails from './ServiceDetails.js';
 import ServiceDetailsScreen from './ServiceDetailsScreen.js';
 import withSettingsSaver from './withSettingsSaver.js';
 import {connect} from 'react-redux';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import {setDeviceSettings, deleteDevice} from '../../state/ducks/devices-list/operations.js';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
+import './DeviceDetailsScreen.css';
 
 export class DeviceDetailsScreen extends React.Component {
 	constructor (props) {
@@ -26,6 +28,12 @@ export class DeviceDetailsScreen extends React.Component {
 		}
 	}
 
+	getScreenTitle (firstService, hasMoreThanOneService) {
+		return hasMoreThanOneService
+			? this.props.settings.name || 'Device'
+			: firstService.settings.name || firstService.strings.friendly_type;
+	}
+
 	render () {
 		const device = this.props.device;
 
@@ -33,35 +41,64 @@ export class DeviceDetailsScreen extends React.Component {
 			return <Redirect to={this.props.baseUrl} />;
 		}
 
+		const firstService = device.services[0],
+			settingsProperties = Object.keys(device.settings_definitions),
+			hasMoreThanOneService = device.services.length > 1;
+
 		return (
-			<NavigationScreen path={this.props.match.url} title={this.props.settings.name || 'Device'} toolbarActions={<Button onClick={this.handleDeleteClick}>Delete</Button>}>
+			<NavigationScreen
+				path={this.props.match.url}
+				title={this.getScreenTitle(firstService, hasMoreThanOneService)}
+				toolbarActions={<Button onClick={this.handleDeleteClick}>Delete</Button>}>
 				<Switch>
 					<Route exact path={this.props.match.path} render={() => (
 						<React.Fragment>
-							{device.error && <p>{device.error}</p>}
-							<SettingsField
-								property="name"
-								label="Device Name"
-								definition={device.settings_definitions.name}
-								value={this.props.settings.name}
-								originalValue={this.props.originalSettings.name}
-								onChange={this.props.onSettingChange} />
-							{Boolean(device.services.length) && <List
-								title="Features"
-								items={device.services.map((service) => ({
-									key: service.id,
-									label: service.settings.name,
-									icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
-									link: this.props.match.url + '/' + service.id
-								}))}
-							/>}
-							<h2>Info</h2>
-							{device.info.manufacturer && 'Manufacturer: ' + device.info.manufacturer}
-							{device.info.model && 'Model: ' + device.info.model}
-							{device.info.firmware_version && 'Firmware: ' + device.info.firmware_version}
-							{device.info.hardware_version && 'Hardware: ' + device.info.hardware_version}
-							{device.info.serial && 'Serial Number: ' + device.info.serial}
-							ID: {device.id}
+							{!device.state.connected && (
+								<List items={[
+									{
+										label: 'Device is not responding',
+										secondaryText: 'Device must be reachable to update settings.'
+									}
+								]} />
+							)}
+							{device.error && <p>The device settings could not be updated because of an error.</p>}
+							{hasMoreThanOneService
+								? <List
+									title="Features"
+									items={device.services.map((service) => ({
+										key: service.id,
+										label: service.settings.name,
+										icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
+										link: this.props.match.url + '/' + service.id
+									}))}
+								/>
+								: <ServiceDetails serviceId={device.services[0].id} />}
+							{Boolean(settingsProperties.length) && (
+								<React.Fragment>
+									<h2 styleName="settingsHeading">Device Settings</h2>
+									<SettingsForm
+										fields={settingsProperties.map((property) => {
+											return {
+												property,
+												definition: device.settings_definitions[property],
+												value: this.props.settings[property],
+												error: this.props.settingsErrors[property],
+												originalValue: this.props.originalSettings[property]
+											};
+										})}
+										disabled={!device.state.connected}
+										onFieldChange={this.props.onSettingChange} />
+								</React.Fragment>
+							)}
+							<h2 styleName="infoHeading">Info</h2>
+							<div styleName="info">
+								{device.info.manufacturer && 'Manufacturer: ' + device.info.manufacturer}
+								{device.info.model && 'Model: ' + device.info.model}
+								{device.info.firmware_version && 'Firmware: ' + device.info.firmware_version}
+								{device.info.hardware_version && 'Hardware: ' + device.info.hardware_version}
+								{device.info.serial && 'Serial Number: ' + device.info.serial}
+								ID: {device.id}
+							</div>
 						</React.Fragment>
 					)} />
 					<Route path={this.props.match.path + ServiceDetailsScreen.routeParams} component={ServiceDetailsScreen} />
@@ -79,8 +116,9 @@ DeviceDetailsScreen.propTypes = {
 	match: PropTypes.object.isRequired,
 	baseUrl: PropTypes.string,
 	deleteDevice: PropTypes.func.isRequired,
-	// Props from withSettingsSaver.
+	// Props from settings saver HOC.
 	settings: PropTypes.object.isRequired,
+	settingsErrors: PropTypes.object,
 	originalSettings: PropTypes.object.isRequired,
 	onSettingChange: PropTypes.func.isRequired
 };
@@ -104,7 +142,8 @@ const mapStateToProps = ({devicesList, servicesList}, {match}) => {
 			},
 			// Props for settings saver HOC.
 			settings: device.settings,
-			settings_definitions: device.settings_definitions
+			settingsDefinitions: device.settings_definitions,
+			key: device.error // Re-create component when there's an error to make sure the latest device settings state is rendered.
 		};
 	},
 	mergeProps = (stateProps, {dispatch}, ownProps) => ({

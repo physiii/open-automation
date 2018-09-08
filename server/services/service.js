@@ -75,7 +75,7 @@ class Service {
 	}
 
 	setSettings (settings) {
-		return this.settings.set(settings);
+		return this.settings.set(settings).then(this.onUpdate);
 	}
 
 	action (action) {
@@ -100,40 +100,45 @@ class Service {
 			return setProperty(!this.state[action.property]);
 		}
 
-		if (typeof action.value !== 'boolean') {
-			return this._actionValueError(action, 'Must be either true or false.');
-		}
-
-		return setProperty(action.value);
+		return this._performAction(action.property, action.value, utils.validators.boolean(), setProperty);
 	}
 
 	_performPercentageAction (action, setProperty) {
-		const current_value = this.state[action.property] || 0;
+		const current_value = this.state[action.property] || 0,
+			error = utils.validators.percentage()(action.value, action.property);
 
-		if (!utils.isValidPercentage(action.value)) {
-			return this._actionValueError(action, 'Must be a number between 0 and 1.');
+		let value = action.value;
+
+		if (error) {
+			return this._actionValueError(action.property, error);
 		}
 
 		if (action.mode === 'add') {
-			return setProperty(Math.min(current_value + action.value, 1));
+			value = Math.min(current_value + action.value, 1);
 		} else if (action.mode === 'subtract') {
-			return setProperty(Math.max(current_value - action.value, 0));
+			value = Math.max(current_value - action.value, 0);
 		}
 
-		return setProperty(action.value);
+		return this._performAction(action.property, value, utils.validators.percentage(), setProperty);
 	}
 
 	_performColorAction (action, setProperty) {
-		if (!utils.isValidRgbArray(action.value)) {
-			return this._actionValueError(action, 'Must be an RGB array (e.g. [255, 255, 255]).');
-		}
-
-		return setProperty(action.value);
+		return this._performAction(action.property, action.value, utils.validators.color(), setProperty);
 	}
 
-	_actionValueError (action, error) {
+	_performAction (property, value, validator, setProperty) {
+		const error = validator(value, property);
+
+		if (error) {
+			return this._actionValueError(property, error);
+		}
+
+		return setProperty(value);
+	}
+
+	_actionValueError (property, error) {
 		return new Promise((resolve, reject) => {
-			const full_error = 'Action value for "' + action.property + '" is invalid. ' + error;
+			const full_error = 'Action value for "' + property + '" is invalid. ' + error;
 
 			console.log(TAG, this.id, full_error);
 			reject(full_error);
@@ -239,6 +244,7 @@ Service.indefinite_article = 'A';
 Service.settings_definitions = new Map()
 	.set('name', {
 		type: 'string',
+		label: 'Name',
 		validation: {
 			is_required: true,
 			max_length: 24
