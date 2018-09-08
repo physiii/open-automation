@@ -3,16 +3,49 @@ import PropTypes from 'prop-types';
 import {getUniqueId} from '../../utilities.js';
 import './TextField.css';
 
+const labelScale = 0.75;
+
 export class TextField extends React.PureComponent {
 	constructor (props) {
 		super(props);
 
-		this.state = {isFocused: false};
+		this.state = {
+			isFocused: false,
+			isOutlineSetUp: false
+		};
 
 		this.inputId = getUniqueId();
+		this.clipPathId = getUniqueId();
+		this.field = React.createRef();
+		this.label = React.createRef();
 
+		this.outlineRadius = 0;
+		this.outlineWidth = 0;
+		this.outlineHeight = 0;
+
+		this.setUpOutline = this.setUpOutline.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
 		this.handleBlur = this.handleBlur.bind(this);
+	}
+
+	componentDidUpdate (previousProps) {
+		if (!this.state.isFocused) {
+			return;
+		}
+
+		// Re-render with the new outline notch width when the label changes.
+		if (this.props.label !== previousProps.label) {
+			this.forceUpdate();
+		}
+	}
+
+	setUpOutline () {
+		if (this.state.isOutlineSetUp) {
+			return;
+		}
+
+		this.refreshOutlineMeasurements();
+		this.setState({isOutlineSetUp: true});
 	}
 
 	handleFocus (event) {
@@ -29,6 +62,41 @@ export class TextField extends React.PureComponent {
 		if (typeof this.props.onBlur === 'function') {
 			this.props.onBlur(event);
 		}
+	}
+
+	refreshOutlineMeasurements () {
+		this.labelWidth = (this.label.current && this.label.current.offsetWidth * labelScale) || 0;
+		this.outlineRadius = (this.field.current && parseFloat(window.getComputedStyle(this.field.current).getPropertyValue('border-top-left-radius'))) || 0;
+		this.outlineWidth = (this.field.current && this.field.current.offsetWidth) || 0;
+		this.outlineHeight = (this.field.current && this.field.current.offsetHeight) || 0;
+	}
+
+	getOutlinePath (inputProps) {
+		const notchPadding = 8,
+			labelWidth = this.state.isFocused || inputProps.value.length > 0 ? this.labelWidth : 0,
+			radius = this.outlineRadius,
+			width = this.outlineWidth + 2, // eslint-disable-line no-magic-numbers
+			height = this.outlineHeight + 2, // eslint-disable-line no-magic-numbers
+			cornerWidth = radius + 1,
+			leadingStrokeLength = Math.abs(11 - cornerWidth); // eslint-disable-line no-magic-numbers
+
+		let notchWidth = 0;
+
+		if (labelWidth > 0) {
+			notchWidth = labelWidth + notchPadding;
+		}
+
+		// The right, bottom, and left sides of the outline follow the same SVG path.
+		return 'M' + (cornerWidth + leadingStrokeLength + notchWidth - 1) + ',' + 0 + // eslint-disable-line no-magic-numbers
+			'h' + (width - (2 * cornerWidth) - notchWidth - leadingStrokeLength) + // eslint-disable-line no-magic-numbers
+			'a' + radius + ',' + radius + ' 0 0 1 ' + radius + ',' + radius +
+			'v' + (height - (2 * cornerWidth)) + // eslint-disable-line no-magic-numbers
+			'a' + radius + ',' + radius + ' 0 0 1 ' + -radius + ',' + radius +
+			'h' + (-width + (2 * cornerWidth)) + // eslint-disable-line no-magic-numbers
+			'a' + radius + ',' + radius + ' 0 0 1 ' + -radius + ',' + -radius +
+			'v' + (-height + (2 * cornerWidth)) + // eslint-disable-line no-magic-numbers
+			'a' + radius + ',' + radius + ' 0 0 1 ' + radius + ',' + -radius +
+			'h' + leadingStrokeLength;
 	}
 
 	getFieldClasses (inputProps) {
@@ -50,11 +118,15 @@ export class TextField extends React.PureComponent {
 			fieldClasses += ' isDisabled';
 		}
 
+		if (this.state.isOutlineSetUp) {
+			fieldClasses += ' hasNotchedOutline';
+		}
+
 		return fieldClasses;
 	}
 
 	render () {
-		const {label, mask, error, ...inputProps} = this.props,
+		const {label, mask, children, altInputId, error, ...inputProps} = this.props,
 			fieldMask = mask !== null && mask.toString
 				? mask.toString()
 				: '',
@@ -64,14 +136,24 @@ export class TextField extends React.PureComponent {
 			? this.props.value.toString()
 			: '';
 
+		this.refreshOutlineMeasurements();
+
+		const outlinePath = this.getOutlinePath(inputProps);
+
 		// Delete props we don't want applied to the <input> element.
 		delete inputProps.onFocus;
 		delete inputProps.onBlur;
 
 		return (
-			<div styleName="container">
-				<div styleName={this.getFieldClasses(inputProps)}>
-					<label htmlFor={this.inputId} styleName="label">{label}</label>
+			<div styleName="container" onAnimationEnd={this.setUpOutline}>
+				<div styleName={this.getFieldClasses(inputProps)} ref={this.field}>
+					{this.state.isOutlineSetUp && <svg styleName="outlineWrapper" xmlns="http://www.w3.org/2000/svg">
+						<path styleName="outline" d={outlinePath} clipPath={'url(#' + this.clipPathId + ')'} />
+						<clipPath id={this.clipPathId}>
+							<path d={outlinePath} />
+						</clipPath>
+					</svg>}
+					<label htmlFor={altInputId || this.inputId} styleName="label" ref={this.label}>{label}</label>
 					{shouldShowMask && <span styleName="mask">{fieldMask}</span>}
 					<input
 						{...inputProps}
@@ -79,6 +161,7 @@ export class TextField extends React.PureComponent {
 						id={this.inputId}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur} />
+					{children}
 				</div>
 				<div styleName="bottom">
 					{error && !inputProps.disabled &&
@@ -100,6 +183,8 @@ TextField.propTypes = {
 		PropTypes.string,
 		PropTypes.number
 	]),
+	altInputId: PropTypes.string,
+	children: PropTypes.node,
 	error: PropTypes.string,
 	type: PropTypes.oneOf([
 		'text',

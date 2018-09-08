@@ -15,7 +15,7 @@ export class ServiceDetails extends React.Component {
 			settingsProperties = Object.keys(service.settings_definitions);
 
 		return (
-			<React.Fragment>
+			<div styleName="container">
 				{service.error && <p>The device settings could not be updated because of an error.</p>}
 				<header styleName="header">
 					{ServiceIcon.willRenderIcon(service) &&
@@ -54,7 +54,7 @@ export class ServiceDetails extends React.Component {
 							onFieldChange={this.props.onSettingChange} />
 					</React.Fragment>
 				)}
-			</React.Fragment>
+			</div>
 		);
 	}
 }

@@ -183,7 +183,7 @@ const SAVE_DEBOUNCE_DELAY = 500,
 					case 'boolean':
 						return event.target.checked;
 					case 'one-of':
-						return normalize ? definition.value_options.find((option) => option.value.toString() === event.target.value).value : event.target.value;
+						return definition.value_options.find((option) => option.value.toString() === event.target.value).value;
 					case 'string':
 						return normalize ? event.target.value.trim() : event.target.value;
 					default:
@@ -207,8 +207,6 @@ const SAVE_DEBOUNCE_DELAY = 500,
 			}
 
 			saveSettings (settings) {
-				console.log('saveSettings', settings);
-
 				if (this.props.settingProperty) {
 					this.props.saveSettings(this.props.settingProperty, settings[this.props.settingProperty]);
 				} else {

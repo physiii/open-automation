@@ -28,9 +28,7 @@ export const SettingsField = (props) => {
 					spellCheck="false" />
 			);
 		case 'boolean':
-			return (
-				<SwitchField {...fieldProps} checked={props.value} />
-			);
+			return <SwitchField {...fieldProps} isOn={props.value} />;
 		case 'one-of':
 			return (
 				<SelectField

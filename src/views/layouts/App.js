@@ -14,7 +14,7 @@ import ConsoleInterface from '../components/ConsoleInterface.js';
 import {connect} from 'react-redux';
 import {isAuthenticated, isLoading} from '../../state/ducks/session/selectors.js';
 import {hasInitialFetchCompleted} from '../../state/ducks/devices-list/selectors.js';
-import {getContextCurrentFullPath} from '../../state/ducks/navigation/selectors.js';
+import {getCurrentContextPath, getContextCurrentFullPath} from '../../state/ducks/navigation/selectors.js';
 import {hot} from 'react-hot-loader';
 import './App.css';
 
@@ -50,12 +50,14 @@ export const App = (props) => {
 								{
 									label: 'Dashboard',
 									icon: <DashboardIcon size={24} />,
-									to: props.getTabPath('/dashboard')
+									to: props.getTabPath('/dashboard'),
+									isActive: props.activeTabPath === '/dashboard'
 								},
 								{
 									label: 'Settings',
 									icon: <SettingsIcon size={24} />,
-									to: props.getTabPath('/settings')
+									to: props.getTabPath('/settings'),
+									isActive: props.activeTabPath === '/settings'
 								}
 							]} />
 						</div>}
@@ -69,11 +71,13 @@ export const App = (props) => {
 
 App.propTypes = {
 	isLoading: PropTypes.bool,
+	activeTabPath: PropTypes.string,
 	getTabPath: PropTypes.func.isRequired
 };
 
 const mapStateToProps = ({session, navigation, devicesList}) => ({
 		isLoading: isLoading(session) || (isAuthenticated(session) && !hasInitialFetchCompleted(devicesList)),
+		activeTabPath: getCurrentContextPath(navigation),
 		getTabPath: (defaultTabPath) => getContextCurrentFullPath(navigation, defaultTabPath) || defaultTabPath
 	}),
 	connectedApp = connect(mapStateToProps, null, null, {pure: false})(App);

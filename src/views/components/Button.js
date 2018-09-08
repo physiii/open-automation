@@ -37,7 +37,7 @@ export class Button extends React.Component {
 		}
 
 		if (this.props.to) {
-			return <Link styleName={className} to={this.props.to}>{children}</Link>;
+			return <Link styleName={className} to={this.props.to} onClick={this.props.onClick}>{children}</Link>;
 		}
 
 		return [

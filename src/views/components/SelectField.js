@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import TextField from './TextField.js';
+import MenuIndicatorIcon from '../icons/MenuIndicatorIcon.js';
 import {getUniqueId} from '../../utilities.js';
 import './SelectField.css';
 
@@ -8,43 +10,26 @@ export class SelectField extends React.Component {
 		super(props);
 
 		this.inputId = getUniqueId();
-		this.state = {is_focused: false};
-
-		this.handleFocus = this.handleFocus.bind(this);
-		this.handleBlur = this.handleBlur.bind(this);
-	}
-
-	handleFocus (event) {
-		this.setState({is_focused: true});
-
-		if (typeof this.props.onFocus === 'function') {
-			this.props.onFocus(event);
-		}
-	}
-
-	handleBlur (event) {
-		this.setState({is_focused: false});
-
-		if (typeof this.props.onBlur === 'function') {
-			this.props.onBlur(event);
-		}
 	}
 
 	render () {
+		const {label, name, options, ...inputProps} = this.props,
+			currentOption = options.find((option) => option.value === inputProps.value);
+
 		return (
-			<div styleName="container">
-				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
-					<label htmlFor={this.inputId} styleName="label">{this.props.label}</label>
+			<TextField
+				{...inputProps}
+				altInputId={this.inputId}
+				label={label}
+				value={(currentOption && currentOption.label) || inputProps.value}
+				readOnly="true">
+				<div styleName="select">
 					<select
+						{...inputProps}
 						styleName="input"
 						id={this.inputId}
-						name={this.props.name}
-						value={this.props.value}
-						disabled={this.props.disabled}
-						onChange={this.props.onChange}
-						onFocus={this.handleFocus}
-						onBlur={this.handleBlur}>
-						{this.props.options.map((option, index) => {
+						name={name}>
+						{options.map((option, index) => {
 							return (
 								<option value={option.value} key={index}>
 									{option.label || option.value}
@@ -52,8 +37,11 @@ export class SelectField extends React.Component {
 							);
 						})}
 					</select>
+					<span styleName="icon">
+						<MenuIndicatorIcon size={10} />
+					</span>
 				</div>
-			</div>
+			</TextField>
 		);
 	}
 }
@@ -66,10 +54,7 @@ SelectField.propTypes = {
 		PropTypes.number
 	]),
 	disabled: PropTypes.bool,
-	options: PropTypes.array,
-	onChange: PropTypes.func,
-	onFocus: PropTypes.func,
-	onBlur: PropTypes.func
+	options: PropTypes.array
 };
 
 export default SelectField;
