@@ -87,7 +87,7 @@ const isEmpty = (value) => {
 		'min': (min) => (value, label) => value >= min ? null : label + ' must be at least ' + min + '.',
 		'max': (max) => (value, label) => value <= max ? null : label + ' must be no more than ' + max + '.',
 		'min_length': (min_length) => (value, label) => value.length >= min_length ? null : label + ' must be at least ' + min_length + ' characters long.',
-		'max_length': (max_length) => (value, label) => value.length <= max_length ? null : label + ' must be no more than ' + max_length + ' characters long.',
+		'max_length': (max_length) => (value, label) => value.length <= max_length ? null : label + ' must be no more than ' + max_length + ' characters long.'
 	};
 
 module.exports = {
