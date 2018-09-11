@@ -38,13 +38,13 @@ export class CameraCard extends React.Component {
 	}
 
 	render () {
-		const lastRecordingDate = this.props.service.state.last_recording_date;
+		const lastRecordingDate = this.props.service.state.motion_detected_date;
 
 		return (
 			<ServiceCardBase
 				service={this.props.service}
 				name={this.props.service.settings.name || 'Camera'}
-				status={lastRecordingDate && 'Movement recorded ' + moment(lastRecordingDate).fromNow()}
+				status={lastRecordingDate && 'Movement detected ' + moment(lastRecordingDate).fromNow()}
 				icon={<ServiceIcon service={this.props.service} size={40} />}
 				isConnected={this.props.service.state.connected}
 				onCardClick={this.onCardClick}

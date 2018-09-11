@@ -7,9 +7,21 @@ class CameraService extends Service {
 	subscribeToDevice () {
 		Service.prototype.subscribeToDevice.apply(this, arguments);
 
-		this.deviceOn('motion-started', (event_data) => this._emit('motion-started', event_data));
+		this.deviceOn('motion-started', (event_data) => {
+			this._emit('motion-started', event_data);
+
+			this.getPreviewImage().then((preview_image) => {
+				this.state.preview_image = preview_image;
+				this.onUpdate();
+			});
+		});
 		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
-		this.deviceOn('motion-recorded', (event_data) => this._emit('motion-recorded', event_data));
+		this.deviceOn('motion-recorded', (event_data) => {
+			this._emit('motion-recorded', event_data);
+
+			this.state.preview_image = event_data.preview_image;
+			this.onUpdate();
+		});
 	}
 
 	streamLive () {

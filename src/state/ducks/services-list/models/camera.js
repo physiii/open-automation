@@ -11,8 +11,10 @@ class Camera extends ServiceRecord({
 	},
 	state: {
 		preview_image: null,
-		last_recording_date: null
-	}
+		motion_detected_date: null
+	},
+	preview_image: null,
+	preview_image_fetch_date: null
 }) {}
 
 export default Camera;
