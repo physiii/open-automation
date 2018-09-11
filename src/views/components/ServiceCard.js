@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CameraCard from './CameraCard.js';
 import LockCard from './LockCard.js';
+import ThermostatCard from './ThermostatCard.js';
 
 export const ServiceCard = (props) => {
 	switch (props.service.type) {
@@ -9,6 +10,8 @@ export const ServiceCard = (props) => {
 			return <CameraCard camera={props.service} parentPath={props.parentPath} />;
 		case 'lock':
 			return <LockCard lockService={props.service} parentPath={props.parentPath} />;
+		case 'thermostat':
+			return <ThermostatCard thermostatService={props.service} parentPath={props.parentPath} />;
 		default:
 			return null;
 	}
