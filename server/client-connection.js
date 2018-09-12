@@ -304,7 +304,7 @@ class ClientConnection {
 		this.clientEndpoint('thermostat/hold-mode/set', function (data, callback) {
 			const thermostatService = data.service;
 
-			thermostatService.setHoldMode(data.mode).then(() => {
+			thermostatService.setHoldMode(data.hold_mode).then(() => {
 				if (typeof callback === 'function') {
 					callback(null, {});
 				}
@@ -318,7 +318,7 @@ class ClientConnection {
 		this.clientEndpoint('thermostat/fan-mode/set', function (data, callback) {
 			const thermostatService = data.service;
 
-			thermostatService.setFanMode(data.mode).then(() => {
+			thermostatService.setFanMode(data.fan_mode).then(() => {
 				if (typeof callback === 'function') {
 					callback(null, {});
 				}

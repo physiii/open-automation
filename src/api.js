@@ -88,7 +88,7 @@ class Api {
 		return Api.apiCall('lock/relock-delay/set', {service_id: lockServiceId, relock_delay: relockDelay});
 	}
 
-	// Thermostat Services
+	// Thermostat Service
 
 	thermostatSetTemp (thermostatServiceId, temp) {
 		return Api.apiCall('thermostat/temp/set', {service_id: thermostatServiceId, temp});
@@ -99,11 +99,11 @@ class Api {
 	}
 
 	thermostatSetHold (thermostatServiceId, holdMode) {
-		return Api.apiCall('thermostat/hold-mode/set', {service_id: thermostatServiceId, holdMode});
+		return Api.apiCall('thermostat/hold-mode/set', {service_id: thermostatServiceId, hold_mode: holdMode});
 	}
 
 	thermostatSetFan (thermostatServiceId, fanMode) {
-		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fanMode});
+		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fan_mode: fanMode});
 	}
 
 	// Session API

@@ -1,8 +1,8 @@
 const DeviceDriver = require('./device-driver.js'),
 	noOp = () => {},
-	TAG = '[GatewayDeviceDriver]';
+	TAG = '[StandardDeviceDriver]';
 
-class GatewayDeviceDriver extends DeviceDriver {
+class StandardDeviceDriver extends DeviceDriver {
 	constructor (data, socket, device_id) {
 		super(socket, device_id);
 
@@ -34,7 +34,11 @@ class GatewayDeviceDriver extends DeviceDriver {
 			return;
 		}
 
-		this.socket.emit(data.service_type + '/' + data.service_id + '/' + event, data, callback);
+		if (data.service_id) {
+			this.socket.emit(data.service_id + '::' + data.service_type + '::' + event, data.payload, callback);
+		} else {
+			this.socket.emit(event, data, callback);
+		}
 	}
 
 	_subscribeToSocket () {
@@ -45,4 +49,4 @@ class GatewayDeviceDriver extends DeviceDriver {
 	}
 }
 
-module.exports = GatewayDeviceDriver;
+module.exports = StandardDeviceDriver;
