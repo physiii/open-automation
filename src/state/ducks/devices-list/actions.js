@@ -14,3 +14,25 @@ export const fetchDevicesError = (error) => ({
 	payload: {error},
 	error: true
 });
+
+export const setSettings = (deviceId, settings) => ({
+	type: types.SET_SETTINGS,
+	payload: {deviceId, settings}
+});
+
+export const setSettingsError = (deviceId, originalSettings, error) => ({
+	type: types.SET_SETTINGS_ERROR,
+	payload: {deviceId, originalSettings, error},
+	error: true
+});
+
+export const deleteDevice = (deviceId) => ({
+	type: types.DELETE_DEVICE,
+	payload: {deviceId}
+});
+
+export const deleteDeviceError = (device, error) => ({
+	type: types.DELETE_DEVICE_ERROR,
+	payload: {device, error},
+	error: true
+});

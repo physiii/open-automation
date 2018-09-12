@@ -1,59 +1,70 @@
 const Service = require('./service.js'),
-	GatewayThermostatDriver = require('./drivers/thermostat-gateway.js'),
 	TAG = '[ThermostatService]';
 
 class ThermostatService extends Service {
-	constructor (data, onUpdate, gateway_socket) {
-		super(data, onUpdate);
-
-		this.driver = new GatewayThermostatDriver(this.id, gateway_socket);
-		this.subscribeToDriver();
-	}
-
-	subscribeToDriver () {}
-
 	action (data) {
 		switch (data.property) {
 			case 'target_temp':
-				this.setTemp(data.value);
-				break;
-			case 'set_mode':
-				this.setThermostatMode(data.value);
-				break;
-			case 'set_hold':
-				this.setHoldMode(data.value);
-				break;
-			case 'set_fan':
-				this.setFanMode(data.value);
-				break;
+				return this.setTemp(data.value);
+			case 'mode':
+				return this.setThermostatMode(data.value);
+			case 'hold_mode':
+				return this.setHoldMode(data.value);
+			case 'fan_mode':
+				return this.setFanMode(data.value);
 		}
 	}
 
-	setTemp (temp) {
-		return this.driver.setTemp(temp);
+	setThermostatMode (mode) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('mode/set', {mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
-	setThermostatMode (mode) {
-		return this.driver.setThermostatMode(mode);
+	setTemp (temp) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('temp/set', {temp}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	setHoldMode (mode) {
-		return this.driver.setHoldMode(mode);
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('holdMode/set', {mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	setFanMode (mode) {
-		return this.driver.setFanMode(mode);
-	}
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('fanMode/set', {mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-	serialize () {
-		return {
-			...Service.prototype.serialize.apply(this, arguments),
-			ip: this.ip
-		};
-	}
-
-	dbSerialize () {
-		return this.serialize();
+				resolve();
+			});
+		});
 	}
 }
 

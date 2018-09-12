@@ -1,17 +1,21 @@
 import * as actions from './actions';
 
-const loadContext = (context) => (dispatch) => {
-		dispatch(actions.loadContext(context));
+const loadContext = (path) => (dispatch) => {
+		dispatch(actions.loadContext(path));
 	},
-	loadScreen = (path, backPath, title) => (dispatch) => {
-		dispatch(actions.loadScreen(path, backPath, title));
+	unloadContext = (path) => (dispatch) => {
+		dispatch(actions.unloadContext(path));
 	},
-	unloadScreen = (path) => (dispatch) => {
-		dispatch(actions.unloadScreen(path));
+	loadScreen = (context, path, depth, currentFullPath, title, shouldShowTitle) => (dispatch) => {
+		dispatch(actions.loadScreen(context, path, depth, currentFullPath, title, shouldShowTitle));
+	},
+	unloadScreen = (context, path) => (dispatch) => {
+		dispatch(actions.unloadScreen(context, path));
 	};
 
 export {
 	loadContext,
+	unloadContext,
 	loadScreen,
 	unloadScreen
 };

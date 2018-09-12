@@ -11,9 +11,19 @@ export class Button extends React.Component {
 	}
 
 	render () {
+		const children = (
+			<React.Fragment>
+				{this.props.icon && <span styleName="icon">{this.props.icon}</span>}
+				<span styleName="label">{this.props.children}</span>
+			</React.Fragment>
+		);
+
 		let className;
 
 		switch (this.props.type) {
+			case 'tab':
+				className = 'tabButton';
+				break;
 			case 'filled':
 				className = 'filledButton';
 				break;
@@ -27,7 +37,7 @@ export class Button extends React.Component {
 		}
 
 		if (this.props.to) {
-			return <Link styleName={className} to={this.props.to}>{this.props.children}</Link>;
+			return <Link styleName={className} to={this.props.to} onClick={this.props.onClick}>{children}</Link>;
 		}
 
 		return [
@@ -41,7 +51,7 @@ export class Button extends React.Component {
 				if (typeof this.props.onClick === 'function') {
 					this.props.onClick(event);
 				}
-			}} styleName={className}>{this.props.children}</a>,
+			}} styleName={className}>{children}</a>,
 			this.props.submitForm && <input styleName="submit" type="submit" key="submit" ref={this.submitInput} />
 		];
 	}
@@ -52,6 +62,7 @@ Button.propTypes = {
 	type: PropTypes.string,
 	submitForm: PropTypes.bool,
 	onClick: PropTypes.func,
+	icon: PropTypes.node,
 	children: PropTypes.node.isRequired
 };
 

@@ -16,7 +16,6 @@ class Account {
 		this.email = this.username;
 		this.phone_number = data.phone_number;
 		this.phone_provider = data.phone_provider;
-		this.client_sockets = new Map();
 
 		if (data.registration_date) {
 			this.registration_date = new Date(data.registration_date);
@@ -44,24 +43,6 @@ class Account {
 				}
 			}).catch(reject);
 		});
-	}
-
-	addClientSocket (socket) {
-		if (!socket || !socket.id) {
-			console.error(TAG, 'Cannot add invalid socket.');
-
-			return;
-		}
-
-		this.client_sockets.set(socket.id, socket);
-	}
-
-	removeClientSocket (socket) {
-		this.client_sockets.delete(socket.id);
-	}
-
-	getClientSockets () {
-		return Array.from(this.client_sockets.values());
 	}
 
 	getPasswordSalt () {

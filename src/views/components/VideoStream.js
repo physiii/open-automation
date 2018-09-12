@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import JSMpeg from '../../lib/tokenJsmpeg.js';
+import JSMpeg from '../../lib/jsmpeg/jsmpeg.min.js';
 import {connect} from 'react-redux';
 import {cameraStartStream, cameraStopStream, cameraStartRecordingStream, cameraStopRecordingStream} from '../../state/ducks/services-list/operations.js';
 import './VideoStream.css';
@@ -102,12 +102,13 @@ export class VideoStream extends React.Component {
 			this.player.destroy();
 		}
 
-		this.player = new JSMpeg.Player(this.props.streamingHost, {
-			canvas: this.canvas.current,
-			disableGl: true,
-			oa_stream_id: this.getStreamIdForCurrentResource(),
-			oa_stream_token: this.props.streamingToken
-		});
+		this.player = new JSMpeg.Player(
+			this.props.streamingHost + '?stream_id=' + this.getStreamIdForCurrentResource() + '&stream_token=' + this.props.streamingToken,
+			{
+				canvas: this.canvas.current,
+				disableGl: true
+			}
+		);
 
 		if (this.props.shouldStream) {
 			this.start();
@@ -162,7 +163,7 @@ export const mapStateToProps = (state) => {
 		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
 		return {
-			streamingHost: protocol + '//' + window.location.hostname + ':' + state.config.stream_port
+			streamingHost: protocol + '//' + window.location.hostname + ':' + state.config.stream_port + '/stream-relay'
 		};
 	},
 	mapDispatchToProps = (dispatch, ownProps) => {

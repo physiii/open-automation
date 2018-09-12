@@ -1,111 +1,66 @@
 const uuid = require('uuid/v4'),
 	utils = require('../utils.js'),
 	database = require('../database.js'),
+	StandardDeviceDriver = require('./drivers/standard-driver.js'),
+	LigerDeviceDriver = require('./drivers/liger-driver.js'),
+	GenericDeviceDriver = require('./drivers/generic-driver.js'),
+	DeviceSettings = require('./device-settings.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
 	TAG = '[Device]';
 
 class Device {
-	constructor (data, onUpdate, gateway_socket) {
+	constructor (data, onUpdate, socket) {
+		const driver_class = Device.drivers[data.type] || StandardDeviceDriver;
+
+		this.save = this.save.bind(this);
+
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.account = data.account;
 		this.account_id = data.account_id;
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
-		this.gateway_listeners = [];
+		this.is_saveable = data.is_saveable || false;
 
-		this.onUpdate = onUpdate;
-		this.services = new ServicesManager(data.services, this._getGatewaySocketProxy(), this, () => this.onUpdate(this));
+		this.onUpdate = () => onUpdate(this);
 
-		this._setSettings(data.settings);
-		this._setInfo(data.info);
-		this.state = utils.onChange({connected: false}, () => this.onUpdate(this));
+		this.driver_data = {...data.driver_data};
+		this.driver = new driver_class(this.driver_data, socket, this.id, data.services);
 
-		if (gateway_socket) {
-			this.setGatewaySocket(gateway_socket, this.token);
+		const driverOn = this.driver.on.bind(this.driver),
+			driverEmit = this.driver.emit.bind(this.driver);
+
+		this.services = new ServicesManager(
+			this,
+			data.services,
+			driverOn,
+			driverEmit,
+			this.onUpdate,
+			this.save
+		);
+		this.settings = new DeviceSettings(
+			data.settings,
+			data.settings_definitions,
+			this.constructor.settings_definitions,
+			driverEmit,
+			this.save
+		);
+		this.state = utils.onChange({connected: false}, this.onUpdate);
+		this.setInfo(data.info);
+
+		if (socket) {
+			this.setSocket(socket, this.token);
 		}
 
-		this.onUpdate(this);
+		this.subscribeToDriver();
+		this.driver.init();
 	}
 
-	_setSettings (settings = {}) {
-		this.settings = {
-			name: settings.name
-		};
-	}
-
-	_setInfo (info = {}) {
-		this.info = {
-			manufacturer: info.manufacturer
-		};
-	}
-
-	setToken (token) {
-		const current_token = this.token,
-			undoTokenChange = (should_save = true) => {
-				this.token = current_token;
-
-				if (should_save) {
-					this.save();
-				}
-			};
-
-		return new Promise((resolve, reject) => {
-			this.token = token;
-
-			this.save().then(() => {
-				this._gatewayEmit('token', {token}, (error) => {
-					if (error) {
-						undoTokenChange();
-						reject(error);
-
-						return;
-					}
-
-					resolve(this.token);
-				}, true);
-			}).catch((error) => {
-				undoTokenChange(false);
-				reject(error);
-			});
-		});
-	}
-
-	verifyToken (token) {
-		return token === this.token;
-	}
-
-	setGatewaySocket (socket, token) {
-		if (!token || !this.verifyToken(token)) {
-			console.log(TAG, this.id, 'Could not set gateway socket. Invalid device token.');
-			return;
-		}
-
-		if (socket === this.gateway_socket) {
-			return;
-		}
-
-		// Disconnect the current socket.
-		if (this.gateway_socket) {
-			this.gateway_socket.removeAllListeners();
-			this.gateway_socket.disconnect();
-		}
-
-		this.gateway_socket = socket;
-		this.state.connected = socket.connected;
-
-		// Set up gateway listeners on new socket.
-		this.gateway_listeners.forEach((listener) => {
-			this._gatewayOn.apply(this, listener);
-		});
-
-		this._listenToGateway();
-	}
-
-	_listenToGateway () {
-		// Update when the gateway sends new state.
-		this._gatewayOn('load', (data, callback = noOp) => {
+	subscribeToDriver () {
+		this.driver.on('connect', () => this.state.connected = true);
+		this.driver.on('disconnect', () => this.state.connected = false);
+		this.driver.on('load', (data, callback = noOp) => {
 			if (!data.device) {
 				callback('No device data provided.');
 
@@ -116,59 +71,105 @@ class Device {
 				this.services.updateServices(data.device.services);
 			}
 
-			if (data.device.info) {
-				this._setInfo(data.info);
+			if (data.device.settings_definitions) {
+				this.settings.setDefinitions(data.device.settings_definitions);
 			}
 
-			this.onUpdate(this);
+			if (data.device.info) {
+				this.setInfo(data.info);
+			}
+
+			this.onUpdate();
 			this.save();
 		});
-
-		this._gatewayOn('connect', (data) => this.state.connected = true);
-		this._gatewayOn('disconnect', (data) => this.state.connected = false);
+		this.driver.on('driver-data', (data) => {
+			this.driver_data = data.driver_data;
+			this.save();
+		});
 	}
 
-	_gatewayOn (event) {
-		if (!this.gateway_socket) {
-			console.log(TAG, this.id, 'Tried to listen for gateway event "' + event + '" but the device does not have a gateway socket.');
-			return;
-		}
-
-		this.gateway_socket.on.apply(this.gateway_socket, arguments);
-	}
-
-	_gatewayEmit (event, data, callback = noOp, should_queue) {
-		if (!this.gateway_socket) {
-			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the device does not have a gateway socket.');
-			callback('Device not connected');
-			return;
-		}
-
-		if (!this.state.connected && !should_queue) {
-			console.log(TAG, this.id, 'Tried to emit gateway event "' + event + '" but the gateway socket is not connected.');
-
-			callback('Device not connected');
-			return;
-		}
-
-		this.gateway_socket.emit(event, data, callback);
-	}
-
-	_getGatewaySocketProxy () {
-		return {
-			on: (function () {
-				this.gateway_listeners.push(arguments);
-
-				if (this.gateway_socket) {
-					this._gatewayOn.apply(this, arguments);
-				}
-			}).bind(this),
-			emit: this._gatewayEmit.bind(this)
+	setInfo ({manufacturer, model, firmware_version, hardware_version, serial} = {}) {
+		this.info = {
+			manufacturer,
+			model,
+			firmware_version,
+			hardware_version,
+			serial
 		};
+	}
+
+	setSettings (settings) {
+		return this.settings.set(settings).then(this.onUpdate);
+	}
+
+	setToken (token) {
+		return new Promise((resolve, reject) => {
+			const original_token = this.token,
+				original_is_saveable = this.is_saveable;
+
+			if (!this.state.connected) {
+				console.log(TAG, this.id, 'Cannot set device token when the device is not connected.');
+				reject('Device not connected.');
+
+				return;
+			}
+
+			// Send new token to device.
+
+			this.driver.emit('token', {token}, (error) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				// Save the new token locally.
+				this.token = token;
+				this.is_saveable = true;
+				this.save().then(() => {
+					this.driver.emit('reconnect-to-relay');
+
+					resolve(this.token);
+				}).catch((error) => {
+					// Undo token change locally.
+					this.token = original_token;
+					this.is_saveable = original_is_saveable;
+
+					console.error(TAG, this.id, 'Error saving device token to database.', error);
+
+					// Undo token change on device.
+					this.driver.emit('token', {token: original_token}, (undo_error) => {
+						if (undo_error) {
+							console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
+						}
+					});
+
+					reject(error);
+				});
+			});
+		});
+	}
+
+	verifyToken (token) {
+		return token === this.token;
+	}
+
+	setSocket (socket, token) {
+		if (!token || !this.verifyToken(token)) {
+			console.log(TAG, this.id, 'Could not set socket. Invalid device token.');
+			return;
+		}
+
+		this.driver.setSocket(socket);
+		this.state.connected = socket.connected;
 	}
 
 	save () {
 		return new Promise((resolve, reject) => {
+			if (!this.is_saveable) {
+				reject();
+				return;
+			}
+
 			database.saveDevice(this.dbSerialize()).then(resolve).catch(reject);
 		});
 	}
@@ -178,9 +179,9 @@ class Device {
 			id: this.id,
 			account_id: this.account_id,
 			gateway_id: this.gateway_id,
-			settings: this.settings,
 			services: this.services.getSerializedServices(),
-			info: this.info
+			info: this.info,
+			...this.settings.serialize()
 		};
 	}
 
@@ -188,7 +189,8 @@ class Device {
 		return {
 			...this.serialize(),
 			token: this.token,
-			services: this.services.getDbSerializedServices()
+			services: this.services.getDbSerializedServices(),
+			driver_data: this.driver_data
 		};
 	}
 
@@ -199,6 +201,27 @@ class Device {
 			services: this.services.getClientSerializedServices()
 		};
 	}
+
+	destroy () {
+		this.driver.destroy();
+		this.services.destroy();
+	}
 }
+
+Device.settings_definitions = new Map()
+	.set('name', {
+		type: 'string',
+		label: 'Name',
+		validation: {
+			is_required: true,
+			max_length: 24
+		}
+	});
+
+Device.drivers = {
+	'gateway': StandardDeviceDriver,
+	'liger': LigerDeviceDriver,
+	'generic': GenericDeviceDriver
+};
 
 module.exports = Device;

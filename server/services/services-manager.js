@@ -1,24 +1,27 @@
 const Service = require('./service.js');
 
 class ServicesManager {
-	constructor (services = [], gateway_socket, device, onServiceUpdate) {
-		this.gateway_socket = gateway_socket;
+	constructor (device, services = [], deviceOn, deviceEmit, onServiceUpdate, saveService) {
 		this.device = device;
-		this.services = [];
-
+		this.deviceOn = deviceOn;
+		this.deviceEmit = deviceEmit;
 		this.onServiceUpdate = onServiceUpdate;
+		this.saveService = saveService;
+		this.services = [];
 
 		this.updateServices(services);
 	}
 
-	addService (data) {
+	addService (data, should_update_existing = false) {
 		const service_class = ServicesManager.classes[data.type] || Service;
 		let service = this.getServiceById(data.id);
 
 		if (service) {
-			if (data.state) {
-				service.setState(data.state);
+			if (!should_update_existing) {
+				return service;
 			}
+
+			service.update(data);
 
 			return service;
 		}
@@ -27,7 +30,9 @@ class ServicesManager {
 		service = new service_class(
 			{...data, device: this.device},
 			this.onServiceUpdate,
-			this.gateway_socket
+			this.deviceOn,
+			this.deviceEmit,
+			this.saveService
 		);
 
 		this.services.push(service);
@@ -42,7 +47,7 @@ class ServicesManager {
 		}
 
 		services.forEach((service) => {
-			this.addService(service);
+			this.addService(service, true);
 		});
 	}
 
@@ -61,10 +66,17 @@ class ServicesManager {
 	getClientSerializedServices () {
 		return this.services.map((service) => service.clientSerialize());
 	}
+
+	destroy () {
+		this.services.forEach((service) => service.destroy());
+	}
 }
 
 ServicesManager.classes = {
 	'gateway': require('./gateway-service.js'),
+	'button': require('./button-service.js'),
+	'contact-sensor': require('./contact-sensor-service.js'),
+	'siren': require('./siren-service.js'),
 	'camera': require('./camera-service.js'),
 	'lock': require('./lock-service.js'),
 	'thermostat': require('./thermostat-service.js'),
