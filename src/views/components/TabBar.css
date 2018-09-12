@@ -2,10 +2,23 @@
 
 @value tabBarBackground from "../styles/colors.css";
 
-.tabBar {
+.bar {
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: center;
 	flex: 1 1 auto;
 	background-color: tabBarBackground;
+}
+
+.tabs {
+	display: flex;
+}
+
+.tab {
+	display: flex;
+	margin: 0 8px;
+	color: #bebebe;
+}
+.tab.active {
+	color: #ffffff;
 }

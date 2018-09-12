@@ -1,15 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import iconBase from './iconBase.js';
+import IconBase from './IconBase.js';
 import './StopButtonIcon.css';
 
-export const StopButtonIcon = ({className, shadowed, ...props}) => (
-	<svg
-		className={className}
-		styleName={shadowed ? 'shadowedFill' : ''}
-		viewBox="0 0 68 68"
-		xmlns="http://www.w3.org/2000/svg"
-		{...props}>
+export const StopButtonIcon = ({shadowed, ...props}) => (
+	<IconBase {...props} viewBox="0 0 68 68">
 		<defs>
 			<path id="StopButtonIcon-main" d="M280 182c-17.673112 0-32-14.326888-32-32s14.326888-32 32-32 32 14.326888 32 32-14.326888 32-32 32zm-10-42v20h20v-20h-20z" />
 			<filter
@@ -25,17 +20,16 @@ export const StopButtonIcon = ({className, shadowed, ...props}) => (
 				<feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0" in="shadowBlurOuter1" />
 			</filter>
 		</defs>
-		<g transform="translate(-246 -118)" fillRule="evenodd">
+		<g styleName={shadowed ? 'shadowedFill' : ''} transform="translate(-246 -118)" fillRule="evenodd">
 			{shadowed &&
 				<use fill="#000" filter="url(#StopButtonIcon-shadowedFilter)" xlinkHref="#StopButtonIcon-main" />}
 			<use xlinkHref="#StopButtonIcon-main"/>
 		</g>
-	</svg>
+	</IconBase>
 );
 
 StopButtonIcon.propTypes = {
-	className: PropTypes.string,
 	shadowed: PropTypes.bool
 };
 
-export default iconBase(StopButtonIcon);
+export default StopButtonIcon;

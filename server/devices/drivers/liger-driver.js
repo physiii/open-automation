@@ -37,11 +37,24 @@ class LigerDeviceDriver extends DeviceDriver {
 		this.device_events.on.apply(this.device_events, arguments);
 	}
 
-	emit (event, data, callback) {
+	emit (event, data, callback, service_id, service_type) {
+		if (!this.socket) {
+			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
+			callback('Device not connected');
+			return;
+		}
+
+		if (!this.socket.connected) {
+			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the socket is not connected.');
+			callback('Device not connected');
+			return;
+		}
+
 		// Map relay service events to corresponding messages to the liger.
-		switch (event) {
-			default:
-				this.socket.emit(event, data, callback);
+		if (service_id) {
+			this.socket.emit(event, {...data, id: this.service_ids.get(service_id)}, callback);
+		} else {
+			this.socket.emit(event, data, callback);
 		}
 	}
 
@@ -50,36 +63,36 @@ class LigerDeviceDriver extends DeviceDriver {
 			this._addService('button', 'button-1', 'Center Button');
 		}
 
-		if (!this._getServiceByLigerId('button-2')) {
-			this._addService('button', 'button-2', 'Up-Right Button');
-		}
-
-		if (!this._getServiceByLigerId('button-3')) {
-			this._addService('button', 'button-3', 'Down-Right Button');
-		}
-
-		if (!this._getServiceByLigerId('button-4')) {
-			this._addService('button', 'button-4', 'Down-Left Button');
-		}
-
-		if (!this._getServiceByLigerId('button-5')) {
-			this._addService('button', 'button-5', 'Up-Left Button');
-		}
-
 		if (!this._getServiceByLigerId('button-6')) {
-			this._addService('button', 'button-6', 'Up Button');
+			this._addService('button', 'button-6', 'Top Button');
+		}
+
+		if (!this._getServiceByLigerId('button-8')) {
+			this._addService('button', 'button-8', 'Bottom Button');
+		}
+
+		if (!this._getServiceByLigerId('button-9')) {
+			this._addService('button', 'button-9', 'Left Button');
 		}
 
 		if (!this._getServiceByLigerId('button-7')) {
 			this._addService('button', 'button-7', 'Right Button');
 		}
 
-		if (!this._getServiceByLigerId('button-8')) {
-			this._addService('button', 'button-8', 'Down Button');
+		if (!this._getServiceByLigerId('button-5')) {
+			this._addService('button', 'button-5', 'Top-Left Button');
 		}
 
-		if (!this._getServiceByLigerId('button-9')) {
-			this._addService('button', 'button-9', 'Left Button');
+		if (!this._getServiceByLigerId('button-2')) {
+			this._addService('button', 'button-2', 'Top-Right Button');
+		}
+
+		if (!this._getServiceByLigerId('button-4')) {
+			this._addService('button', 'button-4', 'Bottom-Left Button');
+		}
+
+		if (!this._getServiceByLigerId('button-3')) {
+			this._addService('button', 'button-3', 'Bottom-Right Button');
 		}
 
 		this.save();
@@ -128,7 +141,7 @@ class LigerDeviceDriver extends DeviceDriver {
 		});
 
 		// Emit the pressed event repeatedly while the button is being pressed.
-		if(data.value === 6 || data.value === 8) {
+		if (data.value === 6 || data.value === 8) {
 			this.button_hold_interval = setInterval(() => this._serviceEmit(button_service, 'pressed'), BUTTON_HOLD_INTERVAL_DELAY);
 		}
 	}
@@ -175,6 +188,7 @@ class LigerDeviceDriver extends DeviceDriver {
 
 		this.services.push(new_service);
 		this.service_ids.set(liger_id, new_service.id);
+		this.service_ids.set(new_service.id, liger_id);
 	}
 
 	_serviceEmit (service, event, data = {}) {

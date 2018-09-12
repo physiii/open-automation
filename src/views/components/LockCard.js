@@ -6,27 +6,29 @@ import {connect} from 'react-redux';
 import {lockLock, lockUnlock} from '../../state/ducks/services-list/operations.js';
 
 export const LockCard = (props) => {
-	const isLocked = props.lockService.state.locked,
+	const isLocked = props.service.state.locked,
 		toggleLock = () => {
 			if (isLocked) {
-				props.unlock(props.lockService.id);
+				props.unlock(props.service.id);
 			} else {
-				props.lock(props.lockService.id);
+				props.lock(props.service.id);
 			}
 		};
 
 	return (
 		<ServiceCardBase
-			name={props.lockService.settings.name || 'Lock'}
-			status={props.lockService.state.locked ? 'Locked' : 'Unlocked'}
-			isConnected={props.lockService.state.connected}
+			name={props.service.settings.name || 'Lock'}
+			status={props.service.state.locked ? 'Locked' : 'Unlocked'}
+			isConnected={props.service.state.connected}
 			onCardClick={toggleLock}
-			content={<Button onClick={toggleLock}>{props.lockService.state.locked ? 'Unlock' : 'Lock'}</Button>} />
+			{...props}>
+			<Button onClick={toggleLock}>{props.service.state.locked ? 'Unlock' : 'Lock'}</Button>
+		</ServiceCardBase>
 	);
 };
 
 LockCard.propTypes = {
-	lockService: PropTypes.object,
+	service: PropTypes.object,
 	lock: PropTypes.func,
 	unlock: PropTypes.func
 };

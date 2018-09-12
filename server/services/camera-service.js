@@ -4,24 +4,24 @@ const moment = require('moment'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, onUpdate, deviceOn, deviceEmit) {
-		super(data, onUpdate, deviceOn, deviceEmit);
-
-		this.subscribeToDevice();
-	}
-
 	subscribeToDevice () {
-		this.deviceOn('motion-started', (event_data) => this._emit('motion-started', event_data));
-		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
-		this.deviceOn('motion-recorded', (event_data) => this._emit('motion-recorded', event_data));
-	}
+		Service.prototype.subscribeToDevice.apply(this, arguments);
 
-	setSettings (settings = {}) {
-		this.settings = {
-			resolution_w: settings.resolution_w || 640,
-			resolution_h: settings.resolution_h || 480,
-			rotation: settings.rotation || 0
-		}
+		this.deviceOn('motion-started', (event_data) => {
+			this._emit('motion-started', event_data);
+
+			this.getPreviewImage().then((preview_image) => {
+				this.state.preview_image = preview_image;
+				this.onUpdate();
+			});
+		});
+		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
+		this.deviceOn('motion-recorded', (event_data) => {
+			this._emit('motion-recorded', event_data);
+
+			this.state.preview_image = event_data.preview_image;
+			this.onUpdate();
+		});
 	}
 
 	streamLive () {
