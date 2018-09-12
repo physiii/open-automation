@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
-import {thermostatSetTemp, thermostatCool, thermostatHeat, thermostatOff, thermostatAuto, thermostatRemoveHold, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
+import {thermostatSetTemp, thermostatSetMode, thermostatRemoveHold, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
 
 export const ThermostatCard = (props) => {
 	const currentMode = props.thermostatService.state.mode,
@@ -13,13 +13,13 @@ export const ThermostatCard = (props) => {
 		holdMode = props.thermostatService.state.hold_mode,
 		toggleMode = () => {
 			if (currentMode === 'off') {
-				props.setCool(props.thermostatService.id);
+				props.setMode(props.thermostatService.id, 'cool');
 			} else if (currentMode === 'cool') {
-				props.setHeat(props.thermostatService.id);
+				props.setMode(props.thermostatService.id, 'heat');
 			} else if (currentMode === 'heat') {
-				props.setAuto(props.thermostatService.id);
+				props.setMode(props.thermostatService.id, 'auto');
 			} else if (currentMode === 'auto') {
-				props.setOff(props.thermostatService.id);
+				props.setMode(props.thermostatService.id, 'off');
 			} else {
 				console.log('Mode is not defined as off, heat, cool, auto...')
 			}
@@ -43,10 +43,7 @@ ThermostatCard.propTypes = {
 	fanOn: PropTypes.func,
 	fanOff: PropTypes.func,
 	fanAuto: PropTypes.func,
-	setCool: PropTypes.func,
-	setHeat: PropTypes.func,
-	setAuto: PropTypes.func,
-	setOff: PropTypes.func
+	setMode: PropTypes.func
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -56,10 +53,7 @@ const mapDispatchToProps = (dispatch) => {
 		removeHold: (serviceId) => dispatch(thermostatRemoveHold(serviceId)),
 		fanOn: (serviceId) => dispatch(thermostatFanOn(serviceId)),
 		fanAuto: (serviceId) => dispatch(thermostatFanAuto(serviceId)),
-		setCool: (serviceId) => dispatch(thermostatCool(serviceId)),
-		setHeat: (serviceId) => dispatch(thermostatHeat(serviceId)),
-		setOff: (serviceId) => dispatch(thermostatOff(serviceId)),
-		setAuto: (serviceId) => dispatch(thermostatAuto(serviceId))
+		setMode: (serviceId, mode) => dispatch(thermostatSetMode(serviceId, mode))
 	};
 };
 
