@@ -24,15 +24,15 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	emit (event, data, callback) {
-		// Map relay service events to corresponding messages to the liger.
-		switch (event) {
-			default:
-				this.socket.emit(event, {...data, id: this.service_ids.get(data.service_id)}, callback);
+		if (data.service_id) {
+			this.socket.emit(event, {...data.payload, id: this.service_ids.get(data.service_id)}, callback);
+		} else {
+			this.socket.emit(event, data, callback);
 		}
 	}
 
 	_setUpServices (services) {
-		services.services.forEach((service) => {
+		services.forEach((service) => {
 			const device_service = this._getServiceByGenericId(service.id);
 
 			if (!device_service) {
@@ -52,8 +52,8 @@ class GenericDeviceDriver extends DeviceDriver {
 			this.device_events.emit('connect');
 		});
 		this.socket.on('disconnect', () => this.device_events.emit('disconnect'));
-		this.socket.on('load', (services) => {
-			this._setUpServices(services);
+		this.socket.on('load', (device) => {
+			this._setUpServices(device.services);
 			this._emitLoadToRelay();
 		});
 		this.socket.on('service/state', this._handleServiceState);
@@ -61,14 +61,34 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_handleServiceState (data) {
-		const device_service = this._getServiceByGenericId(data.id);
+		const device_service = this._getServiceByGenericId(data.id),
+			new_state = {...data.state};
 
 		if (!device_service) {
 			return console.log(TAG, "State Event. No Service Found");
-
 		} else if (device_service.state != data.state) {
+
+			if (device_service.type === 'contact-sensor') {
+				let event_name;
+
+				if (data.state.contact === 0) { // Closed
+					new_state.contact = true;
+					event_name = 'closed';
+				} else if (data.state.contact === 1) { // Open
+					new_state.contact = false;
+					event_name = 'open';
+				} else { // Unknown
+					new_state.contact = null;
+				}
+
+				if (event_name && device_service.state.contact !== data.state.contact) {
+					this._serviceEmit(device_service, event_name);
+				}
+			}
+
 			device_service.state = data.state;
-			this._serviceEmit(device_service, 'state', data);
+
+			this._serviceEmit(device_service, 'state', {state: new_state});
 		}
 	}
 
@@ -104,6 +124,10 @@ class GenericDeviceDriver extends DeviceDriver {
 			state,
 			settings: {name}
 		};
+
+		if (new_service.type === 'contact_sensor') {
+			new_service.type = 'contact-sensor';
+		}
 
 		this.services.push(new_service);
 		this.service_ids.set(generic_id, new_service.id);

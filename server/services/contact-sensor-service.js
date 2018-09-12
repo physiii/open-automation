@@ -9,14 +9,12 @@ class ContactSensorService extends Service {
 	}
 
 	_subscribeToDevice () {
-		this.deviceOn('state', () => {
-			if (this.state.contact === 1) this._emit('open', {});
-		});
-
+		this.deviceOn('open', () => this._emit('open'));
+		this.deviceOn('closed', () => this._emit('closed'));
 	}
 }
 
-ContactSensorService.type = 'contact_sensor';
+ContactSensorService.type = 'contact-sensor';
 ContactSensorService.friendly_type = 'Contact Sensor';
 ContactSensorService.indefinite_article = 'A';
 

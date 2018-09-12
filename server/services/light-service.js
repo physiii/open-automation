@@ -17,14 +17,12 @@ class LightService extends Service {
 
 	setBrightness (brightness) {
 		return new Promise((resolve, reject) => {
-			if(brightness <= 0) {
-				if (this.state.power) {
-					this.setPower(false);
-				}
-			} else if (brightness > 0) {
-				if (!this.state.power) {
+			if (brightness > 0) {
+				if (this.state.power === false) {
 					this.setPower(true);
 				}
+			} else if (this.state.power === true) {
+				this.setPower(false);
 			}
 
 			this.deviceEmit('brightness/set', {brightness}, (error, data) => {

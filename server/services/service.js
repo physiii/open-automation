@@ -44,8 +44,8 @@ class Service {
 		this.originalDeviceOn(this.device_event_prefix + event, callback);
 	}
 
-	deviceEmit (event, data, callback) {
-		this.originalDeviceEmit(event, {...data, service_id:this.id, service_type:this.type}, callback);
+	deviceEmit (event, payload, callback) {
+		this.originalDeviceEmit(event, {payload, service_id: this.id, service_type: this.type}, callback);
 	}
 
 	setSettings (settings = {}) {

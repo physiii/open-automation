@@ -1,7 +1,7 @@
 const uuid = require('uuid/v4'),
 	utils = require('../utils.js'),
 	database = require('../database.js'),
-	GatewayDeviceDriver = require('./drivers/gateway-driver.js'),
+	StandardDeviceDriver = require('./drivers/standard-driver.js'),
 	LigerDeviceDriver = require('./drivers/liger-driver.js'),
 	GenericDeviceDriver = require('./drivers/generic-driver.js'),
 	ServicesManager = require('../services/services-manager.js'),
@@ -10,7 +10,7 @@ const uuid = require('uuid/v4'),
 
 class Device {
 	constructor (data, onUpdate, socket) {
-		const driver_class = Device.drivers[data.type] || GatewayDeviceDriver;
+		const driver_class = Device.drivers[data.type] || StandardDeviceDriver;
 
 		this.id = data.id || uuid();
 		this.token = data.token;
@@ -180,7 +180,7 @@ class Device {
 }
 
 Device.drivers = {
-	'gateway': GatewayDeviceDriver,
+	'gateway': StandardDeviceDriver,
 	'liger': LigerDeviceDriver,
 	'generic': GenericDeviceDriver
 };

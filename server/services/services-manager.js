@@ -68,7 +68,7 @@ class ServicesManager {
 ServicesManager.classes = {
 	'gateway': require('./gateway-service.js'),
 	'button': require('./button-service.js'),
-	'contact_sensor': require('./contact-sensor-service.js'),
+	'contact-sensor': require('./contact-sensor-service.js'),
 	'siren': require('./siren-service.js'),
 	'camera': require('./camera-service.js'),
 	'lock': require('./lock-service.js'),
