@@ -3,8 +3,8 @@ const moment = require('moment'),
 	EVENT_INTERVAL_DELAY = 5000;
 
 class EventMockService extends Service {
-	constructor (data, onUpdate, deviceOn, deviceEmit) {
-		super(data, onUpdate, deviceOn, deviceEmit);
+	constructor (data, onUpdate, deviceOn, deviceEmit, save) {
+		super(data, onUpdate, deviceOn, deviceEmit, save);
 
 		this.setState({connected: true});
 

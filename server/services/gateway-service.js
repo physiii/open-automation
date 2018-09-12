@@ -53,12 +53,6 @@ class GatewayService extends Service {
 			});
 		});
 	}
-
-	clientSerialize () {
-		return {
-			...Service.prototype.clientSerialize.apply(this, arguments)
-		};
-	}
 }
 
 GatewayService.type = 'gateway';

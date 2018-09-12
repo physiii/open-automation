@@ -109,24 +109,30 @@ class DevicesManager {
 				device.destroy();
 				devicesList.delete(deviceId);
 
+				this.handleDeviceUpdate(device);
+
 				resolve();
-			}).catch(reject);
+			}).catch((error) => {
+				console.error(TAG, 'There was an error deleting a device from the database.', device.id);
+				reject('There was an error deleting the device.');
+			});
 		});
 	}
 
 	handleDeviceConnection (deviceId, deviceToken, deviceType, socket) {
-		const device = this.getDeviceById(deviceId, null, true);
+		const device = this.getDeviceById(deviceId, null, true),
+			ready_to_add = deviceToken === deviceId;
 
 		// If the device doesn't exist, store the socket in escrow to be used
 		// when the device is added.
 		if (!device) {
-			if (deviceId !== deviceToken) {
-				console.log(TAG, 'Unknown Device connected.', deviceId, '- Device token mismatch...');
-			} else {
-				console.log(TAG, 'Unknown device connected.', deviceId, '- Device token match');
-			}
+			console.log(TAG, 'Unknown device connected.', deviceId, ready_to_add ? 'Ready to add.' : 'Resetting token.');
 
-			this.addToSocketEscrow(deviceId, deviceToken, deviceType, socket);
+			if (ready_to_add) {
+				this.addToSocketEscrow(deviceId, deviceToken, deviceType, socket);
+			} else {
+				socket.emit('token', {token: deviceId}, () => socket.emit('reconnect-to-relay'));
+			}
 
 			return;
 		}
@@ -242,30 +248,13 @@ class DevicesManager {
 				devicesList.clear();
 
 				devices.forEach((device) => {
-					this.addDevice(device);
+					this.addDevice({
+						...device,
+						is_saveable: true
+					});
 				});
 
 				resolve(devicesList);
-			}).catch(reject);
-		});
-	}
-
-	loadDeviceFromDb (deviceId) {
-		return new Promise((resolve, reject) => {
-			database.getDevice(deviceId).then((devices) => {
-				const device = devices[0];
-
-				if (!device) {
-					reject('Device not found.');
-					return;
-				}
-
-				this.addDevice({
-					...device,
-					is_saveable: true
-				});
-
-				resolve();
 			}).catch(reject);
 		});
 	}

@@ -2,13 +2,9 @@ const Service = require('./service.js'),
 	TAG = '[ButtonService]';
 
 class ButtonService extends Service {
-	constructor (data, onUpdate, deviceOn, deviceEmit) {
-		super(data, onUpdate, deviceOn, deviceEmit);
+	subscribeToDevice () {
+		Service.prototype.subscribeToDevice.apply(this, arguments);
 
-		this._subscribeToDevice();
-	}
-
-	_subscribeToDevice () {
 		this.deviceOn('pressed', (event_data) => this._emit('pressed', event_data));
 	}
 }

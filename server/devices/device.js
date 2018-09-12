@@ -4,6 +4,7 @@ const uuid = require('uuid/v4'),
 	StandardDeviceDriver = require('./drivers/standard-driver.js'),
 	LigerDeviceDriver = require('./drivers/liger-driver.js'),
 	GenericDeviceDriver = require('./drivers/generic-driver.js'),
+	DeviceSettings = require('./device-settings.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
 	TAG = '[Device]';
@@ -11,6 +12,8 @@ const uuid = require('uuid/v4'),
 class Device {
 	constructor (data, onUpdate, socket) {
 		const driver_class = Device.drivers[data.type] || StandardDeviceDriver;
+
+		this.save = this.save.bind(this);
 
 		this.id = data.id || uuid();
 		this.token = data.token;
@@ -22,13 +25,29 @@ class Device {
 
 		this.onUpdate = () => onUpdate(this);
 
-		this.driver_data = data.driver_data;
+		this.driver_data = {...data.driver_data};
 		this.driver = new driver_class(this.driver_data, socket, this.id, data.services);
-		this.services = new ServicesManager(this, data.services, this.driver.on.bind(this.driver), this.driver.emit.bind(this.driver), this.onUpdate);
 
-		this._setSettings(data.settings);
-		this._setInfo(data.info);
+		const driverOn = this.driver.on.bind(this.driver),
+			driverEmit = this.driver.emit.bind(this.driver);
+
+		this.services = new ServicesManager(
+			this,
+			data.services,
+			driverOn,
+			driverEmit,
+			this.onUpdate,
+			this.save
+		);
+		this.settings = new DeviceSettings(
+			data.settings,
+			data.settings_definitions,
+			this.constructor.settings_definitions,
+			driverEmit,
+			this.save
+		);
 		this.state = utils.onChange({connected: false}, this.onUpdate);
+		this.setInfo(data.info);
 
 		if (socket) {
 			this.setSocket(socket, this.token);
@@ -36,18 +55,6 @@ class Device {
 
 		this.subscribeToDriver();
 		this.driver.init();
-	}
-
-	_setSettings (settings = {}) {
-		this.settings = {
-			name: settings.name
-		};
-	}
-
-	_setInfo (info = {}) {
-		this.info = {
-			manufacturer: info.manufacturer
-		};
 	}
 
 	subscribeToDriver () {
@@ -64,8 +71,12 @@ class Device {
 				this.services.updateServices(data.device.services);
 			}
 
+			if (data.device.settings_definitions) {
+				this.settings.setDefinitions(data.device.settings_definitions);
+			}
+
 			if (data.device.info) {
-				this._setInfo(data.info);
+				this.setInfo(data.info);
 			}
 
 			this.onUpdate();
@@ -77,9 +88,24 @@ class Device {
 		});
 	}
 
+	setInfo ({manufacturer, model, firmware_version, hardware_version, serial} = {}) {
+		this.info = {
+			manufacturer,
+			model,
+			firmware_version,
+			hardware_version,
+			serial
+		};
+	}
+
+	setSettings (settings) {
+		return this.settings.set(settings).then(this.onUpdate);
+	}
+
 	setToken (token) {
 		return new Promise((resolve, reject) => {
-			const current_token = this.token;
+			const original_token = this.token,
+				original_is_saveable = this.is_saveable;
 
 			if (!this.state.connected) {
 				console.log(TAG, this.id, 'Cannot set device token when the device is not connected.');
@@ -105,15 +131,17 @@ class Device {
 					resolve(this.token);
 				}).catch((error) => {
 					// Undo token change locally.
-					this.token = current_token;
-					this.is_saveable = false;
-
-					// Undo token change on device.
-					this.driver.emit('token', {token: current_token}, (undo_error) => {
-						console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
-					});
+					this.token = original_token;
+					this.is_saveable = original_is_saveable;
 
 					console.error(TAG, this.id, 'Error saving device token to database.', error);
+
+					// Undo token change on device.
+					this.driver.emit('token', {token: original_token}, (undo_error) => {
+						if (undo_error) {
+							console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
+						}
+					});
 
 					reject(error);
 				});
@@ -151,9 +179,9 @@ class Device {
 			id: this.id,
 			account_id: this.account_id,
 			gateway_id: this.gateway_id,
-			settings: this.settings,
 			services: this.services.getSerializedServices(),
-			info: this.info
+			info: this.info,
+			...this.settings.serialize()
 		};
 	}
 
@@ -176,8 +204,19 @@ class Device {
 
 	destroy () {
 		this.driver.destroy();
+		this.services.destroy();
 	}
 }
+
+Device.settings_definitions = new Map()
+	.set('name', {
+		type: 'string',
+		label: 'Name',
+		validation: {
+			is_required: true,
+			max_length: 24
+		}
+	});
 
 Device.drivers = {
 	'gateway': StandardDeviceDriver,

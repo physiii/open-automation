@@ -2,8 +2,8 @@ const Service = require('./service.js'),
 	TAG = '[LockService]';
 
 class LockService extends Service {
-	constructor (data, onUpdate, deviceOn, deviceEmit) {
-		super(data, onUpdate, deviceOn, deviceEmit);
+	constructor (data, onUpdate, deviceOn, deviceEmit, save) {
+		super(data, onUpdate, deviceOn, deviceEmit, save);
 
 		this.lock = this.lock.bind(this);
 		this.unlock = this.unlock.bind(this);
@@ -46,17 +46,6 @@ class LockService extends Service {
 				resolve();
 			});
 		});
-	}
-
-	serialize () {
-		return {
-			...Service.prototype.serialize.apply(this, arguments),
-			zwave_node_id: this.zwave_node_id
-		};
-	}
-
-	dbSerialize () {
-		return this.serialize();
 	}
 }
 

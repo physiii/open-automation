@@ -26,7 +26,6 @@ export class RegisterForm extends React.Component {
 			.field('confirm_password', 'Password Confirmation', mustMatch('password', 'Password'));
 
 		this.handleFieldChange = this.handleFieldChange.bind(this);
-		this.handleFieldBlur = this.handleFieldBlur.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -34,21 +33,12 @@ export class RegisterForm extends React.Component {
 		this.validator.setState(this.state);
 	}
 
-	handleFieldChange (event, field) {
+	handleFieldChange (event) {
 		const newValue = event.target.value;
 
 		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'change', newValue)
-		});
-	}
-
-	handleFieldBlur (event, field) {
-		const newValue = event.target.value;
-
-		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'blur', newValue)
+			[event.target.name]: newValue,
+			validation_errors: this.validator.validateField(event.target.name, newValue, event.type)
 		});
 	}
 
@@ -72,26 +62,30 @@ export class RegisterForm extends React.Component {
 				<TextField
 					name="email"
 					label="Email"
+					type="email"
+					autoComplete="email"
 					value={this.state.email}
 					error={this.state.validation_errors.email}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<TextField
 					name="password"
 					label="Password"
 					type="password"
+					autoComplete="new-password"
 					value={this.state.password}
 					error={this.state.validation_errors.password}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<TextField
 					name="confirm_password"
 					label="Confirm Password"
 					type="password"
+					autoComplete="new-password"
 					value={this.state.confirm_password}
 					error={this.state.validation_errors.confirm_password}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<Actions>
 					<Button type="filled" submitForm={true}>Create Account</Button>
 				</Actions>

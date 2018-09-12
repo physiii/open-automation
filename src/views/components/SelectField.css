@@ -1,0 +1,22 @@
+.select,
+.input {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.input {
+	opacity: 0;
+	z-index: 1;
+	cursor: pointer;
+	color: initial;
+}
+
+.icon {
+	display: flex;
+	position: absolute;
+	top: calc(50% - 5px);
+	right: 17px;
+}
