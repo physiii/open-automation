@@ -38,17 +38,8 @@ const cameraStartStream = (cameraServiceId) => (dispatch) => {
 	thermostatSetTemp = (thermostatServiceId, temp) => () => {
 		Api.thermostatSetTemp(thermostatServiceId, temp);
 	},
-	thermostatCool = (thermostatServiceId) => () => {
-		Api.thermostatSetMode(thermostatServiceId, 'cool');
-	},
-	thermostatHeat = (thermostatServiceId) => () => {
-		Api.thermostatSetMode(thermostatServiceId, 'heat');
-	},
-	thermostatOff = (thermostatServiceId) => () => {
-		Api.thermostatSetMode(thermostatServiceId, 'off');
-	},
-	thermostatAuto = (thermostatServiceId) => () => {
-		Api.thermostatSetMode(thermostatServiceId, 'auto');
+	thermostatSetMode = (thermostatServiceId, mode) => () => {
+		Api.thermostatSetMode(thermostatServiceId, mode);
 	},
 	thermostatRemoveHold = (thermostatServiceId) => () => {
 		Api.thermostatSetHold(thermostatServiceId, 'off');
@@ -74,10 +65,7 @@ export {
 	lockUnlock,
 	lockSetRelockDelay,
 	thermostatSetTemp,
-	thermostatCool,
-	thermostatHeat,
-	thermostatOff,
-	thermostatAuto,
+	thermostatSetMode,
 	thermostatRemoveHold,
 	thermostatSetHold,
 	thermostatFanOn,
