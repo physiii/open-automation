@@ -4,13 +4,24 @@ import Button from './Button.js';
 import './TabBar.css';
 
 export const TabBar = (props) => (
-	<div styleName="tabBar">
-		{props.buttons.map((button, index) => <Button key={index} to={button.to}>{button.label}</Button>)}
+	<div styleName="bar">
+		<ul styleName="tabs">
+			{props.buttons.map((button, index) => (
+				<li styleName={'tab' + (button.isActive ? ' active' : '')} key={index}>
+					<Button type="tab" to={button.to} icon={button.icon} onClick={(event) => event.target.blur()}>{button.label}</Button>
+				</li>
+			))}
+		</ul>
 	</div>
 );
 
 TabBar.propTypes = {
-	buttons: PropTypes.array // TODO: Array of shapes.
+	buttons: PropTypes.arrayOf(PropTypes.shape({
+		label: PropTypes.string,
+		icon: PropTypes.node,
+		to: PropTypes.string,
+		isActive: PropTypes.bool
+	}))
 };
 
 TabBar.defaultProps = {

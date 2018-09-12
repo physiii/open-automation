@@ -15,13 +15,6 @@
 	height: 100%;
 	-webkit-overflow-scrolling: touch;
 }
-.contentCentered {
-	composes: content;
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-	align-items: center;
-}
 .tabBar {
 	display: flex;
 	flex-flow: column nowrap;

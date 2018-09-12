@@ -1,7 +1,14 @@
 import * as actions from './actions';
 import Api from '../../../api.js';
 
-const cameraStartStream = (cameraServiceId) => (dispatch) => {
+const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch) => {
+		dispatch(actions.setSettings(serviceId, settings));
+
+		Api.setServiceSettings(serviceId, settings).catch((error) => {
+			dispatch(actions.setSettingsError(serviceId, originalSettings, error));
+		});
+	},
+	cameraStartStream = (cameraServiceId) => (dispatch) => {
 		Api.cameraStartLiveStream(cameraServiceId).then((data) => {
 			dispatch(actions.cameraStreamLive(cameraServiceId, data.stream_token));
 		});
@@ -32,11 +39,28 @@ const cameraStartStream = (cameraServiceId) => (dispatch) => {
 	lockUnlock = (lockServiceId) => () => {
 		Api.lockSetLocked(lockServiceId, false);
 	},
-	lockSetRelockDelay = (lockServiceId, relockDelay) => () => {
-		Api.lockSetRelockDelay(lockServiceId, relockDelay);
+	thermostatSetTemp = (thermostatServiceId, temp) => () => {
+		Api.thermostatSetTemp(thermostatServiceId, temp);
+	},
+	thermostatSetMode = (thermostatServiceId, mode) => () => {
+		Api.thermostatSetMode(thermostatServiceId, mode);
+	},
+	thermostatRemoveHold = (thermostatServiceId) => () => {
+		Api.thermostatSetHold(thermostatServiceId, 'off');
+	},
+	thermostatSetHold = (thermostatServiceId) => () => {
+		Api.thermostatSetHold(thermostatServiceId, 'on');
+	},
+	thermostatFanOn = (thermostatServiceId) => () => {
+		Api.thermostatSetFan(thermostatServiceId, 'on');
+	},
+	thermostatFanAuto = (thermostatServiceId) => () => {
+		Api.thermostatSetFan(thermostatServiceId, 'auto');
 	};
 
+
 export {
+	setServiceSettings,
 	cameraStartStream,
 	cameraStopStream,
 	cameraFetchRecordings,
@@ -44,5 +68,10 @@ export {
 	cameraStopRecordingStream,
 	lockLock,
 	lockUnlock,
-	lockSetRelockDelay
+	thermostatSetTemp,
+	thermostatSetMode,
+	thermostatRemoveHold,
+	thermostatSetHold,
+	thermostatFanOn,
+	thermostatFanAuto
 };

@@ -22,7 +22,6 @@ export class LoginForm extends React.Component {
 			.field('password', 'Password', required);
 
 		this.handleFieldChange = this.handleFieldChange.bind(this);
-		this.handleFieldBlur = this.handleFieldBlur.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -30,21 +29,12 @@ export class LoginForm extends React.Component {
 		this.validator.setState(this.state);
 	}
 
-	handleFieldChange (event, field) {
+	handleFieldChange (event) {
 		const newValue = event.target.value;
 
 		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'change', newValue)
-		});
-	}
-
-	handleFieldBlur (event, field) {
-		const newValue = event.target.value;
-
-		this.setState({
-			[field]: newValue,
-			validation_errors: this.validator.validateField(field, 'blur', newValue)
+			[event.target.name]: newValue,
+			validation_errors: this.validator.validateField(event.target.name, newValue, event.type)
 		});
 	}
 
@@ -68,18 +58,21 @@ export class LoginForm extends React.Component {
 				<TextField
 					name="email"
 					label="Email"
+					type="email"
+					autoComplete="email"
 					value={this.state.email}
 					error={this.state.validation_errors.email}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<TextField
 					name="password"
 					label="Password"
 					type="password"
+					autoComplete="current-password"
 					value={this.state.password}
 					error={this.state.validation_errors.password}
 					onChange={this.handleFieldChange}
-					onBlur={this.handleFieldBlur} />
+					onBlur={this.handleFieldChange} />
 				<Actions>
 					<Button type="filled" submitForm={true}>Login</Button>
 				</Actions>

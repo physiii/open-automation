@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from './Toolbar.js';
+import Button from './Button.js';
 import './ServiceCardBase.css';
 
 export const ServiceCardBase = (props) => {
@@ -26,25 +27,31 @@ export const ServiceCardBase = (props) => {
 				</div>
 			</div>
 			<div styleName={props.toolbarsOverlayContent ? 'contentBehindToolbars' : 'content'}>
-				{props.content}
+				{props.children}
 			</div>
 			<div styleName={props.hideToolbars ? 'bottomBarHidden' : 'bottomBar'}>
-				<Toolbar leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>} />
+				<Toolbar
+					leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>}
+					rightChildren={<div onClick={(event) => event.stopPropagation()}>
+						<Button to={`${props.parentPath}/service/${props.service.id}`}>Settings</Button>
+					</div>} />
 			</div>
 		</section>
 	);
 };
 
 ServiceCardBase.propTypes = {
+	service: PropTypes.object,
 	name: PropTypes.string,
 	status: PropTypes.string,
 	icon: PropTypes.node,
 	isConnected: PropTypes.bool,
-	content: PropTypes.node,
+	children: PropTypes.node,
 	toolbarsOverlayContent: PropTypes.bool,
 	secondaryAction: PropTypes.node,
 	hideToolbars: PropTypes.bool,
-	onCardClick: PropTypes.func
+	onCardClick: PropTypes.func,
+	parentPath: PropTypes.string
 };
 
 export default ServiceCardBase;

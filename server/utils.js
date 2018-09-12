@@ -1,189 +1,99 @@
-// -------------------  author: Andy Payne andy@pyfi.org ----------------------- //
-// -----------------  https://plus.google.com/+AndyPayne42  -------------------- //
+const isEmpty = (value) => {
+		if (typeof value === 'number') {
+			if (Object.is(value, NaN)) {
+				return true;
+			}
 
+			return false;
+		}
+
+		if (typeof value === 'boolean') {
+			return false;
+		}
+
+		if (typeof value === 'undefined' || value === null) {
+			return true;
+		}
+
+		// Arrays and strings.
+		if (typeof value.length !== 'undefined' && value.length === 0) {
+			return true;
+		}
+	},
+	onChange = (object, onChange) => {
+		const handler = {
+			get (target, property, receiver) {
+				let value = target[property];
+
+				const tag = Object.prototype.toString.call(value),
+					shouldBindProperty = (property !== 'constructor') && (
+						tag === '[object Function]' ||
+						tag === '[object AsyncFunction]' ||
+						tag === '[object GeneratorFunction]'
+					);
+
+				if (shouldBindProperty) {
+					value = value.bind(target);
+				}
+
+				try {
+					return new Proxy(value, handler);
+				} catch (err) {
+					return Reflect.get(target, property, receiver);
+				}
+			},
+			defineProperty (target, property, descriptor) {
+				const result = Reflect.defineProperty(target, property, descriptor);
+				onChange();
+				return result;
+			},
+			deleteProperty (target, property) {
+				const result = Reflect.deleteProperty(target, property);
+				onChange();
+				return result;
+			}
+		};
+
+		return new Proxy(object, handler);
+	},
+	stripHtml = (string = '') => {
+		return string.replace(/(<([^>]+)>)/ig, '');
+	},
+	isValidRgbArray = (array) => {
+		if (!Array.isArray(array)) return false;
+		if (array.length !== 3) return false;
+		if (typeof array[0] !== 'number') return false;
+		if (typeof array[1] !== 'number') return false;
+		if (typeof array[2] !== 'number') return false;
+		if (array[0] < 0 || array[0] > 255) return false;
+		if (array[1] < 0 || array[1] > 255) return false;
+		if (array[2] < 0 || array[2] > 255) return false;
+
+		return true;
+	},
+	validators = {
+		'string': () => (value, label) => typeof value === 'string' ? null : label + ' must be a string.',
+		'boolean': () => (value, label) => typeof value === 'boolean' ? null : label + ' must be boolean.',
+		'decimal': () => (value, label) => Number.isFinite(value) ? null : label + ' must be a number.',
+		'integer': () => (value, label) => Number.isInteger(value) ? null : label + ' must be a whole number.',
+		'percentage': (scale = 1) => (value, label) => typeof value === 'number' && value >= 0 && value <= scale ? null : label + ' must be a number between 0 and ' + scale + '.',
+		'color': () => (value, label) => isValidRgbArray(value) ? null : label + ' must be an RGB array (e.g. [255, 255, 255]).',
+		'one-of': (options = []) => (value, label) => {
+			return options.some((option) => option === value)
+				? null
+				: label + ' must be one of these: ' + options.map((option) => option + ' (' + typeof option + ')').join(', ') + '.';
+		},
+		'is_required': (is_required) => (value, label) => !is_required || !isEmpty(value) ? null : label + ' is required.',
+		'min': (min) => (value, label) => value >= min ? null : label + ' must be at least ' + min + '.',
+		'max': (max) => (value, label) => value <= max ? null : label + ' must be no more than ' + max + '.',
+		'min_length': (min_length) => (value, label) => value.length >= min_length ? null : label + ' must be at least ' + min_length + ' characters long.',
+		'max_length': (max_length) => (value, label) => value.length <= max_length ? null : label + ' must be no more than ' + max_length + ' characters long.'
+	};
 
 module.exports = {
-  onChange,
-  stripHtml,
-  find_index,
-  get_mac,
-  get_local_ip,
-  get_public_ip
-}
-
-const crypto = require('crypto'),
-	request = require('request'),
-	exec = require('child_process').exec;
-	os = require('os'),
-	fs = require('fs');
-
-// ---------------------- device info  ------------------- //
-var local_ip = "init";
-var ifaces = os.networkInterfaces();
-var mac = "init";
-var device_type = ["gateway"];
-//var device_name = "Gateway";
-var public_ip = "init";
-get_public_ip();
-get_local_ip();
-get_mac();
-main_loop();
-
-function get_local_ip() {
-Object.keys(ifaces).forEach(function (ifname) {
-  var alias = 0;
-  ifaces[ifname].forEach(function (iface) {
-    if ('IPv4' !== iface.family || iface.internal !== false) {
-      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-      return;
-    }
-    if (alias >= 1) {
-      // this single interface has multiple ipv4 addresses
-      //console.log(ifname + ':' + alias, iface.address);
-    } else {
-      // this interface has only one ipv4 adress
-      //console.log(ifname, iface.address);
-    }
-    local_ip = iface.address;
-    ++alias;
-    module.exports.local_ip = local_ip;
-  });
-});
-}
-
-function get_public_ip() {
-  request.get(
-  'http://pyfi.org/php/get_ip.php',
-  function (error, response, data) {
-    if (!error && response.statusCode == 200) {
-      public_ip = data;
-      module.exports.public_ip = public_ip;
-      if (error !== null) console.log(error);
-    }
-  });
-}
-
-function onChange (object, onChange) {
-  const handler = {
-    get (target, property, receiver) {
-      let value = target[property];
-
-      const tag = Object.prototype.toString.call(value),
-        shouldBindProperty = (property !== 'constructor') && (
-          tag === '[object Function]' ||
-          tag === '[object AsyncFunction]' ||
-          tag === '[object GeneratorFunction]'
-        );
-
-      if (shouldBindProperty) {
-        value = value.bind(target);
-      }
-
-      try {
-        return new Proxy(value, handler);
-      } catch (err) {
-        return Reflect.get(target, property, receiver);
-      }
-    },
-    defineProperty (target, property, descriptor) {
-      const result = Reflect.defineProperty(target, property, descriptor);
-      onChange();
-      return result;
-    },
-    deleteProperty (target, property) {
-      const result = Reflect.deleteProperty(target, property);
-      onChange();
-      return result;
-    }
-  };
-
-  return new Proxy(object, handler);
-}
-
-function stripHtml (string = '') {
-	return string.replace(/(<([^>]+)>)/ig, '');
-}
-
-
-// ----------------------  disk management ------------------- //
-var diskspace = require('diskspace');
-var findRemoveSync = require('find-remove');
-var _ = require('underscore');
-var path = require('path');
-var rimraf = require('rimraf');
-var free_space = 0;
-timeout();
-check_diskspace();
-function timeout() {
-  setTimeout(function () {
-    check_diskspace();
-    timeout();
-  }, 30*1000);
-}
-
-function check_diskspace() {
-  diskspace.check('/', function (err, total, free, status)
-  {
-    //console.log("free space: " + free);
-    if (free < 2000000000) {
-      remove_old_files();
-    }
-    var info = {free:free, total:total}
-    return info;
-  });
-}
-
-function remove_old_files() {
-      // Return only base file name without dir
-      var oldest_dir = getMostRecentFileName('/var/lib/motion');
-      try {
-       var result = findRemoveSync('/var/lib/motion/' + oldest_dir, {age: {seconds: 0}}, {files: '*'});
-rimraf('/var/lib/motion/' + oldest_dir, function(error) {
-        if(error) {
-          console.log(error);
-        } else {
-          console.log('Files deleted');
-        }
-      });
-      console.log("removed old files | " + oldest_dir);
-      }
-      catch (e) {
-	console.log(e);
-      }
-}
-
-// -------------------------------------------------------------- //
-function get_mac () {
-  require('getmac').getMac(function(err,macAddress){
-    if (err)  throw err
-    mac = macAddress.replace(/:/g,'').replace(/-/g,'').toLowerCase();
-    var token = crypto.createHash('sha512').update(mac).digest('hex');
-    console.log("Mac: (" + mac + ")");
-    module.exports.mac = mac;
-  });
-}
-
-function main_loop () {
-setTimeout(function () {
-  get_public_ip();
-  main_loop();
-  //console.log("main loop");
-}, 60*1000);
-}
-
-function find_index(array, key, value) {
-  for (var i=0; i < array.length; i++) {
-    if (array[i][key] == value) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-function getMostRecentFileName(dir) {
-  var files = fs.readdirSync(dir);
-  return _.min(files, function (f) {
-    var fullpath = path.join(dir, f);
-    return fs.statSync(fullpath).ctime;
-  });
-}
+	isEmpty,
+	onChange,
+	stripHtml,
+	isValidRgbArray,
+	validators
+};

@@ -1,54 +1,105 @@
 const moment = require('moment'),
 	config = require('../../config.json'),
 	Service = require('./service.js'),
-	GatewayCameraDriver = require('./drivers/camera-gateway.js'),
 	TAG = '[CameraService]';
 
 class CameraService extends Service {
-	constructor (data, onUpdate, gateway_socket) {
-		super(data, onUpdate);
+	subscribeToDevice () {
+		Service.prototype.subscribeToDevice.apply(this, arguments);
 
-		this.driver = new GatewayCameraDriver(this.id, gateway_socket);
-		this.subscribeToDriver();
-	}
+		this.deviceOn('motion-started', (event_data) => {
+			this._emit('motion-started', event_data);
 
-	subscribeToDriver () {
-		this.driver.on('state update', (state) => this.setState(state));
-		this.driver.on('motion-started', (event_data) => this._emit('motion-started', event_data));
-		this.driver.on('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
-		this.driver.on('motion-recorded', (event_data) => this._emit('motion-recorded', event_data));
-	}
+			this.getPreviewImage().then((preview_image) => {
+				this.state.preview_image = preview_image;
+				this.onUpdate();
+			});
+		});
+		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
+		this.deviceOn('motion-recorded', (event_data) => {
+			this._emit('motion-recorded', event_data);
 
-	setSettings (settings = {}) {
-		this.settings = {
-			resolution_w: settings.resolution_w || 640,
-			resolution_h: settings.resolution_h || 480,
-			rotation: settings.rotation || 0
-		}
+			this.state.preview_image = event_data.preview_image;
+			this.onUpdate();
+		});
 	}
 
 	streamLive () {
-		return this.driver.streamLive();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('stream/live', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
 	}
 
 	stopLiveStream () {
-		return this.driver.stopLiveStream();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('stream/stop', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	getPreviewImage () {
-		return this.driver.getPreview();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('preview/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.preview);
+			});
+		});
 	}
 
 	getRecordings () {
-		return this.driver.getRecordings();
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recordings/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.recordings);
+			});
+		});
 	}
 
 	streamRecording (recording_id) {
-		return this.driver.streamRecording(recording_id);
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/stream', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
 	}
 
 	stopRecordingStream (recording_id) {
-		return this.driver.stopRecordingStream(recording_id);
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/stream/stop', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	getRecordingLink (recording_id, recording_date) {

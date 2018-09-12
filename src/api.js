@@ -42,8 +42,16 @@ class Api {
 		return Api.apiCall('device/add', {device});
 	}
 
-	removeDevice (deviceID) {
-		return Api.apiCall('device/remove', {device_id: deviceID});
+	setDeviceSettings (deviceId, settings) {
+		return Api.apiCall('device/settings/set', {device_id: deviceId, settings});
+	}
+
+	deleteDevice (deviceId) {
+		return Api.apiCall('device/delete', {device_id: deviceId});
+	}
+
+	setServiceSettings (serviceId, settings) {
+		return Api.apiCall('service/settings/set', {service_id: serviceId, settings});
 	}
 
 	// Gateway Service
@@ -84,8 +92,22 @@ class Api {
 		return Api.apiCall('lock/locked/set', {service_id: lockServiceId, locked});
 	}
 
-	lockSetRelockDelay (lockServiceId, relockDelay) {
-		return Api.apiCall('lock/relock-delay/set', {service_id: lockServiceId, relock_delay: relockDelay});
+	// Thermostat Service
+
+	thermostatSetTemp (thermostatServiceId, temp) {
+		return Api.apiCall('thermostat/temp/set', {service_id: thermostatServiceId, temp});
+	}
+
+	thermostatSetMode (thermostatServiceId, mode) {
+		return Api.apiCall('thermostat/mode/set', {service_id: thermostatServiceId, mode});
+	}
+
+	thermostatSetHold (thermostatServiceId, holdMode) {
+		return Api.apiCall('thermostat/hold-mode/set', {service_id: thermostatServiceId, hold_mode: holdMode});
+	}
+
+	thermostatSetFan (thermostatServiceId, fanMode) {
+		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fan_mode: fanMode});
 	}
 
 	// Session API
@@ -201,7 +223,7 @@ class Api {
 		return new Promise((resolve, reject) => {
 			this.closeSocket();
 
-			api.relaySocket = io({
+			api.relaySocket = io('/client-api', {
 				transportOptions: {
 					polling: {
 						extraHeaders: {

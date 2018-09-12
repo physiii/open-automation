@@ -13,18 +13,32 @@ class SceneManager {
 		return this.loadScenesFromDb();
 	}
 
-	setScene (scene_id, account_id) {
+	setScene (scene_id, account_id, fallback_values = {}) {
 		const scene = this.getSceneById(scene_id, account_id);
 
 		if (!scene) {
-			console.error(TAG, 'Tried to set scene ' + scene_id + ', but scene was not found.');
+			console.error(TAG, 'Tried to set scene ' + scene_id + ', but scene was not found or it does not belong to the account.');
 			return;
 		}
 
 		scene.actions.forEach((action) => {
 			const service = DevicesManager.getServiceById(action.service_id, scene.account_id);
 
-			service.action(action);
+			if (!service) {
+				console.error(TAG, 'Tried to set an action for scene ' + scene_id + ', but the service was not found or it does not belong to the account.');
+				return;
+			}
+
+			const action_fallback_values = fallback_values[service.constructor.type] || {};
+
+			let value = action.value;
+
+			// If there's no value for the action, use the fallback value.
+			if (!action.hasOwnProperty('value')) {
+				value = action_fallback_values[action.property];
+			}
+
+			service.action({...action, value});
 		});
 	}
 
