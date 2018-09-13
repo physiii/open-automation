@@ -31,7 +31,9 @@ export const ThermostatCard = (props) => {
 			status={'Thermostat mode: ' + currentMode + '\nCurrent Temp: ' + currentTemp + '\nTarget Temp: ' + targetTemp + '\nFan mode: ' + fanMode + '\nHold Mode: ' + holdMode}
 			isConnected={props.service.state.connected}
 			onCardClick={toggleMode}
-			content={<Button onClick={toggleMode}>{'Mode Cycle => ' + props.service.state.mode}</Button>} />
+			{...props}>
+			<Button onClick={toggleMode}>{'Mode Cycle => ' + props.service.state.mode}</Button>
+		</ServiceCardBase>
 	);
 };
 
