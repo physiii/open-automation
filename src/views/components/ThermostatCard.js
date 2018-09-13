@@ -8,7 +8,7 @@ import {thermostatSetTemp, thermostatSetMode, thermostatRemoveHold, thermostatSe
 export const ThermostatCard = (props) => {
 	const currentMode = props.service.state.mode,
 		currentTemp = props.service.state.current_temp,
-		targetTemp = props.service.state.target_Temp,
+		targetTemp = props.service.state.target_temp,
 		fanMode = props.service.state.fan_mode,
 		holdMode = props.service.state.hold_mode,
 		toggleMode = () => {
