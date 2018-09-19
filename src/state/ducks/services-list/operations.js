@@ -45,11 +45,8 @@ const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch)
 	thermostatSetMode = (thermostatServiceId, mode) => () => {
 		Api.thermostatSetMode(thermostatServiceId, mode);
 	},
-	thermostatRemoveHold = (thermostatServiceId) => () => {
-		Api.thermostatSetHold(thermostatServiceId, 'off');
-	},
-	thermostatSetHold = (thermostatServiceId) => () => {
-		Api.thermostatSetHold(thermostatServiceId, 'on');
+	thermostatSetHold = (thermostatServiceId, mode) => () => {
+		Api.thermostatSetHold(thermostatServiceId, mode);
 	},
 	thermostatFanOn = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'on');
@@ -70,7 +67,6 @@ export {
 	lockUnlock,
 	thermostatSetTemp,
 	thermostatSetMode,
-	thermostatRemoveHold,
 	thermostatSetHold,
 	thermostatFanOn,
 	thermostatFanAuto
