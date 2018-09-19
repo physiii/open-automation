@@ -23,6 +23,28 @@ export const ThermostatCard = (props) => {
 			} else {
 				console.log('Mode is not defined as off, heat, cool, auto...')
 			}
+		},
+		toggleFan = () => {
+			if (fanMode === 'on') {
+				props.fanAuto(props.service.id);
+			} else if (fanMode === 'auto') {
+				props.fanOn(props.service.id);
+			} else {
+				console.log('Fan is not defined as on or auto...');
+			}
+		},
+		toggleHold = () => {
+			if (holdMode === 'off') {
+				props.setHold(props.service.id, 'on');
+			} else {
+				props.setHold(props.service.id, 'off');
+			}
+		},
+		tempUp = () => {
+			props.setTemp(props.service.id, targetTemp + 1);
+		},
+		tempDown = () => {
+			props.setTemp(props.service.id, targetTemp - 1);
 		};
 
 	return (
@@ -30,9 +52,18 @@ export const ThermostatCard = (props) => {
 			name={props.service.settings.name || 'Thermostat'}
 			status={'Thermostat mode: ' + currentMode + ' ||| Current Temp: ' + currentTemp + ' ||| Target Temp: ' + targetTemp + ' ||| Fan mode: ' + fanMode + ' ||| Hold Mode: ' + holdMode}
 			isConnected={props.service.state.connected}
-			onCardClick={toggleMode}
 			{...props}>
-			<Button onClick={toggleMode}>{'Mode Cycle => ' + props.service.state.mode}</Button>
+			<center>
+				<Button onClick={toggleMode}>{'Thermostat Mode => ' + props.service.state.mode}</Button>
+				<br />
+				<Button onClick={tempUp}>{'Temp Up'}</Button>
+				<br />
+				<Button onClick={tempDown}>{'Temp down'}</Button>
+				<br />
+				<Button onClick={toggleFan}>{'Fan Mode => ' + props.service.state.fan_mode}</Button>
+				<br />
+				<Button onClick={toggleHold}>{'Hold Mode => ' + props.service.state.hold_mode}</Button>
+			</center>
 		</ServiceCardBase>
 	);
 };
@@ -41,18 +72,15 @@ ThermostatCard.propTypes = {
 	service: PropTypes.object,
 	setTemp: PropTypes.func,
 	setHold: PropTypes.func,
-	removeHold: PropTypes.func,
 	fanOn: PropTypes.func,
-	fanOff: PropTypes.func,
 	fanAuto: PropTypes.func,
 	setMode: PropTypes.func
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		setTemp: (data) => dispatch(thermostatSetTemp(data.serviceId, data.temp)),
-		setHold: (serviceId) => dispatch(thermostatSetHold(serviceId)),
-		removeHold: (serviceId) => dispatch(thermostatRemoveHold(serviceId)),
+		setTemp: (serviceId, temp) => dispatch(thermostatSetTemp(serviceId, temp)),
+		setHold: (serviceId, mode) => dispatch(thermostatSetHold(serviceId, mode)),
 		fanOn: (serviceId) => dispatch(thermostatFanOn(serviceId)),
 		fanAuto: (serviceId) => dispatch(thermostatFanAuto(serviceId)),
 		setMode: (serviceId, mode) => dispatch(thermostatSetMode(serviceId, mode))
