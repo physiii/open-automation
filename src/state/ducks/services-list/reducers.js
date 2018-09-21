@@ -28,6 +28,7 @@ const initialState = Immutable.Map({
 						const currentServiceState = state.getIn(['services', service.id]);
 
 						return createService({
+							...currentServiceState && currentServiceState.toJS(),
 							...service,
 							device_id: device.id,
 							state: {
