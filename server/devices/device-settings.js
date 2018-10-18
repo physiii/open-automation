@@ -6,9 +6,9 @@ class DeviceSettings {
 		this.base_definitions = new Map(base_definitions);
 		this.deviceEmit = deviceEmit;
 		this.save = save;
+		this.settings = settings;
 
 		this.setDefinitions(definitions);
-		this.settings = this._applyDefaults(settings);
 	}
 
 	_applyDefaults (settings = {}) {
@@ -91,6 +91,8 @@ class DeviceSettings {
 			...this.base_definitions, // Set again so base definitions aren't overwritten.
 			...new Map().set('name', merged_name_definition)
 		]);
+
+		this.settings = this._applyDefaults(this.settings);
 	}
 
 	get (property) {

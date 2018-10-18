@@ -1,6 +1,7 @@
 const uuid = require('uuid/v4'),
 	utils = require('../utils.js'),
 	database = require('../database.js'),
+	debounce = require('debounce'),
 	StandardDeviceDriver = require('./drivers/standard-driver.js'),
 	LigerDeviceDriver = require('./drivers/liger-driver.js'),
 	GenericDeviceDriver = require('./drivers/generic-driver.js'),
@@ -23,7 +24,7 @@ class Device {
 		this.gateway_id = data.gateway_id;
 		this.is_saveable = data.is_saveable || false;
 
-		this.onUpdate = () => onUpdate(this);
+		this.onUpdate = debounce(() => onUpdate(this), 100);
 
 		this.driver_data = {...data.driver_data};
 		this.driver = new driver_class(this.driver_data, socket, this.id, data.services);
@@ -76,7 +77,7 @@ class Device {
 			}
 
 			if (data.device.info) {
-				this.setInfo(data.info);
+				this.setInfo(data.device.info);
 			}
 
 			this.onUpdate();
