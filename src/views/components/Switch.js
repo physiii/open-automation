@@ -6,7 +6,7 @@ export const Switch = (props) => {
 	const {isOn, ...inputProps} = {...props};
 
 	return (
-		<div styleName={'switch' + (isOn ? ' isOn' : '')}>
+		<div styleName={'switch' + (isOn ? ' isOn' : '') + (props.disabled ? ' isDisabled' : '')}>
 			<input
 				{...inputProps}
 				styleName="input"
@@ -17,7 +17,8 @@ export const Switch = (props) => {
 };
 
 Switch.propTypes = {
-	isOn: PropTypes.bool
+	isOn: PropTypes.bool,
+	disabled: PropTypes.bool
 };
 
 Switch.defaultProps = {

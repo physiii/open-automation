@@ -59,6 +59,7 @@ class Service {
 
 		if (settings_definitions) {
 			this.settings.setDefinitions(settings_definitions);
+			this.onUpdate();
 		}
 	}
 

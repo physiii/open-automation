@@ -91,14 +91,19 @@ export class DeviceDetailsScreen extends React.Component {
 								</React.Fragment>
 							)}
 							<h2 styleName="infoHeading">Info</h2>
-							<div styleName="info">
-								{device.info.manufacturer && 'Manufacturer: ' + device.info.manufacturer}
-								{device.info.model && 'Model: ' + device.info.model}
-								{device.info.firmware_version && 'Firmware: ' + device.info.firmware_version}
-								{device.info.hardware_version && 'Hardware: ' + device.info.hardware_version}
-								{device.info.serial && 'Serial Number: ' + device.info.serial}
-								ID: {device.id}
-							</div>
+							<ul styleName="info">
+								{device.info.manufacturer &&
+									<li>Manufacturer: {device.info.manufacturer}</li>}
+								{device.info.model &&
+									<li>Model: {device.info.model}</li>}
+								{device.info.firmware_version &&
+									<li>Firmware: {device.info.firmware_version}</li>}
+								{device.info.hardware_version &&
+									<li>Hardware: {device.info.hardware_version}</li>}
+								{device.info.serial &&
+									<li>Serial Number: {device.info.serial}</li>}
+								<li>ID: {device.id}</li>
+							</ul>
 						</div>
 					)} />
 					<Route path={this.props.match.path + ServiceDetailsScreen.routeParams} component={ServiceDetailsScreen} />

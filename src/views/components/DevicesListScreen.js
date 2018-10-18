@@ -22,7 +22,7 @@ export class DevicesListScreen extends React.Component {
 
 							return {
 								key: device.id,
-								icon: <ServiceIcon service={firstService} size={24} shouldRenderBlank={true} />,
+								icon: firstService && <ServiceIcon service={firstService} size={24} shouldRenderBlank={true} />,
 								label: device.settings.name || 'Device',
 								secondaryText: firstService && (firstService.settings.name || firstService.type) +
 									(additionalServicesCount > 0

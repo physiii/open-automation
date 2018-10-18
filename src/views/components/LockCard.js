@@ -20,6 +20,7 @@ export const LockCard = (props) => {
 			name={props.service.settings.name || 'Lock'}
 			status={props.service.state.locked ? 'Locked' : 'Unlocked'}
 			isConnected={props.service.state.connected}
+			onCardClick={toggleLock}
 			{...props}>
 			<Button onClick={toggleLock}>{props.service.state.locked ? 'Unlock' : 'Lock'}</Button>
 		</ServiceCardBase>

@@ -7,6 +7,9 @@
 
 	position: relative;
 }
+.isDisabled {
+	opacity: 0.5;
+}
 
 /* Track */
 .switch::before {
@@ -22,7 +25,7 @@
 
 	transition: all 0.09s;
 }
-.switch.isOn::before {
+.isOn::before {
 	background-color: primary;
 	opacity: 0.54;
 }
@@ -58,4 +61,7 @@
 	opacity: 0;
 	z-index: 1;
 	cursor: pointer;
+}
+.isDisabled .input {
+	cursor: inherit;
 }
