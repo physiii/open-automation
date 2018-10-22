@@ -10,7 +10,7 @@ import './GameMachineCard.css';
 
 export const GameMachineCard = (props) => {
 	const hopperLastEmptiedDate = moment(props.billAcceptorService.state.hopper_last_emptied),
-		hopperLastEmptied = hopperLastEmptiedDate.isValid() && props.service.state.connected
+		hopperLastEmptied = props.billAcceptorService.state.hopper_last_emptied && hopperLastEmptiedDate.isValid() && props.service.state.connected
 			? hopperLastEmptiedDate.format('h:mm a MMMM Do')
 			: 'Unknown',
 		billAcceptorDoorName = props.contactSensorService.settings.name || 'Bill Acceptor Door';
