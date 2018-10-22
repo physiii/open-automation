@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CameraIcon from '../icons/CameraIcon.js';
+import GameControllerIcon from '../icons/GameControllerIcon.js';
 
 export const ServiceIcon = (props) => {
 	const Icon = ServiceIcon.iconComponents[props.service.type];
@@ -19,7 +20,8 @@ ServiceIcon.propTypes = {
 };
 
 ServiceIcon.iconComponents = {
-	'camera': CameraIcon
+	'camera': CameraIcon,
+	'game-machine': GameControllerIcon
 };
 
 export default ServiceIcon;

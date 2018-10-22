@@ -73,15 +73,17 @@ class ServicesManager {
 }
 
 ServicesManager.classes = {
-	'gateway': require('./gateway-service.js'),
+	'bill-acceptor': require('./bill-acceptor-service.js'),
 	'button': require('./button-service.js'),
-	'contact-sensor': require('./contact-sensor-service.js'),
-	'siren': require('./siren-service.js'),
 	'camera': require('./camera-service.js'),
-	'lock': require('./lock-service.js'),
-	'thermostat': require('./thermostat-service.js'),
+	'contact-sensor': require('./contact-sensor-service.js'),
+	'event-mock': require('./event-mock-service.js'),
+	'game-machine': require('./game-machine-service.js'),
+	'gateway': require('./gateway-service.js'),
 	'light': require('./light-service.js'),
-	'event-mock': require('./event-mock-service.js')
+	'lock': require('./lock-service.js'),
+	'siren': require('./siren-service.js'),
+	'thermostat': require('./thermostat-service.js')
 };
 
 module.exports = ServicesManager;

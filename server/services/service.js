@@ -77,6 +77,19 @@ class Service {
 		return this.settings.set(settings).then(this.onUpdate);
 	}
 
+	getLog () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('log/get', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.log);
+			});
+		});
+	}
+
 	action (action) {
 		const property_definition = this.constructor.state_definitions[action.property],
 			setProperty = this[property_definition.setter].bind(this);

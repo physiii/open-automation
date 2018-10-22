@@ -119,6 +119,12 @@ class ClientConnection {
 				.catch(callback);
 		});
 
+		this.clientEndpoint('service/log/get', (data, callback) => {
+			data.service.getLog()
+				.then((log) => callback(null, {log}))
+				.catch(callback);
+		});
+
 		// Gateway Service API
 
 		this.clientEndpoint('gateway/devices-to-add/get', (data, callback) => {
