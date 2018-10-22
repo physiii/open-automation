@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import {getServices} from '../../state/ducks/services-list/selectors.js';
 
 export const Dashboard = (props) => {
-	const serviceCards = props.services.filter(ServiceCard.willRenderCard).map((service) => <ServiceCard service={service} parentPath={props.match.path} />);
+	const serviceCards = props.services.filter(ServiceCard.willRenderCard).map((service) => <ServiceCard service={service} parentPath={props.match.path} history={props.history} />);
 
 	return (
 		<NavigationScreen isContextRoot={true} path={props.match.url} title="Dashboard" shouldShowTitle={false}>
@@ -33,7 +33,8 @@ export const Dashboard = (props) => {
 
 Dashboard.propTypes = {
 	services: PropTypes.array.isRequired,
-	match: PropTypes.object.isRequired
+	match: PropTypes.object.isRequired,
+	history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({servicesList}) => ({

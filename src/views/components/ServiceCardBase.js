@@ -2,19 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from './Toolbar.js';
 import Button from './Button.js';
+import ServiceIcon from '../icons/ServiceIcon.js';
 import './ServiceCardBase.css';
 
 export const ServiceCardBase = (props) => {
-	const status = props.isConnected
-		? props.status
-		: 'Not Responding';
+	const settingsPath = `${props.parentPath}/service/${props.service.id}`,
+		status = props.isConnected
+			? props.status
+			: 'Not Responding';
 
 	return (
-		<section styleName="card" onClick={props.onCardClick}>
+		<section styleName="card" onClick={props.onCardClick || (() => props.history.push(settingsPath))}>
 			<div styleName={props.hideToolbars ? 'topBarHidden' : 'topBar'}>
-				{props.icon &&
+				{ServiceIcon.willRenderIcon(props.service) &&
 					<div styleName={props.isConnected ? 'icon' : 'disconnectedIcon'}>
-						{props.icon}
+						<ServiceIcon service={props.service} size={40} />
 					</div>}
 				<div styleName="nameWrapper">
 					<h1 styleName="name">
@@ -33,7 +35,7 @@ export const ServiceCardBase = (props) => {
 				<Toolbar
 					leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>}
 					rightChildren={<div onClick={(event) => event.stopPropagation()}>
-						<Button to={`${props.parentPath}/service/${props.service.id}`}>Settings</Button>
+						<Button to={settingsPath}>Settings</Button>
 					</div>} />
 			</div>
 		</section>
@@ -51,7 +53,8 @@ ServiceCardBase.propTypes = {
 	secondaryAction: PropTypes.node,
 	hideToolbars: PropTypes.bool,
 	onCardClick: PropTypes.func,
-	parentPath: PropTypes.string
+	parentPath: PropTypes.string,
+	history: PropTypes.object
 };
 
 export default ServiceCardBase;

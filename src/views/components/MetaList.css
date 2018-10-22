@@ -1,0 +1,62 @@
+.list {
+	display: grid;
+	width: 100%;
+	margin: 16px 0 0 0;
+}
+.list-horizontal {
+	composes: list;
+	grid-template-columns: repeat(auto-fit, minmax(calc(100% / 3), 1fr));
+}
+.list-vertical {
+	composes: list;
+	grid-template-columns: max-content;
+	grid-auto-flow: row;
+	padding: 0 16px;
+}
+
+.item {
+	display: flex;
+	flex-flow: column nowrap;
+	margin: 0 0 16px 0;
+}
+.item-long {
+	composes: item;
+	grid-column: 1 / -1;
+}
+.list-horizontal > .item {
+	padding: 0 16px;
+}
+.list-vertical > .item {
+	grid-column: 1;
+}
+
+.label {
+	font-size: 13px;
+	line-height: 18px;
+	color: #aaaaaa;
+}
+.label-top {
+	composes: label;
+}
+.label-left {
+	composes: label;
+	margin: 0 0 16px 0;
+}
+
+.value {
+	margin: 0;
+	padding-left: 24px;
+	font-size: 14px;
+	line-height: 18px;
+	user-select: text;
+	cursor: auto;
+}
+.value-right {
+	composes: value;
+	padding-left: 8px;
+	text-align: right;
+}
+.label-left + .value {
+	grid-column: 2;
+	margin: 0 0 16px 0;
+}

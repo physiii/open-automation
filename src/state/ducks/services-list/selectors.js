@@ -18,6 +18,37 @@ const getServices = (servicesList, toJs = true) => {
 		return toJs ? service.toJS() : service;
 	},
 	getServiceNameById = (servicesList, serviceId) => getServiceById(servicesList, serviceId).settings.name,
+	getServiceByTypeAndDeviceId = (servicesList, type, deviceId, toJs = true) => {
+		const servicesOfType = getServicesByType(servicesList, type, false),
+			service = servicesOfType.find((_service) => _service.device_id === deviceId);
+
+		if (!service) {
+			return;
+		}
+
+		return toJs ? service.toJS() : service;
+	},
+	getSettingsOptionLabelByValue = (servicesList, serviceId, setting, value) => {
+		const service = getServiceById(servicesList, serviceId, false);
+
+		if (!service) {
+			return;
+		}
+
+		const valueOptions = service.getIn(['settings_definitions', setting, 'value_options']);
+
+		if (!valueOptions) {
+			return;
+		}
+
+		const option = valueOptions.find((_option) => _option.value === value);
+
+		if (!option) {
+			return;
+		}
+
+		return option.label || option.value;
+	},
 	cameraGetRecordings = (servicesList, cameraServiceId, toJs = true) => {
 		const cameraService = getServiceById(servicesList, cameraServiceId, false);
 
@@ -72,6 +103,8 @@ export {
 	getServicesByType,
 	getServiceById,
 	getServiceNameById,
+	getServiceByTypeAndDeviceId,
+	getSettingsOptionLabelByValue,
 	cameraGetRecordings,
 	cameraGetRecordingsByDate,
 	cameraGetRecordingById,

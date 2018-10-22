@@ -20,6 +20,13 @@ export const isEmpty = (value) => {
 			return true;
 		}
 	},
+	formatUsd = Intl
+		? new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: 'USD',
+			minimumFractionDigits: 0
+		}).format
+		: (number) => number, // Fallback if Internationalization API isn't available.
 	getUniqueId = (() => {
 		let count = 0;
 

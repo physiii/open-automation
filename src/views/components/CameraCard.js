@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import ServiceCardBase from './ServiceCardBase.js';
-import ServiceIcon from '../icons/ServiceIcon.js';
 import Button from './Button.js';
 import VideoPlayer from './VideoPlayer.js';
 
@@ -45,7 +44,6 @@ export class CameraCard extends React.Component {
 				service={this.props.service}
 				name={this.props.service.settings.name || 'Camera'}
 				status={lastRecordingDate && 'Movement detected ' + moment(lastRecordingDate).fromNow()}
-				icon={<ServiceIcon service={this.props.service} size={40} />}
 				isConnected={this.props.service.state.connected}
 				onCardClick={this.onCardClick}
 				toolbarsOverlayContent={true}

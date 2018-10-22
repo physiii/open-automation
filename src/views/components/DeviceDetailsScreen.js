@@ -5,6 +5,7 @@ import NavigationScreen from './NavigationScreen.js';
 import SettingsForm from './SettingsForm.js';
 import List from './List.js';
 import Button from './Button.js';
+import MetaList from './MetaList.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
 import ServiceDetails from './ServiceDetails.js';
 import ServiceDetailsScreen from './ServiceDetailsScreen.js';
@@ -91,19 +92,16 @@ export class DeviceDetailsScreen extends React.Component {
 								</React.Fragment>
 							)}
 							<h2 styleName="infoHeading">Info</h2>
-							<ul styleName="info">
-								{device.info.manufacturer &&
-									<li>Manufacturer: {device.info.manufacturer}</li>}
-								{device.info.model &&
-									<li>Model: {device.info.model}</li>}
-								{device.info.firmware_version &&
-									<li>Firmware: {device.info.firmware_version}</li>}
-								{device.info.hardware_version &&
-									<li>Hardware: {device.info.hardware_version}</li>}
-								{device.info.serial &&
-									<li>Serial Number: {device.info.serial}</li>}
-								<li>ID: {device.id}</li>
-							</ul>
+							<MetaList layout="vertical" alignLabels="left">
+								{[
+									{label: 'Manufacturer', value: device.info.manufacturer},
+									{label: 'Model', value: device.info.model},
+									{label: 'Firmware', value: device.info.firmware_version},
+									{label: 'Hardware', value: device.info.hardware_version},
+									{label: 'Serial', value: device.info.serial},
+									{label: 'ID', value: device.id, long: true}
+								].filter((item) => Boolean(item.value))}
+							</MetaList>
 						</div>
 					)} />
 					<Route path={this.props.match.path + ServiceDetailsScreen.routeParams} component={ServiceDetailsScreen} />
