@@ -11,6 +11,22 @@ export const setSettingsError = (serviceId, originalSettings, error) => ({
 	error: true
 });
 
+export const fetchServiceLog = (serviceId) => ({
+	type: types.FETCH_SERVICE_LOG,
+	payload: {serviceId}
+});
+
+export const fetchServiceLogSuccess = (serviceId, log) => ({
+	type: types.FETCH_SERVICE_LOG_SUCCESS,
+	payload: {serviceId, log}
+});
+
+export const fetchServiceLogError = (serviceId, error) => ({
+	type: types.FETCH_SERVICE_LOG_ERROR,
+	payload: {serviceId, error},
+	error: true
+});
+
 export const cameraFetchRecordings = (cameraId) => ({
 	type: types.FETCH_CAMERA_RECORDINGS,
 	payload: {cameraId}

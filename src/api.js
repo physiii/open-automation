@@ -1,3 +1,4 @@
+// eslint-disable-line max-lines
 import io from 'socket.io-client';
 import axios from 'axios';
 
@@ -52,6 +53,10 @@ class Api {
 
 	setServiceSettings (serviceId, settings) {
 		return Api.apiCall('service/settings/set', {service_id: serviceId, settings});
+	}
+
+	getServiceLog (serviceId) {
+		return Api.apiCall('service/log/get', {service_id: serviceId});
 	}
 
 	// Gateway Service

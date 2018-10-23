@@ -8,6 +8,15 @@ const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch)
 			dispatch(actions.setSettingsError(serviceId, originalSettings, error));
 		});
 	},
+	fetchServiceLog = (serviceId) => (dispatch) => {
+		dispatch(actions.fetchServiceLog(serviceId));
+
+		Api.getServiceLog(serviceId).then((data) => {
+			dispatch(actions.fetchServiceLogSuccess(serviceId, data.log));
+		}).catch((error) => {
+			dispatch(actions.fetchServiceLogError(serviceId, error));
+		});
+	},
 	cameraStartStream = (cameraServiceId) => (dispatch) => {
 		Api.cameraStartLiveStream(cameraServiceId).then((data) => {
 			dispatch(actions.cameraStreamLive(cameraServiceId, data.stream_token));
@@ -58,6 +67,7 @@ const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch)
 
 export {
 	setServiceSettings,
+	fetchServiceLog,
 	cameraStartStream,
 	cameraStopStream,
 	cameraFetchRecordings,
