@@ -9,6 +9,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 		settings_definitions: null,
 		settings: null,
 		state: null,
+		logList: null,
 		strings: null,
 		...defaultValues
 	}) {
@@ -17,11 +18,11 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 				...defaultValues,
 				...values,
 				settings_definitions: Immutable.OrderedMap(values.settings_definitions),
-				settings: getMapWithDefaults({
+				settings: mapWithDefaults({
 					...defaultValues.settings,
 					name: values.settings.name || values.strings.friendly_type // Default name to the service type.
 				}, values.settings),
-				state: getMapWithDefaults(defaultValues.state, values.state),
+				state: mapWithDefaults(defaultValues.state, values.state),
 				strings: Immutable.Map(values.strings)
 			});
 		}
@@ -32,7 +33,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 			switch (key) {
 				case 'settings':
 				case 'state':
-					_value = getMapWithDefaults(defaultValues[key], value);
+					_value = mapWithDefaults(defaultValues[key], value);
 					break;
 				case 'settings_definitions':
 					_value = Immutable.OrderedMap(value);
@@ -45,7 +46,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 			return super.set(key, _value || defaultValues[key]);
 		}
 	},
-	getMapWithDefaults = (defaults, values) => Immutable.Map({
+	mapWithDefaults = (defaults, values) => Immutable.Map({
 		...defaults,
 		...Immutable.Map.isMap(values) ? values.toObject() : values
 	});

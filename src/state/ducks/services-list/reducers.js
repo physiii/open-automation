@@ -10,6 +10,11 @@ const initialState = Immutable.Map({
 		fetched: false, // Whether first fetch has completed.
 		error: false
 	}),
+	logInitialState = Immutable.Map({
+		log: Immutable.List(),
+		loading: false,
+		error: false
+	}),
 	recordingsInitialState = Immutable.Map({
 		recordings: Immutable.OrderedMap(),
 		loading: false,
@@ -38,6 +43,13 @@ const initialState = Immutable.Map({
 										? service.state.connected
 										: true)
 							},
+							logList: logReducer(
+								currentServiceState && currentServiceState.logList,
+								{
+									...action,
+									payload: {log: service.log}
+								}
+							),
 							recordingsList: recordingsReducer(
 								currentServiceState && currentServiceState.recordingsList,
 								{
@@ -69,6 +81,16 @@ const initialState = Immutable.Map({
 						error: action.payload.error.message
 					}
 				);
+			case types.FETCH_SERVICE_LOG:
+			case types.FETCH_SERVICE_LOG_SUCCESS:
+			case types.FETCH_SERVICE_LOG_ERROR:
+				return state.setIn(
+					['services', action.payload.serviceId, 'logList'],
+					logReducer(
+						state.getIn(['services', action.payload.serviceId, 'logList']),
+						action
+					)
+				);
 			case types.FETCH_CAMERA_RECORDINGS:
 			case types.FETCH_CAMERA_RECORDINGS_SUCCESS:
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
@@ -87,6 +109,29 @@ const initialState = Immutable.Map({
 				);
 			case sessionTypes.LOGOUT:
 				return initialState;
+			default:
+				return state;
+		}
+	},
+	logReducer = (state = logInitialState, action) => {
+		switch (action.type) {
+			case devicesListTypes.FETCH_DEVICES_SUCCESS:
+				return state.set('log', action.payload.log
+					? Immutable.List(action.payload.log)
+					: state.get('log'));
+			case types.FETCH_SERVICE_LOG:
+				return state.set('loading', true);
+			case types.FETCH_SERVICE_LOG_SUCCESS:
+				return state.merge({
+					loading: false,
+					error: false,
+					log: Immutable.List(action.payload.log)
+				});
+			case types.FETCH_SERVICE_LOG_ERROR:
+				return state.merge({
+					loading: false,
+					error: action.payload.error.message
+				});
 			default:
 				return state;
 		}

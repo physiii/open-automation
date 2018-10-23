@@ -6,6 +6,7 @@ import Grid from '../layouts/Grid.js';
 import GridColumn from '../layouts/GridColumn.js';
 import ServiceCard from './ServiceCard.js';
 import ServiceDetailsScreen from './ServiceDetailsScreen.js';
+import ServiceLogScreen from './ServiceLogScreen.js';
 import CameraRecordingsScreen from './CameraRecordingsScreen.js';
 import {connect} from 'react-redux';
 import {getServices} from '../../state/ducks/services-list/selectors.js';
@@ -23,6 +24,7 @@ export const Dashboard = (props) => {
 						))}
 					</Grid>
 				)} />
+				<Route path={props.match.path + '/service' + ServiceLogScreen.routeParams + '/log'} component={ServiceLogScreen} />
 				<Route path={props.match.path + '/service' + ServiceDetailsScreen.routeParams} component={ServiceDetailsScreen} />
 				<Route path={props.match.path + '/recordings' + CameraRecordingsScreen.routeParams} component={CameraRecordingsScreen} />
 				<Route render={() => <Redirect to={props.match.path} />} />

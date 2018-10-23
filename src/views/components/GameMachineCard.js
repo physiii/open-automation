@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ServiceCardBase from './ServiceCardBase.js';
 import MetaList from './MetaList.js';
+import Button from './Button.js';
 import {formatUsd} from '../../utilities.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
@@ -15,15 +16,15 @@ export const GameMachineCard = (props) => {
 			: 'Unknown',
 		billAcceptorDoorName = props.contactSensorService.settings.name || 'Bill Acceptor Door';
 
-	let billAcceptorDoorStateString = 'Unknown',
+	let billAcceptorDoorStatus = 'Unknown',
 		status = props.service.settings.active_game === 'game-board'
 			? 'Game Board'
 			: props.selectedArcadeGameLabel;
 
 	if (props.contactSensorService.state.contact === true && props.service.state.connected) {
-		billAcceptorDoorStateString = 'Closed';
+		billAcceptorDoorStatus = 'Closed';
 	} else if (props.contactSensorService.state.contact === false && props.service.state.connected) {
-		billAcceptorDoorStateString = 'Open';
+		billAcceptorDoorStatus = 'Open';
 		status = billAcceptorDoorName + ' Open';
 	}
 
@@ -32,6 +33,7 @@ export const GameMachineCard = (props) => {
 			name={props.service.settings.name || 'Game Machine'}
 			status={status}
 			isConnected={props.service.state.connected}
+			secondaryAction={<Button to={`${props.parentPath}/service/${props.billAcceptorService.id}/log`}>{props.billAcceptorService.settings.name || 'Bill Acceptor'} Log</Button>}
 			{...props}>
 			<div styleName="container">
 				<section styleName="main">
@@ -41,7 +43,7 @@ export const GameMachineCard = (props) => {
 				<MetaList layout="vertical" alignLabels="left" alignValuesRight={true}>
 					{[
 						{label: 'Hopper Last Emptied', value: hopperLastEmptied},
-						{label: billAcceptorDoorName, value: billAcceptorDoorStateString}
+						{label: billAcceptorDoorName, value: billAcceptorDoorStatus}
 					]}
 				</MetaList>
 			</div>
@@ -51,6 +53,7 @@ export const GameMachineCard = (props) => {
 
 GameMachineCard.propTypes = {
 	service: PropTypes.object,
+	parentPath: PropTypes.string,
 	billAcceptorService: PropTypes.object,
 	contactSensorService: PropTypes.object,
 	selectedArcadeGameLabel: PropTypes.string
