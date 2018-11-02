@@ -44,12 +44,11 @@
 }
 
 .value {
+	composes: selectable from "../styles/helpers.css";
 	margin: 0;
 	padding-left: 24px;
 	font-size: 14px;
 	line-height: 18px;
-	user-select: text;
-	cursor: auto;
 }
 .value-right {
 	composes: value;

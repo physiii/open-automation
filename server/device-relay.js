@@ -4,7 +4,7 @@ const url = require('url'),
 	DeviceWebSocketWrapper = require('./devices/device-websocket-wrapper.js'),
 	WEBSOCKET_DEVICE_PATH = '/device-relay',
 	SOCKET_IO_NAMESPACE = '/device-relay',
-	TAG = '[device-server.js]';
+	TAG = '[device-relay.js]';
 
 function handleDeviceConnection (socket, headers) {
 	const device_id = headers['x-device-id'],

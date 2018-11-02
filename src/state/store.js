@@ -4,7 +4,10 @@ import thunk from 'redux-thunk';
 import * as reducers from './ducks';
 
 function generateRootReducer (reducersToCombine, history) {
-	return connectRouter(history)(combineReducers({...reducersToCombine}));
+	return combineReducers({
+		...reducersToCombine,
+		router: connectRouter(history)
+	});
 }
 
 export default function configureStore (history, initialState) {

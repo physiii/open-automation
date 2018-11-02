@@ -19,7 +19,7 @@ module.exports = {
 };
 
 function connect (callback, errorHandler) {
-	MongoClient.connect('mongodb://localhost:27017/relay', (error, db) => {
+	MongoClient.connect('mongodb://localhost:27017/' + (process.env.OA_DATABASE_COLLECTION_NAME || 'relay'), (error, db) => {
 		if (error) {
 			console.error(TAG, 'Unable to connect to the mongoDB server.', error);
 
