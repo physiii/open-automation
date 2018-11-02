@@ -1,5 +1,4 @@
-const config = require('../config.json'),
-	WebSocket = require('ws'),
+const WebSocket = require('ws'),
 	url = require('url'),
 	http = require('http'),
 	https = require('https'),
@@ -46,13 +45,13 @@ module.exports = function (website_server) {
 	};
 
 	// HTTP Server to accept incoming MPEG streams.
-	if (config.use_ssl) {
+	if (process.env.OA_SSL) {
 		let credentials;
 
 		try {
 			credentials = {
-				key: fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem')),
-				cert: fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'))
+				key: fs.readFileSync(process.env.OA_SSL_KEY_PATH || (__dirname + '/key.pem')),
+				cert: fs.readFileSync(process.env.OA_SSL_CERT_PATH || (__dirname + '/cert.pem'))
 			};
 		} catch (error) {
 			console.error('There was an error when trying to load SSL files.', error);
@@ -65,7 +64,7 @@ module.exports = function (website_server) {
 		stream_relay_server = http.createServer(requestListener);
 	}
 
-	stream_relay_server.listen(config.video_stream_port || 5054);
+	stream_relay_server.listen(process.env.OA_VIDEO_RELAY_PORT || 5054);
 
 	function requestListener (request, response) {
 		const params = request.url.substr(1).split('/'),
@@ -84,5 +83,5 @@ module.exports = function (website_server) {
 		});
 	}
 
-	console.log(TAG, 'Listening for incoming video streams at ' + (config.use_ssl ? 'https' : 'http') + '://localhost:' + stream_relay_server.address().port + '/<stream id>/<stream token>. Serving video streams at ' + (config.use_ssl ? 'wss' : 'ws') + '://localhost:' + website_server.address().port + WEBSOCKET_STREAM_PATH + '.');
+	console.log(TAG, 'Listening for incoming video streams at ' + (process.env.OA_SSL ? 'https' : 'http') + '://localhost:' + stream_relay_server.address().port + '/<stream id>/<stream token>. Serving video streams at ' + (process.env.OA_SSL ? 'wss' : 'ws') + '://localhost:' + website_server.address().port + WEBSOCKET_STREAM_PATH + '.');
 };

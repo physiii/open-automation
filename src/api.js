@@ -284,13 +284,19 @@ class Api {
 
 			api.relaySocket.emit(event, payload, (error, data) => {
 				if (error) {
-					console.error('API error: ' + event, error, data); // TODO: Only log for dev build.
+					if (process.env.NODE_ENV === 'development') {
+						console.error('API error: ' + event, error, data);
+					}
+
 					reject(new Error(error));
 
 					return;
 				}
 
-				console.log('API response: ' + event, data); // TODO: Only log for dev build.
+				if (process.env.NODE_ENV === 'development') {
+					console.log('API response: ' + event, data);
+				}
+
 				resolve(data);
 			});
 		});

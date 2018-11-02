@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
-import {thermostatSetTemp, thermostatSetMode, thermostatRemoveHold, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
+import {thermostatSetTemp, thermostatSetMode, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
 
 export const ThermostatCard = (props) => {
 	const currentMode = props.service.state.mode,
@@ -21,7 +21,7 @@ export const ThermostatCard = (props) => {
 			} else if (currentMode === 'auto') {
 				props.setMode(props.service.id, 'off');
 			} else {
-				console.log('Mode is not defined as off, heat, cool, auto...')
+				console.log('Mode is not defined as off, heat, cool, auto...');
 			}
 		},
 		toggleFan = () => {

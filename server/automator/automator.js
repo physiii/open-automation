@@ -1,5 +1,4 @@
 const database = require('../database.js'),
-	config = require('../../config.json'),
 	moment = require('moment'),
 	Automation = require('./automation.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
@@ -167,7 +166,7 @@ class Automator {
 		}
 
 		return {
-			subject: (config.app_name ? config.app_name + ' - ' : '') + subject + ' - ' + (automation.name ? automation.name : 'Automation'),
+			subject: (process.env.OA_APP_NAME ? process.env.OA_APP_NAME + ' - ' : '') + subject + ' - ' + (automation.name ? automation.name : 'Automation'),
 			body,
 			attachments: attachment && [attachment]
 		};

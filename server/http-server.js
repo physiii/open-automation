@@ -1,21 +1,20 @@
-const config = require('../config.json'),
-	https = require('https'),
+const https = require('https'),
 	http = require('http'),
 	TAG = '[http-server.js]';
 
 module.exports = (website, key, cert) => {
 	let server;
 
-	if (config.use_ssl) {
+	if (process.env.OA_SSL) {
 		server = https.createServer({key, cert}, website);
 	} else {
 		server = http.createServer(website);
 	}
 
 	server.listen(
-		config.use_ssl ? config.website_secure_port : config.website_port,
+		process.env.OA_WEBSITE_PORT,
 		null,
-		() => console.log(TAG, (config.use_ssl ? 'Secure' : 'Insecure') + ' server listening on port ' + server.address().port + '.')
+		() => console.log(TAG, (process.env.OA_SSL ? 'Secure' : 'Insecure') + ' server listening on port ' + server.address().port + '.')
 	);
 
 	return server;
