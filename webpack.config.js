@@ -1,24 +1,31 @@
 const path = require('path'),
 	dotenv = require('dotenv'),
+	dotenvExpand = require('dotenv-expand'),
 	webpack = require('webpack'),
 	DotenvWebpackPlugin = require('dotenv-webpack'),
 	HtmlWebpackPlugin = require('html-webpack-plugin'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
 	CleanWebpackPlugin = require('clean-webpack-plugin'),
+	OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'),
+	autoprefixer = require('autoprefixer'),
 	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils'),
 	LOCAL_IDENT_NAME = '[name]__[local]___[hash:base64:5]';
 
-dotenv.config();
+dotenvExpand(dotenv.config());
+
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development') {
+	throw new Error('The NODE_ENV environment variable must be either "production" or "development".');
+}
 
 module.exports = (env = {}) => {
-	const {ifProduction} = getIfUtils(process.env.NODE_ENV),
-		doHotModuleReplacement = Boolean(env.dev_middleware && process.env.OA_HOT_MODULE_REPLACEMENT && process.env.NODE_ENV === 'development');
+	const {ifProduction, ifDevelopment} = getIfUtils(process.env.NODE_ENV),
+		doHmr = Boolean(env.dev_middleware && process.env.OA_HOT_MODULE_REPLACEMENT && process.env.NODE_ENV === 'development');
 
-	return {
+	return removeEmpty({
 		mode: ifProduction('production', 'development'),
-		devtool: ifProduction('', 'cheap-module-eval-source-map'),
+		devtool: ifDevelopment('cheap-module-eval-source-map'),
 		entry: removeEmpty([
-			propIf(doHotModuleReplacement, 'webpack-hot-middleware/client'),
+			propIf(doHmr, 'webpack-hot-middleware/client'),
 			path.resolve(__dirname, 'src/index.js')
 		]),
 		output: {
@@ -33,17 +40,14 @@ module.exports = (env = {}) => {
 			}
 		},
 		plugins: removeEmpty([
-			propIfNot(
-				doHotModuleReplacement,
-				new CleanWebpackPlugin([
-					'public/js',
-					'public/css',
-					'public/index.html'
-				])
-			),
-			new webpack.HashedModuleIdsPlugin(),
+			propIfNot(doHmr, new CleanWebpackPlugin([
+				'public/js',
+				'public/css',
+				'public/index.html'
+			])),
 			new DotenvWebpackPlugin(),
-			propIf(doHotModuleReplacement, new webpack.HotModuleReplacementPlugin()),
+			new webpack.HashedModuleIdsPlugin(),
+			propIf(doHmr, new webpack.HotModuleReplacementPlugin()),
 			new HtmlWebpackPlugin({
 				template: path.resolve(__dirname, 'src/index.html'),
 				title: process.env.OA_APP_NAME,
@@ -62,7 +66,9 @@ module.exports = (env = {}) => {
 			}),
 			new MiniCssExtractPlugin({
 				filename: ifProduction('css/[name]-[contenthash:8].css', 'css/[name].css')
-			})
+			}),
+			ifProduction(new OptimizeCssAssetsPlugin()),
+			new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/) // Don't load locales for Moment.js.
 		]),
 		module: {
 			rules: [
@@ -78,12 +84,8 @@ module.exports = (env = {}) => {
 						{
 							loader: 'babel-loader',
 							options: {
-								presets: [
-									'es2015',
-									'stage-0',
-									'react'
-								],
-								cacheDirectory: false,
+								presets: ['@babel/preset-env', '@babel/preset-react'],
+								cacheDirectory: true,
 								plugins: [
 									'react-hot-loader/babel',
 									[
@@ -98,72 +100,53 @@ module.exports = (env = {}) => {
 								]
 							}
 						},
-						propIfNot(doHotModuleReplacement, {
+						propIfNot(doHmr, ifDevelopment({
 							loader: 'eslint-loader'
-						})
+						}))
 					])
 				},
 				{
-					test: /\.scss$/,
-					include: path.resolve(__dirname, 'src'),
-					use: [
-						{
-							loader: propIf(
-								doHotModuleReplacement,
-								'style-loader', // Load CSS into DOM for hot module reloading.
-								MiniCssExtractPlugin.loader // Save CSS to file.
-							)
-						},
-						{
-							loader: 'css-loader',
-							options: {
-								minimize: ifProduction(),
-								sourceMap: true
-							}
-						},
-						{
-							loader: 'postcss-loader',
-							options: {
-								sourceMap: true
-							}
-						},
-						{
-							loader: 'sass-loader',
-							options: {
-								sourceMap: true
-							}
-						}
-					]
-				},
-				{
 					test: /\.css$/,
-					include: path.resolve(__dirname, 'src'),
 					use: [
-						{
-							loader: propIf(
-								doHotModuleReplacement,
-								'style-loader', // Load CSS into DOM for hot module reloading.
-								MiniCssExtractPlugin.loader // Save CSS to file.
-							)
-						},
+						propIf(doHmr, 'style-loader', MiniCssExtractPlugin.loader),
 						{
 							loader: 'css-loader',
 							options: {
 								modules: true,
 								localIdentName: LOCAL_IDENT_NAME,
-								minimize: ifProduction(),
+								importLoaders: 1,
 								sourceMap: true
 							}
 						},
 						{
 							loader: 'postcss-loader',
 							options: {
+								ident: 'postcss',
+								plugins: [autoprefixer({grid: true})],
 								sourceMap: true
 							}
 						}
 					]
 				}
 			]
-		}
-	};
+		},
+		stats: propIf(doHmr, {
+			context: process.cwd(),
+			assets: false,
+			builtAt: false,
+			children: false,
+			chunks: false,
+			colors: true,
+			entrypoints: false,
+			errors: true,
+			errorDetails: false,
+			hash: true,
+			modules: false,
+			performance: false,
+			timings: false,
+			version: false,
+			warnings: true,
+			warningsFilter: (warning) => warning.includes('postcss-loader') && warning.includes('is not supported by IE') // Ignore warnings about CSS polyfill support for IE.
+		})
+	});
 };

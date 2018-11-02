@@ -12,3 +12,8 @@
 
 	padding-top: calc((3 / 4) * 100%);
 }
+
+.selectable {
+	user-select: text;
+	cursor: auto;
+}

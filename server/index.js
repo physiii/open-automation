@@ -1,8 +1,5 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ----------------------------- physiphile@gmail.com -------------------------------- //
-
 const dotenv = require('dotenv'),
+	dotenvExpand = require('dotenv-expand'),
 	fs = require('fs'),
 	path = require('path'),
 	io = require('socket.io'),
@@ -21,11 +18,24 @@ const dotenv = require('dotenv'),
 let key,
 	cert;
 
-dotenv.config();
+dotenvExpand(dotenv.config());
+
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development') {
+	throw new Error('The NODE_ENV environment variable must be either "production" or "development".');
+}
+
+// TODO: Validate configuration.
 
 if (process.env.OA_SSL) {
-	key = fs.readFileSync(process.env.OA_SSL_KEY_PATH || (__dirname + '/key.pem'));
-	cert = fs.readFileSync(process.env.OA_SSL_CERT_PATH || (__dirname + '/cert.pem'));
+	const key_path = process.env.OA_SSL_KEY_PATH || 'key.pem',
+		cert_path = process.env.OA_SSL_CERT_PATH || 'cert.pem';
+
+	try {
+		key = fs.readFileSync(__dirname + '/../' + key_path);
+		cert = fs.readFileSync(__dirname + '/../' + cert_path);
+	} catch (error) {
+		throw new Error('The SSL key or certificate could not be loaded. Check the SSL configuration. (' + error + ')');
+	}
 }
 
 AccountsManager.init()
@@ -41,8 +51,9 @@ AccountsManager.init()
 
 		startClientApi(socket_io_server, jwt_secret);
 		startDeviceRelay(http_server, socket_io_server);
-		startStreamRelay(http_server);
+		startStreamRelay(http_server, key, cert);
 	})
 	.catch((error) => {
-		throw error
+		console.error('An error was encountered while starting.', error);
+		process.exit(1);
 	});

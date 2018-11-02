@@ -1,7 +1,3 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// --------------------------------- website.js -------------------------------------- //
-
 const AccountsManager = require('./accounts/accounts-manager.js'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
@@ -26,7 +22,9 @@ module.exports = function (jwt_secret) {
 		helmet_options = {
 			contentSecurityPolicy: {
 				directives: {
-					defaultSrc: ['\'self\''] // Only allow loading assets from same origin.
+					defaultSrc: ['\'self\''], // Only allow loading assets from same origin.
+					scriptSrc: ['\'self\''],
+					styleSrc: ['\'self\'']
 				}
 			},
 			crossdomain: {
@@ -37,7 +35,7 @@ module.exports = function (jwt_secret) {
 			}
 		};
 
-	let logo_file_path = process.env.OA_LOGO_PATH || '/logo.png',
+	let logo_file_path = process.env.OA_LOGO_PATH || 'logo.png',
 		webpack_compiler;
 
 	try {
@@ -54,7 +52,9 @@ module.exports = function (jwt_secret) {
 
 		app.use(WebpackDevMiddleware(webpack_compiler, {
 			publicPath: webpack_config.output.publicPath,
-			logLevel: 'warn'
+			stats: webpack_config.stats,
+			logLevel: 'warn',
+			logTime: true
 		}));
 
 		app.use(WebpackHotMiddleware(webpack_compiler));
@@ -62,8 +62,10 @@ module.exports = function (jwt_secret) {
 
 	// Loosen security policies in development to support webpack development mode and hot module reloading.
 	if (process.env.NODE_ENV === 'development') {
-		helmet_options.contentSecurityPolicy.directives.scriptSrc = ['\'self\'', '\'unsafe-eval\''];
-		helmet_options.contentSecurityPolicy.directives.styleSrc = ['\'self\'', 'blob:'];
+		helmet_options.contentSecurityPolicy.directives.scriptSrc.push('\'unsafe-eval\'');
+		helmet_options.contentSecurityPolicy.directives.scriptSrc.push('\'unsafe-inline\'');
+		helmet_options.contentSecurityPolicy.directives.styleSrc.push('\'unsafe-inline\'');
+		helmet_options.contentSecurityPolicy.directives.styleSrc.push('blob:');
 		helmet_options.hsts = false;
 	}
 
