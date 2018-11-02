@@ -1,5 +1,4 @@
-const config = require('../config.json'),
-	url = require('url'),
+const url = require('url'),
 	WebSocket = require('ws'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	DeviceWebSocketWrapper = require('./devices/device-websocket-wrapper.js'),
@@ -38,7 +37,7 @@ module.exports = (http_server, socket_io_server) => {
 		websocket_server.handleUpgrade(request, ws, head, (socket) => handleDeviceConnection(new DeviceWebSocketWrapper(socket), request.headers));
 	});
 
-	console.log(TAG, 'Listening for WebSocket device connections at ' + (config.use_ssl ? 'wss': 'ws') + '://localhost:' + http_server.address().port + WEBSOCKET_DEVICE_PATH + '.');
+	console.log(TAG, 'Listening for WebSocket device connections at ' + (process.env.OA_SSL ? 'wss': 'ws') + '://localhost:' + http_server.address().port + WEBSOCKET_DEVICE_PATH + '.');
 
 	// Listen for devices connecting over Socket.IO.
 	socket_io_server.of(SOCKET_IO_NAMESPACE).on('connection', (socket) => handleDeviceConnection(socket, socket.handshake.headers));

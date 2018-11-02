@@ -1,3 +1,6 @@
+# Configuration
+.env*
+!.env.example
 config.json
 
 # Dependencies
@@ -11,10 +14,8 @@ npm-debug.log*
 # Testing
 /coverage
 
-# Production
-/public/js
-/public/css
-/public/logo*
+# Build
+/public
 
 # Keys
 *.key
@@ -29,7 +30,3 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local

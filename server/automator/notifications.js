@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
-	config = require('../../config.json'),
 	utils = require('../utils.js'),
 	AccountsManager = require('../accounts/accounts-manager.js'),
 	moment = require('moment'),
@@ -25,14 +24,21 @@ class Notifications {
 
 	init () {
 		return new Promise((resolve, reject) => {
-			if (!config.smtp_transport) {
+			if (!process.env.OA_SMTP_HOST || !process.env.OA_SMTP_USER || !process.env.OA_SMTP_PASS) {
 				console.log(TAG, 'Mail server is not configured.');
 				resolve();
 
 				return;
 			}
 
-			this.transporter = nodemailer.createTransport(smtpTransport(config.smtp_transport));
+			this.transporter = nodemailer.createTransport(smtpTransport({
+				host: process.env.OA_SMTP_HOST,
+				secure: true,
+				auth: {
+					user: process.env.OA_SMTP_USER,
+					pass: process.env.OA_SMTP_PASS
+				}
+			}));
 
 			this.transporter.verify((error, success) => {
 				if (error) {
@@ -102,7 +108,7 @@ class Notifications {
 			}
 
 			const message = {
-				from: config.smtp_transport.auth.user,
+				from: process.env.OA_SMTP_USER,
 				to: email,
 				subject,
 				html,

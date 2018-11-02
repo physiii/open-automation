@@ -1,34 +1,76 @@
 const path = require('path'),
+	dotenv = require('dotenv'),
 	webpack = require('webpack'),
+	DotenvWebpackPlugin = require('dotenv-webpack'),
+	HtmlWebpackPlugin = require('html-webpack-plugin'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
+	CleanWebpackPlugin = require('clean-webpack-plugin'),
 	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils'),
 	LOCAL_IDENT_NAME = '[name]__[local]___[hash:base64:5]';
 
-module.exports = (env) => {
-	const isHot = env.hot === true,
-		{ifProduction} = getIfUtils(env);
+dotenv.config();
+
+module.exports = (env = {}) => {
+	const {ifProduction} = getIfUtils(process.env.NODE_ENV),
+		doHotModuleReplacement = Boolean(env.dev_middleware && process.env.OA_HOT_MODULE_REPLACEMENT && process.env.NODE_ENV === 'development');
 
 	return {
 		mode: ifProduction('production', 'development'),
-		devtool: ifProduction('', 'cheap-module-eval-source-map'), // TODO: https://webpack.js.org/configuration/devtool/
-		entry: [
-			'webpack-hot-middleware/client',
-			'./src/index.js'
-		],
+		devtool: ifProduction('', 'cheap-module-eval-source-map'),
+		entry: removeEmpty([
+			propIf(doHotModuleReplacement, 'webpack-hot-middleware/client'),
+			path.resolve(__dirname, 'src/index.js')
+		]),
 		output: {
 			path: path.resolve(__dirname, 'public'),
-			filename: 'js/main.js',
+			filename: ifProduction('js/[name]-[contenthash:8].js', 'js/[name].js'),
 			publicPath: '/' // Needed for hot module reloading and webpack adjusting asset paths properly.
 		},
-		plugins: [
-			new webpack.optimize.OccurrenceOrderPlugin(),
-			new webpack.HotModuleReplacementPlugin(),
-			new webpack.NoEmitOnErrorsPlugin(),
-			new MiniCssExtractPlugin({filename: 'css/main.css'}) // TODO: Add [contenthash] to filename to invalidate cache.
-		],
+		optimization: {
+			runtimeChunk: 'single',
+			splitChunks: {
+				chunks: 'all'
+			}
+		},
+		plugins: removeEmpty([
+			propIfNot(
+				doHotModuleReplacement,
+				new CleanWebpackPlugin([
+					'public/js',
+					'public/css',
+					'public/index.html'
+				])
+			),
+			new webpack.HashedModuleIdsPlugin(),
+			new DotenvWebpackPlugin(),
+			propIf(doHotModuleReplacement, new webpack.HotModuleReplacementPlugin()),
+			new HtmlWebpackPlugin({
+				template: path.resolve(__dirname, 'src/index.html'),
+				title: process.env.OA_APP_NAME,
+				minify: ifProduction(
+					{
+						collapseWhitespace: true,
+						removeComments: true,
+						removeRedundantAttributes: true,
+						removeScriptTypeAttributes: true,
+						removeStyleLinkTypeAttributes: true,
+						useShortDoctype: true
+					},
+					false
+				),
+				cache: false
+			}),
+			new MiniCssExtractPlugin({
+				filename: ifProduction('css/[name]-[contenthash:8].css', 'css/[name].css')
+			})
+		]),
 		module: {
-			// TODO: Add html-loader to generate index.html
 			rules: [
+				// This allows us to import jsmpeg as if it was exported like an ES6 module.
+				{
+					test: require.resolve(path.resolve(__dirname, 'src/lib/jsmpeg/jsmpeg.min.js')),
+					use: ['exports-loader?JSMpeg']
+				},
 				{
 					test: /\.js$/,
 					exclude: /node_modules/,
@@ -56,15 +98,10 @@ module.exports = (env) => {
 								]
 							}
 						},
-						propIfNot(isHot, {
+						propIfNot(doHotModuleReplacement, {
 							loader: 'eslint-loader'
 						})
 					])
-				},
-				// This allows us to import jsmpeg in any file as if it was exported like an ES6 module.
-				{
-					test: require.resolve(path.resolve(__dirname, 'src/lib/jsmpeg/jsmpeg.min.js')),
-					use: ['exports-loader?JSMpeg']
 				},
 				{
 					test: /\.scss$/,
@@ -72,9 +109,9 @@ module.exports = (env) => {
 					use: [
 						{
 							loader: propIf(
-								isHot,
-								'style-loader',
-								MiniCssExtractPlugin.loader // Extract CSS to file for production.
+								doHotModuleReplacement,
+								'style-loader', // Load CSS into DOM for hot module reloading.
+								MiniCssExtractPlugin.loader // Save CSS to file.
 							)
 						},
 						{
@@ -104,9 +141,9 @@ module.exports = (env) => {
 					use: [
 						{
 							loader: propIf(
-								isHot,
-								'style-loader',
-								MiniCssExtractPlugin.loader // Extract CSS to file for production.
+								doHotModuleReplacement,
+								'style-loader', // Load CSS into DOM for hot module reloading.
+								MiniCssExtractPlugin.loader // Save CSS to file.
 							)
 						},
 						{
