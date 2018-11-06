@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4'),
 	EventEmitter = require('events'),
 	DeviceDriver = require('./device-driver.js'),
+	constants = require('../../constants.js'),
 	BUTTON_HOLD_INTERVAL_DELAY = 300,
 	COLORS = {
 		red: [255, 0, 0],
@@ -192,7 +193,7 @@ class LigerDeviceDriver extends DeviceDriver {
 	}
 
 	_serviceEmit (service, event, data = {}) {
-		this.device_events.emit(service.type + '/' + service.id + '/' + event, data);
+		this.device_events.emit(service.id + constants.SERVICE_EVENT_DELIMITER + service.type + constants.SERVICE_EVENT_DELIMITER + event, data);
 	}
 
 	save () {

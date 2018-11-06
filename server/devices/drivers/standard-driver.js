@@ -1,13 +1,13 @@
 const DeviceDriver = require('./device-driver.js'),
+	constants = require('../../constants.js'),
 	noOp = () => {},
-	SERVICE_EVENT_DELIMITER = '::',
 	TAG = '[StandardDeviceDriver]';
 
 class StandardDeviceDriver extends DeviceDriver {
 	constructor (data, socket, device_id) {
 		super(socket, device_id);
 
-		this.device_listeners = [];
+		this._socket_listeners = [];
 
 		if (socket) {
 			this.setSocket(socket);
@@ -17,7 +17,7 @@ class StandardDeviceDriver extends DeviceDriver {
 	on (event, callback, service_id, service_type) {
 		const prefixed_event = this._getPrefixedEvent(event, service_id, service_type);
 
-		this.device_listeners.push([prefixed_event, callback]);
+		this._socket_listeners.push([prefixed_event, callback]);
 
 		if (this.socket) {
 			this.socket.on(prefixed_event, callback);
@@ -44,13 +44,13 @@ class StandardDeviceDriver extends DeviceDriver {
 
 	_getPrefixedEvent (event, service_id, service_type) {
 		return service_id
-			? service_id + SERVICE_EVENT_DELIMITER + service_type + SERVICE_EVENT_DELIMITER + event
+			? service_id + constants.SERVICE_EVENT_DELIMITER + service_type + constants.SERVICE_EVENT_DELIMITER + event
 			: event;
 	}
 
 	_subscribeToSocket () {
 		// Set up listeners on new socket.
-		this.device_listeners.forEach((listener) => {
+		this._socket_listeners.forEach((listener) => {
 			this.socket.on.apply(this.socket, listener);
 		});
 	}

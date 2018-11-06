@@ -15,6 +15,12 @@ class Service {
 		this.deviceEmit = (event, data, callback) => deviceEmit(event, data, callback, this.id, this.type);
 		this.onUpdate = onUpdate;
 
+		try {
+			this.state_definitions = new Map(data.state_definitions);
+		} catch (error) {
+			this.state_definitions = new Map(...this.constructor.state_definitions);
+		}
+
 		this.settings = new DeviceSettings(
 			data.settings,
 			data.settings_definitions,
@@ -91,8 +97,15 @@ class Service {
 	}
 
 	action (action) {
-		const property_definition = this.constructor.state_definitions[action.property],
-			setProperty = this[property_definition.setter].bind(this);
+		const property_definition = this.state_definitions.get(action.property);
+
+		let setProperty = this[property_definition.setter];
+
+		if (typeof setProperty === 'function') {
+			setProperty = setProperty.bind(this);
+		} else {
+			setProperty = this._deviceEmitAction.bind(this, action.property);
+		}
 
 		switch (property_definition.type) {
 			case 'boolean':
@@ -154,6 +167,19 @@ class Service {
 
 			console.log(TAG, this.id, full_error);
 			reject(full_error);
+		});
+	}
+
+	_deviceEmitAction (property, value) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('action', {property, value}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
 		});
 	}
 

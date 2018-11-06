@@ -4,7 +4,7 @@ const uuid = require('uuid/v4'),
 	debounce = require('debounce'),
 	StandardDeviceDriver = require('./drivers/standard-driver.js'),
 	LigerDeviceDriver = require('./drivers/liger-driver.js'),
-	GenericDeviceDriver = require('./drivers/generic-driver.js'),
+	GenericDeviceDriver = require('./drivers/generic/generic-driver.js'),
 	DeviceSettings = require('./device-settings.js'),
 	ServicesManager = require('../services/services-manager.js'),
 	noOp = () => {},
@@ -27,7 +27,7 @@ class Device {
 		this.onUpdate = debounce(() => onUpdate(this), 100);
 
 		this.driver_data = {...data.driver_data};
-		this.driver = new driver_class(this.driver_data, socket, this.id, data.services);
+		this.driver = new driver_class(this.driver_data, socket, this.id, [...data.services]);
 
 		const driverOn = this.driver.on.bind(this.driver),
 			driverEmit = this.driver.emit.bind(this.driver);
