@@ -1,0 +1,7 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	min-height: 128px;
+	padding: 16px;
+}

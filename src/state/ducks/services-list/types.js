@@ -1,3 +1,5 @@
+export const DO_SERVICE_ACTION = 'open-automation/services-list/DO_SERVICE_ACTION';
+export const DO_SERVICE_ACTION_ERROR = 'open-automation/services-list/DO_SERVICE_ACTION_ERROR';
 export const SET_SETTINGS = 'open-automation/services-list/SET_SETTINGS';
 export const SET_SETTINGS_ERROR = 'open-automation/services-list/SET_SETTINGS_ERROR';
 export const FETCH_SERVICE_LOG = 'open-automation/services-list/FETCH_SERVICE_LOG';

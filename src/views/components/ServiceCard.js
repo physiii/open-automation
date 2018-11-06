@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CameraCard from './CameraCard.js';
+import DimmerCard from './DimmerCard.js';
+import GameMachineCard from './GameMachineCard.js';
 import LockCard from './LockCard.js';
 import ThermostatCard from './ThermostatCard.js';
-import GameMachineCard from './GameMachineCard.js';
 
 export const ServiceCard = (props) => {
 	const Card = ServiceCard.cardComponents[props.service.type];
@@ -20,9 +21,10 @@ ServiceCard.propTypes = {
 
 ServiceCard.cardComponents = {
 	'camera': CameraCard,
+	'dimmer': DimmerCard,
+	'game-machine': GameMachineCard,
 	'lock': LockCard,
-	'thermostat': ThermostatCard,
-	'game-machine': GameMachineCard
+	'thermostat': ThermostatCard
 };
 
 export default ServiceCard;

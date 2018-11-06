@@ -97,27 +97,36 @@ class Service {
 	}
 
 	action (action) {
-		const property_definition = this.state_definitions.get(action.property);
+		return new Promise((resolve, reject) => {
+			const property_definition = this.state_definitions.get(action.property) || {};
 
-		let setProperty = this[property_definition.setter];
+			// TODO: Error if no definition is found for the property.
 
-		if (typeof setProperty === 'function') {
-			setProperty = setProperty.bind(this);
-		} else {
-			setProperty = this._deviceEmitAction.bind(this, action.property);
-		}
+			let setProperty = this[property_definition.setter];
 
-		switch (property_definition.type) {
-			case 'boolean':
-				this._performBooleanAction(action, setProperty);
-				break;
-			case 'percentage':
-				this._performPercentageAction(action, setProperty);
-				break;
-			case 'color':
-				this._performColorAction(action, setProperty);
-				break;
-		}
+			if (typeof setProperty === 'function') {
+				setProperty = setProperty.bind(this);
+			} else {
+				setProperty = this._deviceEmitAction.bind(this, action.property);
+			}
+
+
+			switch (property_definition.type) {
+				case 'boolean':
+					this._performBooleanAction(action, setProperty);
+					break;
+				case 'percentage':
+					this._performPercentageAction(action, setProperty);
+					break;
+				case 'color':
+					this._performColorAction(action, setProperty);
+					break;
+				default:
+					// TODO: Remove default case. Only perform an action if it matches state definitions.
+					this._performAction(action.property, action.value, () => false, setProperty);
+					break;
+			}
+		});
 	}
 
 	_performBooleanAction (action, setProperty) {

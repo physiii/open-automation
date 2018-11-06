@@ -29,10 +29,10 @@ export class DeviceDetailsScreen extends React.Component {
 		}
 	}
 
-	getScreenTitle (firstService, hasMoreThanOneService) {
-		return hasMoreThanOneService
-			? this.props.settings.name || 'Device'
-			: firstService.settings.name || firstService.strings.friendly_type;
+	getScreenTitle (firstService, hasOneService) {
+		return hasOneService
+			? firstService.settings.name || firstService.strings.friendly_type
+			: this.props.settings.name || 'Device';
 	}
 
 	render () {
@@ -44,12 +44,12 @@ export class DeviceDetailsScreen extends React.Component {
 
 		const firstService = device.services[0],
 			settingsProperties = Object.keys(device.settings_definitions),
-			hasMoreThanOneService = device.services.length > 1;
+			hasOneService = device.services.length === 1;
 
 		return (
 			<NavigationScreen
 				path={this.props.match.url}
-				title={this.getScreenTitle(firstService, hasMoreThanOneService)}
+				title={this.getScreenTitle(firstService, hasOneService)}
 				toolbarActions={<Button onClick={this.handleDeleteClick}>Delete</Button>}>
 				<Switch>
 					<Route exact path={this.props.match.path} render={() => (
@@ -63,8 +63,9 @@ export class DeviceDetailsScreen extends React.Component {
 								]} />
 							)}
 							{device.error && <p>The device settings could not be updated because of an error.</p>}
-							{hasMoreThanOneService
-								? <List
+							{hasOneService
+								? <ServiceDetails serviceId={firstService.id} />
+								: <List
 									title="Features"
 									items={device.services.map((service) => ({
 										key: service.id,
@@ -72,8 +73,8 @@ export class DeviceDetailsScreen extends React.Component {
 										icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
 										link: this.props.match.url + '/' + service.id
 									}))}
-								/>
-								: <ServiceDetails serviceId={device.services[0].id} />}
+									renderIfEmpty={false}
+								/>}
 							{Boolean(settingsProperties.length) && (
 								<React.Fragment>
 									<h2 styleName="settingsHeading">Device Settings</h2>

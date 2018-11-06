@@ -6,6 +6,10 @@ import './List.css';
 export const List = (props) => {
 	const ListElement = props.isOrdered ? 'ol' : 'ul';
 
+	if (!props.items.length && !props.renderIfEmpty) {
+		return null;
+	}
+
 	return (
 		<div styleName="list">
 			{props.title && <h2 styleName="title">{props.title}</h2>}
@@ -63,7 +67,12 @@ List.propTypes = {
 		link: PropTypes.string,
 		onClick: PropTypes.func
 	})),
-	isOrdered: PropTypes.bool
+	isOrdered: PropTypes.bool,
+	renderIfEmpty: PropTypes.bool
+};
+
+List.defaultProps = {
+	renderIfEmpty: true
 };
 
 export default List;

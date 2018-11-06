@@ -65,6 +65,22 @@ const initialState = Immutable.Map({
 					loading: false,
 					error: action.payload.error.message
 				});
+			case types.DO_SERVICE_ACTION:
+				return state.mergeDeepIn(
+					['services', action.payload.serviceId],
+					{
+						state: Immutable.Map().set(action.payload.serviceAction.property, action.payload.serviceAction.value),
+						error: null
+					}
+				);
+			case types.DO_SERVICE_ACTION_ERROR:
+				return state.mergeDeepIn(
+					['services', action.payload.serviceId],
+					{
+						state: Immutable.Map().set(action.payload.serviceAction.property, action.payload.originalValue),
+						error: action.payload.error.message
+					}
+				);
 			case types.SET_SETTINGS:
 				return state.mergeIn(
 					['services', action.payload.serviceId],

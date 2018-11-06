@@ -113,6 +113,12 @@ class ClientConnection {
 				});
 		});
 
+		this.clientEndpoint('service/action', (data, callback) => {
+			data.service.action(data.action)
+				.then(() => callback())
+				.catch(callback);
+		});
+
 		this.clientEndpoint('service/settings/set', (data, callback) => {
 			data.service.setSettings(data.settings)
 				.then(() => callback())
@@ -148,8 +154,8 @@ class ClientConnection {
 			if (!gatewayService.verifyCommandToken(data.command_token)) {
 				gatewayService.getCommandToken();
 
-				// NOTE: DO NOT SEND THE COMMAND TOKEN TO THE CLIENT.
-				// IT MUST BE READ FROM SERVER LOGS TO GAIN ACCESS.
+				// WARNING: DO NOT SEND THE COMMAND TOKEN TO THE CLIENT. IT
+				// MUST BE READ FROM SERVER LOGS TO GAIN ACCESS.
 
 				callback(null, 'Command token generated.');
 

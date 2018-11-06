@@ -1,5 +1,15 @@
 import * as types from './types';
 
+export const doServiceAction = (serviceId, serviceAction) => ({
+	type: types.DO_SERVICE_ACTION,
+	payload: {serviceId, serviceAction}
+});
+
+export const doServiceActionError = (serviceId, originalValue, error) => ({
+	type: types.DO_SERVICE_ACTION_ERROR,
+	payload: {serviceId, originalValue, error}
+});
+
 export const setSettings = (serviceId, settings) => ({
 	type: types.SET_SETTINGS,
 	payload: {serviceId, settings}
