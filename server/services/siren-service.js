@@ -16,11 +16,10 @@ class SirenService extends Service {
 SirenService.type = 'siren';
 SirenService.friendly_type = 'Siren';
 SirenService.indefinite_article = 'A';
-SirenService.state_definitions = {
-	trigger: {
+SirenService.state_definitions = new Map()
+	.set('trigger', {
 		type: 'boolean',
 		setter: 'setSiren'
-	}
-};
+	});
 
 module.exports = SirenService;

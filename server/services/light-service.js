@@ -53,19 +53,18 @@ class LightService extends Service {
 LightService.type = 'light';
 LightService.friendly_type = 'Light';
 LightService.indefinite_article = 'A';
-LightService.state_definitions = {
-	power: {
+LightService.state_definitions = new Map()
+	.set('power', {
 		type: 'boolean',
 		setter: 'setPower'
-	},
-	brightness: {
+	})
+	.set('brightness', {
 		type: 'percentage',
 		setter: 'setBrightness'
-	},
-	color: {
+	})
+	.set('color', {
 		type: 'color',
 		setter: 'setColor'
-	}
-};
+	});
 
 module.exports = LightService;
