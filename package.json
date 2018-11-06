@@ -29,6 +29,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "rc-slider": "^8.6.3",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "react-redux": "^5.0.7",

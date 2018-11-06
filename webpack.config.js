@@ -1,6 +1,7 @@
 const path = require('path'),
 	webpack = require('webpack'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
+	getLocalIdent = require('css-loader/lib/getLocalIdent'),
 	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils'),
 	LOCAL_IDENT_NAME = '[name]__[local]___[hash:base64:5]';
 
@@ -100,7 +101,6 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.css$/,
-					include: path.resolve(__dirname, 'src'),
 					use: [
 						{
 							loader: propIf(
@@ -114,6 +114,12 @@ module.exports = (env) => {
 							options: {
 								modules: true,
 								localIdentName: LOCAL_IDENT_NAME,
+								getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+									// Don't use CSS modules on CSS files from dependencies.
+									return loaderContext.resourcePath.includes('node_modules')
+										? localName
+										: getLocalIdent(loaderContext, localIdentName, localName, options);
+								},
 								minimize: ifProduction(),
 								sourceMap: true
 							}

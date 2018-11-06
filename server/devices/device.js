@@ -18,6 +18,7 @@ class Device {
 
 		this.id = data.id || uuid();
 		this.token = data.token;
+		this.type = data.type;
 		this.account = data.account;
 		this.account_id = data.account_id;
 		this.gateway = data.gateway;
@@ -27,10 +28,10 @@ class Device {
 		this.onUpdate = debounce(() => onUpdate(this), 100);
 
 		this.driver_data = {...data.driver_data};
-		this.driver = new driver_class(this.driver_data, socket, this.id, [...data.services]);
+		this.driver = new driver_class(this.driver_data, socket, this.id);
 
-		const driverOn = this.driver.on.bind(this.driver),
-			driverEmit = this.driver.emit.bind(this.driver);
+		const driverOn = (function () { this.driver.on(...arguments); }).bind(this),
+			driverEmit = (function () { this.driver.emit(...arguments); }).bind(this);
 
 		this.services = new ServicesManager(
 			this,
@@ -54,11 +55,11 @@ class Device {
 			this.setSocket(socket, this.token);
 		}
 
-		this.subscribeToDriver();
+		this._subscribeToDriver();
 		this.driver.init();
 	}
 
-	subscribeToDriver () {
+	_subscribeToDriver () {
 		this.driver.on('connect', () => this.state.connected = true);
 		this.driver.on('disconnect', () => this.state.connected = false);
 		this.driver.on('load', (data, callback = noOp) => {
@@ -164,6 +165,15 @@ class Device {
 		this.state.connected = socket.connected;
 	}
 
+	setType (type) {
+		if (this.type === type) {
+			return;
+		}
+
+		this.type = type;
+		this.save();
+	}
+
 	save () {
 		return new Promise((resolve, reject) => {
 			if (!this.is_saveable) {
@@ -179,6 +189,7 @@ class Device {
 		return {
 			id: this.id,
 			account_id: this.account_id,
+			type: this.type,
 			gateway_id: this.gateway_id,
 			services: this.services.getSerializedServices(),
 			info: this.info,
@@ -221,7 +232,6 @@ Device.settings_definitions = new Map()
 
 Device.drivers = {
 	'gateway': StandardDeviceDriver,
-	'liger': LigerDeviceDriver,
 	'generic': GenericDeviceDriver
 };
 

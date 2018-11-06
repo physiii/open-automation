@@ -51,6 +51,10 @@ class Api {
 		return Api.apiCall('device/delete', {device_id: deviceId});
 	}
 
+	doServiceAction (serviceId, action) {
+		return Api.apiCall('service/action', {service_id: serviceId, action});
+	}
+
 	setServiceSettings (serviceId, settings) {
 		return Api.apiCall('service/settings/set', {service_id: serviceId, settings});
 	}

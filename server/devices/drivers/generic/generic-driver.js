@@ -7,13 +7,15 @@ const uuidv4 = require('uuid/v4'),
 	TAG = '[GenericDeviceDriver]';
 
 class GenericDeviceDriver extends DeviceDriver {
-	constructor (data = {}, socket, device_id, relay_services = []) {
-		super(socket, device_id);
+	constructor (data = {}, socket, device_id) {
+		super(data, socket, device_id);
 
 		this.service_adapters = new Map();
-		this.service_ids = new Map(data.service_ids);
+		this.service_relay_ids = new Map(data.service_relay_ids);
 		this._events = new EventEmitter();
 		this._socket_listeners = [];
+
+		this._loadServiceAdapters(data.services);
 
 		if (socket) {
 			this.setSocket(socket);
@@ -23,6 +25,7 @@ class GenericDeviceDriver extends DeviceDriver {
 		this._socketOn('disconnect', () => this._events.emit('disconnect'));
 		this._socketOn('load', (device) => {
 			this._loadServiceAdapters(device.services);
+			this.save();
 			this._emitLoadToRelay();
 		});
 	}
@@ -91,13 +94,11 @@ class GenericDeviceDriver extends DeviceDriver {
 		}
 	}
 
-	_loadServiceAdapters (services) {
+	_loadServiceAdapters (services = []) {
 		this.service_adapters.forEach((adapter) => adapter.destroy());
 		this.service_adapters.clear();
 
 		services.forEach(this._addServiceAdapter.bind(this));
-
-		this.save();
 	}
 
 	_addServiceAdapter (data) {
@@ -105,7 +106,7 @@ class GenericDeviceDriver extends DeviceDriver {
 			adapter = new adapter_class(
 				{
 					...data,
-					id: this.service_ids.get(data.id), // If there's already a relay service id for this generic id, use the existing id.
+					id: this.service_relay_ids.get(data.id), // If there's already a relay service id for this generic id, use the existing id.
 					generic_id: data.id,
 					generic_type: data.type
 				},
@@ -113,18 +114,19 @@ class GenericDeviceDriver extends DeviceDriver {
 					on: this._socketOn.bind(this),
 					off: this._socketOff.bind(this),
 					emit: this._socketEmit.bind(this)
-				}
+				},
+				this._events
 			);
 
 		this.service_adapters.set(adapter.id, adapter);
-		this.service_ids.set(adapter.generic_id, adapter.id);
+		this.service_relay_ids.set(adapter.generic_id, adapter.id);
 	}
 
 	_emitLoadToRelay () {
 		this._events.emit('load', {
 			device: {
-				info: {manufacturer: 'Pyfi Technologies'},
-				services: Array.from(this.service_adapters.values()).map((adapter) => adapter.relaySerialize())
+				services: Array.from(this.service_adapters.values()).map((adapter) => adapter.relaySerialize()),
+				info: {manufacturer: 'Pyfi Technologies'}
 			}
 		});
 	}
@@ -132,7 +134,8 @@ class GenericDeviceDriver extends DeviceDriver {
 	save () {
 		this._events.emit('driver-data', {
 			driver_data: {
-				service_ids: [...this.service_ids]
+				services: Array.from(this.service_adapters.values()).map((adapter) => adapter.dbSerialize()),
+				service_relay_ids: [...this.service_relay_ids]
 			}
 		});
 	}

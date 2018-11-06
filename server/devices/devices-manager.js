@@ -150,6 +150,9 @@ class DevicesManager {
 
 		console.log(TAG, 'Device connected.', deviceId);
 
+		// Make sure the device type is up-to-date.
+		device.setType(deviceType);
+
 		// Update the socket on the device.
 		device.setSocket(socket, deviceToken);
 	}

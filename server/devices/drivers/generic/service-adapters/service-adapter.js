@@ -1,19 +1,18 @@
-const EventEmitter = require('events'),
-	constants = require('../../../../constants.js'),
+const constants = require('../../../../constants.js'),
 	uuidv4 = require('uuid/v4'),
 	TAG = '[GenericServiceAdapter]';
 
 class GenericServiceAdapter {
-	constructor (data, socket_facade) {
+	constructor (data, socket_facade, events) {
 		this._handleState = this._handleState.bind(this);
 
 		this.id = data.id || uuidv4();
-		this.generic_id = data.generic_id;
 		this.type = this.constructor.relay_type || data.type;
+		this.generic_id = data.generic_id;
 		this.generic_type = this.constructor.generic_type || data.generic_type;
 		this.state = {...data.state};
 		this.socket = socket_facade;
-		this._events = new EventEmitter();
+		this._events = events;
 
 		this._subscribeToSocket();
 	}
@@ -64,6 +63,13 @@ class GenericServiceAdapter {
 
 	_getPrefixedEvent (event) {
 		return this.id + constants.SERVICE_EVENT_DELIMITER + this.type + constants.SERVICE_EVENT_DELIMITER + event;
+	}
+
+	dbSerialize () {
+		return {
+			id: this.generic_id,
+			type: this.generic_type
+		};
 	}
 
 	relaySerialize () {

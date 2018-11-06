@@ -77,6 +77,7 @@ ServicesManager.classes = {
 	'button': require('./button-service.js'),
 	'camera': require('./camera-service.js'),
 	'contact-sensor': require('./contact-sensor-service.js'),
+	'dimmer': require('./dimmer-service.js'),
 	'event-mock': require('./event-mock-service.js'),
 	'game-machine': require('./game-machine-service.js'),
 	'gateway': require('./gateway-service.js'),

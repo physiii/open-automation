@@ -1,7 +1,14 @@
 import * as actions from './actions';
 import Api from '../../../api.js';
 
-const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch) => {
+const doServiceAction = (serviceId, serviceAction, originalValue) => (dispatch) => {
+		dispatch(actions.doServiceAction(serviceId, serviceAction));
+
+		Api.doServiceAction(serviceId, serviceAction).catch((error) => {
+			dispatch(actions.doServiceActionError(serviceId, originalValue, error));
+		});
+	},
+	setServiceSettings = (serviceId, settings, originalSettings) => (dispatch) => {
 		dispatch(actions.setSettings(serviceId, settings));
 
 		Api.setServiceSettings(serviceId, settings).catch((error) => {
@@ -66,6 +73,7 @@ const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch)
 
 
 export {
+	doServiceAction,
 	setServiceSettings,
 	fetchServiceLog,
 	cameraStartStream,

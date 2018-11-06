@@ -6,7 +6,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 		return GenericServiceAdapter.prototype._adaptState.call(this, {
 			...state,
 			// Convert level property to a percentage between 0 and 1.
-			level: state.level / LEVEL_SCALE
+			level: Math.round((state.level / LEVEL_SCALE) * 100) / 100
 		});
 	}
 
@@ -15,7 +15,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 
 		if (event === 'action' && data.property === 'level') {
 			// Convert 0-1 percentage scale to value range of the level property on the device.
-			adapted_data.value = data.value * LEVEL_SCALE;
+			adapted_data.value = Math.round(data.value * LEVEL_SCALE);
 		}
 
 		return GenericServiceAdapter.prototype._adaptSocketEmit.call(this, event, adapted_data, callback);
