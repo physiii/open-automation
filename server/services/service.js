@@ -36,6 +36,7 @@ class Service {
 
 	subscribeToDevice () {
 		this.deviceOn('state', ({state}) => this.setState(state));
+		this.deviceOn('settings/get', (data, callback) => callback(null, {settings: this.settings.getAll()}));
 	}
 
 	on (event, listener) {

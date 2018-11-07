@@ -42,7 +42,11 @@ class GenericServiceAdapter {
 
 	// This gets called when a relay service emits an event to the device.
 	emit () {
-		this.socket.emit(...this._adaptSocketEmit(...arguments));
+		const [event, data, callback, should_emit] = this._adaptSocketEmit(...arguments);
+
+		if (should_emit) {
+			this.socket.emit(event, data, callback);
+		}
 	}
 
 	_adaptSocketEmit (event, data, callback) {
@@ -76,7 +80,16 @@ class GenericServiceAdapter {
 		return {
 			id: this.id,
 			type: this.type,
-			state: {...this.state}
+			state: {...this.state},
+			settings_definitions: Array.from(this.constructor.settings_definitions.entries()).map(([property, definition]) => {
+				const serialized_definition = {...definition};
+
+				if (definition.type === 'list-of') {
+					serialized_definition.item_fields = [...definition.item_fields.entries()];
+				}
+
+				return [property, serialized_definition];
+			})
 		};
 	}
 
@@ -84,5 +97,7 @@ class GenericServiceAdapter {
 		this.socket.off('service/state', this._handleState);
 	}
 }
+
+GenericServiceAdapter.settings_definitions = new Map();
 
 module.exports = GenericServiceAdapter;

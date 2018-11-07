@@ -12,7 +12,21 @@ import './ServiceDetails.css';
 export class ServiceDetails extends React.Component {
 	render () {
 		const service = this.props.service,
-			settingsProperties = Object.keys(service.settings_definitions);
+			settingsProperties = Object.keys(service.settings_definitions),
+			settingsFieldsProps = settingsProperties.map((property) => {
+				// The name field will be rendered separately.
+				if (property === 'name') {
+					return null;
+				}
+
+				return {
+					property,
+					definition: service.settings_definitions[property],
+					value: this.props.settings[property],
+					error: this.props.settingsErrors[property],
+					originalValue: this.props.originalSettings[property]
+				};
+			});
 
 		return (
 			<div styleName="container">
@@ -33,25 +47,14 @@ export class ServiceDetails extends React.Component {
 							onChange={this.props.onSettingChange} />
 					</div>
 				</header>
-				{Boolean(settingsProperties.length - 1) && (
+				{SettingsForm.willAnyFieldsRender(settingsFieldsProps) && (
 					<React.Fragment>
 						<h2 styleName="settingsHeading">{service.strings.friendly_type} Settings</h2>
 						<SettingsForm
-							fields={settingsProperties.map((property) => {
-								if (property === 'name') {
-									return null;
-								}
-
-								return {
-									property,
-									definition: service.settings_definitions[property],
-									value: this.props.settings[property],
-									error: this.props.settingsErrors[property],
-									originalValue: this.props.originalSettings[property]
-								};
-							})}
 							disabled={!service.state.connected}
-							onFieldChange={this.props.onSettingChange} />
+							onFieldChange={this.props.onSettingChange}>
+							{settingsFieldsProps}
+						</SettingsForm>
 					</React.Fragment>
 				)}
 			</div>

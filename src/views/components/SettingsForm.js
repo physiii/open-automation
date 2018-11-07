@@ -6,7 +6,7 @@ import './SettingsForm.css';
 export const SettingsForm = (props) => {
 	return (
 		<form styleName="form">
-			{props.fields.map((field) => {
+			{props.children.map((field) => {
 				return field && (
 					<SettingsField
 						{...field}
@@ -19,8 +19,18 @@ export const SettingsForm = (props) => {
 	);
 };
 
+SettingsForm.willAnyFieldsRender = (fields = []) => {
+	for (const field of fields) {
+		if (SettingsField.supportsFieldType(field && field.definition && field.definition.type)) {
+			return true;
+		}
+	}
+
+	return false;
+};
+
 SettingsForm.propTypes = {
-	fields: PropTypes.arrayOf(PropTypes.shape({
+	children: PropTypes.arrayOf(PropTypes.shape({
 		property: PropTypes.string,
 		definition: PropTypes.object,
 		value: PropTypes.any,
