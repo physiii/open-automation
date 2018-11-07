@@ -79,7 +79,9 @@ export class DeviceDetailsScreen extends React.Component {
 								<React.Fragment>
 									<h2 styleName="settingsHeading">Device Settings</h2>
 									<SettingsForm
-										fields={settingsProperties.map((property) => {
+										disabled={!device.state.connected}
+										onFieldChange={this.props.onSettingChange}>
+										{settingsProperties.map((property) => {
 											return {
 												property,
 												definition: device.settings_definitions[property],
@@ -88,8 +90,7 @@ export class DeviceDetailsScreen extends React.Component {
 												originalValue: this.props.originalSettings[property]
 											};
 										})}
-										disabled={!device.state.connected}
-										onFieldChange={this.props.onSettingChange} />
+									</SettingsForm>
 								</React.Fragment>
 							)}
 							<h2 styleName="infoHeading">Info</h2>

@@ -47,8 +47,8 @@ class Automator {
 		automations_list.forEach((automation) => {
 			automation.triggers.forEach((trigger) => {
 				const trigger_checks = {
-					'time-of-day': moment(this.now).utc().startOf('day').add(trigger.time, 'minutes').isSame(this.now, 'minute'),
-					'date': moment(trigger.date).utc().isSame(this.now, 'minute')
+					'time-of-day': moment(this.now).utc().startOf('day').add(trigger.time, 'minutes').isSame(this.now, 'minute'), // TODO: This probably doesn't work with DST.
+					'date': moment(trigger.date).utc().isSame(this.now, 'minute') // TODO: Make sure this works with DST.
 				};
 
 				if (trigger_checks[trigger.type]) {

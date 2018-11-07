@@ -39,6 +39,8 @@ export const SettingsField = (props) => {
 						label: option.label || getUnitLabeledValue(option.value, props.definition.unit_label)
 					}))} />
 			);
+		case 'list-of':
+			return null;
 		default:
 			return null;
 	}
@@ -47,6 +49,8 @@ export const SettingsField = (props) => {
 const getUnitLabeledValue = (value, label) => {
 	return value.toString && value.toString() + (label ? ' ' + label : '');
 };
+
+SettingsField.supportsFieldType = (type) => SettingsField.supportedFieldTypes.includes(type);
 
 SettingsField.propTypes = {
 	property: PropTypes.string.isRequired,
@@ -57,5 +61,14 @@ SettingsField.propTypes = {
 	disabled: PropTypes.bool,
 	onChange: PropTypes.func
 };
+
+SettingsField.supportedFieldTypes = [
+	'string',
+	'integer',
+	'number',
+	'boolean',
+	'one-of',
+	'list-of'
+];
 
 export default SettingsField;

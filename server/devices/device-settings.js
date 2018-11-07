@@ -99,6 +99,10 @@ class DeviceSettings {
 		return this.settings[property];
 	}
 
+	getAll () {
+		return {...this.settings};
+	}
+
 	set (settings) {
 		return new Promise((resolve, reject) => {
 			const original_settings = {...this.settings},
@@ -144,7 +148,7 @@ class DeviceSettings {
 	serialize () {
 		return {
 			settings: {...this.settings},
-			settings_definitions: Array.from(this.definitions.entries())
+			settings_definitions: [...this.definitions.entries()]
 		};
 	}
 }

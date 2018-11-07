@@ -17,7 +17,15 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 			super({
 				...defaultValues,
 				...values,
-				settings_definitions: Immutable.OrderedMap(values.settings_definitions),
+				settings_definitions: Immutable.OrderedMap(values.settings_definitions.map(([property, definition]) => {
+					const hydratedDefinition = {...definition};
+
+					if (definition.type === 'list-of') {
+						hydratedDefinition.item_fields = Immutable.OrderedMap(hydratedDefinition.item_fields);
+					}
+
+					return [property, hydratedDefinition];
+				})),
 				settings: mapWithDefaults({
 					...defaultValues.settings,
 					name: values.settings.name || values.strings.friendly_type // Default name to the service type.

@@ -12,7 +12,7 @@ export const ServiceCard = (props) => {
 	return Card && <Card {...props} />;
 };
 
-ServiceCard.willRenderCard = ({type}) => Boolean(ServiceCard.cardComponents[type]);
+ServiceCard.willCardRender = ({type}) => Boolean(ServiceCard.cardComponents[type]);
 
 ServiceCard.propTypes = {
 	service: PropTypes.object,
