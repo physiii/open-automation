@@ -10,6 +10,10 @@ class Service {
 		this.type = this.constructor.type || data.type;
 		this.device_id = data.device_id;
 
+		if (this.constructor.is_armable) {
+			this.is_armed = Boolean(data.is_armed);
+		}
+
 		this.events = new EventEmitter2({wildcard: true, newListener: false, maxListeners: 0});
 		this.deviceOn = (event, callback) => deviceOn(event, callback, this.id, this.type);
 		this.deviceEmit = (event, data, callback) => deviceEmit(event, data, callback, this.id, this.type);
@@ -30,6 +34,8 @@ class Service {
 
 	subscribeToDevice () {
 		this.deviceOn('state', ({state}) => this.setState(state));
+		this.deviceOn('service/arm', () => this.arm());
+		this.deviceOn('service/disarm', () => this.disarm());
 	}
 
 	on (event, listener) {
@@ -104,6 +110,16 @@ class Service {
 			case 'color':
 				this._performColorAction(action, setProperty);
 				break;
+		}
+	}
+
+	setArmed (value) {
+		if (this.constructor.is_armable && value) {
+			this.is_armed = true;
+		}
+
+		if (this.constructor.is_armable && !value ) {
+			this.is_armed = false;
 		}
 	}
 

@@ -62,6 +62,9 @@ const setServiceSettings = (serviceId, settings, originalSettings) => (dispatch)
 	},
 	thermostatFanAuto = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'auto');
+	},
+	armServices = (data) => () => {
+		Api.armServices(data);
 	};
 
 
@@ -79,5 +82,6 @@ export {
 	thermostatSetMode,
 	thermostatSetHold,
 	thermostatFanOn,
-	thermostatFanAuto
+	thermostatFanAuto,
+	armServices
 };

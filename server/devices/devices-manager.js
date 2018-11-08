@@ -164,6 +164,20 @@ class DevicesManager {
 		return Boolean(devicesList.get(deviceId));
 	}
 
+	setAccountArming (data, account_id) {
+		const accountDevices = this.getDevicesByAccountId(this.account.id);
+
+		return new Promise((resolve, reject) => {
+			accountDevices.forEach((device) => {
+				device.services.forEach((service) => {
+					service.setArmed(Boolean(data));
+				});
+			});
+
+			resolve()
+		});
+	}
+
 	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
 	// originating from the client API.
 	getDeviceById (deviceId, accountId, skipAccountAccessCheck) {

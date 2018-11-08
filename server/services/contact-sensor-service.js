@@ -5,13 +5,15 @@ class ContactSensorService extends Service {
 	subscribeToDevice () {
 		Service.prototype.subscribeToDevice.apply(this, arguments);
 
-		this.deviceOn('open', () => this._emit('open'));
-		this.deviceOn('closed', () => this._emit('closed'));
+		this.deviceOn('open', () => {
+			if (this.is_armed) this._emit('open');
+		});
 	}
 }
 
 ContactSensorService.type = 'contact-sensor';
 ContactSensorService.friendly_type = 'Contact Sensor';
 ContactSensorService.indefinite_article = 'A';
+ContactSensorService.is_armable = true;
 
 module.exports = ContactSensorService;

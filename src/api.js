@@ -115,6 +115,10 @@ class Api {
 		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fan_mode: fanMode});
 	}
 
+	armServices (data) {
+		return Api.apiCall('services/armed', data);
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {

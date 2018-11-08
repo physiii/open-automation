@@ -113,6 +113,15 @@ class ClientConnection {
 				});
 		});
 
+		this.clientEndpoint('services/armed', (data, callback) => {
+			DevicesManager.setAccountArming(data, this.account.id)
+				.then(() => callback())
+				.catch(() => {
+					console.error(TAG, 'Error in setting property on 1 or more devices.')
+					callback('Error in setting property on 1 or more devices.')
+				});
+		});
+
 		this.clientEndpoint('service/settings/set', (data, callback) => {
 			data.service.setSettings(data.settings)
 				.then(() => callback())
