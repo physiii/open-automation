@@ -33,7 +33,7 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				this.setValidationRules();
 
 				this.handleFieldChange = this.handleFieldChange.bind(this);
-				this.saveSettings = debounce(this.saveSettings, SAVE_DEBOUNCE_DELAY);
+				this.saveSettings = debounce(this.saveSettings.bind(this), SAVE_DEBOUNCE_DELAY);
 			}
 
 			static getDerivedStateFromProps (props, state) {

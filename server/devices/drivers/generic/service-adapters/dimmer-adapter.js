@@ -23,6 +23,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 				if (data.property === 'level') {
 					adapted_data.value = this._adaptLevelToDevice(data.value);
 				}
+
 				break;
 			case 'settings':
 				should_emit = false;
@@ -178,7 +179,7 @@ GenericDimmerAdapter.settings_definitions = new Map([...GenericServiceAdapter.se
 	.set('schedule', {
 		type: 'list-of',
 		label: 'Schedule',
-		item_fields: new Map()
+		item_properties: new Map()
 			.set('time', {
 				type: 'time-of-day',
 				label: 'Time',
@@ -189,7 +190,6 @@ GenericDimmerAdapter.settings_definitions = new Map([...GenericServiceAdapter.se
 				label: 'Level',
 				validation: {is_required: true}
 			}),
-		default_value: 0,
 		validation: {is_required: false}
 	});
 

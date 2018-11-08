@@ -1,4 +1,5 @@
 const utils = require('../utils.js'),
+	is_production = process.env.NODE_ENV === 'production',
 	TAG = '[DeviceSettings]';
 
 class DeviceSettings {
@@ -35,47 +36,84 @@ class DeviceSettings {
 		}
 	}
 
-	_getValidationErrors (settings) {
+	_getValidationErrors (settings = {}, definitions = this.definitions) {
 		const errors = {};
 
-		this.definitions.forEach((definition, property) => {
-			const validations = {...definition.validation};
+		try {
+			definitions.forEach((definition, property) => {
+				const validations = {...definition.validation};
 
-			// Don't validate the property if it has no value and it's not required.
-			if ((typeof settings[property] === 'undefined' || settings[property] === null) && !validations.is_required) {
-				return;
-			}
+				// Don't validate the property if it has no value and it's not required.
+				if ((typeof settings[property] === 'undefined' || settings[property] === null) && !validations.is_required) {
+					return;
+				}
 
-			// Add a validation that verifies that the value is the correct data type.
-			validations[definition.type] = this._getPropertyTypeValidationValue(definition);
+				// Add a validation that verifies that the value is the correct data type.
+				validations[definition.type] = this._getPropertyTypeValidationValue(definition);
 
-			const rule_names = Object.keys(validations);
+				const rule_names = Object.keys(validations);
 
-			// Make sure the property data type validation is performed before all others.
-			rule_names.sort((a, b) => a === definition.type ? -1 : 1);
+				// Make sure the property data type validation is performed before all others.
+				rule_names.sort((a, b) => a === definition.type ? -1 : 1);
 
-			// Run validation rules for the property.
-			rule_names.forEach((rule) => {
-				const rule_value = validations[rule],
-					validator = utils.validators[rule](rule_value, definition),
-					error = validator(settings[property], definition.label || property);
+				// Run validation rules for the property.
+				for (const rule of rule_names) {
+					const rule_value = validations[rule],
+						validator = definition.type == 'list-of'
+							? (items) => this._getValidationErrorsForListOf(items, definition.item_properties)
+							: typeof utils.validators[rule] === 'function' && utils.validators[rule](rule_value, definition),
+						error = typeof validator === 'function' && validator(settings[property], definition.label || property);
 
-				if (error) {
-					errors[property] = errors[property] || error; // If there's already an error for this property, keep it.
+					if (error) {
+						errors[property] = error;
+						break;
+					}
 				}
 			});
-		});
+		} catch (error) {
+			if (!is_production) {
+				console.error(TAG, 'Validation rules runtime error. This most likely occurred because of invalid settings definitions.', error);
+			}
+
+			return 'An error occurred while trying to save the device’s settings.';
+		}
 
 		return Object.keys(errors).length ? errors : false;
 	}
 
+	_getValidationErrorsForListOf (items = [], item_properties) {
+		const errors = [];
+		let has_errors = false;
+
+		items.forEach((item, index) => {
+			errors[index] = this._getValidationErrors(item, item_properties);
+
+			if (errors[index]) {
+				has_errors = true;
+			}
+		});
+
+		return has_errors ? errors : false;
+	}
+
 	_getPropertyTypeValidationValue (definition) {
-		if (definition.type === 'one-of' && Array.isArray(definition.value_options)) {
-			return definition.value_options.map((option) => option.value);
+		switch (definition.type) {
+			case 'one-of':
+				if (Array.isArray(definition.value_options)) {
+					return definition.value_options.map((option) => option.value);
+				}
+
+				break;
+			case 'list-of':
+				if (definition.item_properties instanceof Map) {
+					return definition.item_properties;
+				}
+
+				break;
 		}
 	}
 
-	setDefinitions (definitions = new Map()) {
+	setDefinitions (definitions = []) {
 		const name_definition = new Map(definitions).get('name'),
 			base_name_definition = this.base_definitions.get('name'),
 			merged_name_definition = {...base_name_definition};
@@ -85,9 +123,28 @@ class DeviceSettings {
 			merged_name_definition.default_value = name_definition.default_value;
 		}
 
+		// Hydrate serialized list-of fields to JavaScript maps.
+		// TODO: Validate that the list-of item_properties matches the schema.
+		const hydrated_definitions = definitions.map(([field_name, definition]) => {
+			if (definition.type !== 'list-of') {
+				return [field_name, definition];
+			}
+
+			let item_properties = Array.isArray(definition.item_properties) ? definition.item_properties : [];
+
+			// Ignore nested list-of fields.
+			item_properties = item_properties.filter((property) => property.type !== 'list-of');
+			item_properties = new Map(item_properties);
+
+			return [
+				field_name,
+				{...definition, item_properties}
+			];
+		});
+
 		this.definitions = new Map([
 			...this.base_definitions, // Set first so base definitions come first.
-			...definitions,
+			...hydrated_definitions,
 			...this.base_definitions, // Set again so base definitions aren't overwritten.
 			...new Map().set('name', merged_name_definition)
 		]);
@@ -148,7 +205,15 @@ class DeviceSettings {
 	serialize () {
 		return {
 			settings: {...this.settings},
-			settings_definitions: [...this.definitions.entries()]
+			settings_definitions: [...this.definitions.entries()].map(([property, definition]) => {
+				const serialized_definition = {...definition};
+
+				if (definition.type === 'list-of') {
+					serialized_definition.item_properties = [...definition.item_properties.entries()];
+				}
+
+				return [property, serialized_definition];
+			})
 		};
 	}
 }

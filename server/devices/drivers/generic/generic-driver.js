@@ -26,7 +26,7 @@ class GenericDeviceDriver extends DeviceDriver {
 		this._socketOn('load', (device) => {
 			this._loadServiceAdapters(device.services);
 			this.save();
-			this._emitLoadToRelay();
+			this._emitLoadToRelay(device);
 		});
 	}
 
@@ -122,11 +122,11 @@ class GenericDeviceDriver extends DeviceDriver {
 		this.service_relay_ids.set(adapter.generic_id, adapter.id);
 	}
 
-	_emitLoadToRelay () {
+	_emitLoadToRelay (device) {
 		this._events.emit('load', {
 			device: {
 				services: Array.from(this.service_adapters.values()).map((adapter) => adapter.relaySerialize()),
-				info: {manufacturer: 'Pyfi Technologies'}
+				info: {...device.info}
 			}
 		});
 	}

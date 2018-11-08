@@ -40,6 +40,7 @@
     "socket.io": "^2.1.0",
     "socket.io-client": "^2.1.0",
     "uuid": "^3.2.1",
+    "uuid-validate": "0.0.3",
     "ws": "^5.1.1"
   },
   "devDependencies": {

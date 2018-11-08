@@ -71,6 +71,9 @@ const isEmpty = (value) => {
 
 		return true;
 	},
+	isIterable = (object) => {
+		return object != null && typeof object[Symbol.iterator] === 'function';
+	},
 	validators = {
 		'string': () => (value, label) => typeof value === 'string' ? null : label + ' must be a string.',
 		'boolean': () => (value, label) => typeof value === 'boolean' ? null : label + ' must be boolean.',

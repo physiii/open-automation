@@ -65,12 +65,13 @@ class Device {
 		this.driver.on('load', (data, callback = noOp) => {
 			if (!data.device) {
 				callback('No device data provided.');
-
 				return;
 			}
 
+			const device_errors = [];
+
 			if (data.device.services) {
-				this.services.updateServices(data.device.services);
+				this.services.updateServices(data.device.services, (error) => device_errors.push(error));
 			}
 
 			if (data.device.settings_definitions) {
@@ -83,6 +84,30 @@ class Device {
 
 			this.onUpdate();
 			this.save();
+
+			if (device_errors.length > 0) {
+				callback('The following errors occurred while loading the device data: \n' + device_errors.join(' \n'));
+			} else {
+				callback();
+			}
+		});
+		this.driver.on('service/load', (data, callback = noOp) => {
+			if (!data.service) {
+				callback('No service data provided.');
+				return;
+			}
+
+			this.services.addService(data.service, true, (error) => {
+				if (error) {
+					callback(error);
+					return;
+				}
+
+				callback();
+
+				this.onUpdate();
+				this.save();
+			});
 		});
 		this.driver.on('driver-data', (data) => {
 			this.driver_data = data.driver_data;

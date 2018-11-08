@@ -49,7 +49,7 @@ class GenericServiceAdapter {
 		}
 	}
 
-	_adaptSocketEmit (event, data, callback) {
+	_adaptSocketEmit (event, data, callback, should_emit = true) {
 		if (event === 'action') {
 			return [
 				event,
@@ -58,7 +58,8 @@ class GenericServiceAdapter {
 					property: data.property,
 					value: data.value
 				},
-				callback
+				callback,
+				should_emit
 			];
 		}
 
@@ -85,7 +86,7 @@ class GenericServiceAdapter {
 				const serialized_definition = {...definition};
 
 				if (definition.type === 'list-of') {
-					serialized_definition.item_fields = [...definition.item_fields.entries()];
+					serialized_definition.item_properties = [...definition.item_properties.entries()];
 				}
 
 				return [property, serialized_definition];

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TextField from './TextField.js';
 import Actions from './Actions.js';
 import Button from './Button.js';
-import {default as FormValidator, minLength, mustMatch, isEmail} from '../form-validation.js';
+import {default as FormValidator, minLength, mustMatch, email} from '../form-validation.js';
 import {connect} from 'react-redux';
 import * as session from '../../state/ducks/session';
 
@@ -21,7 +21,7 @@ export class RegisterForm extends React.Component {
 		};
 
 		this.validator = new FormValidator(this.state)
-			.field('email', 'Email', isEmail)
+			.field('email', 'Email', email)
 			.field('password', 'Password', minLength(PASSWORD_MIN_LENGTH))
 			.field('confirm_password', 'Password Confirmation', mustMatch('password', 'Password'));
 

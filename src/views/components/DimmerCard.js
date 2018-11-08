@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
+import SliderControl from './SliderControl.js';
 import './DimmerCard.css';
 
 export class DimmerCard extends React.Component {
@@ -12,7 +11,7 @@ export class DimmerCard extends React.Component {
 		super(props);
 
 		this.state = {
-			slider_value: this.getPercentage1(props.service.state.level),
+			slider_value: this.getPercentage100(props.service.state.level),
 			is_changing: false
 		};
 	}
@@ -21,22 +20,14 @@ export class DimmerCard extends React.Component {
 		this.setLevel(this.props.service.state.level > 0 ? 0 : 1);
 	}
 
-	onBeforeChange () {
-		if (this.state.is_changing) {
-			return;
-		}
-
+	handleInput (value) {
 		this.setState({
-			slider_value: this.getPercentage100(this.props.service.state.level),
+			slider_value: value,
 			is_changing: true
 		});
 	}
 
-	onChange (value) {
-		this.setState({slider_value: value});
-	}
-
-	onAfterChange (value) {
+	handleChange (value) {
 		this.setState({
 			slider_value: value,
 			is_changing: false
@@ -66,14 +57,13 @@ export class DimmerCard extends React.Component {
 
 	render () {
 		const currentLevel = this.state.is_changing
-				? this.state.slider_value
-				: this.getPercentage100(this.props.service.state.level),
-			isCurrentLevelValid = this.state.is_changing || (Number.isFinite(currentLevel) && this.props.service.state.connected);
+			? this.state.slider_value
+			: this.getPercentage100(this.props.service.state.level);
 
 		return (
 			<ServiceCardBase
 				name={this.props.service.settings.name || 'Dimmer'}
-				status={isCurrentLevelValid
+				status={this.props.service.state.connected && Number.isFinite(currentLevel)
 					? currentLevel + '%'
 					: 'Unknown'}
 				isConnected={this.props.service.state.connected}
@@ -81,13 +71,10 @@ export class DimmerCard extends React.Component {
 				{...this.props}>
 				<div styleName="container">
 					<div onClick={(event) => event.stopPropagation()}>
-						<Slider
-							value={isCurrentLevelValid
-								? currentLevel
-								: 0}
-							onBeforeChange={this.onBeforeChange.bind(this)}
-							onChange={this.onChange.bind(this)}
-							onAfterChange={this.onAfterChange.bind(this)}
+						<SliderControl
+							value={currentLevel}
+							onInput={this.handleInput.bind(this)}
+							onChange={this.handleChange.bind(this)}
 							disabled={!this.props.service.state.connected} />
 					</div>
 				</div>
