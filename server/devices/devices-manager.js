@@ -1,10 +1,12 @@
 const EventEmitter = require('events'),
 	crypto = require('crypto'),
+	validateUuid = require('uuid-validate'),
 	database = require('../database.js'),
 	Device = require('./device.js'),
 	AccountsManager = require('../accounts/accounts-manager.js'),
 	socketEscrow = new Map(),
 	devicesList = new Map(),
+	is_production = process.env.NODE_ENV === 'production',
 	DEVICE_TOKEN_SIZE = 256,
 	TAG = '[DevicesManager]';
 
@@ -64,6 +66,20 @@ class DevicesManager {
 
 	createDevice (data) {
 		return new Promise((resolve, reject) => {
+			if (!this.isDeviceIdValid(data.id)) {
+				const consoleLog = is_production ? console.error : console.warn,
+					error_message = 'Device ID must be a valid UUID v4 or v1. ID provided: ' + data.id;
+
+				consoleLog(TAG, error_message);
+
+				if (is_production) {
+					reject(error_message);
+					return;
+				} else {
+					consoleLog(TAG, 'The provided ID will not work in production.');
+				}
+			}
+
 			if (this.doesDeviceExist(data.id)) {
 				reject('A device with that ID already exists.');
 				return;
@@ -74,6 +90,9 @@ class DevicesManager {
 				reject('No device with that ID is currently connected or the device already belongs to an account.', data);
 				return;
 			}
+
+			// Make sure devices don't set themselves to saveable.
+			data.is_saveable = false;
 
 			const device = this.addDevice(data);
 
@@ -243,6 +262,10 @@ class DevicesManager {
 		const escrowData = this.getFromSocketEscrow(deviceId, deviceToken);
 
 		return Boolean(escrowData && escrowData.socket && escrowData.socket.connected);
+	}
+
+	isDeviceIdValid (id) {
+		return validateUuid(id, 1) || validateUuid(id, 4);
 	}
 
 	loadDevicesFromDb () {

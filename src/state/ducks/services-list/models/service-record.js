@@ -21,7 +21,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 					const hydratedDefinition = {...definition};
 
 					if (definition.type === 'list-of') {
-						hydratedDefinition.item_fields = Immutable.OrderedMap(hydratedDefinition.item_fields);
+						hydratedDefinition.item_properties = Immutable.OrderedMap(hydratedDefinition.item_properties);
 					}
 
 					return [property, hydratedDefinition];

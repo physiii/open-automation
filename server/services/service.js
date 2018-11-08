@@ -2,6 +2,7 @@ const uuidv4 = require('uuid/v4'),
 	utils = require('../utils.js'),
 	EventEmitter2 = require('eventemitter2').EventEmitter2,
 	DeviceSettings = require('../devices/device-settings.js'),
+	noOp = () => {},
 	TAG = '[Service]';
 
 class Service {
@@ -36,7 +37,7 @@ class Service {
 
 	subscribeToDevice () {
 		this.deviceOn('state', ({state}) => this.setState(state));
-		this.deviceOn('settings/get', (data, callback) => callback(null, {settings: this.settings.getAll()}));
+		this.deviceOn('settings/get', (data, callback = noOp) => callback(null, {settings: this.settings.getAll()}));
 	}
 
 	on (event, listener) {
