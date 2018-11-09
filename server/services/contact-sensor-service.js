@@ -5,25 +5,9 @@ class ContactSensorService extends Service {
 	subscribeToDevice () {
 		Service.prototype.subscribeToDevice.apply(this, arguments);
 
-		this.deviceOn('open', () => {
-			if (this.is_armed) {
-				this._emit('open/armed');
-			} else if(!this.is_armed) {
-				this._emit('open/disarmed');
-			} else {
-				console.log(TAG, 'Invalid arming state.');
-			}
-		});
+		this.deviceOn('open', () => this._emit('open'));
+		this.deviceOn('closed', () => this._emit('closed'));
 
-		this.deviceOn('closed', () => {
-			if (this.is_armed) {
-				this._emit('closed/armed');
-			} else if(!this.is_armed) {
-				this._emit('closed/disarmed');
-			} else {
-				console.log(TAG, 'Invalid arming state.');
-			}
-		});
 	}
 }
 
