@@ -93,12 +93,14 @@ class Automator {
 	// At any point during checking conditions, if the conditions object is not
 	// well-formed (unknown condition type, etc.), it should fail. It's better
 	// to do nothing when there's a problem than to possibly do the wrong thing.
-	checkConditions (conditions = []) {
+	checkConditions (conditions = [], trigger_data) {
 		const any_conditions_failed = conditions.some((condition = {}) => {
 			// This function should return true if the condition fails.
 			switch (condition.type) {
 				case 'day-of-week':
 					return !(condition.days && condition.days.includes && condition.days.includes(this.now.isoWeekday()));
+				case 'is_armed':
+					return !(condition.value === trigger_data.service.is_armed);
 				default:
 					// Fail by default.
 					return true;
@@ -109,7 +111,7 @@ class Automator {
 	}
 
 	runAutomation (automation, trigger_data) {
-		if (!automation.is_enabled || !this.checkConditions(automation.conditions)) {
+		if (!automation.is_enabled || !this.checkConditions(automation.conditions, trigger_data)) {
 			return;
 		}
 
