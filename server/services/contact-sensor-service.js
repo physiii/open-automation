@@ -13,15 +13,16 @@ class ContactSensorService extends Service {
 			} else {
 				console.log(TAG, 'Invalid arming state.');
 			}
+		});
 
-			this.deviceOn('closed', () => {
-				if (this.is_armed) {
-					this._emit('closed/armed');
-				} else if(!this.is_armed) {
-					this._emit('closed/disarmed');
-				} else {
-					console.log(TAG, 'Invalid arming state.');
-				}
+		this.deviceOn('closed', () => {
+			if (this.is_armed) {
+				this._emit('closed/armed');
+			} else if(!this.is_armed) {
+				this._emit('closed/disarmed');
+			} else {
+				console.log(TAG, 'Invalid arming state.');
+			}
 		});
 	}
 }
