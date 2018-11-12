@@ -12,26 +12,31 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 		});
 	}
 
-	_adaptSocketEmit (event, data, callback) {
-		const adapted_data = {...data};
-		let should_emit = true;
+	_adaptSocketEmit (event, data, callback = () => { /* no-op */ }) {
+		let adapted_data = {...data},
+			adapted_event = event,
+			adapted_callback = callback,
+			should_emit = true;
 
 		// TODO: Validate action values. If error, callback and set should_emit false.
 
 		switch (event) {
 			case 'action':
 				if (data.property === 'level') {
-					adapted_data.value = this._adaptLevelToDevice(data.value);
+					adapted_event = 'dimmer';
+					adapted_data = {level: this._adaptLevelToDevice(data.value)};
 				}
-
 				break;
 			case 'settings':
 				should_emit = false;
-				this._sendSchedules(data.schedule).then(() => callback()).catch(callback);
+				this._sendSchedules(data.settings.schedule).then(() => callback()).catch((error) => {
+					console.error(error);
+					callback(error);
+				});
 				break;
 		}
 
-		return GenericServiceAdapter.prototype._adaptSocketEmit.call(this, event, adapted_data, callback, should_emit);
+		return GenericServiceAdapter.prototype._adaptSocketEmit.call(this, adapted_event, adapted_data, adapted_callback, should_emit);
 	}
 
 	_adaptLevelToDevice (level) {
@@ -44,9 +49,9 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 		return Math.round((level / LEVEL_SCALE) * 100) / 100;
 	}
 
-	_sendSchedules (new_schedules) {
+	_sendSchedules (new_schedules = []) {
 		return new Promise((resolve, reject) => {
-			this._events.emit(this._getPrefixedEvent('settings/get'), (error, {settings}) => {
+			this._events.emit(this._getPrefixedEvent('settings/get'), {}, (error, {settings}) => {
 				if (error) {
 					reject('Unable to save new settings.');
 					return;
@@ -71,7 +76,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 					const schedule_id = this._getScheduleId(seconds_into_day, level, on),
 						payload = {
 							service_id: this.generic_id,
-							schedule_id
+							event_id: schedule_id
 						};
 
 					schedule_change_callback_status[schedule_id] = false;
@@ -81,7 +86,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 						payload.seconds_into_day = seconds_into_day;
 						payload.state = {on, level};
 					} else if (should_delete) {
-						payload.action = 'delete';
+						payload.action = 'remove';
 					} else {
 						break;
 					}
@@ -95,10 +100,10 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 
 						schedule_change_callback_status[schedule_id] = true;
 
-						const callback_statues = Object.values(schedule_change_callback_status),
-							all_changes_successful = callback_statues.every((value) => value === true);
+						const callback_statuses = Object.values(schedule_change_callback_status),
+							all_changes_successful = callback_statuses.every((value) => value === true);
 
-						if (callback_statues.length === schedule_changes.length && all_changes_successful) {
+						if (callback_statuses.length === schedule_changes.length && all_changes_successful) {
 							resolve();
 						}
 					});
@@ -145,9 +150,9 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 		return validation_passed && adapted_schedules;
 	}
 
-	_filterSchedules (existing_schedules = [], new_schedules = [], find_which_schedules) {
-		let schedules_to_filter = find_added_schedules ? new_schedules : existing_schedules,
-			schedules_to_compare = find_added_schedules ? existing_schedules : new_schedules;
+	_filterSchedules (existing_schedules, new_schedules, find_which_schedules) {
+		let schedules_to_filter,
+			schedules_to_compare;
 
 		if (find_which_schedules === 'added') {
 			schedules_to_filter = new_schedules;
@@ -157,6 +162,14 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 			schedules_to_compare = new_schedules;
 		} else {
 			return;
+		}
+
+		if (!Array.isArray(schedules_to_filter)) {
+			schedules_to_filter = [];
+		}
+
+		if (!Array.isArray(schedules_to_compare)) {
+			schedules_to_compare = [];
 		}
 
 		return schedules_to_filter.filter((filter_schedule) => {
@@ -169,7 +182,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 	}
 
 	_getScheduleId (time, level, on) {
-		return crypto.createHash('md5').update(String(time) + String(level) + String(on)).digest('hex');
+		return crypto.createHash('md5').update(String(time) + String(level) + String(on)).digest('hex').substring(0, 15);
 	}
 };
 
@@ -183,13 +196,18 @@ GenericDimmerAdapter.settings_definitions = new Map([...GenericServiceAdapter.se
 			.set('time', {
 				type: 'time-of-day',
 				label: 'Time',
+				default_value: '0001-01-01T12:00:00.000Z',
 				validation: {is_required: true}
 			})
 			.set('level', {
 				type: 'percentage',
 				label: 'Level',
+				default_value: 1,
 				validation: {is_required: true}
 			}),
+		main_property: 'time',
+		secondary_property: 'level',
+		sort_by: 'time',
 		validation: {is_required: false}
 	});
 

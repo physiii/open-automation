@@ -9,15 +9,21 @@ export default class FormValidator {
 		this.state = state;
 	}
 
-	validateForm (state = this.state) {
-		this.errors = Object.keys(this.validations).reduce((errors, name) => {
+	getValidationErrors (state = this.state) {
+		const errors = Object.keys(this.validations).reduce((_errors, name) => {
 			const validate = this.validations[name];
 
 			return {
-				...errors,
+				..._errors,
 				[name]: validate(state)
 			};
 		}, {});
+
+		return errors;
+	}
+
+	validateForm (state = this.state) {
+		this.errors = this.getValidationErrors(state);
 
 		return this.errors;
 	}
@@ -82,8 +88,8 @@ export default class FormValidator {
 		return this;
 	}
 
-	hasErrors () {
-		return Object.keys(this.errors).some((name) => this.errors[name]);
+	hasErrors (errors = this.errors) {
+		return Object.keys(errors).some((name) => errors[name]);
 	}
 }
 
@@ -93,6 +99,7 @@ export const required = (value, label) => {
 	},
 	decimal = (value, label) => Number.isFinite(value) ? null : label + ' must be a number',
 	integer = (value, label) => Number.isInteger(value) ? null : label + ' must be a whole number',
+	percentage = (value, label) => Number.isFinite(value) && value >= 0 && value <= 1 ? null : label + ' must be a percentage.',
 	min = (minimum) => (value, label) => {
 		return value >= minimum ? null : label + ' must be at least ' + minimum;
 	},
@@ -117,6 +124,7 @@ export const required = (value, label) => {
 const ruleNameToFunctionMap = {
 	'decimal': () => decimal,
 	'integer': () => integer,
+	'time-of-day': () => () => null,
 	'is_required': (isRequired) => isRequired ? required : () => null,
 	min,
 	max,

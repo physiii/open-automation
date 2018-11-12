@@ -85,7 +85,7 @@ const initialState = {
 						action.payload.path
 					])
 				};
-			case '@@router/LOCATION_CHANGE': {
+			case '@@router/LOCATION_CHANGE': { // TODO: Move this into NavigationScreen component?
 				const context = state.contexts.findLast((_context, _path) => new RegExp('^' + _path).test(action.payload.location.pathname));
 
 				if (!context) {

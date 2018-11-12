@@ -1,0 +1,16 @@
+.container {}
+
+.field {
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+.hour,
+.minute,
+.meridiem {
+	flex: 1 0 auto;
+}
+.hour,
+.minute {
+	margin-right: 10px;
+}

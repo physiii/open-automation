@@ -1,0 +1,10 @@
+.screen {
+	width: 100%;
+	min-height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #555555;
+}

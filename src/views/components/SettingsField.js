@@ -4,8 +4,9 @@ import {isEmpty} from '../../utilities.js';
 import TextField from './TextField.js';
 import SwitchField from './SwitchField.js';
 import SelectField from './SelectField.js';
+import TimeField from './TimeField.js';
 import PercentageField from './PercentageField.js';
-import EditableList from './EditableList.js';
+import ListField from './ListField.js';
 
 export const SettingsField = (props) => {
 	const fieldProps = {
@@ -20,7 +21,6 @@ export const SettingsField = (props) => {
 		case 'string':
 		case 'integer':
 		case 'number':
-		case 'time-of-day':
 			// TODO: Set text input type to number for integer/number settings.
 			return (
 				<TextField
@@ -41,10 +41,18 @@ export const SettingsField = (props) => {
 						label: option.label || getUnitLabeledValue(option.value, props.definition.unit_label)
 					}))} />
 			);
+		case 'time-of-day':
+			return <TimeField {...fieldProps} />;
 		case 'percentage':
 			return <PercentageField {...fieldProps} />;
 		case 'list-of':
-			return <EditableList {...fieldProps} itemFields={props.definition.item_properties} />;
+			return (
+				<ListField
+					{...fieldProps}
+					itemFields={props.definition.item_properties}
+					mainProperty={props.definition.main_property}
+					secondaryProperty={props.definition.secondary_property} />
+			);
 		default:
 			return null;
 	}

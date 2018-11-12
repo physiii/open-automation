@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {withRouter} from 'react-router-dom';
 import Toolbar from './Toolbar.js';
 import Button from './Button.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
 import './ServiceCardBase.css';
 
 export const ServiceCardBase = (props) => {
-	const settingsPath = `${props.parentPath}/service/${props.service.id}`,
+	const settingsPath = `${props.match.url}/service/${props.service.id}`,
 		status = props.isConnected
 			? props.status
 			: 'Not Responding';
@@ -53,8 +54,8 @@ ServiceCardBase.propTypes = {
 	secondaryAction: PropTypes.node,
 	hideToolbars: PropTypes.bool,
 	onCardClick: PropTypes.func,
-	parentPath: PropTypes.string,
+	match: PropTypes.object,
 	history: PropTypes.object
 };
 
-export default ServiceCardBase;
+export default withRouter(ServiceCardBase);
