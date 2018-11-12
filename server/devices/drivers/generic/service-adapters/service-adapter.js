@@ -63,7 +63,7 @@ class GenericServiceAdapter {
 			];
 		}
 
-		return [event, data, callback];
+		return [event, data, callback, should_emit];
 	}
 
 	_getPrefixedEvent (event) {

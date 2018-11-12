@@ -2,6 +2,9 @@ const utils = require('../utils.js'),
 	is_production = process.env.NODE_ENV === 'production',
 	TAG = '[DeviceSettings]';
 
+// TODO: If a setting is required, a default value is necessary. Either require
+//       it, or set sensible defaults for each setting type.
+
 class DeviceSettings {
 	constructor (settings, definitions, base_definitions = new Map(), deviceEmit, save) {
 		this.base_definitions = new Map(base_definitions);
@@ -60,7 +63,7 @@ class DeviceSettings {
 				for (const rule of rule_names) {
 					const rule_value = validations[rule],
 						validator = definition.type == 'list-of'
-							? (items) => this._getValidationErrorsForListOf(items, definition.item_properties)
+							? (items, label) => this._getValidationErrorsForListOf(items, definition.item_properties, label)
 							: typeof utils.validators[rule] === 'function' && utils.validators[rule](rule_value, definition),
 						error = typeof validator === 'function' && validator(settings[property], definition.label || property);
 
@@ -81,9 +84,13 @@ class DeviceSettings {
 		return Object.keys(errors).length ? errors : false;
 	}
 
-	_getValidationErrorsForListOf (items = [], item_properties) {
+	_getValidationErrorsForListOf (items = [], item_properties, label) {
 		const errors = [];
 		let has_errors = false;
+
+		if (!Array.isArray(items)) {
+			return label + ' must be an array.';
+		}
 
 		items.forEach((item, index) => {
 			errors[index] = this._getValidationErrors(item, item_properties);

@@ -6,6 +6,7 @@ import {debounce} from 'debounce';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
 const SAVE_DEBOUNCE_DELAY = 500,
+	noOp = () => { /* no-op */ },
 	withSettingsSaver = (WrappedComponent) => {
 		class SettingsSaver extends React.Component {
 			constructor (props) {
@@ -27,7 +28,7 @@ const SAVE_DEBOUNCE_DELAY = 500,
 					validationErrors: {}
 				};
 				this.originalSettings = {...settings};
-				this.state.saved = this.getSavedStateOfFields();
+				this.state.saved = SettingsSaver.getSavedStateOfFields(settings, this.props);
 
 				this.validator = new FormValidator(this.state.settings);
 				this.setValidationRules();
@@ -36,11 +37,27 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				this.saveSettings = debounce(this.saveSettings.bind(this), SAVE_DEBOUNCE_DELAY);
 			}
 
+			static getSavedStateOfFields (settings, props) {
+				const settingsSavedState = {},
+					singleProperty = props.settingProperty;
+
+				if (singleProperty) {
+					settingsSavedState[singleProperty] = SettingsSaver.areFieldValuesTheSame(settings[singleProperty], props.settingValue);
+				} else {
+					Object.keys(props.settingsDefinitions).forEach((property) => {
+						settingsSavedState[property] = SettingsSaver.areFieldValuesTheSame(settings[property], props.settings[property]);
+					});
+				}
+
+				return settingsSavedState;
+			}
+
 			static getDerivedStateFromProps (props, state) {
 				const settings = props.settingProperty
 						? {[props.settingProperty]: props.settingValue}
 						: {...props.settings},
-					formState = {...settings};
+					formState = {...settings},
+					saved = SettingsSaver.getSavedStateOfFields(settings, props);
 
 				Object.keys(settings).forEach((property) => {
 					settings[property] = state.saved[property]
@@ -52,7 +69,19 @@ const SAVE_DEBOUNCE_DELAY = 500,
 						: state.formState[property];
 				});
 
-				return {settings, formState};
+				return {
+					settings,
+					formState,
+					saved
+				};
+			}
+
+			static areFieldValuesTheSame (value1, value2) {
+				return JSON.stringify(value1) === JSON.stringify(value2);
+			}
+
+			componentDidMount () {
+				this.checkIfSaveable();
 			}
 
 			componentDidUpdate () {
@@ -84,10 +113,22 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				if (settingsDiffer) {
 					this.saveSettings({...settings});
 				}
+
+				this.checkIfSaveable();
 			}
 
 			componentWillUnmount () {
 				this.saveSettings.flush();
+			}
+
+			checkIfSaveable () {
+				const errors = this.validator.getValidationErrors(this.state.settings);
+
+				if (this.validator.hasErrors(errors)) {
+					this.props.onHasErrors(errors);
+				} else {
+					this.props.onHasNoErrors();
+				}
 			}
 
 			setValidationRules () {
@@ -142,7 +183,7 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				this.setState({
 					settings,
 					shouldSave,
-					saved: this.getSavedStateOfFields(settings),
+					saved: SettingsSaver.getSavedStateOfFields(settings, this.props),
 					validationErrors: this.validateField(property, value),
 					formState: {
 						...this.state.formState,
@@ -194,29 +235,21 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				}
 			}
 
-			getSavedStateOfFields (settings = this.state.settings) {
-				const settingsSavedState = {},
-					singleProperty = this.props.settingProperty;
-
-				if (singleProperty) {
-					settingsSavedState[singleProperty] = settings[singleProperty] === this.props.settingValue;
-				} else {
-					Object.keys(this.props.settingsDefinitions).forEach((property) => {
-						settingsSavedState[property] = settings[property] === this.props.settings[property];
-					});
+			saveSettings (settings) {
+				if (!settings) {
+					// Workaround for a bug where debouncing saveSettings
+					// sometimes causes erroneous saveSettings calls with
+					// settings undefined.
+					return;
 				}
 
-				return settingsSavedState;
-			}
-
-			saveSettings (settings) {
 				if (this.props.settingProperty) {
 					this.props.saveSettings(this.props.settingProperty, settings[this.props.settingProperty]);
+					this.props.onSaveableChange(this.props.settingProperty, settings[this.props.settingProperty]);
 				} else {
 					this.props.saveSettings(settings);
+					this.props.onSaveableChange(settings);
 				}
-
-				this.setState({saved: this.getSavedStateOfFields()});
 			}
 
 			render () {
@@ -234,6 +267,9 @@ const SAVE_DEBOUNCE_DELAY = 500,
 
 		SettingsSaver.propTypes = {
 			saveSettings: PropTypes.func,
+			onSaveableChange: PropTypes.func,
+			onHasNoErrors: PropTypes.func,
+			onHasErrors: PropTypes.func,
 			// Single setting
 			settingProperty: PropTypes.string,
 			settingValue: PropTypes.any,
@@ -246,7 +282,10 @@ const SAVE_DEBOUNCE_DELAY = 500,
 		SettingsSaver.defaultProps = {
 			settings: {},
 			settingsDefinitions: {},
-			saveSettings: () => { /* no-op */ }
+			saveSettings: noOp,
+			onSaveableChange: noOp,
+			onHasNoErrors: noOp,
+			onHasErrors: noOp
 		};
 
 		return hoistNonReactStatics(SettingsSaver, WrappedComponent);

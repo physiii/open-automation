@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import NavigationScreen from './NavigationScreen.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {getServiceById, getServiceLog, isServiceLogLoading} from '../../state/ducks/services-list/selectors.js';
@@ -10,6 +9,17 @@ import './ServiceLogScreen.css';
 export class ServiceLogScreen extends React.Component {
 	componentDidMount () {
 		this.props.fetchLog();
+		this.updateNavigation();
+	}
+
+	componentDidUpdate () {
+		this.updateNavigation();
+	}
+
+	updateNavigation () {
+		const service = this.props.service;
+
+		this.props.setScreenTitle(((service ? service.settings.name : '') || (service ? service.strings.friendly_type : '')) + ' Log');
 	}
 
 	render () {
@@ -42,13 +52,9 @@ export class ServiceLogScreen extends React.Component {
 			);
 		}
 
-		return (
-			<NavigationScreen path={this.props.match.url} title={((service ? service.settings.name : '') || (service ? service.strings.friendly_type : '')) + ' Log'}>
-				{error
-					? <p>{error}</p>
-					: content}
-			</NavigationScreen>
-		);
+		return error
+			? <p>{error}</p>
+			: content;
 	}
 }
 
@@ -58,13 +64,14 @@ ServiceLogScreen.propTypes = {
 	service: PropTypes.object,
 	isLoading: PropTypes.bool,
 	logs: PropTypes.array.isRequired,
-	match: PropTypes.object.isRequired,
-	fetchLog: PropTypes.func
+	fetchLog: PropTypes.func,
+	setScreenTitle: PropTypes.func
 };
 
 ServiceLogScreen.defaultProps = {
 	logs: [],
-	fetchLog: () => { /* no-op */ }
+	fetchLog: () => { /* no-op */ },
+	setScreenTitle: () => { /* no-op */ }
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {

@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4'),
 	EventEmitter = require('events'),
 	DeviceDriver = require('../device-driver.js'),
+	GenericServiceAdapter = require('./service-adapters/service-adapter.js'),
 	service_adapter_classes = {
 		'dimmer': require('./service-adapters/dimmer-adapter.js')
 	},
@@ -102,7 +103,7 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_addServiceAdapter (data) {
-		const adapter_class = service_adapter_classes[data.type],
+		const adapter_class = service_adapter_classes[data.type] || GenericServiceAdapter,
 			adapter = new adapter_class(
 				{
 					...data,

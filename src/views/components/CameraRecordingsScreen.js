@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import NavigationScreen from './NavigationScreen.js';
 import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
@@ -11,6 +10,8 @@ import {getServiceById, getServiceNameById, cameraGetRecordings, cameraGetRecord
 import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
 import './CameraRecordingsScreen.css';
 
+const playButtonIcon = <PlayButtonIcon size={24} />;
+
 export class CameraRecordingsScreen extends React.Component {
 	constructor (props) {
 		super(props);
@@ -20,6 +21,15 @@ export class CameraRecordingsScreen extends React.Component {
 
 	componentDidMount () {
 		this.props.fetchRecordings();
+		this.updateNavigation();
+	}
+
+	componentDidUpdate () {
+		this.updateNavigation();
+	}
+
+	updateNavigation () {
+		this.props.setScreenTitle((this.props.cameraName || 'Camera') + ' Recordings');
 	}
 
 	getPathForDate (date) {
@@ -43,55 +53,55 @@ export class CameraRecordingsScreen extends React.Component {
 		} else if (this.props.error) {
 			bottomContent = <p>{this.props.error}</p>;
 		} else if (this.props.selectedDateRecordings.length) {
-			bottomContent = (<List
-				title={this.props.selectedDate.format('MMMM Do')}
-				items={this.props.selectedDateRecordings.map((recording) => ({
-					key: recording.id,
-					label: moment(recording.date).format('h:mm A'),
-					icon: <PlayButtonIcon size={24} />,
-					meta: 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
-					onClick: () => this.playRecording(recording.id)
-				}))}
-				isOrdered={true}
-			/>);
+			bottomContent = (
+				<List
+					title={this.props.selectedDate.format('MMMM Do')}
+					isOrdered={true}>
+					{this.props.selectedDateRecordings.map((recording) => ({
+						key: recording.id,
+						label: moment(recording.date).format('h:mm A'),
+						icon: playButtonIcon,
+						meta: 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
+						onClick: () => this.playRecording(recording.id)
+					}))}
+				</List>
+			);
 		} else {
 			bottomContent = <p>No recordings were found for the selected date.</p>;
 		}
 
 		return (
-			<NavigationScreen path={this.props.basePath} title={(this.props.cameraName || 'Camera') + ' Recordings'}>
-				<div styleName="screen">
-					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
-						{this.props.selectedRecording
-							? <div styleName="videoContainer">
-								<VideoPlayer
-									cameraServiceId={this.props.cameraServiceId}
-									recording={this.props.selectedRecording}
-									key={this.props.selectedRecording.id}
-									streamingToken={this.props.selectedRecording.streaming_token}
-									width={this.props.selectedRecording.width}
-									height={this.props.selectedRecording.height}
-									autoplay={true} />
-							</div>
-							: <div styleName="datePickerContainer">
-								<DatePicker
-									selectedDate={this.props.selectedDate}
-									events={this.props.allRecordings}
-									onSelect={this.goToDate} />
-							</div>}
-						{this.props.selectedRecording &&
-							<a href="#" styleName="closeButton" onClick={(event) => {
-								event.preventDefault();
-								this.goToDate(this.props.selectedDate);
-							}}>
-								Close
-							</a>}
-					</div>
-					<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
-						{bottomContent}
-					</div>
+			<div styleName="screen">
+				<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
+					{this.props.selectedRecording
+						? <div styleName="videoContainer">
+							<VideoPlayer
+								cameraServiceId={this.props.cameraServiceId}
+								recording={this.props.selectedRecording}
+								key={this.props.selectedRecording.id}
+								streamingToken={this.props.selectedRecording.streaming_token}
+								width={this.props.selectedRecording.width}
+								height={this.props.selectedRecording.height}
+								autoplay={true} />
+						</div>
+						: <div styleName="datePickerContainer">
+							<DatePicker
+								selectedDate={this.props.selectedDate}
+								events={this.props.allRecordings}
+								onSelect={this.goToDate} />
+						</div>}
+					{this.props.selectedRecording &&
+						<a href="#" styleName="closeButton" onClick={(event) => {
+							event.preventDefault();
+							this.goToDate(this.props.selectedDate);
+						}}>
+							Close
+						</a>}
 				</div>
-			</NavigationScreen>
+				<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
+					{bottomContent}
+				</div>
+			</div>
 		);
 	}
 }
@@ -109,13 +119,15 @@ CameraRecordingsScreen.propTypes = {
 	history: PropTypes.object.isRequired,
 	isLoading: PropTypes.bool,
 	fetchRecordings: PropTypes.func,
+	setScreenTitle: PropTypes.func,
 	error: PropTypes.string
 };
 
 CameraRecordingsScreen.defaultProps = {
 	allRecordings: [],
 	selectedDateRecordings: [],
-	fetchRecordings: () => { /* no-op */ }
+	fetchRecordings: () => { /* no-op */ },
+	setScreenTitle: () => { /* no-op */ }
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {

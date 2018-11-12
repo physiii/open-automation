@@ -6,6 +6,8 @@ import Button from './Button.js';
 import {formatUsd} from '../../utilities.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+import {compose} from 'redux';
 import {getServiceByTypeAndDeviceId, getSettingsOptionLabelByValue} from '../../state/ducks/services-list/selectors.js';
 import './GameMachineCard.css';
 
@@ -33,7 +35,7 @@ export const GameMachineCard = (props) => {
 			name={props.service.settings.name || 'Game Machine'}
 			status={status}
 			isConnected={props.service.state.connected}
-			secondaryAction={<Button to={`${props.parentPath}/service/${props.billAcceptorService.id}/log`}>{props.billAcceptorService.settings.name || 'Bill Acceptor'} Log</Button>}
+			secondaryAction={<Button to={`${props.match.url}/service-log/${props.billAcceptorService.id}`}>{props.billAcceptorService.settings.name || 'Bill Acceptor'} Log</Button>}
 			{...props}>
 			<div styleName="container">
 				<section styleName="main">
@@ -53,7 +55,7 @@ export const GameMachineCard = (props) => {
 
 GameMachineCard.propTypes = {
 	service: PropTypes.object,
-	parentPath: PropTypes.string,
+	match: PropTypes.object,
 	billAcceptorService: PropTypes.object,
 	contactSensorService: PropTypes.object,
 	selectedArcadeGameLabel: PropTypes.string
@@ -67,4 +69,7 @@ const mapStateToProps = ({servicesList}, {service}) => {
 	};
 };
 
-export default connect(mapStateToProps)(GameMachineCard);
+export default compose(
+	connect(mapStateToProps),
+	withRouter
+)(GameMachineCard);

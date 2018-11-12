@@ -1,13 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
-import NavigationScreen from './NavigationScreen.js';
 import ServiceDetails from './ServiceDetails.js';
 import List from './List.js';
 import {connect} from 'react-redux';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
 
 export class ServiceDetailsScreen extends React.Component {
+	componentDidMount () {
+		this.updateNavigation();
+	}
+
+	componentDidUpdate () {
+		this.updateNavigation();
+	}
+
+	updateNavigation () {
+		this.props.setScreenTitle(this.props.service.settings.name || this.props.service.strings.friendly_type);
+	}
+
 	render () {
 		const service = this.props.service;
 
@@ -16,17 +27,19 @@ export class ServiceDetailsScreen extends React.Component {
 		}
 
 		return (
-			<NavigationScreen path={this.props.match.url} title={service.settings.name || service.strings.friendly_type}>
+			<React.Fragment>
 				{!service.state.connected && (
-					<List items={[
-						{
-							label: 'Device is not responding',
-							secondaryText: 'Device must be reachable to update settings.'
-						}
-					]} />
+					<List>
+						{[
+							{
+								label: 'Device is not responding',
+								secondaryText: 'Device must be reachable to update settings.'
+							}
+						]}
+					</List>
 				)}
 				<ServiceDetails serviceId={service.id} />
-			</NavigationScreen>
+			</React.Fragment>
 		);
 	}
 }
@@ -36,7 +49,12 @@ ServiceDetailsScreen.routeParams = '/:serviceId';
 ServiceDetailsScreen.propTypes = {
 	service: PropTypes.object,
 	match: PropTypes.object.isRequired,
-	baseUrl: PropTypes.string
+	baseUrl: PropTypes.string,
+	setScreenTitle: PropTypes.func
+};
+
+ServiceDetailsScreen.defaultProps = {
+	setScreenTitle: () => { /* no-op */ }
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {

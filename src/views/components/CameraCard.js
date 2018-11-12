@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import {withRouter} from 'react-router-dom';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import VideoPlayer from './VideoPlayer.js';
@@ -47,7 +48,7 @@ export class CameraCard extends React.Component {
 				isConnected={this.props.service.state.connected}
 				onCardClick={this.onCardClick}
 				toolbarsOverlayContent={true}
-				secondaryAction={<Button to={`${this.props.parentPath}/recordings/${this.props.service.id}`}>View Recordings</Button>}
+				secondaryAction={<Button to={`${this.props.match.url}/recordings/${this.props.service.id}`}>View Recordings</Button>}
 				hideToolbars={this.state.isStreaming}
 				{...this.props}>
 				<VideoPlayer
@@ -68,7 +69,7 @@ export class CameraCard extends React.Component {
 
 CameraCard.propTypes = {
 	service: PropTypes.object,
-	parentPath: PropTypes.string
+	match: PropTypes.object
 };
 
-export default CameraCard;
+export default withRouter(CameraCard);

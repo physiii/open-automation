@@ -10,6 +10,9 @@
 }
 
 .row {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
 	height: 48px;
 }
 
@@ -18,6 +21,7 @@
 	flex-flow: row nowrap;
 	justify-content: flex-start;
 	align-items: center;
+	flex: 1 0;
 	width: 100%;
 	height: 100%;
 	color: inherit;
@@ -59,4 +63,8 @@
 .tertiaryText {
 	font-size: 14px;
 	color: #b6b6b6;
+}
+
+.rowActions {
+	display: flex;
 }

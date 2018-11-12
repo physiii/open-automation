@@ -142,7 +142,6 @@ class Device {
 			}
 
 			// Send new token to device.
-
 			this.driver.emit('token', {token}, (error) => {
 				if (error) {
 					reject(error);

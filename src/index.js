@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider as ReduxProvider} from 'react-redux';
 import {ConnectedRouter} from 'connected-react-router';
 import createHistory from 'history/createBrowserHistory';
+import AppContext from './views/AppContext.js';
 import App from './views/layouts/App';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
@@ -36,7 +37,9 @@ reduxStore.dispatch(listenForDeviceChanges());
 ReactDOM.render(
 	<ReduxProvider store={reduxStore}>
 		<ConnectedRouter history={history}>
-			<App />
+			<AppContext>
+				<App />
+			</AppContext>
 		</ConnectedRouter>
 	</ReduxProvider>,
 	document.getElementById('open-automation')

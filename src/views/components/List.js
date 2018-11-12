@@ -6,7 +6,7 @@ import './List.css';
 export const List = (props) => {
 	const ListElement = props.isOrdered ? 'ol' : 'ul';
 
-	if (!props.items.length && !props.renderIfEmpty) {
+	if (!props.children.length && !props.renderIfEmpty) {
 		return null;
 	}
 
@@ -14,7 +14,7 @@ export const List = (props) => {
 		<div styleName="list">
 			{props.title && <h2 styleName="title">{props.title}</h2>}
 			<ListElement>
-				{props.items && Boolean(props.items.length) && props.items.map((item, index) => {
+				{props.children && Boolean(props.children.length) && props.children.map((item, index) => {
 					const LinkComponent = item.link ? Link : 'a',
 						itemContent = (
 							<div styleName="rowContentInner">
@@ -48,6 +48,8 @@ export const List = (props) => {
 									{itemContent}
 								</div>
 							}
+							{item.secondaryAction &&
+								<div styleName="rowActions">{item.secondaryAction}</div>}
 						</li>
 					);
 				})}
@@ -58,13 +60,14 @@ export const List = (props) => {
 
 List.propTypes = {
 	title: PropTypes.string,
-	items: PropTypes.arrayOf(PropTypes.shape({
+	children: PropTypes.arrayOf(PropTypes.shape({
 		label: PropTypes.node,
 		secondaryText: PropTypes.node,
 		tertiaryText: PropTypes.node,
 		icon: PropTypes.node,
 		meta: PropTypes.node,
 		link: PropTypes.string,
+		secondaryAction: PropTypes.node,
 		onClick: PropTypes.func
 	})),
 	isOrdered: PropTypes.bool,
