@@ -67,6 +67,12 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 					return;
 				}
 
+				// No schedule changes.
+				if (schedule_changes.length < 1) {
+					resolve();
+					return;
+				}
+
 				// Send the changes to the device.
 				for (const {seconds_into_day, level, on, should_add, should_delete} of schedule_changes) {
 					if (device_errored) {
