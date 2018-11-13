@@ -53,6 +53,8 @@ class StandardDeviceDriver extends DeviceDriver {
 		this._socket_listeners.forEach((listener) => {
 			this.socket.on.apply(this.socket, listener);
 		});
+
+		DeviceDriver.prototype._subscribeToSocket.call(this, arguments);
 	}
 }
 

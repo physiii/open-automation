@@ -62,9 +62,9 @@ class DeviceWebSocketWrapper extends EventEmitter {
 		EventEmitter.prototype.emit.call(this, 'connect');
 	}
 
-	handleClose () {
+	handleClose (code, reason) {
 		this.connected = false;
-		EventEmitter.prototype.emit.call(this, 'disconnect');
+		EventEmitter.prototype.emit.call(this, 'disconnect', String(reason + ' (' + code + ')'));
 	}
 
 	disconnect (force) {
