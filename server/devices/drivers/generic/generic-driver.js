@@ -1,5 +1,4 @@
-const uuidv4 = require('uuid/v4'),
-	EventEmitter = require('events'),
+const EventEmitter = require('events'),
 	DeviceDriver = require('../device-driver.js'),
 	GenericServiceAdapter = require('./service-adapters/service-adapter.js'),
 	service_adapter_classes = {

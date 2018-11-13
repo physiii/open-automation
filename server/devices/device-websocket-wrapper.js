@@ -38,7 +38,13 @@ class DeviceWebSocketWrapper extends EventEmitter {
 	}
 
 	handleMessage (data) {
-		const message = JSON.parse(data);
+		let message;
+
+		try {
+			message = JSON.parse(data);
+		} catch (error) {
+			return;
+		}
 
 		if (message.event_type) {
 			this.handleEvent(message);

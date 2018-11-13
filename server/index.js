@@ -5,12 +5,13 @@
 const fs = require('fs'),
 	path = require('path'),
 	io = require('socket.io'),
-	uuidv4 = require('uuid/v4'),
+	uuidV4 = require('uuid/v4'),
 	setUpWebsite = require('./website.js'),
 	startHttpServer = require('./http-server.js'),
 	startClientApi = require('./client-api.js'),
 	startDeviceRelay = require('./device-relay.js'),
 	startStreamRelay = require('./stream-relay.js'),
+	startUtilitiesServer = require('./utilities-server.js'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	ScenesManager = require('./scenes/scenes-manager.js'),
@@ -54,7 +55,7 @@ AccountsManager.init()
 	.then(Notifications.init)
 	.then(Automator.init)
 	.then(() => {
-		const jwt_secret = key || uuidv4(),
+		const jwt_secret = key || uuidV4(),
 			website = setUpWebsite(config.use_ssl, jwt_secret),
 			http_server = startHttpServer(website, key, cert),
 			socket_io_server = io.listen(http_server);
@@ -62,5 +63,6 @@ AccountsManager.init()
 		startClientApi(socket_io_server, jwt_secret);
 		startDeviceRelay(http_server, socket_io_server);
 		startStreamRelay(http_server);
+		startUtilitiesServer(http_server);
 	})
 	.catch((error) => console.error(error));

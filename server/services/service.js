@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4'),
+const uuidV4 = require('uuid/v4'),
 	utils = require('../utils.js'),
 	EventEmitter2 = require('eventemitter2').EventEmitter2,
 	DeviceSettings = require('../devices/device-settings.js'),
@@ -7,7 +7,7 @@ const uuidv4 = require('uuid/v4'),
 
 class Service {
 	constructor (data, onUpdate, deviceOn, deviceEmit, save) {
-		this.id = data.id || uuidv4();
+		this.id = data.id || uuidV4();
 		this.type = this.constructor.type || data.type;
 		this.device_id = data.device_id;
 

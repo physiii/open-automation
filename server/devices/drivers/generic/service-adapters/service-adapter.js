@@ -1,12 +1,12 @@
 const constants = require('../../../../constants.js'),
-	uuidv4 = require('uuid/v4'),
+	uuidV4 = require('uuid/v4'),
 	TAG = '[GenericServiceAdapter]';
 
 class GenericServiceAdapter {
 	constructor (data, socket_facade, events) {
 		this._handleState = this._handleState.bind(this);
 
-		this.id = data.id || uuidv4();
+		this.id = data.id || uuidV4();
 		this.type = this.constructor.relay_type || data.type;
 		this.generic_id = data.generic_id;
 		this.generic_type = this.constructor.generic_type || data.generic_type;
