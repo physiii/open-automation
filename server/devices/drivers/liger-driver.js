@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4'),
+const uuidV4 = require('uuid/v4'),
 	EventEmitter = require('events'),
 	DeviceDriver = require('./device-driver.js'),
 	constants = require('../../constants.js'),
@@ -182,7 +182,7 @@ class LigerDeviceDriver extends DeviceDriver {
 
 	_addService (type, liger_id, name) {
 		const new_service = {
-			id: uuidv4(),
+			id: uuidV4(),
 			type,
 			settings: {name}
 		};
