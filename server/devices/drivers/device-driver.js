@@ -1,3 +1,5 @@
+const TAG = '[DeviceDriver]';
+
 class DeviceDriver {
 	constructor (data, socket, device_id) {
 		this.device_id = device_id;
@@ -22,6 +24,7 @@ class DeviceDriver {
 
 		// Disconnect the current socket.
 		if (this.socket) {
+			console.log(TAG, 'Closing device socket to set new socket.', this.device_id);
 			this.socket.removeAllListeners();
 			this.socket.disconnect();
 		}
