@@ -52,6 +52,8 @@ class GenericDeviceDriver extends DeviceDriver {
 		this._socket_listeners.forEach((listener) => {
 			this.socket.on(...listener);
 		});
+
+		DeviceDriver.prototype._subscribeToSocket.call(this, arguments);
 	}
 
 	_socketOn () {

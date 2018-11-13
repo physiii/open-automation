@@ -35,7 +35,7 @@ class DeviceDriver {
 	}
 
 	_subscribeToSocket () {
-		// no-op
+		this.socket.on('disconnect', (reason) => console.log(TAG, 'Socket disconnected. Reason:', reason, this.device_id));
 	}
 
 	destroy () {
