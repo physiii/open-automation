@@ -45,7 +45,7 @@ export class ScreenRoute extends React.Component {
 					<NavigationScreen
 						path={this.getNavigationUrl(match.url)}
 						title={this.state.title || title}
-						toolbarActions={this.state.toolbarActions}
+						toolbarActions={this.state.actions}
 						isContextRoot={isContextRoot}>
 						<Route {...routeProps} render={(_routeProps) => {
 							const contentProps = {
