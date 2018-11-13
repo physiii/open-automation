@@ -13,6 +13,7 @@ class DeviceWebSocketWrapper extends EventEmitter {
 		this.socket = socket;
 		this.socket.on('message', this.handleMessage.bind(this));
 		this.socket.on('open', this.handleOpen.bind(this));
+		this.socket.on('error', this.handleError.bind(this));
 		this.socket.on('close', this.handleClose.bind(this));
 
 		this.connected = this.socket.readyState === WebSocket.OPEN;
@@ -60,6 +61,10 @@ class DeviceWebSocketWrapper extends EventEmitter {
 	handleOpen () {
 		this.connected = true;
 		EventEmitter.prototype.emit.call(this, 'connect');
+	}
+
+	handleError (error) {
+		EventEmitter.prototype.emit.call(this, 'error', error);
 	}
 
 	handleClose (code, reason) {
