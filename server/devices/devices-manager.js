@@ -158,7 +158,7 @@ class DevicesManager {
 
 		// Device token is invalid.
 		if (!device.verifyToken(deviceToken)) {
-			console.log(TAG, 'Closing device socket connection due to invalid device token.', socket.id);
+			console.log(TAG, 'Closing device socket connection due to invalid device token.', deviceId, socket.id);
 
 			socket.emit('authentication', {error: 'invalid token'});
 
