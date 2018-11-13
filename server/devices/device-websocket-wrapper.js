@@ -1,11 +1,14 @@
 // Wraps a WebSocket for a device to replicate Socket.IO behaviors.
 
 const EventEmitter = require('events'),
-	WebSocket = require('ws');
+	WebSocket = require('ws'),
+	PING_INTERVAL_TIMEOUT = 10000;
 
 class DeviceWebSocketWrapper extends EventEmitter {
 	constructor (socket) {
 		super();
+
+		this.sendPing = this.sendPing.bind(this);
 
 		this.callback_queue = new Map();
 		this.callback_ids = 0;
@@ -60,6 +63,7 @@ class DeviceWebSocketWrapper extends EventEmitter {
 
 	handleOpen () {
 		this.connected = true;
+		this.ping_interval = setInterval(this.sendPing, PING_INTERVAL_TIMEOUT);
 		EventEmitter.prototype.emit.call(this, 'connect');
 	}
 
@@ -69,7 +73,12 @@ class DeviceWebSocketWrapper extends EventEmitter {
 
 	handleClose (code, reason) {
 		this.connected = false;
+		clearInterval(this.ping_interval);
 		EventEmitter.prototype.emit.call(this, 'disconnect', String(reason + ' (' + code + ')'));
+	}
+
+	sendPing () {
+		this.emit('ping');
 	}
 
 	disconnect (force) {
