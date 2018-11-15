@@ -67,7 +67,7 @@ export class DeviceDetailsScreen extends React.Component {
 		return (
 			<Switch>
 				<Route exact path={this.props.match.path} render={() => (
-					<div styleName="container">
+					<section styleName="container">
 						{!device.state.connected && (
 							<List>
 								{[
@@ -93,7 +93,7 @@ export class DeviceDetailsScreen extends React.Component {
 							</List>}
 						{Boolean(settingsProperties.length) && (
 							<React.Fragment>
-								<h2 styleName="settingsHeading">Device Settings</h2>
+								<h1 styleName="settingsHeading">Device Settings</h1>
 								<SettingsForm
 									disabled={!device.state.connected}
 									onFieldChange={this.props.onSettingChange}>
@@ -109,7 +109,7 @@ export class DeviceDetailsScreen extends React.Component {
 								</SettingsForm>
 							</React.Fragment>
 						)}
-						<h2 styleName="infoHeading">Info</h2>
+						<h1 styleName="infoHeading">Info</h1>
 						<MetaList layout="vertical" alignLabels="left">
 							{[
 								{label: 'Manufacturer', value: device.info.manufacturer},
@@ -120,7 +120,7 @@ export class DeviceDetailsScreen extends React.Component {
 								{label: 'ID', value: device.id, long: true}
 							].filter((item) => Boolean(item.value))}
 						</MetaList>
-					</div>
+					</section>
 				)} />
 				<ScreenRoute path={serviceDetailsScreenPath} component={ServiceDetailsScreen} />
 				<Route render={() => <Redirect to={this.props.match.path} />} />

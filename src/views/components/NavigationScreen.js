@@ -59,8 +59,8 @@ export class NavigationScreen extends React.Component {
 			}}>
 				<div styleName="screen">
 					{this.props.children}
-					<div ref={this.childScreenContainer} />
 				</div>
+				<div ref={this.childScreenContainer} />
 			</NavigationContext.Provider>
 		);
 

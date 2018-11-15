@@ -123,7 +123,7 @@ export class ListField extends React.Component {
 	}
 
 	deleteItem (itemIndex = 0) {
-		if (confirm('Do you want to delete this ' + this.props.label + ' item?')) {
+		if (confirm('Do you want to delete this “' + this.props.label + '” item?')) {
 			const newItems = [...this.getItems()];
 
 			newItems.splice(itemIndex, 1);
@@ -151,14 +151,22 @@ export class ListField extends React.Component {
 				title={this.props.label}
 				toolbarActions={<Button onClick={this.handleAddClick}>Add</Button>}
 				toolbarBackAction={this.handleBackClick}>
-				<List isOrdered={true} renderIfEmpty={true}>
+				{!items.length &&
+					<section styleName="blank">
+						<h1 styleName="blankHeading">No “{this.props.label}” Items</h1>
+						<p styleName="blankBody">Use the ‘Add’ button and items will show up here.</p>
+					</section>}
+				<List isOrdered={true} renderIfEmpty={false}>
 					{items.map((item = {}, index) => ({ // TODO: sort_by
 						label: <SettingValue type={this.props.itemFields[this.props.mainProperty].type}>
 							{item[this.props.mainProperty]}
 						</SettingValue>,
-						secondaryText: <SettingValue type={this.props.itemFields[this.props.secondaryProperty].type}>
-							{item[this.props.secondaryProperty]}
-						</SettingValue>,
+						secondaryText: <React.Fragment>
+							{this.props.itemFields[this.props.secondaryProperty].label}:&nbsp;
+							<SettingValue type={this.props.itemFields[this.props.secondaryProperty].type}>
+								{item[this.props.secondaryProperty]}
+							</SettingValue>
+						</React.Fragment>,
 						secondaryAction: <Button onClick={() => this.deleteItem(index)}>Delete</Button>,
 						onClick: () => this.handleListItemClick(index)
 					}))}
@@ -191,7 +199,12 @@ export class ListField extends React.Component {
 	render () {
 		return (
 			<div>
-				<Button onClick={this.handleListScreenButtonClick}>{this.props.label}</Button>
+				<Button
+					type="outlined"
+					disabled={this.props.disabled}
+					onClick={this.handleListScreenButtonClick}>
+					{this.props.label}
+				</Button>
 				{this.state.showListScreen
 					? this.renderList()
 					: null}
