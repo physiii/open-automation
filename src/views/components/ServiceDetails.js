@@ -29,7 +29,7 @@ export class ServiceDetails extends React.Component {
 			});
 
 		return (
-			<div styleName="container">
+			<section styleName="container">
 				{service.error && <p>The device settings could not be updated because of an error.</p>}
 				<header styleName="header">
 					{ServiceIcon.willRenderIcon(service) &&
@@ -49,7 +49,7 @@ export class ServiceDetails extends React.Component {
 				</header>
 				{SettingsForm.willAnyFieldsRender(settingsFieldsProps) && (
 					<React.Fragment>
-						<h2 styleName="settingsHeading">{service.strings.friendly_type} Settings</h2>
+						<h1 styleName="settingsHeading">{service.strings.friendly_type} Settings</h1>
 						<SettingsForm
 							disabled={!service.state.connected}
 							onFieldChange={this.props.onSettingChange}>
@@ -57,7 +57,7 @@ export class ServiceDetails extends React.Component {
 						</SettingsForm>
 					</React.Fragment>
 				)}
-			</div>
+			</section>
 		);
 	}
 }

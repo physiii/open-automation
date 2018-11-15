@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
+import Switch from './Switch.js';
 import SliderControl from './SliderControl.js';
 import './DimmerCard.css';
 
@@ -56,26 +57,31 @@ export class DimmerCard extends React.Component {
 	}
 
 	render () {
-		const currentLevel = this.state.is_changing
-			? this.state.slider_value
-			: this.getPercentage100(this.props.service.state.level);
+		const isConnected = this.props.service.state.connected,
+			currentLevel = this.state.is_changing
+				? this.state.slider_value
+				: this.getPercentage100(this.props.service.state.level);
 
 		return (
 			<ServiceCardBase
 				name={this.props.service.settings.name || 'Dimmer'}
-				status={this.props.service.state.connected && Number.isFinite(currentLevel)
+				status={isConnected && Number.isFinite(currentLevel)
 					? currentLevel + '%'
 					: 'Unknown'}
-				isConnected={this.props.service.state.connected}
+				isConnected={isConnected}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
 				<div styleName="container">
-					<div onClick={(event) => event.stopPropagation()}>
+					<Switch
+						isOn={this.props.service.state.level > 0}
+						showLabels={true}
+						disabled={!isConnected} />
+					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
 						<SliderControl
 							value={currentLevel}
 							onInput={this.handleInput.bind(this)}
 							onChange={this.handleChange.bind(this)}
-							disabled={!this.props.service.state.connected} />
+							disabled={!isConnected} />
 					</div>
 				</div>
 			</ServiceCardBase>

@@ -17,7 +17,7 @@ export const SettingValue = (props) => {
 			break;
 	}
 
-	return <span>{formatted}</span>;
+	return <React.Fragment>{formatted}</React.Fragment>;
 };
 
 SettingValue.propTypes = {
