@@ -13,8 +13,7 @@ export const ContactSensorCard = (props) => {
 	return (
 		<ServiceCardBase
 			name={props.service.settings.name || 'Contact Sensor'}
-			status={lastContactDate && 'Contact detected ' + moment(lastContactDate).fromNow() + <br />
-			'|| Currently:' + (props.service.state.contact ? 'Closed' : 'Open')}
+			status={lastContactDate && 'Contact detected ' + moment(lastContactDate).fromNow()}
 			isConnected={this.props.service.state.connected}
 			//secondaryAction={<Button to={`${this.props.match.url}/Contact-History/${this.props.service.id}`}>View Logs</Button>}
 		</ServiceCardBase>
