@@ -19,11 +19,10 @@ export const ContactSensorCard = (props) => {
 			isConnected={props.service.state.connected}
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Contact-Sensor'} Log</Button>}
 			{...props}>
-			<div styleName="container">
-				<section styleName="main">
-					<span styleName="hopperTotal">{props.service.state.connected ? formatUsd(props.service.state.contact || 'Unknown') : 'Unknown'}</span>
-				</section>
-			</div>
+			<center>
+			<h1>{props.service.state.contact}</h1>
+			</center>
+
 		</ServiceCardBase>
 	);
 };
