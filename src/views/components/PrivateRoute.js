@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Route, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {compose} from 'redux';
 import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 
 /**
@@ -40,16 +39,14 @@ const mapStateToProps = (state) => ({
 	isLoggedIn: isAuthenticated(state.session)
 });
 
-export default compose(
-	connect(
-		mapStateToProps,
-		null,
-		null,
+export default connect(
+	mapStateToProps,
+	null,
+	null,
 
-		/* Need to set pure to false so connect doesn't implement
-		shouldComponentUpdate. Otherwise this component will only update on
-		state/props change. That's desired for most components, but not this
-		since react-router uses react context to communicate route changes. */
-		{pure: false}
-	)
+	/* Need to set pure to false so connect doesn't implement
+	shouldComponentUpdate. Otherwise this component will only update on
+	state/props change. That's desired for most components, but not this
+	since react-router uses react context to communicate route changes. */
+	{pure: false}
 )(PrivateRoute);

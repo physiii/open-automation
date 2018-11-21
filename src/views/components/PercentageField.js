@@ -8,7 +8,7 @@ export const PercentageField = (props) => {
 			<label>{props.label}</label>
 			<SliderControl
 				value={Math.round(props.value * 100)}
-				tooltip={true}
+				tooltip={false}
 				onChange={(value) => {
 					if (typeof props.onChange !== 'function') {
 						return;
