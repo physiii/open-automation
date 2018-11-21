@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import ServiceCardBase from './ServiceCardBase.js';
+import MetaList from './MetaList.js';
 import Button from './Button.js';
+import {formatUsd} from '../../utilities.js';
+import moment from 'moment';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+import {compose} from 'redux';
+import {getServiceByTypeAndDeviceId, getSettingsOptionLabelByValue} from '../../state/ducks/services-list/selectors.js';
+import './GameMachineCard.css';
 
 export const ContactSensorCard = (props) => {
 	const isOpen = props.service.state.contact,
@@ -13,7 +19,7 @@ export const ContactSensorCard = (props) => {
 	return (
 		<ServiceCardBase
 			name={props.service.settings.name || 'Contact Sensor'}
-			status={lastContactDate && 'Contact detected ' + moment(lastContactDate).fromNow()/+}
+			status={lastContactDate && 'Contact detected ' + moment(lastContactDate).fromNow()}
 			isConnected={this.props.service.state.connected}
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Contact-Sensor'} Log</Button>}
 			{...props}>
