@@ -13,6 +13,7 @@ export const SirenCard = (props) => {
 
 	return (
 		<ServiceCardBase
+			service={props.service}
 			name={props.service.settings.name || 'Siren'}
 			status={lastContactDate && 'Siren detected ' + moment(lastContactDate).fromNow()}
 			isConnected={props.service.state.connected}
