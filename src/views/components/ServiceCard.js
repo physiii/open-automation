@@ -6,6 +6,7 @@ import GameMachineCard from './GameMachineCard.js';
 import LockCard from './LockCard.js';
 import ThermostatCard from './ThermostatCard.js';
 import ContactSensorCard from './ContactSensorCard.js';
+import SirenCard from './SirenCard.js';
 
 export const ServiceCard = (props) => {
 	const Card = ServiceCard.cardComponents[props.service.type];
@@ -25,7 +26,8 @@ ServiceCard.cardComponents = {
 	'game-machine': GameMachineCard,
 	'lock': LockCard,
 	'thermostat': ThermostatCard,
-	'contact-sensor': ContactSensorCard
+	'contact-sensor': ContactSensorCard,
+	'siren': SirenCard
 };
 
 export default ServiceCard;

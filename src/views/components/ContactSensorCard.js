@@ -37,9 +37,7 @@ ContactSensorCard.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => {
-	return {
-		contactSensorService: getServiceByTypeAndDeviceId(servicesList, 'contact-sensor', service.device_id)
-	};
+	return;
 };
 
 export default connect(null, mapDispatchToProps)(ContactSensorCard);

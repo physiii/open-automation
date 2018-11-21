@@ -19,7 +19,7 @@ export const SirenCard = (props) => {
 	return (
 		<ServiceCardBase
 			name={props.service.settings.name || 'Siren'}
-			status={lastContactDate && 'Siren detected ' + moment(lastContactDate).fromNow()/+}
+			status={lastContactDate && 'Siren detected ' + moment(lastContactDate).fromNow()}
 			isConnected={this.props.service.state.connected}
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Siren'} Log</Button>}
 			{...props}>
@@ -32,14 +32,12 @@ export const SirenCard = (props) => {
 	);
 };
 
-ContactSensorCard.propTypes = {
+SirenCard.propTypes = {
 	service: PropTypes.object
 };
 
 const mapDispatchToProps = (dispatch) => {
-	return {
-		sirenService: getServiceByTypeAndDeviceId(servicesList, siren, service.device_id)
-	};
+	return;
 };
 
-export default connect(null, mapDispatchToProps)(ContactSensorCard);
+export default connect(null, mapDispatchToProps)(SirenCard);
