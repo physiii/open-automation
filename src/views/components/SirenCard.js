@@ -5,21 +5,21 @@ import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
 
-export const ContactSensorCard = (props) => {
-	const isOpen = props.service.state.contact,
+export const SirenCard = (props) => {
+	const isSirenOn = props.service.state.isOn,
 		lastContactDate = this.props.service.state.last_contact_date;
 
 
 	return (
 		<ServiceCardBase
-			name={props.service.settings.name || 'Contact Sensor'}
-			status={lastContactDate && 'Contact detected ' + moment(lastContactDate).fromNow()/+}
+			name={props.service.settings.name || 'Siren'}
+			status={lastContactDate && 'Siren detected ' + moment(lastContactDate).fromNow()/+}
 			isConnected={this.props.service.state.connected}
-			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Contact-Sensor'} Log</Button>}
+			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Siren'} Log</Button>}
 			{...props}>
 			<div styleName="container">
 				<section styleName="main">
-					<span styleName="hopperTotal">{props.service.state.connected ? formatUsd(props.service.state.contact || 'Unknown') : 'Unknown'}</span>
+					<span styleName="hopperTotal">{props.service.state.connected ? formatUsd(props.service.state.isOn || 'Unknown') : 'Unknown'}</span>
 				</section>
 			</div>
 		</ServiceCardBase>
@@ -32,7 +32,7 @@ ContactSensorCard.propTypes = {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		contactSensorService: getServiceByTypeAndDeviceId(servicesList, 'contact-sensor', service.device_id)
+		sirenService: getServiceByTypeAndDeviceId(servicesList, siren, service.device_id)
 	};
 };
 
