@@ -18,11 +18,9 @@ export const SirenCard = (props) => {
 			isConnected={props.service.state.connected}
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Siren'} Log</Button>}
 			{...props}>
-			<div>
-				<section styleName="main">
-					<span styleName="hopperTotal">{props.service.state.connected ? formatUsd(props.service.state.isOn || 'Unknown') : 'Unknown'}</span>
-				</section>
-			</div>
+			<center>
+				<h1> Siren is {(props.service.state.isOn ? 'on' : 'off')} </h1>
+			</center>
 		</ServiceCardBase>
 	);
 };
