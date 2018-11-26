@@ -19,7 +19,7 @@ export const ContactSensorCard = (props) => {
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>History</Button>}
 			{...props}>
 			<center>
-				<p>Currently {(currentState ? 'open' : 'closed')}</p>
+				<p>Currently {(props.service.state.connected ? currentState : 'disconnected')}</p>
 			</center>
 
 		</ServiceCardBase>
