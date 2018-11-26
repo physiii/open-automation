@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
-// import {formatUsd} from '../../utilities.js';
 import {withRouter} from 'react-router-dom';
 import moment from 'moment';
 import './GameMachineCard.css';
@@ -19,7 +18,7 @@ export const ContactSensorCard = (props) => {
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Contact-Sensor'} Log</Button>}
 			{...props}>
 			<center>
-				<h1>Currently  {props.service.state.contact}</h1>
+				<h1>Currently {props.service.state.contact}</h1>
 			</center>
 
 		</ServiceCardBase>

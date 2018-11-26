@@ -8,7 +8,7 @@ import moment from 'moment';
 import './GameMachineCard.css';
 
 export const SirenCard = (props) => {
-	const lastSirenDate = props.service.state.last_siren_date;
+	const lastSirenDate = props.service.state.state.last_siren_date;
 
 
 	return (
@@ -18,9 +18,11 @@ export const SirenCard = (props) => {
 			isConnected={props.service.state.connected}
 			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Siren'} Log</Button>}
 			{...props}>
-			<center>
-				<h1> Siren is {(props.service.state.isOn ? 'on' : 'off')} </h1>
-			</center>
+			<div>
+				<center>
+					<p>Siren is {(props.service.state.isOn ? 'on' : 'off')}</p>
+				</center>
+			</div>
 		</ServiceCardBase>
 	);
 };
