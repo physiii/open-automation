@@ -11,6 +11,31 @@ class SirenService extends Service {
 			resolve();
 		});
 	}
+
+	on () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('sirenOn/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+	off () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('sirenOff/set', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
 }
 
 SirenService.type = 'siren';
