@@ -7,18 +7,19 @@ import moment from 'moment';
 import './GameMachineCard.css';
 
 export const ContactSensorCard = (props) => {
-	const lastContactDate = props.service.state.last_contact_date;
+	const lastContactDate = props.service.state.last_contact_date,
+		currentState = props.service.state.contact;
 
 
 	return (
 		<ServiceCardBase
 			name={props.service.settings.name || 'Contact Sensor'}
-			status={lastContactDate && props.service.state.contact + ' detected ' + moment(lastContactDate).fromNow()}
+			status={lastContactDate && currentState + ' detected ' + moment(lastContactDate).fromNow()}
 			isConnected={props.service.state.connected}
-			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>{props.service.settings.name || 'Contact-Sensor'} Log</Button>}
+			secondaryAction={<Button to={`${props.match.url}/service-log/${props.service.id}`}>History</Button>}
 			{...props}>
 			<center>
-				<h1>Currently {props.service.state.contact}</h1>
+				<p>Currently {(currentState ? 'open' : 'closed')}</p>
 			</center>
 
 		</ServiceCardBase>
