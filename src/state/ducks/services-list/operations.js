@@ -69,6 +69,9 @@ const doServiceAction = (serviceId, serviceAction, originalValue) => (dispatch) 
 	},
 	thermostatFanAuto = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'auto');
+	},
+	sirenSetTest = (sirenServiceId, test) => () => {
+		Api.sirenSetTest(sirenServiceId, test);
 	};
 
 
@@ -87,5 +90,6 @@ export {
 	thermostatSetMode,
 	thermostatSetHold,
 	thermostatFanOn,
-	thermostatFanAuto
+	thermostatFanAuto,
+	sirenSetTest
 };

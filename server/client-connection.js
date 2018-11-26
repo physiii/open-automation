@@ -274,6 +274,24 @@ class ClientConnection {
 				.then(() => callback())
 				.catch((error) => callback(error));
 		});
+
+		this.clientEndpoint('siren/test/set', function(data, callback) {
+			const sirenService = data.service;
+			let action;
+
+			if (data.test === true) {
+				action = sirenService.off;
+			} else if (data.test === false) {
+				action = sirenService.on;
+			} else {
+				callback('Property "test" must be either true or false.');
+				return;
+			}
+
+			action()
+				.then(() => callback())
+				.catch((error) => callback(error))
+		});
 	}
 
 	clientEndpoint (event, callback, skip_device_lookup) {

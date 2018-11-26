@@ -119,6 +119,10 @@ class Api {
 		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fan_mode: fanMode});
 	}
 
+	sirenSetTest (sirenServiceId, test) {
+		return Api.apiCall('siren/test/set', {service_id: sirenServiceId, test});
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {

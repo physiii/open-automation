@@ -12,7 +12,16 @@ import './GameMachineCard.css';
 export const SirenCard = (props) => {
 	const lastSirenDate = props.service.state.last_siren_date,
 		toggleTest = () => {
-			props.setTest(props.service.id, 'testSiren/set');
+			props.setTest(props.service.id, () => {
+				if (props.service.state.isOn) {
+					return true;
+				} else if (!props.service.state.isOn) {
+					return false;
+				}
+
+				return false;
+
+			});
 		};
 
 	return (
@@ -39,7 +48,7 @@ SirenCard.propTypes = {
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		setTest: (serviceId) => dispatch(sirenSetTest(serviceId))
+		setTest: (serviceId, test) => dispatch(sirenSetTest(serviceId, test))
 	};
 };
 
