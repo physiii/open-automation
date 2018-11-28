@@ -16,6 +16,7 @@
 
 .nameContainer {
 	flex: 1 0 auto;
+	margin: -8px -16px;
 }
 
 .settingsHeading {

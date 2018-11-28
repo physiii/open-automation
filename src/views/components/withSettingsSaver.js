@@ -12,65 +12,64 @@ const SAVE_DEBOUNCE_DELAY = 500,
 			constructor (props) {
 				super(props);
 
-				let settings;
+				let values;
 
-				if (this.props.settingProperty) { // Single setting
-					settings = {
-						[this.props.settingProperty]: this.props.settingValue
+				if (this.props.fieldName) { // Single setting
+					values = {
+						[this.props.fieldName]: this.props.value
 					};
 				} else { // Group of settings
-					settings = {...this.props.settings};
+					values = {...this.props.values};
 				}
 
 				this.state = {
-					settings,
-					formState: settings,
+					values,
+					formState: values,
+					saved: SettingsSaver.getSavedStateOfFields(values, this.props),
 					validationErrors: {}
 				};
-				this.originalSettings = {...settings};
-				this.state.saved = SettingsSaver.getSavedStateOfFields(settings, this.props);
+				this.originalValues = {...values};
 
-				this.validator = new FormValidator(this.state.settings);
+				this.validator = new FormValidator(this.state.values);
 				this.setValidationRules();
 
 				this.handleFieldChange = this.handleFieldChange.bind(this);
 				this.saveSettings = debounce(this.saveSettings.bind(this), SAVE_DEBOUNCE_DELAY);
 			}
 
-			static getSavedStateOfFields (settings, props) {
-				const settingsSavedState = {},
-					singleProperty = props.settingProperty;
+			static getSavedStateOfFields (values, props) {
+				const savedState = {};
 
-				if (singleProperty) {
-					settingsSavedState[singleProperty] = SettingsSaver.areFieldValuesTheSame(settings[singleProperty], props.settingValue);
+				if (props.fieldName) {
+					savedState[props.fieldName] = SettingsSaver.areFieldValuesTheSame(values[props.fieldName], props.value);
 				} else {
-					Object.keys(props.settingsDefinitions).forEach((property) => {
-						settingsSavedState[property] = SettingsSaver.areFieldValuesTheSame(settings[property], props.settings[property]);
+					Object.keys(props.fields).forEach((fieldName) => {
+						savedState[fieldName] = SettingsSaver.areFieldValuesTheSame(values[fieldName], props.values[fieldName]);
 					});
 				}
 
-				return settingsSavedState;
+				return savedState;
 			}
 
 			static getDerivedStateFromProps (props, state) {
-				const settings = props.settingProperty
-						? {[props.settingProperty]: props.settingValue}
-						: {...props.settings},
-					formState = {...settings},
-					saved = SettingsSaver.getSavedStateOfFields(settings, props);
+				const values = props.fieldName
+						? {[props.fieldName]: props.value}
+						: {...props.values},
+					formState = {...values},
+					saved = SettingsSaver.getSavedStateOfFields(values, props); // TODO: This seems to be always setting all fields to saved. Is this right?
 
-				Object.keys(settings).forEach((property) => {
-					settings[property] = state.saved[property]
-						? settings[property]
-						: state.settings[property];
+				Object.keys(values).forEach((fieldName) => {
+					values[fieldName] = state.saved[fieldName]
+						? values[fieldName]
+						: state.values[fieldName];
 
-					formState[property] = state.saved[property]
-						? formState[property]
-						: state.formState[property];
+					formState[fieldName] = state.saved[fieldName]
+						? formState[fieldName]
+						: state.formState[fieldName];
 				});
 
 				return {
-					settings,
+					values,
 					formState,
 					saved
 				};
@@ -81,134 +80,132 @@ const SAVE_DEBOUNCE_DELAY = 500,
 			}
 
 			componentDidMount () {
-				this.checkIfSaveable();
+				this.checkIfSaveable(false);
 			}
 
-			componentDidUpdate () {
+			componentDidUpdate (previousProps, previousState) {
+				this.setValidationRules();
+
 				if (!this.state.shouldSave) {
 					return;
 				}
 
-				const settings = {...this.state.settings};
+				const values = {...this.state.values};
 
-				this.setValidationRules();
-
-				let settingsDiffer = false;
+				let anyValueDiffers = false;
 
 				// Find changes and errors in current settings state.
-				Object.keys(settings).forEach((property) => {
-					const lastSavedValue = this.props.settingProperty
-						? this.props.settingValue // Single setting
-						: this.props.settings[property]; // Group of settings;
+				Object.keys(values).forEach((fieldName) => {
+					const lastSavedValue = this.props.fieldName
+						? this.props.value // Single setting
+						: this.props.values[fieldName]; // Group of settings;
 
-					if (this.state.validationErrors[property]) {
-						settings[property] = lastSavedValue;
+					if (this.state.validationErrors[fieldName]) {
+						values[fieldName] = lastSavedValue;
 					}
 
-					if (settings[property] !== lastSavedValue) {
-						settingsDiffer = true;
+					if (values[fieldName] !== lastSavedValue) {
+						anyValueDiffers = true;
 					}
 				});
 
-				if (settingsDiffer) {
-					this.saveSettings({...settings});
+				if (anyValueDiffers) {
+					this.saveSettings({...values});
 				}
 
-				this.checkIfSaveable();
+				this.checkIfSaveable(this.validator.hasErrors(previousState.validationErrors));
 			}
 
 			componentWillUnmount () {
 				this.saveSettings.flush();
 			}
 
-			checkIfSaveable () {
-				const errors = this.validator.getValidationErrors(this.state.settings);
+			checkIfSaveable (hasExistingErrors) {
+				const errors = this.validator.getValidationErrors(this.state.values),
+					hasErrors = this.validator.hasErrors(errors);
 
-				if (this.validator.hasErrors(errors)) {
-					this.props.onHasErrors(errors);
-				} else {
-					this.props.onHasNoErrors();
+				if (hasErrors && !hasExistingErrors) {
+					this.props.onError(errors);
+				} else if (!hasErrors && hasExistingErrors) {
+					this.props.onNoError();
 				}
 			}
 
 			setValidationRules () {
-				// Add settings definitions to validator.
-				if (this.props.settingProperty) { // Single setting
-					this.addSettingValidation(this.props.settingProperty, this.props.settingDefinition);
+				// Add fields to validator.
+				if (this.props.fieldName) { // Single setting
+					this.addSettingValidation(this.props.fieldName, this.props.field);
 				} else { // Group of settings
-					Object.keys(this.props.settingsDefinitions).forEach((property) => {
-						this.addSettingValidation(property, this.props.settingsDefinitions[property]);
+					Object.keys(this.props.fields).forEach((fieldName) => {
+						this.addSettingValidation(fieldName, this.props.fields[fieldName]);
 					});
 				}
 			}
 
-			addSettingValidation (property, definition) {
-				const _definition = {...definition};
+			addSettingValidation (fieldName, field) {
+				const _field = {...field};
 
 				// Add validation for the field type.
-				_definition.validation = {
-					[definition.type]: true,
-					...definition.validation
+				_field.validation = {
+					[field.type]: true,
+					...field.validation
 				};
 
-				// Delete is_required validation. Required fields are handled by SettingsSaver internally without showing errors.
-				delete _definition.validation.is_required;
-
-				this.validator.field(property, _definition.label, _definition.validation);
+				this.validator.field(fieldName, _field.label, _field.validation);
 			}
 
 			handleFieldChange (event) {
 				let value = this.getValueFromEvent(event);
 
-				const property = event.target.name,
-					definition = this.props.settingProperty
-						? this.props.settingDefinition // Single setting
-						: this.props.settingsDefinitions[property]; // Group of settings
+				const fieldName = event.target.name,
+					field = this.props.fieldName
+						? this.props.field // Single setting
+						: this.props.fields[fieldName]; // Group of settings
 
 				let shouldSave = event.type === 'change';
 
 				// If required field is unset, reset to the original value.
-				if (isEmpty(value) && definition.validation && definition.validation.is_required) {
-					value = this.originalSettings[property];
+				if (isEmpty(value) && field.validation && field.validation.is_required) {
+					value = this.originalValues[fieldName];
 
 					// Don't save the original value until field is blurred.
 					shouldSave = event.type === 'blur';
 				}
 
-				const settings = {
-					...this.state.settings,
-					[property]: value
+				const values = {
+					...this.state.values,
+					[fieldName]: value
 				};
 
 				this.setState({
-					settings,
+					values,
 					shouldSave,
-					saved: SettingsSaver.getSavedStateOfFields(settings, this.props),
-					validationErrors: this.validateField(property, value),
+					saved: SettingsSaver.getSavedStateOfFields(values, this.props),
+					validationErrors: this.validateField(fieldName, value),
 					formState: {
 						...this.state.formState,
-						[property]: event.type === 'change'
+						[fieldName]: event.type === 'change'
 							? this.getValueFromEvent(event, false) // Keep the exact value from the input until the user stops editing.
 							: value
 					}
 				});
 			}
 
-			validateField (property, value) {
+			validateField (fieldName, value) {
 				this.validator.setState({
-					...this.state.settings,
-					[property]: value
+					...this.state.values,
+					[fieldName]: value
 				});
 
-				return this.validator.validateField(property);
+				return this.validator.validateField(fieldName);
 			}
 
 			getValueFromEvent (event, normalize = true) {
-				const definition = this.props.settingProperty
-					? this.props.settingDefinition
-					: this.props.settingsDefinitions[event.target.name];
+				const field = this.props.fieldName
+					? this.props.field
+					: this.props.fields[event.target.name];
 
-				switch (definition && definition.type) {
+				switch (field && field.type) {
 					case 'integer':
 					case 'number':
 						if (!normalize) {
@@ -225,7 +222,7 @@ const SAVE_DEBOUNCE_DELAY = 500,
 					case 'boolean':
 						return event.target.checked;
 					case 'one-of':
-						return definition.value_options.find((option) => option.value.toString() === event.target.value).value;
+						return field.value_options.find((option) => option.value.toString() === event.target.value).value;
 					case 'string':
 						return normalize
 							? event.target.value.trim()
@@ -235,20 +232,20 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				}
 			}
 
-			saveSettings (settings) {
-				if (!settings) {
+			saveSettings (values) {
+				if (!values) {
 					// Workaround for a bug where debouncing saveSettings
 					// sometimes causes erroneous saveSettings calls with
-					// settings undefined.
+					// values undefined.
 					return;
 				}
 
-				if (this.props.settingProperty) {
-					this.props.saveSettings(this.props.settingProperty, settings[this.props.settingProperty]);
-					this.props.onSaveableChange(this.props.settingProperty, settings[this.props.settingProperty]);
+				if (this.props.fieldName) {
+					this.props.saveSettings(values[this.props.fieldName]);
+					this.props.onSaveableChange(values[this.props.fieldName]);
 				} else {
-					this.props.saveSettings(settings);
-					this.props.onSaveableChange(settings);
+					this.props.saveSettings(values);
+					this.props.onSaveableChange(values);
 				}
 			}
 
@@ -256,10 +253,12 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				return (
 					<WrappedComponent
 						{...this.props}
-						settings={this.state.formState}
-						settingsErrors={this.state.validationErrors}
-						originalValue={this.originalSettings[this.props.settingProperty]}
-						originalSettings={this.originalSettings}
+						values={this.state.formState}
+						value={this.state.formState[this.props.fieldName]}
+						error={this.state.validationErrors[this.props.fieldName]}
+						errors={this.state.validationErrors}
+						originalValue={this.originalValues[this.props.fieldName]}
+						originalValues={this.originalValues}
 						onSettingChange={this.handleFieldChange} />
 				);
 			}
@@ -268,24 +267,24 @@ const SAVE_DEBOUNCE_DELAY = 500,
 		SettingsSaver.propTypes = {
 			saveSettings: PropTypes.func,
 			onSaveableChange: PropTypes.func,
-			onHasNoErrors: PropTypes.func,
-			onHasErrors: PropTypes.func,
+			onNoError: PropTypes.func,
+			onError: PropTypes.func,
 			// Single setting
-			settingProperty: PropTypes.string,
-			settingValue: PropTypes.any,
-			settingDefinition: PropTypes.object,
+			fieldName: PropTypes.string,
+			field: PropTypes.object,
+			value: PropTypes.any,
 			// Group of settings
-			settings: PropTypes.object,
-			settingsDefinitions: PropTypes.object
+			fields: PropTypes.object,
+			values: PropTypes.object
 		};
 
 		SettingsSaver.defaultProps = {
-			settings: {},
-			settingsDefinitions: {},
+			values: {},
+			fields: {},
 			saveSettings: noOp,
 			onSaveableChange: noOp,
-			onHasNoErrors: noOp,
-			onHasErrors: noOp
+			onNoError: noOp,
+			onError: noOp
 		};
 
 		return hoistNonReactStatics(SettingsSaver, WrappedComponent);

@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {withRoute} from './Route.js';
+import NavigationScreen from './NavigationScreen.js';
 import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
+import {compose} from 'redux';
 import {getServiceById, getServiceNameById, cameraGetRecordings, cameraGetRecordingsByDate, cameraGetRecordingById, cameraIsRecordingsListLoading} from '../../state/ducks/services-list/selectors.js';
 import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
 import './CameraRecordingsScreen.css';
@@ -21,19 +24,10 @@ export class CameraRecordingsScreen extends React.Component {
 
 	componentDidMount () {
 		this.props.fetchRecordings();
-		this.updateNavigation();
-	}
-
-	componentDidUpdate () {
-		this.updateNavigation();
-	}
-
-	updateNavigation () {
-		this.props.setScreenTitle((this.props.cameraName || 'Camera') + ' Recordings');
 	}
 
 	getPathForDate (date) {
-		return `${this.props.basePath}/${this.props.cameraServiceId}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
+		return `${this.props.match.urlWithoutOptionalParams}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
 	}
 
 	goToDate (date) {
@@ -71,42 +65,44 @@ export class CameraRecordingsScreen extends React.Component {
 		}
 
 		return (
-			<div styleName="screen">
-				<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
-					{this.props.selectedRecording
-						? <div styleName="videoContainer">
-							<VideoPlayer
-								cameraServiceId={this.props.cameraServiceId}
-								recording={this.props.selectedRecording}
-								key={this.props.selectedRecording.id}
-								streamingToken={this.props.selectedRecording.streaming_token}
-								width={this.props.selectedRecording.width}
-								height={this.props.selectedRecording.height}
-								autoplay={true} />
-						</div>
-						: <div styleName="datePickerContainer">
-							<DatePicker
-								selectedDate={this.props.selectedDate}
-								events={this.props.allRecordings}
-								onSelect={this.goToDate} />
-						</div>}
-					{this.props.selectedRecording &&
-						<a href="#" styleName="closeButton" onClick={(event) => {
-							event.preventDefault();
-							this.goToDate(this.props.selectedDate);
-						}}>
-							Close
-						</a>}
+			<NavigationScreen
+				title={(this.props.cameraName || 'Camera') + ' Recordings'}
+				url={this.props.match.urlWithoutOptionalParams}>
+				<div styleName="screen">
+					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
+						{this.props.selectedRecording
+							? <div styleName="videoContainer">
+								<VideoPlayer
+									cameraServiceId={this.props.cameraServiceId}
+									recording={this.props.selectedRecording}
+									key={this.props.selectedRecording.id}
+									streamingToken={this.props.selectedRecording.streaming_token}
+									width={this.props.selectedRecording.width}
+									height={this.props.selectedRecording.height}
+									autoplay={true} />
+							</div>
+							: <div styleName="datePickerContainer">
+								<DatePicker
+									selectedDate={this.props.selectedDate}
+									events={this.props.allRecordings}
+									onSelect={this.goToDate} />
+							</div>}
+						{this.props.selectedRecording &&
+							<a href="#" styleName="closeButton" onClick={(event) => {
+								event.preventDefault();
+								this.goToDate(this.props.selectedDate);
+							}}>
+								Close
+							</a>}
+					</div>
+					<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
+						{bottomContent}
+					</div>
 				</div>
-				<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
-					{bottomContent}
-				</div>
-			</div>
+			</NavigationScreen>
 		);
 	}
 }
-
-CameraRecordingsScreen.routeParams = '/:cameraServiceId/:year?/:month?/:date?/:recordingId?';
 
 CameraRecordingsScreen.propTypes = {
 	cameraServiceId: PropTypes.string,
@@ -115,19 +111,17 @@ CameraRecordingsScreen.propTypes = {
 	allRecordings: PropTypes.array,
 	selectedDateRecordings: PropTypes.array,
 	selectedRecording: PropTypes.object,
-	basePath: PropTypes.string.isRequired,
+	match: PropTypes.object,
 	history: PropTypes.object.isRequired,
 	isLoading: PropTypes.bool,
 	fetchRecordings: PropTypes.func,
-	setScreenTitle: PropTypes.func,
 	error: PropTypes.string
 };
 
 CameraRecordingsScreen.defaultProps = {
 	allRecordings: [],
 	selectedDateRecordings: [],
-	fetchRecordings: () => { /* no-op */ },
-	setScreenTitle: () => { /* no-op */ }
+	fetchRecordings: () => { /* no-op */ }
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
@@ -151,11 +145,11 @@ const mapStateToProps = ({servicesList}, {match}) => {
 			isLoading: cameraIsRecordingsListLoading(servicesList, cameraService.id)
 		};
 	},
-	mergeProps = ({servicesList, cameraService, ...stateProps}, {dispatch, ...dispatchProps}, {match, ...ownProps}) => {
+	mergeProps = ({servicesList, cameraService, ...stateProps}, {dispatch, ...dispatchProps}, ownProps) => {
 		let selectedDate = moment([
-			match.params.year,
-			match.params.month - 1, // Subtract 1 from month because moment months are zero-based.
-			match.params.date
+			ownProps.match.params.year,
+			ownProps.match.params.month - 1, // Subtract 1 from month because moment months are zero-based.
+			ownProps.match.params.date
 		]);
 
 		if (!selectedDate.isValid()) {
@@ -166,11 +160,13 @@ const mapStateToProps = ({servicesList}, {match}) => {
 			...ownProps,
 			...stateProps,
 			...dispatchProps,
-			basePath: match.path.replace(CameraRecordingsScreen.routeParams, ''),
 			selectedDate,
 			selectedDateRecordings: cameraService && cameraGetRecordingsByDate(servicesList, cameraService.id, selectedDate),
 			fetchRecordings: () => cameraService && cameraService.state.connected && dispatch(cameraFetchRecordings(cameraService.id))
 		};
 	};
 
-export default connect(mapStateToProps, null, mergeProps)(CameraRecordingsScreen);
+export default compose(
+	withRoute({params: '/:cameraServiceId/:year?/:month?/:date?/:recordingId?'}),
+	connect(mapStateToProps, null, mergeProps)
+)(CameraRecordingsScreen);

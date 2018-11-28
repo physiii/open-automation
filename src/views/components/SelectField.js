@@ -27,6 +27,7 @@ export class SelectField extends React.Component {
 					<select
 						{...inputProps}
 						styleName="input"
+						value={inputProps.value || ''}
 						id={this.inputId}
 						name={name}>
 						{options.map((option, index) => {

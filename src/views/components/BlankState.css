@@ -1,4 +1,4 @@
-.blank {
+.blankState {
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;
@@ -7,8 +7,8 @@
 	height: 100%;
 }
 
-.blankHeading {
+.heading {
 	font-size: 20px;
 }
 
-.blankBody {}
+.body {}

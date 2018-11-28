@@ -1,74 +1,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
+import {withRoute} from './Route.js';
+import NavigationScreen from './NavigationScreen.js';
 import ServiceDetails from './ServiceDetails.js';
 import List from './List.js';
 import {connect} from 'react-redux';
+import {compose} from 'redux';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
 
-export class ServiceDetailsScreen extends React.Component {
-	componentDidMount () {
-		this.updateNavigation();
+export const ServiceDetailsScreen = (props) => {
+	const service = props.service;
+
+	if (!service) {
+		return <Redirect to={props.match.parentMatch.url} />;
 	}
 
-	componentDidUpdate () {
-		this.updateNavigation();
-	}
-
-	updateNavigation () {
-		this.props.setScreenTitle(this.props.service.settings.name || this.props.service.strings.friendly_type);
-	}
-
-	render () {
-		const service = this.props.service;
-
-		if (!service) {
-			return <Redirect to={this.props.baseUrl} />;
-		}
-
-		return (
-			<React.Fragment>
-				{!service.state.connected && (
-					<List>
-						{[
-							{
-								label: 'Device is not responding',
-								secondaryText: 'Device must be reachable to update settings.'
-							}
-						]}
-					</List>
-				)}
-				<ServiceDetails serviceId={service.id} />
-			</React.Fragment>
-		);
-	}
-}
-
-ServiceDetailsScreen.routeParams = '/:serviceId';
+	return (
+		<NavigationScreen title={props.service.settings.name || props.service.strings.friendly_type} url={props.match.urlWithoutOptionalParams}>
+			{!service.state.connected && (
+				<List>
+					{[
+						{
+							label: 'Device is not responding',
+							secondaryText: 'Device must be reachable to update settings.'
+						}
+					]}
+				</List>
+			)}
+			<ServiceDetails service={service} shouldShowRoomField={props.shouldShowRoomField} />
+		</NavigationScreen>
+	);
+};
 
 ServiceDetailsScreen.propTypes = {
 	service: PropTypes.object,
-	match: PropTypes.object.isRequired,
-	baseUrl: PropTypes.string,
-	setScreenTitle: PropTypes.func
-};
-
-ServiceDetailsScreen.defaultProps = {
-	setScreenTitle: () => { /* no-op */ }
+	shouldShowRoomField: PropTypes.bool,
+	match: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-	const service = getServiceById(servicesList, match.params.serviceId),
-		urlParts = match.url.split('/');
+	const service = getServiceById(servicesList, match.params.serviceId);
 
 	if (!service) {
-		// Remove the service ID from the URL.
-		urlParts.pop();
-
-		return {baseUrl: urlParts.join('/')};
+		return {};
 	}
 
 	return {service};
 };
 
-export default connect(mapStateToProps)(ServiceDetailsScreen);
+export default compose(
+	withRoute({params: '/:serviceId'}),
+	connect(mapStateToProps)
+)(ServiceDetailsScreen);

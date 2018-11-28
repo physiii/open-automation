@@ -10,9 +10,9 @@ const EventEmitter = require('events'),
 	DEVICE_TOKEN_SIZE = 256,
 	TAG = '[DevicesManager]';
 
-class DevicesManager {
+class DevicesManager extends EventEmitter {
 	constructor () {
-		this.events = new EventEmitter();
+		super();
 
 		this.init = this.init.bind(this);
 		this.handleDeviceConnection = this.handleDeviceConnection.bind(this);
@@ -21,14 +21,6 @@ class DevicesManager {
 
 	init () {
 		return this.loadDevicesFromDb();
-	}
-
-	on () {
-		return this.events.on.apply(this.events, arguments);
-	}
-
-	off () {
-		return this.events.off.apply(this.events, arguments);
 	}
 
 	addDevice (data) {
@@ -179,7 +171,7 @@ class DevicesManager {
 	handleDeviceUpdate (device) {
 		const accountDevices = this.getClientSerializedDevices(this.getDevicesByAccountId(device.account_id));
 
-		this.events.emit('devices-update/account/' + device.account_id, {devices: accountDevices});
+		this.emit('devices-update/account/' + device.account_id, {devices: accountDevices});
 	}
 
 	doesDeviceExist (deviceId) {

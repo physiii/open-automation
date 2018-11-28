@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 export const isEmpty = (value) => {
 		if (typeof value === 'number') {
 			if (Object.is(value, NaN)) {
@@ -31,4 +33,13 @@ export const isEmpty = (value) => {
 		let count = 0;
 
 		return () => 'id' + (count += 1);
-	})();
+	})(),
+	immutableMapFromArray = (array = [], mapper, mapClass = Immutable.Map) => {
+		return mapClass(array.map((item) => [
+			item.id,
+			typeof mapper === 'function' ? mapper(item) : item
+		]));
+	},
+	immutableOrderedMapFromArray = (array, mapper) => {
+		return immutableMapFromArray(array, mapper, Immutable.OrderedMap);
+	};
