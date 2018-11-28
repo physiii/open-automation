@@ -2,9 +2,9 @@ const database = require('../database.js'),
 	Scene = require('./scene.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
 	scenes_list = new Map(),
-	TAG = '[SceneManager]';
+	TAG = '[ScenesManager]';
 
-class SceneManager {
+class ScenesManager {
 	constructor () {
 		this.init = this.init.bind(this);
 	}
@@ -90,4 +90,4 @@ class SceneManager {
 	}
 }
 
-module.exports = new SceneManager();
+module.exports = new ScenesManager();

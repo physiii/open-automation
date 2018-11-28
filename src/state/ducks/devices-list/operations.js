@@ -20,11 +20,18 @@ const listenForDeviceChanges = () => (dispatch) => {
 			dispatch(actions.setSettingsError(deviceId, originalSettings, error));
 		});
 	},
-	deleteDevice = (device) => (dispatch) => {
-		dispatch(actions.deleteDevice(device.id));
+	setDeviceRoom = (deviceId, roomId, originalRoomId) => (dispatch) => {
+		dispatch(actions.setDeviceRoom(deviceId, roomId));
 
-		Api.deleteDevice(device.id).catch((error) => {
-			dispatch(actions.deleteDeviceError(device, error));
+		Api.setDeviceRoom(deviceId, roomId).catch((error) => {
+			dispatch(actions.setDeviceRoomError(deviceId, originalRoomId, error));
+		});
+	},
+	deleteDevice = (deviceId) => (dispatch) => {
+		dispatch(actions.deleteDevice(deviceId));
+
+		Api.deleteDevice(deviceId).catch((error) => {
+			dispatch(actions.deleteDeviceError(deviceId, error));
 		});
 	};
 
@@ -32,5 +39,6 @@ export {
 	listenForDeviceChanges,
 	fetchDevices,
 	setDeviceSettings,
+	setDeviceRoom,
 	deleteDevice
 };

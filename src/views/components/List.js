@@ -1,77 +1,79 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
+import {SortableContainer} from 'react-sortable-hoc';
+import {default as ListItem, SortableListItem} from './ListItem.js';
 import './List.css';
 
-export const List = (props) => {
-	const ListElement = props.isOrdered ? 'ol' : 'ul';
+export class List extends React.Component {
+	constructor (props) {
+		super(props);
 
-	if (!props.children.length && !props.renderIfEmpty) {
-		return null;
+		this.renderList = this.renderList.bind(this);
+		this.renderSortableList = SortableContainer(this.renderList);
+
+		this.state = {itemBeingDragged: false};
 	}
 
-	return (
-		<div styleName="list">
-			{props.title && <h2 styleName="title">{props.title}</h2>}
+	renderList () {
+		const ListElement = this.props.isOrdered ? 'ol' : 'ul',
+			ListItemComponent = this.props.isSortable ? SortableListItem : ListItem;
+
+		return (
 			<ListElement>
-				{props.children && Boolean(props.children.length) && props.children.map((item, index) => {
-					const LinkComponent = item.link ? Link : 'a',
-						itemContent = (
-							<div styleName="rowContentInner">
-								{item.icon && <div styleName="rowIcon">{item.icon}</div>}
-								<div styleName="rowText">
-									<span styleName="primaryText">
-										{item.label}
-										{item.meta && <span styleName="metaText">{item.meta}</span>}
-									</span>
-									{item.secondaryText && <span styleName="secondaryText">{item.secondaryText}</span>}
-									{item.tertiaryText && <span styleName="tertiaryText">{item.tertiaryText}</span>}
-								</div>
-							</div>
-						);
-
-					return (
-						<li styleName="row" key={item.key || index}>
-							{item.link || item.onClick
-								? <LinkComponent href="#" styleName="rowContent" to={item.link} onClick={(event) => {
-									if (!item.link) {
-										event.preventDefault();
-									}
-
-									if (typeof item.onClick === 'function') {
-										item.onClick(item, event);
-									}
-								}}>
-									{itemContent}
-								</LinkComponent>
-								: <div styleName="rowContent">
-									{itemContent}
-								</div>
-							}
-							{item.secondaryAction &&
-								<div styleName="rowActions">{item.secondaryAction}</div>}
-						</li>
-					);
-				})}
+				{this.props.children && Boolean(this.props.children.length) && this.props.children.map((item, index) => (
+					<ListItemComponent
+						{...item}
+						isDraggable={this.props.isSortable}
+						isBeingDragged={this.state.itemBeingDragged === index}
+						index={index}
+						key={item.key || index} />
+				))}
 			</ListElement>
-		</div>
-	);
-};
+		);
+	}
+
+	render () {
+		if (!this.props.children.length && !this.props.renderIfEmpty) {
+			return null;
+		}
+
+		const ListComponent = this.props.isSortable ? this.renderSortableList : this.renderList;
+
+		return (
+			<div styleName="list">
+				{this.props.title && <h2 styleName="title">{this.props.title}</h2>}
+				<ListComponent
+					lockAxis="y"
+					lockToContainerEdges={true}
+					lockOffset={0}
+					helperClass={ListItem.beingDraggedClass}
+					onSortStart={(data, ...rest) => {
+						if (typeof this.props.onSortStart === 'function') {
+							this.props.onSortStart(data, ...rest);
+						}
+
+						this.setState({itemBeingDragged: data.index});
+					}}
+					onSortEnd={(...rest) => {
+						if (typeof this.props.onSortEnd === 'function') {
+							this.props.onSortEnd(...rest);
+						}
+
+						this.setState({itemBeingDragged: false});
+					}} />
+			</div>
+		);
+	}
+}
 
 List.propTypes = {
 	title: PropTypes.string,
-	children: PropTypes.arrayOf(PropTypes.shape({
-		label: PropTypes.node,
-		secondaryText: PropTypes.node,
-		tertiaryText: PropTypes.node,
-		icon: PropTypes.node,
-		meta: PropTypes.node,
-		link: PropTypes.string,
-		secondaryAction: PropTypes.node,
-		onClick: PropTypes.func
-	})),
+	children: PropTypes.arrayOf(PropTypes.shape(ListItem.propTypes)),
 	isOrdered: PropTypes.bool,
-	renderIfEmpty: PropTypes.bool
+	isSortable: PropTypes.bool,
+	renderIfEmpty: PropTypes.bool,
+	onSortStart: PropTypes.func,
+	onSortEnd: PropTypes.func
 };
 
 List.defaultProps = {

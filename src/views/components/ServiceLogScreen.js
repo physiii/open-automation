@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {withRoute} from './Route.js';
+import NavigationScreen from './NavigationScreen.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
+import {compose} from 'redux';
 import {getServiceById, getServiceLog, isServiceLogLoading} from '../../state/ducks/services-list/selectors.js';
 import {fetchServiceLog} from '../../state/ducks/services-list/operations.js';
 import './ServiceLogScreen.css';
@@ -9,17 +12,6 @@ import './ServiceLogScreen.css';
 export class ServiceLogScreen extends React.Component {
 	componentDidMount () {
 		this.props.fetchLog();
-		this.updateNavigation();
-	}
-
-	componentDidUpdate () {
-		this.updateNavigation();
-	}
-
-	updateNavigation () {
-		const service = this.props.service;
-
-		this.props.setScreenTitle(((service ? service.settings.name : '') || (service ? service.strings.friendly_type : '')) + ' Log');
 	}
 
 	render () {
@@ -52,26 +44,29 @@ export class ServiceLogScreen extends React.Component {
 			);
 		}
 
-		return error
-			? <p>{error}</p>
-			: content;
+		return (
+			<NavigationScreen
+				title={((service ? service.settings.name : '') || (service ? service.strings.friendly_type : '')) + ' Log'}
+				url={this.props.match.urlWithoutOptionalParams}>
+				{error
+					? <p>{error}</p>
+					: content}
+			</NavigationScreen>
+		);
 	}
 }
-
-ServiceLogScreen.routeParams = '/:serviceId';
 
 ServiceLogScreen.propTypes = {
 	service: PropTypes.object,
 	isLoading: PropTypes.bool,
+	match: PropTypes.object,
 	logs: PropTypes.array.isRequired,
-	fetchLog: PropTypes.func,
-	setScreenTitle: PropTypes.func
+	fetchLog: PropTypes.func
 };
 
 ServiceLogScreen.defaultProps = {
 	logs: [],
-	fetchLog: () => { /* no-op */ },
-	setScreenTitle: () => { /* no-op */ }
+	fetchLog: () => { /* no-op */ }
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
@@ -93,4 +88,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 		};
 	};
 
-export default connect(mapStateToProps, null, mergeProps)(ServiceLogScreen);
+export default compose(
+	withRoute({params: '/:serviceId'}),
+	connect(mapStateToProps, null, mergeProps)
+)(ServiceLogScreen);

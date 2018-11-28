@@ -99,7 +99,7 @@ export const required = (value, label) => {
 	},
 	decimal = (value, label) => Number.isFinite(value) ? null : label + ' must be a number',
 	integer = (value, label) => Number.isInteger(value) ? null : label + ' must be a whole number',
-	percentage = (value, label) => Number.isFinite(value) && value >= 0 && value <= 1 ? null : label + ' must be a percentage.',
+	percentage = (value, label) => Number.isFinite(value) && value >= 0 && value <= 1 ? null : label + ' must be a percentage',
 	min = (minimum) => (value, label) => {
 		return value >= minimum ? null : label + ' must be at least ' + minimum;
 	},
@@ -111,6 +111,9 @@ export const required = (value, label) => {
 	},
 	maxLength = (maximumLength) => (value, label) => {
 		return value.length <= maximumLength ? null : label + ' must be no more than ' + maximumLength + ' characters';
+	},
+	unique = ({values = [], message} = {}) => (value, label) => {
+		return values.includes(value) ? message || label + ' must be unique' : null;
 	},
 	mustMatch = (fieldToMatch, fieldToMatchLabel) => (value, label, state) => {
 		return value === state[fieldToMatch] ? null : label + ' must match ' + fieldToMatchLabel;
@@ -129,5 +132,6 @@ const ruleNameToFunctionMap = {
 	min,
 	max,
 	'min_length': minLength,
-	'max_length': maxLength
+	'max_length': maxLength,
+	unique
 };

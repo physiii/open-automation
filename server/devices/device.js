@@ -21,6 +21,8 @@ class Device {
 		this.type = data.type;
 		this.account = data.account;
 		this.account_id = data.account_id;
+		this.room = data.room;
+		this.room_id = data.room_id;
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
 		this.is_saveable = data.is_saveable || false;
@@ -129,6 +131,25 @@ class Device {
 		return this.settings.set(settings).then(this.onUpdate);
 	}
 
+	setRoom (room_id) {
+		return new Promise((resolve, reject) => {
+			const original_room_id = this.room_id;
+
+			this.room_id = room_id;
+
+			this.save().then(() => {
+				resolve();
+				this.onUpdate();
+			}).catch(() => {
+				this.room_id = original_room_id;
+
+				console.error(TAG, this.id, 'Error saving device room to database.', error);
+
+				reject(error);
+			});
+		});
+	}
+
 	setToken (token) {
 		return new Promise((resolve, reject) => {
 			const original_token = this.token,
@@ -214,6 +235,7 @@ class Device {
 			id: this.id,
 			account_id: this.account_id,
 			type: this.type,
+			room_id: this.room_id,
 			gateway_id: this.gateway_id,
 			services: this.services.getSerializedServices(),
 			info: this.info,

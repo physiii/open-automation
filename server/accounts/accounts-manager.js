@@ -16,7 +16,7 @@ class AccountsManager {
 
 	_addAccount (account) {
 		if (!account instanceof Account) {
-			console.error(TAG, 'Only instanced of Account can be added to the accounts list.');
+			console.error(TAG, 'Only instances of Account can be added to the accounts list.');
 
 			return false;
 		}

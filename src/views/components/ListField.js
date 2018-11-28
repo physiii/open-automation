@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Route from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import Button from './Button.js';
 import List from './List.js';
-import ListFieldItemForm from './ListFieldItemForm.js';
+import SettingsForm from './SettingsForm.js';
+import BlankState from './BlankState.js';
 import SettingValue from './SettingValue.js';
 import {withRouter} from 'react-router-dom';
-import './ListField.css';
 
 // TODO: Display device not connected message.
 
@@ -29,7 +30,7 @@ export class ListField extends React.Component {
 			showEditScreen: false,
 			editingItem: null,
 			editingItemValues: null,
-			editingItemSaveable: false,
+			editingItemSaveable: true,
 			editingItemNew: false
 		};
 	}
@@ -123,7 +124,7 @@ export class ListField extends React.Component {
 	}
 
 	deleteItem (itemIndex = 0) {
-		if (confirm('Do you want to delete this “' + this.props.label + '” item?')) {
+		if (confirm('Do you want to delete this ‘' + this.props.label + '’ item?')) {
 			const newItems = [...this.getItems()];
 
 			newItems.splice(itemIndex, 1);
@@ -142,72 +143,70 @@ export class ListField extends React.Component {
 		});
 	}
 
-	renderList () {
-		const items = this.getItems();
-
-		return (
-			<NavigationScreen
-				path={this.props.match.url + '/field/' + this.props.name}
-				title={this.props.label}
-				toolbarActions={<Button onClick={this.handleAddClick}>Add</Button>}
-				toolbarBackAction={this.handleBackClick}>
-				{!items.length &&
-					<section styleName="blank">
-						<h1 styleName="blankHeading">No “{this.props.label}” Items</h1>
-						<p styleName="blankBody">Use the ‘Add’ button and items will show up here.</p>
-					</section>}
-				<List isOrdered={true} renderIfEmpty={false}>
-					{items.map((item = {}, index) => ({ // TODO: sort_by
-						label: <SettingValue type={this.props.itemFields[this.props.mainProperty].type}>
-							{item[this.props.mainProperty]}
-						</SettingValue>,
-						secondaryText: <React.Fragment>
-							{this.props.itemFields[this.props.secondaryProperty].label}:&nbsp;
-							<SettingValue type={this.props.itemFields[this.props.secondaryProperty].type}>
-								{item[this.props.secondaryProperty]}
-							</SettingValue>
-						</React.Fragment>,
-						secondaryAction: <Button onClick={() => this.deleteItem(index)}>Delete</Button>,
-						onClick: () => this.handleListItemClick(index)
-					}))}
-				</List>
-				{this.state.showEditScreen
-					? this.renderForm()
-					: null}
-			</NavigationScreen>
-		);
-	}
-
 	renderForm () {
 		return (
 			<NavigationScreen
-				path={this.props.match.url + '/field/' + this.props.name + '/edit'}
-				title={(this.state.editingItemNew ? 'Add ' : 'Edit ') + this.props.label}
+				url={this.props.match.url + '/field/' + this.props.name + '/edit'}
+				title={(this.state.editingItemNew ? 'Add ' : 'Edit ') + '‘' + this.props.label + '’ Item'}
 				toolbarActions={<Button onClick={this.handleSaveClick} disabled={!this.state.editingItemSaveable}>Save</Button>}
 				toolbarBackAction={<Button onClick={this.handleCancelClick}>Cancel</Button>}>
-				<ListFieldItemForm
-					settingsDefinitions={this.props.itemFields}
-					settings={this.state.editingItemValues}
+				<SettingsForm
+					fields={this.props.itemFields}
+					values={this.state.editingItemValues}
 					disabled={this.props.disabled}
 					onSaveableChange={this.handleFormChange}
-					onHasErrors={this.handleFormErrors}
-					onHasNoErrors={this.handleFormNoErrors} />
+					onError={this.handleFormErrors}
+					onNoError={this.handleFormNoErrors} />
 			</NavigationScreen>
 		);
 	}
 
 	render () {
+		const items = this.getItems(),
+			listUrl = this.props.match.url + '/field/' + encodeURIComponent(this.props.name);
+
 		return (
 			<div>
 				<Button
 					type="outlined"
 					disabled={this.props.disabled}
-					onClick={this.handleListScreenButtonClick}>
+					to={listUrl}>
 					{this.props.label}
 				</Button>
-				{this.state.showListScreen
-					? this.renderList()
-					: null}
+				<Route
+					path={listUrl}
+					render={(routeProps) => {
+						return (
+							<NavigationScreen
+								title={this.props.label}
+								url={routeProps.match.urlWithoutOptionalParams}
+								toolbarActions={<Button onClick={this.handleAddClick}>Add</Button>}>
+								{!items.length &&
+									<BlankState
+										heading={'No ‘' + this.props.label + '’ Items'}
+										body="Use the ‘Add’ button and items will show up here." />
+								}
+								<List isOrdered={true} renderIfEmpty={false}>
+									{items.map((item = {}, index) => ({ // TODO: sort_by
+										label: <SettingValue type={this.props.itemFields[this.props.mainProperty].type}>
+											{item[this.props.mainProperty]}
+										</SettingValue>,
+										secondaryText: <React.Fragment>
+											{this.props.itemFields[this.props.secondaryProperty].label}:&nbsp;
+											<SettingValue type={this.props.itemFields[this.props.secondaryProperty].type}>
+												{item[this.props.secondaryProperty]}
+											</SettingValue>
+										</React.Fragment>,
+										secondaryAction: <Button onClick={() => this.deleteItem(index)}>Delete</Button>,
+										onClick: () => this.handleListItemClick(index)
+									}))}
+								</List>
+								{this.state.showEditScreen
+									? this.renderForm()
+									: null}
+							</NavigationScreen>
+						);
+					}} />
 			</div>
 		);
 	}

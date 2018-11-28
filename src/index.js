@@ -11,6 +11,7 @@ import configureStore from './state/store';
 import {initialize as initializeConfig} from './state/ducks/config/operations.js';
 import {initialize as initializeSession} from './state/ducks/session/operations.js';
 import {listenForDeviceChanges} from './state/ducks/devices-list/operations.js';
+import {listenForRoomChanges} from './state/ducks/rooms-list/operations.js';
 import './views/styles/main.scss';
 
 const history = createHistory(), // History object to share between router and store.
@@ -31,8 +32,9 @@ reduxStore.dispatch(initializeConfig(window.OpenAutomation.config));
 // Set up user if already logged in.
 reduxStore.dispatch(initializeSession());
 
-// Listen for changes to devices pushed from server.
+// Listen for changes pushed from server.
 reduxStore.dispatch(listenForDeviceChanges());
+reduxStore.dispatch(listenForRoomChanges());
 
 ReactDOM.render(
 	<ReduxProvider store={reduxStore}>

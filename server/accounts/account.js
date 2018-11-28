@@ -1,4 +1,6 @@
 const database = require('../database.js'),
+	RoomsManager = require('../locations/rooms-manager.js'),
+	EventEmitter = require('events'),
 	crypto = require('crypto'),
 	jwt = require('jsonwebtoken'),
 	PASSWORD_HASH_ALGORITHM = 'sha512',
@@ -6,8 +8,10 @@ const database = require('../database.js'),
 	XSRF_TOKEN_SIZE = 16,
 	TAG = '[Account]';
 
-class Account {
+class Account extends EventEmitter {
 	constructor (data) {
+		super();
+
 		this.id = data.id;
 		this.username = data.username;
 		this.password = data.password || data.token; // token is a legacy property.
@@ -20,6 +24,9 @@ class Account {
 		if (data.registration_date) {
 			this.registration_date = new Date(data.registration_date);
 		}
+
+		this.roomsManager = new RoomsManager(data.rooms, this._saveRooms.bind(this));
+		this.roomsManager.on('rooms-updated', (data) => this.emit('rooms-updated', data));
 	}
 
 	setPassword (password) {
@@ -123,6 +130,16 @@ class Account {
 		});
 	}
 
+	getRoomById (room_id) {
+		return this.roomsManager.getRoomById(room_id);
+	}
+
+	_saveRooms (rooms) {
+		return new Promise((resolve, reject) => {
+			database.saveRooms(this.id, rooms).then((saved_rooms) => resolve(saved_rooms));
+		});
+	}
+
 	save () {
 		return new Promise((resolve, reject) => {
 			database.saveAccount(this.dbSerialize()).then((account_id) => {
@@ -136,23 +153,30 @@ class Account {
 		});
 	}
 
-	dbSerialize () {
+	_serialize () {
 		return {
 			id: this.id,
-			username: this.username,
+			username: this.username
+		};
+	}
+
+	dbSerialize () {
+		return {
+			...this._serialize(),
 			password: this.password,
 			salt: this.salt,
 			hash_algorithm: this.hash_algorithm,
 			phone_number: this.phone_number,
 			phone_provider: this.phone_provider,
-			registration_date: this.registration_date
+			registration_date: this.registration_date,
+			rooms: this.roomsManager.dbSerialize()
 		};
 	}
 
 	clientSerialize () {
 		return {
-			id: this.id,
-			username: this.username
+			...this._serialize(),
+			rooms: this.roomsManager.clientSerialize()
 		};
 	}
 

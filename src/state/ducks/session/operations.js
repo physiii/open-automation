@@ -1,5 +1,4 @@
 import * as actions from './actions';
-import * as devices from '../devices-list';
 import Api from '../../../api.js';
 
 const initialize = () => (dispatch) => {
@@ -40,7 +39,6 @@ const initialize = () => (dispatch) => {
 		localStorage.setItem('is_logged_in', true);
 
 		dispatch(actions.loginSuccess(user));
-		dispatch(devices.operations.fetchDevices());
 	},
 	logout = () => (dispatch) => {
 		dispatch(actions.logout());
