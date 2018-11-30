@@ -70,7 +70,7 @@ export class RoomEditScreen extends React.Component {
 							max_length: 24,
 							unique: {
 								values: this.props.rooms
-									.filter((room) => room.id !== this.props.room.id)
+									.filter((room) => room.id !== (this.props.room && this.props.room.id))
 									.map((room) => room.name),
 								message: 'A room already exists with that name.'
 							}
