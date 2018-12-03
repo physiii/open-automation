@@ -52,7 +52,7 @@ export class SliderControl extends React.Component {
 				: this.props.value;
 
 		return (
-			<Slider
+			<SliderComponent
 				value={Number.isFinite(currentValue) ? currentValue : 0}
 				onBeforeChange={this.onBeforeChange.bind(this)}
 				onChange={this.handleInput.bind(this)}
