@@ -1,8 +1,6 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// ----------------------------- physiphile@gmail.com -------------------------------- //
-
-const fs = require('fs'),
+const dotenv = require('dotenv'),
+	dotenvExpand = require('dotenv-expand'),
+	fs = require('fs'),
 	path = require('path'),
 	io = require('socket.io'),
 	uuidV4 = require('uuid/v4'),
@@ -18,35 +16,27 @@ const fs = require('fs'),
 	Notifications = require('./automator/notifications.js'),
 	Automator = require('./automator/automator.js');
 
-let config;
-
-// Import config or create new config.json with defaults.
-try {
-	config = require('../config.json');
-} catch (read_error) {
-	config = {
-		app_name: 'Open Automation',
-		use_ssl: false,
-		ssl_key_path: '',
-		ssl_cert_path: '',
-		api_token_issuer: null,
-		domain_name: 'localhost',
-		website_port: 5000,
-		website_secure_port: 443,
-		video_stream_port: 8082
-	};
-
-	fs.writeFileSync(path.join(__dirname, '../', '/config.json'), JSON.stringify(config, null, '  '));
-
-	console.log('Created config.json with default configuration.');
-}
-
 let key,
 	cert;
 
-if (config.use_ssl) {
-	key = fs.readFileSync(config.ssl_key_path || (__dirname + '/key.pem'));
-	cert = fs.readFileSync(config.ssl_cert_path || (__dirname + '/cert.pem'));
+dotenvExpand(dotenv.config());
+
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development') {
+	throw new Error('The NODE_ENV environment variable must be either "production" or "development".');
+}
+
+// TODO: Validate configuration.
+
+if (process.env.OA_SSL) {
+	const key_path = process.env.OA_SSL_KEY_PATH || 'key.pem',
+		cert_path = process.env.OA_SSL_CERT_PATH || 'cert.pem';
+
+	try {
+		key = fs.readFileSync(__dirname + '/../' + key_path);
+		cert = fs.readFileSync(__dirname + '/../' + cert_path);
+	} catch (error) {
+		throw new Error('The SSL key or certificate could not be loaded. Check the SSL configuration. (' + error + ')');
+	}
 }
 
 AccountsManager.init()
@@ -55,14 +45,17 @@ AccountsManager.init()
 	.then(Notifications.init)
 	.then(Automator.init)
 	.then(() => {
-		const jwt_secret = key || uuidV4(),
-			website = setUpWebsite(config.use_ssl, jwt_secret),
+		const jwt_secret = process.env.OA_JWT_SECRET || key || uuidV4(),
+			website = setUpWebsite(jwt_secret),
 			http_server = startHttpServer(website, key, cert),
 			socket_io_server = io.listen(http_server);
 
 		startClientApi(socket_io_server, jwt_secret);
 		startDeviceRelay(http_server, socket_io_server);
-		startStreamRelay(http_server);
+		startStreamRelay(http_server, key, cert);
 		startUtilitiesServer(http_server);
 	})
-	.catch((error) => console.error(error));
+	.catch((error) => {
+		console.error('An error was encountered while starting.', error);
+		process.exit(1);
+	});

@@ -1,5 +1,4 @@
 const moment = require('moment'),
-	config = require('../../config.json'),
 	Service = require('./service.js'),
 	TAG = '[CameraService]';
 
@@ -103,7 +102,7 @@ class CameraService extends Service {
 	}
 
 	getRecordingLink (recording_id, recording_date) {
-		return `${config.use_ssl ? 'https' : 'http'}://${config.domain_name}:${config.use_ssl ? config.website_secure_port : config.website_port}/dashboard/recordings/${this.id}/${moment(recording_date).format('YYYY/MM/DD')}/${recording_id}`;
+		return `${process.env.OA_SSL ? 'https' : 'http'}://${process.env.OA_DOMAIN_NAME}:${process.env.OA_WEBSITE_PORT}/dashboard/recordings/${this.id}/${moment(recording_date).format('YYYY/MM/DD')}/${recording_id}`;
 	}
 }
 

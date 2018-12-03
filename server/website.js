@@ -1,27 +1,42 @@
-// ------------------------------  OPEN-AUTOMATION ----------------------------------- //
-// -----------------  https://github.com/physiii/open-automation  -------------------- //
-// --------------------------------- website.js -------------------------------------- //
-
-const config = require('../config.json'),
-	AccountsManager = require('./accounts/accounts-manager.js'),
+const AccountsManager = require('./accounts/accounts-manager.js'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
 	cookie = require('cookie'),
+	path = require('path'),
 	fs = require('fs'),
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
+	compression = require('compression'),
+	helmet = require('helmet'),
 	jwt = require('jsonwebtoken'),
 	webpack = require('webpack'),
 	WebpackDevMiddleware = require('webpack-dev-middleware'),
 	WebpackHotMiddleware = require('webpack-hot-middleware'),
-	webpack_config_file = require('../webpack.config'),
-	is_dev_enabled = config.use_dev || false,
+	getWebpackConfig = require('../webpack.config'),
 	MILLISECONDS_PER_SECOND = 1000,
 	TAG = '[website.js]';
 
-module.exports = function (is_ssl_enabled, jwt_secret) {
-	const app = express();
-	let logo_file_path = config.logo_path || '/logo.png';
+module.exports = function (jwt_secret) {
+	const app = express(),
+		do_hot_module_replacement = process.env.OA_HOT_MODULE_REPLACEMENT && process.env.NODE_ENV === 'development',
+		helmet_options = {
+			contentSecurityPolicy: {
+				directives: {
+					defaultSrc: ['\'self\''], // Only allow loading assets from same origin.
+					scriptSrc: ['\'self\''],
+					styleSrc: ['\'self\'']
+				}
+			},
+			crossdomain: {
+				permittedPolicies: 'none' // Prevent clients like Flash and Acrobat from loading the site.
+			},
+			frameguard: {
+				action: 'deny' // Prevent the site from being loaded in a frame.
+			}
+		};
+
+	let logo_file_path = process.env.OA_LOGO_PATH || 'logo.png',
+		webpack_compiler;
 
 	try {
 		fs.accessSync(__dirname + '/../public/' + logo_file_path);
@@ -30,27 +45,41 @@ module.exports = function (is_ssl_enabled, jwt_secret) {
 	}
 
 	// Set up webpack middleware (for automatic compiling/hot reloading).
-	if (is_dev_enabled) {
-		const webpack_config = webpack_config_file({
-				hot: true, // Used so that in webpack config we know when webpack is running as middleware.
-				development: is_dev_enabled,
-				production: !is_dev_enabled
-			}),
-			webpack_compiler = webpack(webpack_config);
+	if (do_hot_module_replacement) {
+		const webpack_config = getWebpackConfig({dev_middleware: true});
+
+		webpack_compiler = webpack(webpack_config);
 
 		app.use(WebpackDevMiddleware(webpack_compiler, {
 			publicPath: webpack_config.output.publicPath,
-			logLevel: 'warn'
+			stats: webpack_config.stats,
+			logLevel: 'warn',
+			logTime: true
 		}));
 
 		app.use(WebpackHotMiddleware(webpack_compiler));
 	}
 
-	// Support json encoded bodies.
+	// Loosen security policies in development to support webpack development mode and hot module reloading.
+	if (process.env.NODE_ENV === 'development') {
+		helmet_options.contentSecurityPolicy.directives.scriptSrc.push('\'unsafe-eval\'');
+		helmet_options.contentSecurityPolicy.directives.scriptSrc.push('\'unsafe-inline\'');
+		helmet_options.contentSecurityPolicy.directives.styleSrc.push('\'unsafe-inline\'');
+		helmet_options.contentSecurityPolicy.directives.styleSrc.push('blob:');
+		helmet_options.hsts = false;
+	}
+
+	// Set security HTTP headers.
+	app.use(helmet(helmet_options));
+
+	// Support JSON encoded bodies.
 	app.use(bodyParser.json());
 
 	// Support encoded bodies.
 	app.use(bodyParser.urlencoded({extended: true}));
+
+	// Support gzip and deflate.
+	app.use(compression());
 
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -98,7 +127,7 @@ module.exports = function (is_ssl_enabled, jwt_secret) {
 					return;
 				}
 
-				jwt.verify(access_token, jwt_secret, {issuer: config.api_token_issuer}, (error, claims) => {
+				jwt.verify(access_token, jwt_secret, {issuer: process.env.OA_API_TOKEN_ISSUER}, (error, claims) => {
 					// Access token is invalid.
 					if (error) {
 						reject('Invalid access token ' + error.name);
@@ -129,11 +158,11 @@ module.exports = function (is_ssl_enabled, jwt_secret) {
 
 		function respondWithAccessToken (account) {
 			// Generate access token and CSRF token.
-			account.generateAccessToken(config.api_token_issuer, jwt_secret).then((tokens) => {
+			account.generateAccessToken(process.env.OA_API_TOKEN_ISSUER, jwt_secret).then((tokens) => {
 				// Store the access token in a cookie on client. This cookie
 				// MUST be set to HttpOnly; and Secure; (if SSL is configured)
 				// to protect against certain XSS and MITM attacks.
-				response.setHeader('Set-Cookie', 'access_token=' + tokens.access_token + '; path=/; HttpOnly;' + (is_ssl_enabled ? ' Secure;' : ''));
+				response.setHeader('Set-Cookie', 'access_token=' + tokens.access_token + '; path=/; HttpOnly;' + (process.env.OA_SSL ? ' Secure;' : ''));
 
 				response.json({
 					account: account.clientSerialize(),
@@ -222,13 +251,25 @@ module.exports = function (is_ssl_enabled, jwt_secret) {
 
 	app.get('/js/config.js', (request, response) => {
 		response.type('.js').send('window.OpenAutomation = {config: ' + JSON.stringify({
-			app_name: config.app_name || 'Open Automation',
+			app_name: process.env.OA_APP_NAME || 'Open Automation',
 			logo_path: logo_file_path
 		}) + '};');
 	});
 
 	app.get('*', (request, response) => {
-		response.sendFile('/index.html', {root: __dirname + '/../public'});
+		if (do_hot_module_replacement) {
+			webpack_compiler.outputFileSystem.readFile(path.join(webpack_compiler.outputPath, 'index.html'), (error, result) => {
+				if (error) {
+					return next(error);
+				}
+
+				response.set('content-type', 'text/html');
+				response.send(result);
+				response.end();
+			});
+		} else {
+			response.sendFile('/index.html', {root: __dirname + '/../public'});
+		}
 	});
 
 	return app;

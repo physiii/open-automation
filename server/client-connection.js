@@ -1,6 +1,5 @@
 const AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
-	config = require('../config.json'),
 	jwt = require('jsonwebtoken'),
 	TAG = '[ClientConnection]';
 
@@ -47,7 +46,7 @@ class ClientConnection {
 
 	verifyAuthentication () {
 		return new Promise((resolve, reject) => {
-			jwt.verify(this.access_token, this.jwt_secret, {issuer: config.api_token_issuer}, (error, claims) => {
+			jwt.verify(this.access_token, this.jwt_secret, {issuer: process.env.OA_API_TOKEN_ISSUER}, (error, claims) => {
 				if (error) {
 					reject();
 					this.handleAuthenticationError('invalid access token ' + error.name);
