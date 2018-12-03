@@ -24,7 +24,11 @@ module.exports = function (jwt_secret) {
 				directives: {
 					defaultSrc: ['\'self\''], // Only allow loading assets from same origin.
 					scriptSrc: ['\'self\''],
-					styleSrc: ['\'self\'']
+					styleSrc: ['\'self\''],
+					connectSrc: [
+						'\'self\'',
+						(process.env.OA_SSL ? 'wss' : 'ws') + '://' + process.env.OA_DOMAIN_NAME
+					]
 				}
 			},
 			crossdomain: {
