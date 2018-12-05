@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import PureComponent from './components/PureComponent.js';
 
 const Context = React.createContext(),
+	NavigationScreenContext = React.createContext(),
 	navigationScreenActions = new Map(),
 	navigationScreenBackActions = new Map();
 
@@ -10,48 +12,51 @@ class AppContext extends React.Component {
 		super(props);
 
 		this.setScreenActions = this.setScreenActions.bind(this);
-		this.getScreenActions = this.getScreenActions.bind(this);
+		this.clearScreenActions = this.clearScreenActions.bind(this);
 		this.setScreenBackActions = this.setScreenBackActions.bind(this);
-		this.getScreenBackActions = this.getScreenBackActions.bind(this);
+		this.clearScreenBackActions = this.clearScreenBackActions.bind(this);
+
+		this.contextValue = {
+			screenActions: navigationScreenActions,
+			setScreenActions: this.setScreenActions,
+			clearScreenActions: this.clearScreenActions,
+			screenBackActions: navigationScreenBackActions,
+			setScreenBackActions: this.setScreenBackActions,
+			clearScreenBackActions: this.clearScreenBackActions
+		};
 	}
 
 	setScreenActions (path, content) {
-		if (content) {
-			navigationScreenActions.set(path, content);
-		} else {
-			navigationScreenActions.delete(path);
-		}
+		navigationScreenActions.set(path, content);
+		this.forceUpdate();
 	}
 
-	getScreenActions (path) {
-		return path
-			? navigationScreenActions.get(path)
-			: navigationScreenActions;
+	clearScreenActions (path) {
+		navigationScreenActions.delete(path);
+		this.forceUpdate();
 	}
 
 	setScreenBackActions (path, content) {
-		if (content) {
-			navigationScreenBackActions.set(path, content);
-		} else {
-			navigationScreenBackActions.delete(path);
-		}
+		navigationScreenBackActions.set(path, content);
+		this.forceUpdate();
 	}
 
-	getScreenBackActions (path) {
-		return path
-			? navigationScreenBackActions.get(path)
-			: navigationScreenBackActions;
+	clearScreenBackActions (path) {
+		navigationScreenBackActions.delete(path);
+		this.forceUpdate();
 	}
 
 	render () {
 		return (
-			<Context.Provider value={{
-				setScreenActions: this.setScreenActions,
-				getScreenActions: this.getScreenActions,
-				setScreenBackActions: this.setScreenBackActions,
-				getScreenBackActions: this.getScreenBackActions
-			}}>
-				{this.props.children}
+			<Context.Provider value={this.contextValue}>
+				<NavigationScreenContext.Provider value={{
+					navigationScreenActions: Array.from(navigationScreenActions.values()).pop(),
+					navigationScreenBackAction: Array.from(navigationScreenBackActions.values()).pop()
+				}}>
+					<PureComponent>
+						{this.props.children}
+					</PureComponent>
+				</NavigationScreenContext.Provider>
 			</Context.Provider>
 		);
 	}
@@ -61,9 +66,19 @@ AppContext.propTypes = {
 	children: PropTypes.node
 };
 
-export const withAppContext = (Component) => (_props) => (
+export const withAppContext = ({includeScreenActions} = {}) => (Component) => (_props) => (
 	<Context.Consumer>
-		{(context) => <Component {...context} {..._props} />}
+		{(context) => {
+			if (includeScreenActions) {
+				return (
+					<NavigationScreenContext.Consumer>
+						{(screenContext) => <Component {...context} {...screenContext} {..._props} />}
+					</NavigationScreenContext.Consumer>
+				);
+			}
+
+			return <Component {...context} {..._props} />;
+		}}
 	</Context.Consumer>
 );
 

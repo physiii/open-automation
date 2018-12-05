@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import {immutableMapFromArray, immutableOrderedMapFromArray} from '../../../utilities.js';
 import createService from './models/service.js';
 import * as types from './types';
 import * as devicesListTypes from '../devices-list/types';
@@ -29,7 +30,7 @@ const initialState = Immutable.Map({
 					loading: false,
 					fetched: true,
 					error: false,
-					services: mapFromArray(action.payload.devices, (device) => mapFromArray(device.services, (service) => {
+					services: immutableMapFromArray(action.payload.devices, (device) => immutableMapFromArray(device.services, (service) => {
 						const currentServiceState = state.getIn(['services', service.id]);
 
 						return createService({
@@ -156,7 +157,7 @@ const initialState = Immutable.Map({
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return state.set('recordings', action.payload.recordings
-					? orderedMapFromArray(action.payload.recordings)
+					? immutableOrderedMapFromArray(action.payload.recordings)
 					: state.get('recordings'));
 			case types.FETCH_CAMERA_RECORDINGS:
 				return state.set('loading', true);
@@ -164,7 +165,7 @@ const initialState = Immutable.Map({
 				return state.merge({
 					loading: false,
 					error: false,
-					recordings: orderedMapFromArray(action.payload.recordings)
+					recordings: immutableOrderedMapFromArray(action.payload.recordings)
 				});
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
 				return state.merge({
@@ -180,16 +181,5 @@ const initialState = Immutable.Map({
 				return state;
 		}
 	};
-
-function mapFromArray (array = [], mapper, mapClass = Immutable.Map) {
-	return mapClass(array.map((item) => [
-		item.id,
-		typeof mapper === 'function' ? mapper(item) : item
-	]));
-}
-
-function orderedMapFromArray (array, mapper) {
-	return mapFromArray(array, mapper, Immutable.OrderedMap);
-}
 
 export default reducer;

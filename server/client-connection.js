@@ -1,6 +1,5 @@
 const AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
-	config = require('../config.json'),
 	jwt = require('jsonwebtoken'),
 	TAG = '[ClientConnection]';
 
@@ -10,6 +9,9 @@ class ClientConnection {
 		this.access_token = access_token;
 		this.xsrf_token = xsrf_token;
 		this.jwt_secret = jwt_secret;
+
+		this.handleRoomsUpdate = this.handleRoomsUpdate.bind(this);
+		this.handleAccountDevicesUpdate = this.handleAccountDevicesUpdate.bind(this);
 
 		if (!this.access_token) {
 			this.handleAuthenticationError('no access token');
@@ -28,7 +30,8 @@ class ClientConnection {
 			// Set up listeners for front-end API.
 			this.listenToClient();
 
-			// Push device changes to client.
+			// Push changes to client.
+			this.account.on('rooms-updated', this.handleRoomsUpdate);
 			DevicesManager.on('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
 
 			this.destroy = this.destroy.bind(this, this.account.id);
@@ -39,13 +42,11 @@ class ClientConnection {
 				}
 			});
 		});
-
-		this.handleAccountDevicesUpdate = this.handleAccountDevicesUpdate.bind(this);
 	}
 
 	verifyAuthentication () {
 		return new Promise((resolve, reject) => {
-			jwt.verify(this.access_token, this.jwt_secret, {issuer: config.api_token_issuer}, (error, claims) => {
+			jwt.verify(this.access_token, this.jwt_secret, {issuer: process.env.OA_API_TOKEN_ISSUER}, (error, claims) => {
 				if (error) {
 					reject();
 					this.handleAuthenticationError('invalid access token ' + error.name);
@@ -74,11 +75,55 @@ class ClientConnection {
 		this.destroy();
 	}
 
-	handleAccountDevicesUpdate (data) {
-		this.socket.emit('devices', {devices: data.devices});
+	handleRoomsUpdate ({clientSerializedRooms}) {
+		this.socket.emit('rooms', {rooms: clientSerializedRooms});
+	}
+
+	handleAccountDevicesUpdate ({devices}) {
+		this.socket.emit('devices', {devices});
 	}
 
 	listenToClient () {
+		this.clientEndpoint('rooms/get', (data, callback) => {
+			callback(null, {rooms: this.account.clientSerialize().rooms});
+		});
+
+		this.clientEndpoint('room/add', (data, callback) => {
+			this.account.roomsManager.addRoom(data.name)
+				.then((room) => callback(null, {room}))
+				.catch((error) => {
+					console.error(TAG, 'Add room error:', error);
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('room/delete', (data, callback) => {
+			this.account.roomsManager.deleteRoom(data.room_id)
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Delete room error:', error);
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('room/name/set', (data, callback) => {
+			this.account.roomsManager.setRoomName(data.room_id, data.name)
+				.then((room) => callback(null, {room}))
+				.catch((error) => {
+					console.error(TAG, 'Name room error:', error);
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('rooms/sort', (data, callback) => {
+			this.account.roomsManager.sortRooms(data.order)
+				.then((rooms) => callback(null, {rooms}))
+				.catch((error) => {
+					console.error(TAG, 'Sort rooms error:', error);
+					callback(error);
+				});
+		});
+
 		this.clientEndpoint('devices/get', (data, callback) => {
 			const accountDevices = DevicesManager.getDevicesByAccountId(this.account.id);
 
@@ -104,12 +149,28 @@ class ClientConnection {
 				.catch(callback);
 		});
 
+		this.clientEndpoint('device/room/set', (data, callback) => {
+			const room = this.account.getRoomById(data.room_id);
+
+			if (!room) {
+				callback('The room does not exist.');
+				return;
+			}
+
+			data.device.setRoom(data.room_id)
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Set device room error:', error);
+					callback('There was an error setting the device’s room.');
+				})
+		});
+
 		this.clientEndpoint('device/delete', (data, callback) => {
 			DevicesManager.deleteDevice(data.device.id, this.account.id)
 				.then(() => callback())
 				.catch((error) => {
 					console.error(TAG, 'Delete device error:', error);
-					callback('There was an error removing the device.');
+					callback('There was an error deleting the device.');
 				});
 		});
 
@@ -336,6 +397,10 @@ class ClientConnection {
 	}
 
 	destroy (accountId) {
+		if (this.account) {
+			this.account.off('rooms-updated', this.handleRoomsUpdate);
+		}
+
 		DevicesManager.off('devices-update/account/' + accountId, this.handleAccountDevicesUpdate);
 
 		if (this.socket) {

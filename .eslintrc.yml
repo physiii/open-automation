@@ -3,6 +3,7 @@ env:
   es6: true
   node: true
 extends: 'eslint:recommended'
+parser: 'babel-eslint'
 parserOptions:
   ecmaVersion: 2018
   ecmaFeatures:
@@ -172,7 +173,6 @@ rules:
   no-plusplus:
     - error
     - allowForLoopAfterthoughts: true
-  no-process-env: error
   no-process-exit: error
   no-proto: error
   no-prototype-builtins: error

@@ -1,0 +1,12 @@
+export const FETCH_ROOMS = 'open-automation/rooms-list/FETCH_ROOMS';
+export const FETCH_ROOMS_SUCCESS = 'open-automation/rooms-list/FETCH_ROOMS_SUCCESS';
+export const FETCH_ROOMS_ERROR = 'open-automation/rooms-list/FETCH_ROOMS_ERROR';
+export const SORT_ROOMS = 'open-automation/rooms-list/SORT_ROOMS';
+export const SORT_ROOMS_ERROR = 'open-automation/rooms-list/SORT_ROOMS_ERROR';
+export const ADD_ROOM = 'open-automation/rooms-list/ADD_ROOM';
+export const ADD_ROOM_SUCCESS = 'open-automation/rooms-list/ADD_ROOM_SUCCESS';
+export const ADD_ROOM_ERROR = 'open-automation/rooms-list/ADD_ROOM_ERROR';
+export const SET_ROOM_NAME = 'open-automation/rooms-list/SET_ROOM_NAME';
+export const SET_ROOM_NAME_ERROR = 'open-automation/rooms-list/SET_ROOM_NAME_ERROR';
+export const DELETE_ROOM = 'open-automation/rooms-list/DELETE_ROOM';
+export const DELETE_ROOM_ERROR = 'open-automation/rooms-list/DELETE_ROOM_ERROR';

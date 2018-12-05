@@ -1,35 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ServiceIcon from '../icons/ServiceIcon.js';
-import SettingsField from './SettingsField.js';
-import SettingsForm from './SettingsForm.js';
-import withSettingsSaver from './withSettingsSaver.js';
 import {connect} from 'react-redux';
-import {getServiceById} from '../../state/ducks/services-list/selectors.js';
+import ServiceIcon from '../icons/ServiceIcon.js';
+import SettingsForm from './SettingsForm.js';
+import DeviceRoomField from './DeviceRoomField.js';
 import {setServiceSettings} from '../../state/ducks/services-list/operations.js';
 import './ServiceDetails.css';
 
 export class ServiceDetails extends React.Component {
+	constructor (props) {
+		super(props);
+
+		this.handleSettingsChange = this.handleSettingsChange.bind(this);
+
+		this.settings = {...props.service.settings};
+	}
+
+	handleSettingsChange (settings) {
+		this.settings = {
+			...this.settings,
+			...settings
+		};
+
+		this.props.saveSettings(this.settings);
+	}
+
 	render () {
 		const service = this.props.service,
-			settingsProperties = Object.keys(service.settings_definitions),
-			settingsFieldsProps = settingsProperties.map((property) => {
-				// The name field will be rendered separately.
-				if (property === 'name') {
-					return null;
-				}
-
-				return {
-					property,
-					definition: service.settings_definitions[property],
-					value: this.props.settings[property],
-					error: this.props.settingsErrors[property],
-					originalValue: this.props.originalSettings[property]
-				};
-			});
+			{name: nameField, ...restOfSettingsFields} = {...service.settings_definitions};
 
 		return (
-			<div styleName="container">
+			<section styleName="container">
 				{service.error && <p>The device settings could not be updated because of an error.</p>}
 				<header styleName="header">
 					{ServiceIcon.willRenderIcon(service) &&
@@ -37,56 +38,43 @@ export class ServiceDetails extends React.Component {
 						<ServiceIcon service={service} size={32} />
 					</div>}
 					<div styleName="nameContainer">
-						<SettingsField
-							property="name"
-							definition={service.settings_definitions.name}
-							value={this.props.settings.name}
-							originalValue={this.props.originalSettings.name}
+						<SettingsForm
+							fields={{name: nameField}}
+							values={{name: service.settings.name}}
 							disabled={!service.state.connected}
-							error={this.props.settingsErrors.name}
-							onChange={this.props.onSettingChange} />
+							onSaveableChange={this.handleSettingsChange}
+							key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 					</div>
 				</header>
-				{SettingsForm.willAnyFieldsRender(settingsFieldsProps) && (
+				{this.props.shouldShowRoomField && <DeviceRoomField deviceId={service.device_id} />}
+				{this.props.children}
+				{SettingsForm.willAnyFieldsRender(restOfSettingsFields) && (
 					<React.Fragment>
-						<h2 styleName="settingsHeading">{service.strings.friendly_type} Settings</h2>
+						<h1 styleName="settingsHeading">{service.strings.friendly_type} Settings</h1>
 						<SettingsForm
+							fields={restOfSettingsFields}
+							values={service.settings}
 							disabled={!service.state.connected}
-							onFieldChange={this.props.onSettingChange}>
-							{settingsFieldsProps}
-						</SettingsForm>
+							onSaveableChange={this.handleSettingsChange}
+							key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 					</React.Fragment>
 				)}
-			</div>
+			</section>
 		);
 	}
 }
 
 ServiceDetails.propTypes = {
-	service: PropTypes.object,
-	// Props from settings saver HOC.
-	settings: PropTypes.object.isRequired,
-	settingsErrors: PropTypes.object,
-	originalSettings: PropTypes.object.isRequired,
-	onSettingChange: PropTypes.func.isRequired
+	service: PropTypes.object.isRequired,
+	children: PropTypes.node,
+	shouldShowRoomField: PropTypes.bool,
+	saveSettings: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({servicesList}, {serviceId}) => {
-		const service = getServiceById(servicesList, serviceId);
+const mergeProps = (stateProps, {dispatch}, ownProps) => ({
+	...ownProps,
+	...stateProps,
+	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings))
+});
 
-		return {
-			service,
-			// Props for settings saver HOC.
-			settings: service.settings,
-			settingsDefinitions: service.settings_definitions,
-			key: service.error // Re-create component when there's an error to make sure the latest service settings state is rendered.
-		};
-	},
-	mergeProps = (stateProps, {dispatch}, ownProps) => ({
-		...ownProps,
-		...stateProps,
-		// Props for settings saver HOC.
-		saveSettings: (settings) => dispatch(setServiceSettings(stateProps.service.id, settings, stateProps.service.settings))
-	});
-
-export default connect(mapStateToProps, null, mergeProps)(withSettingsSaver(ServiceDetails));
+export default connect(null, null, mergeProps)(ServiceDetails);

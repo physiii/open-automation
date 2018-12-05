@@ -1,6 +1,26 @@
 @value primary from "../styles/colors.css";
 
+.container {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+}
+
+.offLabel,
+.onLabel {
+	font-size: 13px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.offLabel {
+	margin-right: 8px;
+}
+.onLabel {
+	margin-left: 8px;
+}
+
 .switch {
+	display: block;
 	width: 32px;
 	height: 14px;
 	margin: 3px 0;

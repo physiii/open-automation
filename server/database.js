@@ -10,16 +10,16 @@ module.exports = {
 	deleteDevice,
 	getAccounts,
 	saveAccount,
+	saveRooms,
 	getAutomations,
 	saveAutomation,
 	deleteAutomation,
 	getScenes,
-	saveScene,
-	generateId
+	saveScene
 };
 
 function connect (callback, errorHandler) {
-	MongoClient.connect('mongodb://localhost:27017/relay', (error, db) => {
+	MongoClient.connect('mongodb://localhost:27017/' + (process.env.OA_DATABASE_COLLECTION_NAME || 'relay'), (error, db) => {
 		if (error) {
 			console.error(TAG, 'Unable to connect to the mongoDB server.', error);
 
@@ -128,16 +128,18 @@ function getAccounts () {
 					return;
 				}
 
-				resolve(result.map((account) => {
-					const account_temp = {
-						...account,
-						id: account._id.toHexString()
-					};
+				// Stringify MongoDB IDs.
+				result.forEach((account) => {
+					account.id = account._id.toHexString();
 
-					delete account_temp._id;
+					if (Array.isArray(account.rooms)) {
+						account.rooms.forEach((room) => room.id = room.id.toHexString());
+					}
 
-					return account_temp;
-				}));
+					delete account._id;
+				});
+
+				resolve(result);
 			}, reject);
 		});
 	});
@@ -164,7 +166,43 @@ function saveAccount (account) {
 						return;
 					}
 
-					resolve(data.upsertedId ? data.upsertedId._id.toHexString() : data.modifiedCount);
+					resolve(data.upsertedId ? data.upsertedId._id.toHexString() : account_id);
+				}, reject);
+		});
+	});
+}
+
+function saveRooms (account_id, rooms = []) {
+	return new Promise((resolve, reject) => {
+		if (!Array.isArray(rooms)) {
+			reject('Rooms must be an array.');
+			return;
+		}
+
+		const _rooms = [...rooms];
+
+		_rooms.forEach((room) => room.id = ObjectId(room.id));
+
+		// TODO: Atomically remove the room ID from devices.
+
+		connect((db) => {
+			db.collection('accounts').updateOne(
+				{_id: ObjectId(account_id)},
+				{$set: {rooms: _rooms}},
+				// {upsert: true},
+				(error, data) => {
+					db.close();
+
+					if (error) {
+						console.error(TAG, 'saveRooms', error);
+						reject(error);
+
+						return;
+					}
+
+					rooms.forEach((room) => room.id = room.id.toHexString())
+
+					resolve(rooms);
 				}, reject);
 		});
 	});
@@ -271,8 +309,4 @@ function saveScene (scene) {
 				}, reject);
 		});
 	});
-}
-
-function generateId (id) {
-	return ObjectId(id);
 }

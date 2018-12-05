@@ -36,12 +36,12 @@ export class Button extends React.Component {
 				break;
 		}
 
-		if (this.props.to) {
+		if (this.props.to && !this.props.disabled) {
 			return <Link styleName={className} to={this.props.to} onClick={this.props.onClick}>{children}</Link>;
 		}
 
 		return [
-			<a href="#" key="button" onClick={(event) => {
+			<button key="button" onClick={(event) => {
 				event.preventDefault();
 
 				if (this.props.submitForm) {
@@ -51,7 +51,7 @@ export class Button extends React.Component {
 				if (typeof this.props.onClick === 'function') {
 					this.props.onClick(event);
 				}
-			}} styleName={className}>{children}</a>,
+			}} styleName={className} disabled={this.props.disabled}>{children}</button>,
 			this.props.submitForm && <input styleName="submit" type="submit" key="submit" ref={this.submitInput} />
 		];
 	}
@@ -63,7 +63,8 @@ Button.propTypes = {
 	submitForm: PropTypes.bool,
 	onClick: PropTypes.func,
 	icon: PropTypes.node,
-	children: PropTypes.node.isRequired
+	children: PropTypes.node.isRequired,
+	disabled: PropTypes.bool
 };
 
 export default Button;

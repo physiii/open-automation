@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from '../components/Toolbar.js';
 import Button from '../components/Button.js';
+import {withAppContext} from '../AppContext.js';
 import {connect} from 'react-redux';
+import {compose} from 'redux';
 import {getAppName, getLogoPath} from '../../state/ducks/config/selectors.js';
 import {getCurrentScreenTitle, shouldShowCurrentScreenTitle, getPreviousScreenPath, getPreviousScreenTitle} from '../../state/ducks/navigation/selectors.js';
 import {getUsername} from '../../state/ducks/session/selectors.js';
@@ -71,10 +73,14 @@ const mapStateToProps = (state, ownProps) => {
 		logoPath: getLogoPath(state.config),
 		title: getCurrentScreenTitle(state.navigation),
 		shouldShowTitle: shouldShowCurrentScreenTitle(state.navigation),
-		backAction: ownProps.backAction || getPreviousScreenPath(state.navigation),
+		screenActions: ownProps.navigationScreenActions,
+		backAction: ownProps.navigationScreenBackAction || getPreviousScreenPath(state.navigation),
 		backLabel: getPreviousScreenTitle(state.navigation),
 		username: getUsername(state.session)
 	};
 };
 
-export default connect(mapStateToProps)(AppToolbar);
+export default compose(
+	withAppContext({includeScreenActions: true}),
+	connect(mapStateToProps)
+)(AppToolbar);

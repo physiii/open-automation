@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import {immutableOrderedMapFromArray} from '../../../utilities.js';
 import Device from './models/device-record.js';
 import * as types from './types';
 import * as sessionTypes from '../session/types';
@@ -18,7 +19,7 @@ const initialState = Immutable.Map({
 					loading: false,
 					fetched: true,
 					error: false,
-					devices: orderedMapFromArray(action.payload.devices, (device) => new Device(device))
+					devices: immutableOrderedMapFromArray(action.payload.devices, (device) => new Device(device))
 				});
 			case types.FETCH_DEVICES_ERROR:
 				return state.merge({
@@ -41,29 +42,34 @@ const initialState = Immutable.Map({
 						error: action.payload.error.message
 					}
 				);
+			case types.SET_DEVICE_ROOM:
+				return state.mergeIn(
+					['devices', action.payload.deviceId],
+					{
+						room_id: action.payload.roomId,
+						error: null
+					}
+				);
+			case types.SET_DEVICE_ROOM_ERROR:
+				return state.mergeIn(
+					['devices', action.payload.deviceId],
+					{
+						room_id: action.payload.originalRoomId,
+						error: action.payload.error.message
+					}
+				);
 			case types.DELETE_DEVICE:
 				return state.deleteIn(['devices', action.payload.deviceId]);
 			case types.DELETE_DEVICE_ERROR:
 				return state.setIn(
 					['devices', action.payload.device.id],
-					action.payload.device.set('error', action.payload.error.message)
-				);
+					new Device(action.payload.device)
+				).set('error', action.payload.error.message);
 			case sessionTypes.LOGOUT:
 				return initialState;
 			default:
 				return state;
 		}
 	};
-
-function mapFromArray (array = [], mapper, mapClass = Immutable.Map) {
-	return mapClass(array.map((item) => [
-		item.id,
-		typeof mapper === 'function' ? mapper(item) : item
-	]));
-}
-
-function orderedMapFromArray (array, mapper) {
-	return mapFromArray(array, mapper, Immutable.OrderedMap);
-}
 
 export default reducer;

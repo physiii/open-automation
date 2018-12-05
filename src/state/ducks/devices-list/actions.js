@@ -26,6 +26,17 @@ export const setSettingsError = (deviceId, originalSettings, error) => ({
 	error: true
 });
 
+export const setDeviceRoom = (deviceId, roomId) => ({
+	type: types.SET_DEVICE_ROOM,
+	payload: {deviceId, roomId}
+});
+
+export const setDeviceRoomError = (deviceId, originalRoomId, error) => ({
+	type: types.SET_DEVICE_ROOM_ERROR,
+	payload: {deviceId, originalRoomId, error},
+	error: true
+});
+
 export const deleteDevice = (deviceId) => ({
 	type: types.DELETE_DEVICE,
 	payload: {deviceId}

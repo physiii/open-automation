@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
+import Route from './Route.js';
 import {connect} from 'react-redux';
 import {isAuthenticated} from '../../state/ducks/session/selectors.js';
 

@@ -35,6 +35,26 @@ class Api {
 		}
 	}
 
+	getRooms () {
+		return Api.apiCall('rooms/get');
+	}
+
+	addRoom (name) {
+		return Api.apiCall('room/add', {name});
+	}
+
+	deleteRoom (roomId) {
+		return Api.apiCall('room/delete', {room_id: roomId});
+	}
+
+	nameRoom (roomId, name) {
+		return Api.apiCall('room/name/set', {room_id: roomId, name});
+	}
+
+	sortRooms (order) {
+		return Api.apiCall('rooms/sort', {order});
+	}
+
 	getDevices () {
 		return Api.apiCall('devices/get');
 	}
@@ -45,6 +65,10 @@ class Api {
 
 	setDeviceSettings (deviceId, settings) {
 		return Api.apiCall('device/settings/set', {device_id: deviceId, settings});
+	}
+
+	setDeviceRoom (deviceId, roomId) {
+		return Api.apiCall('device/room/set', {device_id: deviceId, room_id: roomId});
 	}
 
 	deleteDevice (deviceId) {
@@ -292,13 +316,19 @@ class Api {
 
 			api.relaySocket.emit(event, payload, (error, data) => {
 				if (error) {
-					console.error('API error: ' + event, error, data); // TODO: Only log for dev build.
+					if (process.env.NODE_ENV === 'development') {
+						console.error('API error: ' + event, error, data);
+					}
+
 					reject(new Error(error));
 
 					return;
 				}
 
-				console.log('API response: ' + event, data); // TODO: Only log for dev build.
+				if (process.env.NODE_ENV === 'development') {
+					console.log('API response: ' + event, data);
+				}
+
 				resolve(data);
 			});
 		});

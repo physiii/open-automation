@@ -8,7 +8,7 @@ import {compose} from 'redux';
 import {loadContext, loadScreen, unloadContext, unloadScreen} from '../../state/ducks/navigation/operations.js';
 import './NavigationScreen.css';
 
-const NavigationContext = React.createContext();
+const Context = React.createContext();
 
 export class NavigationScreen extends React.Component {
 	constructor (props) {
@@ -19,8 +19,10 @@ export class NavigationScreen extends React.Component {
 		// Side effects should be avoided in component constructors, but this
 		// must be called before the sub-tree renders.
 		if (props.isContextRoot) {
-			this.props.handleContextLoad(this.props.path);
+			this.props.handleContextLoad(this.props.url);
 		}
+
+		this.handleScreenUpdate();
 	}
 
 	componentDidMount () {
@@ -32,36 +34,36 @@ export class NavigationScreen extends React.Component {
 	}
 
 	componentWillUnmount () {
-		this.props.handleScreenUnload(this.props.contextPath, this.props.path);
-		this.props.setScreenActions(this.props.path, null);
-		this.props.setScreenBackActions(this.props.path, null);
+		this.props.handleScreenUnload(this.props.contextUrl, this.props.url);
+		this.props.clearScreenActions(this.props.url);
+		this.props.clearScreenBackActions(this.props.url);
 
 		if (this.props.isContextRoot) {
-			this.props.handleContextUnload(this.props.path);
+			this.props.handleContextUnload(this.props.url);
 		}
 	}
 
 	handleScreenUpdate (shouldUpdateTitle = true) {
 		if (shouldUpdateTitle) {
-			this.props.handleScreenLoad(this.props.contextPath, this.props.path, this.props.contextDepth, this.props.location.pathname, this.props.title, !this.props.isContextRoot);
+			this.props.handleScreenLoad(this.props.contextUrl, this.props.url, this.props.contextDepth, this.props.location.pathname, this.props.title, !this.props.isContextRoot);
 		}
 
-		this.props.setScreenActions(this.props.path, this.props.toolbarActions);
-		this.props.setScreenBackActions(this.props.path, this.props.toolbarBackAction);
+		this.props.setScreenActions(this.props.url, this.props.toolbarActions);
+		this.props.setScreenBackActions(this.props.url, this.props.toolbarBackAction);
 	}
 
 	render () {
 		const content = (
-			<NavigationContext.Provider value={{
-				path: this.props.isContextRoot ? this.props.path : this.props.contextPath,
+			<Context.Provider value={{
+				url: this.props.isContextRoot ? this.props.url : this.props.contextUrl,
 				depth: this.props.contextDepth + 1,
 				childContainer: this.childScreenContainer
 			}}>
 				<div styleName="screen">
 					{this.props.children}
-					<div ref={this.childScreenContainer} />
 				</div>
-			</NavigationContext.Provider>
+				<div ref={this.childScreenContainer} />
+			</Context.Provider>
 		);
 
 		if (this.props.contextChildContainer && this.props.contextChildContainer.current) {
@@ -73,11 +75,11 @@ export class NavigationScreen extends React.Component {
 }
 
 NavigationScreen.propTypes = {
-	contextPath: PropTypes.string.isRequired,
+	contextUrl: PropTypes.string.isRequired,
 	contextDepth: PropTypes.number.isRequired,
 	contextChildContainer: PropTypes.object,
 	isContextRoot: PropTypes.bool,
-	path: PropTypes.string.isRequired,
+	url: PropTypes.string.isRequired,
 	title: PropTypes.string,
 	toolbarActions: PropTypes.node,
 	toolbarBackAction: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
@@ -88,7 +90,9 @@ NavigationScreen.propTypes = {
 	handleScreenLoad: PropTypes.func.isRequired,
 	handleScreenUnload: PropTypes.func.isRequired,
 	setScreenActions: PropTypes.func.isRequired,
-	setScreenBackActions: PropTypes.func.isRequired
+	clearScreenActions: PropTypes.func.isRequired,
+	setScreenBackActions: PropTypes.func.isRequired,
+	clearScreenBackActions: PropTypes.func.isRequired
 };
 
 NavigationScreen.defaultProps = {
@@ -96,26 +100,26 @@ NavigationScreen.defaultProps = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-		handleContextLoad: (path) => dispatch(loadContext(path)),
-		handleContextUnload: (path) => dispatch(unloadContext(path)),
-		handleScreenLoad: (context, path, depth, currentFullPath, title, shouldShowTitle) => dispatch(loadScreen(context, path, depth, currentFullPath, title, shouldShowTitle)),
-		handleScreenUnload: (context, path) => dispatch(unloadScreen(context, path))
+		handleContextLoad: (url) => dispatch(loadContext(url)),
+		handleContextUnload: (url) => dispatch(unloadContext(url)),
+		handleScreenLoad: (context, url, depth, currentFullUrl, title, shouldShowTitle) => dispatch(loadScreen(context, url, depth, currentFullUrl, title, shouldShowTitle)),
+		handleScreenUnload: (context, url) => dispatch(unloadScreen(context, url))
 	}),
 	withNavigationContext = (Component) => (_props) => {
 		if (_props.isContextRoot) {
-			return <Component contextPath={_props.path} {..._props} />;
+			return <Component contextUrl={_props.url} {..._props} />;
 		}
 
 		return (
-			<NavigationContext.Consumer>
-				{(context) => <Component contextPath={context.path} contextDepth={context.depth} contextChildContainer={context.childContainer} {..._props} />}
-			</NavigationContext.Consumer>
+			<Context.Consumer>
+				{(context) => <Component contextUrl={context.url} contextDepth={context.depth} contextChildContainer={context.childContainer} {..._props} />}
+			</Context.Consumer>
 		);
 	};
 
 export default compose(
 	connect(null, mapDispatchToProps, null, {pure: false}),
 	withRouter,
-	withAppContext,
+	withAppContext(),
 	withNavigationContext
 )(NavigationScreen);
