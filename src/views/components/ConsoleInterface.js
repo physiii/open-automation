@@ -19,14 +19,14 @@ export class ConsoleInterface extends React.Component {
 			Api,
 			listDevices: () => {
 				this.props.devices.forEach((device) => {
-					console.log('%c' + (device.settings.name ? device.settings.name + ' ' : '') + '%c' + device.id + '%c ' + (device.state.connected ? '(connected)' : '(not connected)'), SECONDARY_STYLE, DEVICE_ID_STYLE, SECONDARY_STYLE); // eslint-disable-line no-console
+					console.log('%c' + (device.settings && device.settings.name ? device.settings.name + ' ' : '') + '%c' + device.id + '%c ' + (device.state && device.state.connected ? '(connected)' : '(not connected)'), SECONDARY_STYLE, DEVICE_ID_STYLE, SECONDARY_STYLE); // eslint-disable-line no-console
 
 					if (device.gateway_id) {
 						console.log('	%cGateway: %c' + device.gateway_id, LABEL_STYLE, SERVICE_ID_STYLE); // eslint-disable-line no-console
 						console.log(''); // eslint-disable-line no-console
 					}
 
-					if (device.services.size) {
+					if (device.services && device.services.size) {
 						console.log('	%cServices:', LABEL_STYLE); // eslint-disable-line no-console
 						device.services.forEach((service) => console.log('	%c' + service.type + ' %c' + service.id, SERVICE_TYPE_STYLE, SERVICE_ID_STYLE)); // eslint-disable-line no-console
 					}
@@ -74,16 +74,16 @@ export class ConsoleInterface extends React.Component {
 	render () {
 		// Add gateway command utility.
 		window.OpenAutomation.gateways = {};
-		this.props.getGatewayServices.forEach((gateway, index) => {
+		this.props.getGatewayServices.forEach((gateway) => {
 			if (!gateway.device) {
 				return;
 			}
 
-			window.OpenAutomation.gateways[gateway.settings.name || gateway.device.settings.name || index] = {
+			window.OpenAutomation.gateways[gateway.id] = {
 				id: gateway.id,
 				device_id: gateway.device.id,
 				command: (token, command) => {
-					Api.gatewayCommand(gateway.get('id'), command, token).then((data) => {
+					Api.gatewayCommand(gateway.id, command, token).then((data) => {
 						if (data.stdout) {
 							console.log(data.stdout + data.stderr); // eslint-disable-line no-console
 						} else {
@@ -107,12 +107,11 @@ ConsoleInterface.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-	devices: state.devicesList.get('devices').toArray(),
-	services: state.servicesList.get('services').toArray(),
-	getGatewayServices: getServicesByType(state.servicesList, 'gateway').map((service) => ({
-		...service,
-		device: getDeviceById(state.devicesList, service.device_id)
-	}))
+	devices: Array.from(state.devicesList.get('devices').values()),
+	services: Array.from(state.servicesList.get('services').values()),
+	getGatewayServices: Array.from(getServicesByType(state.servicesList, 'gateway', false).values()).map((service) => {
+		return service.set('device', getDeviceById(state.devicesList, service.device_id));
+	})
 });
 
 export default connect(mapStateToProps)(ConsoleInterface);

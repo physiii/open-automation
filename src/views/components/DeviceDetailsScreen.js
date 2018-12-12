@@ -77,7 +77,7 @@ export class DeviceDetailsScreen extends React.Component {
 										renderIfEmpty={false}>
 										{device.services.map((service) => ({
 											key: service.id,
-											label: service.settings.name,
+											label: service.settings.name || service.strings.friendly_type,
 											icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
 											link: this.props.match.url + '/service/' + service.id
 										}))}

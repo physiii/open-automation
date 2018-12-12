@@ -5,6 +5,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 		id: null,
 		type: null,
 		device_id: null,
+		device: null,
 		error: null,
 		settings_definitions: null,
 		settings: null,
@@ -26,10 +27,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 
 					return [property, hydratedDefinition];
 				})),
-				settings: mapWithDefaults({
-					...defaultValues.settings,
-					name: values.settings.name || values.strings.friendly_type // Default name to the service type.
-				}, values.settings),
+				settings: mapWithDefaults(defaultValues.settings, values.settings),
 				state: mapWithDefaults(defaultValues.state, values.state),
 				strings: Immutable.Map(values.strings)
 			});
