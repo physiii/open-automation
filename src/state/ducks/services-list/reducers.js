@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import {immutableMapFromArray, immutableOrderedMapFromArray} from '../../../utilities.js';
 import createService from './models/service.js';
+import CameraRecordingRecord from './models/camera-recording-record.js';
 import * as types from './types';
 import * as devicesListTypes from '../devices-list/types';
 import * as sessionTypes from '../session/types';
@@ -157,7 +158,7 @@ const initialState = Immutable.Map({
 		switch (action.type) {
 			case devicesListTypes.FETCH_DEVICES_SUCCESS:
 				return state.set('recordings', action.payload.recordings
-					? immutableOrderedMapFromArray(action.payload.recordings)
+					? immutableOrderedMapFromArray(action.payload.recordings.map((recording) => new CameraRecordingRecord(recording)))
 					: state.get('recordings'));
 			case types.FETCH_CAMERA_RECORDINGS:
 				return state.set('loading', true);
@@ -165,7 +166,7 @@ const initialState = Immutable.Map({
 				return state.merge({
 					loading: false,
 					error: false,
-					recordings: immutableOrderedMapFromArray(action.payload.recordings)
+					recordings: immutableOrderedMapFromArray(action.payload.recordings.map((recording) => new CameraRecordingRecord(recording)))
 				});
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
 				return state.merge({
