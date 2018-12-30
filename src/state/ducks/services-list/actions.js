@@ -42,9 +42,9 @@ export const cameraFetchRecordings = (cameraId) => ({
 	payload: {cameraId}
 });
 
-export const cameraFetchRecordingsSuccess = (cameraId, recordings) => ({
+export const cameraFetchRecordingsSuccess = (cameraId, recordings, dateIndex, dates) => ({
 	type: types.FETCH_CAMERA_RECORDINGS_SUCCESS,
-	payload: {cameraId, recordings}
+	payload: {cameraId, recordings, dateIndex, dates}
 });
 
 export const cameraFetchRecordingsError = (cameraId, error) => ({

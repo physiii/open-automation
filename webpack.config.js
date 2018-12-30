@@ -32,7 +32,8 @@ module.exports = (env = {}) => {
 		output: {
 			path: path.resolve(__dirname, 'public'),
 			filename: ifProduction('js/[name]-[contenthash:8].js', 'js/[name].js'),
-			publicPath: '/' // Needed for hot module reloading and webpack adjusting asset paths properly.
+			publicPath: '/', // Needed for hot module reloading and webpack adjusting asset paths properly.
+			globalObject: 'this' // https://github.com/webpack/webpack/issues/6642
 		},
 		optimization: {
 			runtimeChunk: 'single',
@@ -77,6 +78,10 @@ module.exports = (env = {}) => {
 				{
 					test: require.resolve(path.resolve(__dirname, 'src/lib/jsmpeg/jsmpeg.min.js')),
 					use: ['exports-loader?JSMpeg']
+				},
+				{
+					test: /\.worker\.js$/,
+					use: {loader: 'worker-loader'}
 				},
 				{
 					test: /\.js$/,

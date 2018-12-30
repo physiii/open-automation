@@ -19,6 +19,8 @@ const initialState = Immutable.Map({
 	}),
 	recordingsInitialState = Immutable.Map({
 		recordings: Immutable.OrderedMap(),
+		dateIndex: Immutable.Map(),
+		dates: Immutable.Map(),
 		loading: false,
 		error: false
 	}),
@@ -166,7 +168,9 @@ const initialState = Immutable.Map({
 				return state.merge({
 					loading: false,
 					error: false,
-					recordings: immutableOrderedMapFromArray(action.payload.recordings.map((recording) => new CameraRecordingRecord(recording)))
+					recordings: immutableOrderedMapFromArray(action.payload.recordings.map((recording) => new CameraRecordingRecord(recording))),
+					dateIndex: Immutable.Map(action.payload.dateIndex.entries()),
+					dates: Immutable.Map(action.payload.dates.entries())
 				});
 			case types.FETCH_CAMERA_RECORDINGS_ERROR:
 				return state.merge({
