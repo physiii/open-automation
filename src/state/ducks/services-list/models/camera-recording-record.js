@@ -1,5 +1,4 @@
 import Immutable from 'immutable';
-import moment from 'moment';
 
 class CameraRecordingRecord extends Immutable.Record({
 	id: null,
@@ -7,20 +6,16 @@ class CameraRecordingRecord extends Immutable.Record({
 	date: null,
 	duration: 0,
 	width: 640,
-	height: 480
+	height: 480,
+	streaming_token: null
 }) {
 	constructor (values) {
 		super({
-			...values,
-			date: moment(values.date)
+			...values
 		});
 	}
 
-	set (key, value) {
-		if (key === 'date') {
-			return super.set(key, moment(value));
-		}
-
+	set (key, value) { // TODO: Pointless
 		return super.set(key, value);
 	}
 }

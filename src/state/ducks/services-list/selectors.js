@@ -92,7 +92,13 @@ const getServices = (servicesList, toJs = true) => {
 			return;
 		}
 
-		const recordings = cameraService.recordingsList.get('recordings').filter((recording) => date.isSame(recording.date, 'day'));
+		const recordingIds = cameraService.recordingsList.get('dateIndex').get(date.format('YYYY-M-D'));
+
+		if (!recordingIds) {
+			return;
+		}
+
+		const recordings = cameraService.recordingsList.get('recordings').filter((recording) => recordingIds.has(recording.id));
 
 		return toJs ? recordings.toList().toJS() : recordings;
 	},
@@ -105,6 +111,31 @@ const getServices = (servicesList, toJs = true) => {
 
 		return cameraService.recordingsList.getIn(['recordings', recordingId]);
 	},
+	cameraGetDatesOfRecordings = (servicesList, cameraServiceId, month) => {
+		const cameraService = getServiceById(servicesList, cameraServiceId, false);
+
+		if (!cameraService) {
+			return;
+		}
+
+		const months = cameraService.recordingsList.get('dates');
+
+		if (!month) {
+			return months;
+		}
+
+		if (!months) {
+			return;
+		}
+
+		const days = months.get(month);
+
+		if (!days) {
+			return;
+		}
+
+		return Array.from(days.values()).map((day) => month + '-' + day);
+	},
 	cameraIsRecordingsListLoading = (servicesList, cameraServiceId) => {
 		const cameraService = getServiceById(servicesList, cameraServiceId, false);
 
@@ -113,6 +144,15 @@ const getServices = (servicesList, toJs = true) => {
 		}
 
 		return cameraService.recordingsList.get('loading');
+	},
+	cameraGetRecordingsListError = (servicesList, cameraServiceId) => {
+		const cameraService = getServiceById(servicesList, cameraServiceId, false);
+
+		if (!cameraService) {
+			return;
+		}
+
+		return cameraService.recordingsList.get('error');
 	},
 	hasInitialFetchCompleted = (servicesList) => {
 		return servicesList.get('fetched');
@@ -130,6 +170,8 @@ export {
 	cameraGetRecordings,
 	cameraGetRecordingsByDate,
 	cameraGetRecordingById,
+	cameraGetDatesOfRecordings,
 	cameraIsRecordingsListLoading,
+	cameraGetRecordingsListError,
 	hasInitialFetchCompleted
 };

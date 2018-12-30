@@ -1,7 +1,9 @@
 import * as actions from './actions';
 import Api from '../../../api.js';
+import RecordingsWorker from './recordings.worker.js';
 
-const doServiceAction = (serviceId, serviceAction, originalValue) => (dispatch) => {
+const recordingsWorker = new RecordingsWorker(),
+	doServiceAction = (serviceId, serviceAction, originalValue) => (dispatch) => {
 		dispatch(actions.doServiceAction(serviceId, serviceAction));
 
 		Api.doServiceAction(serviceId, serviceAction).catch((error) => {
@@ -36,7 +38,17 @@ const doServiceAction = (serviceId, serviceAction, originalValue) => (dispatch) 
 		dispatch(actions.cameraFetchRecordings(cameraServiceId));
 
 		Api.cameraGetRecordings(cameraServiceId).then((data) => {
-			dispatch(actions.cameraFetchRecordingsSuccess(cameraServiceId, data.recordings));
+			recordingsWorker.onmessage = (message) => {
+				if (message.data.error) {
+					dispatch(actions.cameraFetchRecordingsError(cameraServiceId, message.data.error));
+
+					return;
+				}
+
+				dispatch(actions.cameraFetchRecordingsSuccess(cameraServiceId, data.recordings, message.data.dateIndex, message.data.dates));
+			};
+
+			recordingsWorker.postMessage({recordings: data.recordings});
 		}).catch((error) => {
 			dispatch(actions.cameraFetchRecordingsError(cameraServiceId, error));
 		});
@@ -70,7 +82,6 @@ const doServiceAction = (serviceId, serviceAction, originalValue) => (dispatch) 
 	thermostatFanAuto = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'auto');
 	};
-
 
 export {
 	doServiceAction,

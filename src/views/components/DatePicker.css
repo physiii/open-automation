@@ -75,7 +75,7 @@
 	text-decoration: none;
 	cursor: default;
 }
-.dayWithEvent {
+.enabledDay {
 	color: primary;
 	cursor: pointer;
 }

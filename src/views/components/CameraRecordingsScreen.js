@@ -9,7 +9,7 @@ import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
-import {getServiceById, getServiceNameById, cameraGetRecordings, cameraGetRecordingsByDate, cameraGetRecordingById, cameraIsRecordingsListLoading} from '../../state/ducks/services-list/selectors.js';
+import {getServiceById, getServiceNameById, cameraGetRecordingsByDate, cameraGetRecordingById, cameraGetDatesOfRecordings, cameraIsRecordingsListLoading, cameraGetRecordingsListError} from '../../state/ducks/services-list/selectors.js';
 import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
 import './CameraRecordingsScreen.css';
 
@@ -20,10 +20,12 @@ export class CameraRecordingsScreen extends React.Component {
 		super(props);
 
 		this.goToDate = this.goToDate.bind(this);
+
+		this.state = {selectedMonth: this.props.selectedDate.startOf('month')};
 	}
 
 	componentDidMount () {
-		this.props.fetchRecordings();
+		this.props.fetchRecordings(this.props.cameraService);
 	}
 
 	getPathForDate (date) {
@@ -73,7 +75,7 @@ export class CameraRecordingsScreen extends React.Component {
 						{this.props.selectedRecording
 							? <div styleName="videoContainer">
 								<VideoPlayer
-									cameraServiceId={this.props.cameraServiceId}
+									cameraServiceId={this.props.cameraService.id}
 									recording={this.props.selectedRecording}
 									key={this.props.selectedRecording.id}
 									streamingToken={this.props.selectedRecording.streaming_token}
@@ -84,8 +86,9 @@ export class CameraRecordingsScreen extends React.Component {
 							: <div styleName="datePickerContainer">
 								<DatePicker
 									selectedDate={this.props.selectedDate}
-									events={this.props.allRecordings}
-									onSelect={this.goToDate} />
+									enabledDates={this.props.getDatesOfRecordings(this.state.selectedMonth).map((date) => moment(date))}
+									onSelect={this.goToDate}
+									onMonthChange={(selectedMonth) => this.setState({selectedMonth})} />
 							</div>}
 						{this.props.selectedRecording &&
 							<a href="#" styleName="closeButton" onClick={(event) => {
@@ -105,68 +108,65 @@ export class CameraRecordingsScreen extends React.Component {
 }
 
 CameraRecordingsScreen.propTypes = {
-	cameraServiceId: PropTypes.string,
+	cameraService: PropTypes.object,
 	cameraName: PropTypes.string,
 	selectedDate: PropTypes.object.isRequired,
-	allRecordings: PropTypes.array,
 	selectedDateRecordings: PropTypes.array,
 	selectedRecording: PropTypes.object,
 	match: PropTypes.object,
 	history: PropTypes.object.isRequired,
 	isLoading: PropTypes.bool,
 	fetchRecordings: PropTypes.func,
+	getDatesOfRecordings: PropTypes.func,
 	error: PropTypes.string
 };
 
 CameraRecordingsScreen.defaultProps = {
-	allRecordings: [],
 	selectedDateRecordings: [],
 	fetchRecordings: () => { /* no-op */ }
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-		const cameraService = getServiceById(servicesList, match.params.cameraServiceId);
+		const cameraService = getServiceById(servicesList, match.params.cameraServiceId),
+			recordingsError = cameraGetRecordingsListError(servicesList, match.params.cameraServiceId);
 
-		if (!cameraService) {
-			return {error: 'There was a problem loading the camera’s recordings.'};
-		}
-
-		if (!cameraService.state.connected) {
-			return {error: 'Recordings cannot be viewed when the camera is not connected.'};
-		}
-
-		return {
-			servicesList,
-			cameraService,
-			cameraServiceId: cameraService.id,
-			cameraName: getServiceNameById(servicesList, cameraService.id),
-			allRecordings: cameraGetRecordings(servicesList, cameraService.id),
-			selectedRecording: cameraGetRecordingById(servicesList, cameraService.id, match.params.recordingId),
-			isLoading: cameraIsRecordingsListLoading(servicesList, cameraService.id)
-		};
-	},
-	mergeProps = ({servicesList, cameraService, ...stateProps}, {dispatch, ...dispatchProps}, ownProps) => {
 		let selectedDate = moment([
-			ownProps.match.params.year,
-			ownProps.match.params.month - 1, // Subtract 1 from month because moment months are zero-based.
-			ownProps.match.params.date
-		]);
+				match.params.year,
+				match.params.month - 1, // Subtract 1 from month because Moment months are zero-based.
+				match.params.date
+			]),
+			error;
 
 		if (!selectedDate.isValid()) {
 			selectedDate = moment();
 		}
 
+		if (!cameraService) {
+			error = 'There was a problem loading the camera’s recordings.';
+		} else if (!cameraService.state.connected) {
+			error = 'Recordings cannot be viewed when the camera is not connected.';
+		} else if (recordingsError) {
+			error = recordingsError;
+		}
+
 		return {
-			...ownProps,
-			...stateProps,
-			...dispatchProps,
+			error,
+			cameraService,
+			cameraName: getServiceNameById(servicesList, cameraService.id),
 			selectedDate,
 			selectedDateRecordings: cameraService && cameraGetRecordingsByDate(servicesList, cameraService.id, selectedDate),
-			fetchRecordings: () => cameraService && cameraService.state.connected && dispatch(cameraFetchRecordings(cameraService.id))
+			selectedRecording: cameraGetRecordingById(servicesList, cameraService.id, match.params.recordingId),
+			isLoading: cameraIsRecordingsListLoading(servicesList, cameraService.id),
+			getDatesOfRecordings: (month) => cameraGetDatesOfRecordings(servicesList, cameraService.id, month.format('YYYY-M')) || []
+		};
+	},
+	mapDispatchToProps = (dispatch) => {
+		return {
+			fetchRecordings: (cameraService) => cameraService && cameraService.state.connected && dispatch(cameraFetchRecordings(cameraService.id))
 		};
 	};
 
 export default compose(
 	withRoute({params: '/:cameraServiceId/:year?/:month?/:date?/:recordingId?'}),
-	connect(mapStateToProps, null, mergeProps)
+	connect(mapStateToProps, mapDispatchToProps)
 )(CameraRecordingsScreen);

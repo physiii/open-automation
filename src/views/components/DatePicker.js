@@ -8,30 +8,21 @@ export class DatePicker extends React.Component {
 	constructor (props) {
 		super(props);
 
+		this.selectDate = this.selectDate.bind(this);
+		this.selectPreviousMonth = this.selectPreviousMonth.bind(this);
+		this.selectNextMonth = this.selectNextMonth.bind(this);
+
 		this.state = {
-			selectedDate: null,
 			selectedMonth: props.selectedDate
 				? moment(props.selectedDate).startOf('month')
 				: moment().startOf('month')
 		};
-
-		this.selectDate = this.selectDate.bind(this);
-		this.selectPreviousMonth = this.selectPreviousMonth.bind(this);
-		this.selectNextMonth = this.selectNextMonth.bind(this);
 	}
 
-	static getDerivedStateFromProps (nextProps, previousState) {
-		const nextState = {...previousState};
-
-		if (nextProps.selectedMonth) {
-			nextState.selectedMonth = moment(nextProps.selectedMonth).startOf('month');
+	componentDidUpdate (previousProps, previousState) {
+		if (!this.state.selectedMonth.isSame(previousState.selectedMonth, 'month') && typeof this.props.onMonthChange === 'function') {
+			this.props.onMonthChange(this.state.selectedMonth);
 		}
-
-		if (nextProps.selectedDate) {
-			nextState.selectedDate = moment(nextProps.selectedDate);
-		}
-
-		return nextState;
 	}
 
 	getNumberOfDaysInMonth (date) {
@@ -82,24 +73,26 @@ export class DatePicker extends React.Component {
 		return weeksList;
 	}
 
-	doesDateHaveEvent (date) {
-		return Boolean(this.props.events.find((event) => date.isSame(event.date, 'day')));
+	isDateEnabled (date) {
+		if (this.props.enabledDates) {
+			return Boolean(this.props.enabledDates.find((enabledDate) => date.isSame(enabledDate, 'day')));
+		}
+
+		return true;
 	}
 
 	selectDate (date) {
-		this.setState({selectedDate: date});
-
 		if (typeof this.props.onSelect === 'function') {
 			this.props.onSelect(date);
 		}
 	}
 
 	selectPreviousMonth () {
-		this.setState({selectedMonth: this.state.selectedMonth.subtract(1, 'month')});
+		this.setState({selectedMonth: this.state.selectedMonth.clone().subtract(1, 'month')});
 	}
 
 	selectNextMonth () {
-		this.setState({selectedMonth: this.state.selectedMonth.add(1, 'month')});
+		this.setState({selectedMonth: this.state.selectedMonth.clone().add(1, 'month')});
 	}
 
 	render () {
@@ -139,14 +132,16 @@ export class DatePicker extends React.Component {
 								dateTime={weekDate.format('YYYY-[W]w')}
 								key={weekIndex}>
 								{week.map((day, dayIndex) => {
-									const isDaySelected = day.isSame(this.state.selectedDate, 'day'),
-										doesDayHaveEvent = this.doesDateHaveEvent(day),
+									const isDaySelected = day.isSame(this.props.selectedDate, 'day'),
+										isDayEnabled = this.isDateEnabled(day),
 										onDateClick = (event) => {
 											event.preventDefault();
 
-											if (doesDayHaveEvent) {
-												this.selectDate(day);
+											if (!isDayEnabled) {
+												return;
 											}
+
+											this.selectDate(day);
 										};
 
 									return (
@@ -155,7 +150,7 @@ export class DatePicker extends React.Component {
 												href="#"
 												styleName={
 													(isDaySelected ? 'selectedDayLink' : 'dayLink') +
-													(doesDayHaveEvent ? ' dayWithEvent' : '')
+													(isDayEnabled ? ' enabledDay' : '')
 												}
 												onClick={onDateClick}>
 												{day.date()}
@@ -175,13 +170,13 @@ export class DatePicker extends React.Component {
 
 DatePicker.propTypes = {
 	selectedDate: PropTypes.object,
-	selectedMonth: PropTypes.object,
-	events: PropTypes.array,
-	onSelect: PropTypes.func
+	enabledDates: PropTypes.array,
+	onSelect: PropTypes.func,
+	onMonthChange: PropTypes.func
 };
 
 DatePicker.defaultProps = {
-	events: []
+	enabledDates: []
 };
 
 export default DatePicker;
