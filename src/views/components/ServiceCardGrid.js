@@ -10,7 +10,10 @@ import Grid from '../layouts/Grid.js';
 import GridColumn from '../layouts/GridColumn.js';
 
 export const ServiceCardGrid = (props) => {
-	const serviceCards = props.services.filter(ServiceCard.willCardRender).map((service) => <ServiceCard service={service} />);
+	const serviceCards = props.services
+		.filter(ServiceCard.willCardRender)
+		.toArray()
+		.map(([, service]) => <ServiceCard service={service} />);
 
 	return (
 		<Switch>
@@ -30,7 +33,7 @@ export const ServiceCardGrid = (props) => {
 };
 
 ServiceCardGrid.propTypes = {
-	services: PropTypes.array.isRequired,
+	services: PropTypes.object.isRequired,
 	match: PropTypes.object
 };
 

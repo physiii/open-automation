@@ -11,7 +11,7 @@ import {getServices} from '../../state/ducks/services-list/selectors.js';
 export const DashboardScreen = (props) => {
 	return (
 		<NavigationScreen title="Dashboard" url={props.match.urlWithoutOptionalParams} isContextRoot={true}>
-			{!props.services.length &&
+			{!props.services.size &&
 				<BlankState
 					heading="No Devices"
 					body="Use ‘Settings’ to add devices and they will show up here." />
@@ -22,12 +22,12 @@ export const DashboardScreen = (props) => {
 };
 
 DashboardScreen.propTypes = {
-	services: PropTypes.array.isRequired,
+	services: PropTypes.object.isRequired,
 	match: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({servicesList}) => ({
-	services: getServices(servicesList)
+	services: getServices(servicesList, false)
 });
 
 export default compose(

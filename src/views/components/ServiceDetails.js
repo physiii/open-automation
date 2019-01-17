@@ -27,21 +27,21 @@ export class ServiceDetails extends React.Component {
 
 	render () {
 		const service = this.props.service,
-			{name: nameField, ...restOfSettingsFields} = {...service.settings_definitions};
+			{name: nameField, ...restOfSettingsFields} = {...service.settings_definitions.toObject()};
 
 		return (
 			<section styleName="container">
 				{service.error && <p>The device settings could not be updated because of an error.</p>}
 				<header styleName="header">
 					{ServiceIcon.willRenderIcon(service) &&
-					<div styleName="iconContainer">
-						<ServiceIcon service={service} size={32} />
-					</div>}
+						<div styleName="iconContainer">
+							<ServiceIcon service={service} size={32} />
+						</div>}
 					<div styleName="nameContainer">
 						<SettingsForm
 							fields={{name: nameField}}
-							values={{name: service.settings.name}}
-							disabled={!service.state.connected}
+							values={{name: service.settings.get('name')}}
+							disabled={!service.state.get('connected')}
 							onSaveableChange={this.handleSettingsChange}
 							key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 					</div>
@@ -50,11 +50,11 @@ export class ServiceDetails extends React.Component {
 				{this.props.children}
 				{SettingsForm.willAnyFieldsRender(restOfSettingsFields) && (
 					<React.Fragment>
-						<h1 styleName="settingsHeading">{service.strings.friendly_type} Settings</h1>
+						<h1 styleName="settingsHeading">{service.strings.get('friendly_type')} Settings</h1>
 						<SettingsForm
 							fields={restOfSettingsFields}
-							values={service.settings}
-							disabled={!service.state.connected}
+							values={service.settings.toObject()}
+							disabled={!service.state.get('connected')}
 							onSaveableChange={this.handleSettingsChange}
 							key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 					</React.Fragment>
@@ -74,7 +74,7 @@ ServiceDetails.propTypes = {
 const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
-	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings))
+	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
 });
 
 export default connect(null, null, mergeProps)(ServiceDetails);

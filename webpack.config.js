@@ -24,7 +24,7 @@ module.exports = (env = {}) => {
 
 	return removeEmpty({
 		mode: ifProduction('production', 'development'),
-		devtool: ifDevelopment('cheap-module-eval-source-map'),
+		devtool: ifProduction('source-map', 'cheap-module-eval-source-map'),
 		entry: removeEmpty([
 			propIf(doHmr, 'webpack-hot-middleware/client'),
 			path.resolve(__dirname, 'src/index.js')

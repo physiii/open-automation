@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {lockLock, lockUnlock} from '../../state/ducks/services-list/operations.js';
 
 export const LockCard = (props) => {
-	const isLocked = props.service.state.locked,
+	const isLocked = props.service.state.get('locked'),
 		toggleLock = () => {
 			if (isLocked) {
 				props.unlock(props.service.id);
@@ -17,12 +17,12 @@ export const LockCard = (props) => {
 
 	return (
 		<ServiceCardBase
-			name={props.service.settings.name || 'Lock'}
-			status={props.service.state.locked ? 'Locked' : 'Unlocked'}
-			isConnected={props.service.state.connected}
+			name={props.service.settings.get('name') || 'Lock'}
+			status={props.service.state.get('locked') ? 'Locked' : 'Unlocked'}
+			isConnected={props.service.state.get('connected')}
 			onCardClick={toggleLock}
 			{...props}>
-			<Button onClick={toggleLock}>{props.service.state.locked ? 'Unlock' : 'Lock'}</Button>
+			<Button onClick={toggleLock}>{props.service.state.get('locked') ? 'Unlock' : 'Lock'}</Button>
 		</ServiceCardBase>
 	);
 };

@@ -27,7 +27,7 @@ export class DeviceDetailsScreen extends React.Component {
 
 	getScreenTitle (hasOneService, firstService) {
 		return hasOneService
-			? firstService.settings.name || firstService.strings.friendly_type
+			? firstService.settings.get('name') || firstService.strings.get('friendly_type')
 			: this.props.device.settings.name || 'Device';
 	}
 
@@ -77,7 +77,7 @@ export class DeviceDetailsScreen extends React.Component {
 										renderIfEmpty={false}>
 										{device.services.map((service) => ({
 											key: service.id,
-											label: service.settings.name || service.strings.friendly_type,
+											label: service.settings.get('name') || service.strings.get('friendly_type'),
 											icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
 											link: this.props.match.url + '/service/' + service.id
 										}))}
@@ -135,7 +135,7 @@ const mapStateToProps = ({devicesList, servicesList}, {match}) => {
 			device: {
 				...device,
 				// Hydrate services.
-				services: device.services.map(({id}) => getServiceById(servicesList, id))
+				services: device.services.map(({id}) => getServiceById(servicesList, id, false))
 			}
 		};
 	},

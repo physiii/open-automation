@@ -22,7 +22,7 @@ export class SelectField extends React.Component {
 				altInputId={this.inputId}
 				label={label}
 				value={(currentOption && currentOption.label) || inputProps.value}
-				readOnly="true">
+				readOnly={true}>
 				<div styleName="select">
 					<select
 						{...inputProps}

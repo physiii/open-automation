@@ -27,7 +27,7 @@ export class DevicesListScreen extends React.Component {
 									key: device.id,
 									icon: firstService && <ServiceIcon service={firstService} size={24} shouldRenderBlank={true} />,
 									label: device.settings.name || 'Device',
-									secondaryText: firstService && (firstService.settings.name || firstService.type) +
+									secondaryText: firstService && (firstService.settings.get('name') || firstService.type) +
 										(additionalServicesCount > 0
 											? ' and ' + additionalServicesCount + ' other ' + additionalServicesNoun
 											: ''),
@@ -52,7 +52,7 @@ DevicesListScreen.propTypes = {
 const mapStateToProps = ({devicesList, servicesList}) => ({
 	devices: getDevices(devicesList).map((device) => ({
 		...device,
-		services: device.services.map(({id}) => getServiceById(servicesList, id))
+		services: device.services.map(({id}) => getServiceById(servicesList, id, false))
 	}))
 });
 
