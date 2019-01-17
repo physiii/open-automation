@@ -1,10 +1,22 @@
-.list {
+.container {
+	display: flex;
+	flex-flow: column nowrap;
 	width: 100%;
-	padding: 8px 16px;
 }
 
 .title {
-	margin: 8px 0 16px 0;
+	height: 56px;
+	padding: 16px;
 	font-size: 14px;
 	line-height: 24px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.listWrapper {
+	flex: 1 1 auto;
+	overflow: auto;
+}
+
+.list {
+	padding: 8px 16px;
 }
