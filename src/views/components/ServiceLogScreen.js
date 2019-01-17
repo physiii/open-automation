@@ -21,7 +21,7 @@ export class ServiceLogScreen extends React.Component {
 
 		if (!service) {
 			error = 'There was a problem loading the logs.';
-		} else if (!service.state.connected) {
+		} else if (!service.state.get('connected')) {
 			error = 'Device is not responding. Device must be reachable to view logs.';
 		}
 
@@ -46,7 +46,7 @@ export class ServiceLogScreen extends React.Component {
 
 		return (
 			<NavigationScreen
-				title={((service ? service.settings.name : '') || (service ? service.strings.friendly_type : '')) + ' Log'}
+				title={((service ? service.settings.get('name') : '') || (service ? service.strings.get('friendly_type') : '')) + ' Log'}
 				url={this.props.match.urlWithoutOptionalParams}>
 				{error
 					? <p>{error}</p>
@@ -70,7 +70,7 @@ ServiceLogScreen.defaultProps = {
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-		const service = getServiceById(servicesList, match.params.serviceId);
+		const service = getServiceById(servicesList, match.params.serviceId, false);
 
 		return {
 			service,
@@ -84,7 +84,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 			...stateProps,
 			...dispatchProps,
 			service,
-			fetchLog: () => service && service.state.connected && dispatch(fetchServiceLog(service.id))
+			fetchLog: () => service && service.state.get('connected') && dispatch(fetchServiceLog(service.id))
 		};
 	};
 

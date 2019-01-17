@@ -12,13 +12,13 @@ export class DimmerCard extends React.Component {
 		super(props);
 
 		this.state = {
-			slider_value: this.getPercentage100(props.service.state.level),
+			slider_value: this.getPercentage100(props.service.state.get('level')),
 			is_changing: false
 		};
 	}
 
 	onCardClick () {
-		this.setLevel(this.props.service.state.level > 0 ? 0 : 1);
+		this.setLevel(this.props.service.state.get('level') > 0 ? 0 : 1);
 	}
 
 	handleInput (value) {
@@ -46,7 +46,7 @@ export class DimmerCard extends React.Component {
 	}
 
 	setLevel (value) {
-		if (!this.props.service.state.connected) {
+		if (!this.props.service.state.get('connected')) {
 			return;
 		}
 
@@ -57,14 +57,14 @@ export class DimmerCard extends React.Component {
 	}
 
 	render () {
-		const isConnected = this.props.service.state.connected,
+		const isConnected = this.props.service.state.get('connected'),
 			currentLevel = this.state.is_changing
 				? this.state.slider_value
-				: this.getPercentage100(this.props.service.state.level);
+				: this.getPercentage100(this.props.service.state.get('level'));
 
 		return (
 			<ServiceCardBase
-				name={this.props.service.settings.name || 'Dimmer'}
+				name={this.props.service.settings.get('name') || 'Dimmer'}
 				status={isConnected && Number.isFinite(currentLevel)
 					? currentLevel + '%'
 					: 'Unknown'}
@@ -73,7 +73,7 @@ export class DimmerCard extends React.Component {
 				{...this.props}>
 				<div styleName="container">
 					<Switch
-						isOn={this.props.service.state.level > 0}
+						isOn={this.props.service.state.get('level') > 0}
 						showLabels={true}
 						disabled={!isConnected} />
 					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>

@@ -6,11 +6,11 @@ import {connect} from 'react-redux';
 import {thermostatSetTemp, thermostatSetMode, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
 
 export const ThermostatCard = (props) => {
-	const currentMode = props.service.state.mode,
-		currentTemp = props.service.state.current_temp,
-		targetTemp = props.service.state.target_temp,
-		fanMode = props.service.state.fan_mode,
-		holdMode = props.service.state.hold_mode,
+	const currentMode = props.service.state.get('mode'),
+		currentTemp = props.service.state.get('current_temp'),
+		targetTemp = props.service.state.get('target_temp'),
+		fanMode = props.service.state.get('fan_mode'),
+		holdMode = props.service.state.get('hold_mode'),
 		toggleMode = () => {
 			if (currentMode === 'off') {
 				props.setMode(props.service.id, 'cool');
@@ -49,20 +49,20 @@ export const ThermostatCard = (props) => {
 
 	return (
 		<ServiceCardBase
-			name={props.service.settings.name || 'Thermostat'}
+			name={props.service.settings.get('name') || 'Thermostat'}
 			status={'Thermostat mode: ' + currentMode + ' ||| Current Temp: ' + currentTemp + ' ||| Target Temp: ' + targetTemp + ' ||| Fan mode: ' + fanMode + ' ||| Hold Mode: ' + holdMode}
-			isConnected={props.service.state.connected}
+			isConnected={props.service.state.get('connected')}
 			{...props}>
 			<center>
-				<Button onClick={toggleMode}>{'Thermostat Mode => ' + props.service.state.mode}</Button>
+				<Button onClick={toggleMode}>{'Thermostat Mode => ' + props.service.state.get('mode')}</Button>
 				<br />
 				<Button onClick={tempUp}>{'Temp Up'}</Button>
 				<br />
 				<Button onClick={tempDown}>{'Temp down'}</Button>
 				<br />
-				<Button onClick={toggleFan}>{'Fan Mode => ' + props.service.state.fan_mode}</Button>
+				<Button onClick={toggleFan}>{'Fan Mode => ' + props.service.state.get('fan_mode')}</Button>
 				<br />
-				<Button onClick={toggleHold}>{'Hold Mode => ' + props.service.state.hold_mode}</Button>
+				<Button onClick={toggleHold}>{'Hold Mode => ' + props.service.state.get('hold_mode')}</Button>
 			</center>
 		</ServiceCardBase>
 	);
