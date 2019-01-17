@@ -30,7 +30,7 @@ export class CameraRecordingsScreen extends React.Component {
 	}
 
 	componentDidUpdate (previousProps) {
-		if (this.props.cameraService.state.connected && !previousProps.cameraService.state.connected) {
+		if (this.props.cameraService.state.get('connected') && !previousProps.cameraService.state.get('connected')) {
 			this.props.fetchRecordings(this.props.cameraService);
 		}
 	}
@@ -139,7 +139,7 @@ CameraRecordingsScreen.defaultProps = {
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-		const cameraService = getServiceById(servicesList, match.params.cameraServiceId),
+		const cameraService = getServiceById(servicesList, match.params.cameraServiceId, false),
 			recordingsError = cameraGetRecordingsListError(servicesList, match.params.cameraServiceId);
 
 		let selectedDate = moment([
@@ -155,7 +155,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 
 		if (!cameraService) {
 			error = 'There was a problem loading the camera’s recordings.';
-		} else if (!cameraService.state.connected) {
+		} else if (!cameraService.state.get('connected')) {
 			error = 'Recordings cannot be viewed when the camera is not connected.';
 		} else if (recordingsError) {
 			error = recordingsError;
@@ -174,7 +174,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 	},
 	mapDispatchToProps = (dispatch) => {
 		return {
-			fetchRecordings: (cameraService) => cameraService && cameraService.state.connected && dispatch(cameraFetchRecordings(cameraService.id))
+			fetchRecordings: (cameraService) => cameraService && cameraService.state.get('connected') && dispatch(cameraFetchRecordings(cameraService.id))
 		};
 	};
 

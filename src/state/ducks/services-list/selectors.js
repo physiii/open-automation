@@ -17,7 +17,15 @@ const getServices = (servicesList, toJs = true) => {
 
 		return toJs ? service.toJS() : service;
 	},
-	getServiceNameById = (servicesList, serviceId) => getServiceById(servicesList, serviceId).settings.name,
+	getServiceNameById = (servicesList, serviceId) => {
+		const service = getServiceById(servicesList, serviceId, false);
+
+		if (!service) {
+			return;
+		}
+
+		return service.settings.get('name');
+	},
 	getServiceByTypeAndDeviceId = (servicesList, type, deviceId, toJs = true) => {
 		const servicesOfType = getServicesByType(servicesList, type, false),
 			service = servicesOfType.find((_service) => _service.device_id === deviceId);
@@ -98,6 +106,7 @@ const getServices = (servicesList, toJs = true) => {
 			return;
 		}
 
+		// TODO: Could be a performance issue due to iterating all recordings. Alternative is iterate recording IDs to retrieve and .get() each and assign to new collection.
 		const recordings = cameraService.recordingsList.get('recordings').filter((recording) => recordingIds.has(recording.id));
 
 		return toJs ? recordings.toList().toJS() : recordings;
