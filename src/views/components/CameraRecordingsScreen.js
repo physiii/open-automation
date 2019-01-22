@@ -70,7 +70,7 @@ export class CameraRecordingsScreen extends React.Component {
 				<List
 					title={this.props.selectedDate.format('MMMM Do')}
 					isOrdered={true}
-					isVirtualized={true}>
+					shouldVirtualize={true}>
 					{this.props.selectedDateRecordings.map((recording) => ({
 						key: recording.id,
 						label: () => moment(recording.date).format('h:mm A'),
@@ -134,8 +134,7 @@ CameraRecordingsScreen.propTypes = {
 };
 
 CameraRecordingsScreen.defaultProps = {
-	selectedDateRecordings: [],
-	fetchRecordings: () => { /* no-op */ }
+	selectedDateRecordings: []
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
