@@ -5,7 +5,7 @@ import {SortableElement} from 'react-sortable-hoc';
 import styles from './ListItem.css';
 
 export const ListItem = (props) => {
-	const ItemElement = props.isVirtualized ? 'div' : 'li',
+	const ItemElement = props.element,
 		LinkComponent = props.link ? Link : 'a',
 		itemContent = (
 			<div className={styles.rowContentInner}>
@@ -71,9 +71,13 @@ ListItem.propTypes = {
 	secondaryAction: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	isDraggable: PropTypes.bool,
 	isBeingDragged: PropTypes.bool,
-	isVirtualized: PropTypes.bool,
+	element: PropTypes.string,
 	style: PropTypes.object,
 	onClick: PropTypes.func
+};
+
+ListItem.defaultProps = {
+	element: 'li'
 };
 
 export const SortableListItem = SortableElement(ListItem);
