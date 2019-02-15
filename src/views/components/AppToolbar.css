@@ -1,0 +1,21 @@
+@value toolbarBackground from "../styles/colors.css";
+@value toolbarHeight: 56px;
+
+.toolbar {
+	display: flex;
+	flex-flow: column nowrap;
+	flex: 1 1 auto;
+	height: toolbarHeight;
+	padding: 0 8px;
+	background-color: toolbarBackground;
+}
+
+.logo {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: flex-start;
+	max-width: 150px;
+	height: 100%;
+	padding: 5px 0;
+}

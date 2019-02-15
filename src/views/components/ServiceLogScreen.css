@@ -1,0 +1,24 @@
+.table {
+	width: 100%;
+	margin-bottom: 16px;
+	font-size: 14px;
+}
+
+.row {
+	height: 48px;
+	border-bottom: 1px solid #888888;
+}
+.headerRow {
+	composes: row;
+	font-size: 12px;
+	font-weight: 500;
+	color: #aaaaaa;
+	text-align: left;
+}
+
+.cell {
+	padding: 0 16px;
+}
+.headerCell {
+	composes: cell;
+}

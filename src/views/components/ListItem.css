@@ -1,0 +1,73 @@
+.row {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	height: 48px;
+	position: relative;
+	z-index: 1; /* Needed for the row to stay visible while dragging. */
+}
+.isDraggable {
+	cursor: grab;
+}
+.isBeingDragged::after {
+	content: "";
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	pointer-events: auto;
+	cursor: grabbing;
+}
+
+.rowContent {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	flex: 1 0;
+	width: 100%;
+	height: 100%;
+	color: inherit;
+	text-decoration: none;
+}
+
+.rowContentInner {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	flex: 1 1 auto;
+}
+
+.rowIcon {
+	display: flex;
+	margin-right: 16px;
+	align-self: flex-start;
+}
+
+.rowText {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	flex: 1 1 auto;
+}
+.primaryText {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.metaText {
+	font-size: 13px;
+}
+
+.secondaryText,
+.tertiaryText {
+	font-size: 14px;
+	color: #b6b6b6;
+}
+
+.rowActions {
+	display: flex;
+}

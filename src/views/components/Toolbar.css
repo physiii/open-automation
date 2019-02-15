@@ -1,0 +1,43 @@
+/* A generic toolbar with left, middle, and right sections. */
+
+.toolbar {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	flex: 1 1 auto;
+	max-height: 100%;
+	white-space: nowrap;
+}
+
+
+/* Components */
+
+.left {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+
+	flex: 0 1 50%;
+	position: relative;
+}
+.right {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-end;
+	align-items: center;
+
+	flex: 0 1 50%;
+	position: relative;
+}
+.middle {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+
+	flex: 0 0 auto;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}

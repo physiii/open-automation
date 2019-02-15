@@ -1,0 +1,25 @@
+@import "./reset.css";
+@value background from "../styles/colors.css";
+@value text from "../styles/colors.css";
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: background;
+	font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: text;
+	cursor: default;
+	user-select: none;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+a {
+	color: #dcf7ff;
+	text-decoration: underline;
+}
