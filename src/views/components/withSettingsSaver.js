@@ -155,6 +155,8 @@ const SAVE_DEBOUNCE_DELAY = 500,
 			}
 
 			handleFieldChange (event) {
+
+				console.log('handleFieldChange', event);
 				let value = this.getValueFromEvent(event);
 
 				const fieldName = event.target.name,
