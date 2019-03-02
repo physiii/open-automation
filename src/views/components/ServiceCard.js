@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import CameraCard from './CameraCard.js';
 import DimmerCard from './DimmerCard.js';
 import AlarmCard from './AlarmCard.js';
+import MotionCard from './MotionCard.js';
+import ButtonCard from './ButtonCard.js';
+import MicrophoneCard from './MicrophoneCard.js';
 import GlobalAlarmCard from './AlarmCardGlobal.js';
 import GameMachineCard from './GameMachineCard.js';
 import LockCard from './LockCard.js';
@@ -25,6 +28,9 @@ ServiceCard.cardComponents = {
 	'dimmer': DimmerCard,
 	'global-alarm': GlobalAlarmCard,
 	'alarm': AlarmCard,
+	'motion': MotionCard,
+	'button': ButtonCard,
+	'microphone': MicrophoneCard,
 	'game-machine': GameMachineCard,
 	'lock': LockCard,
 	'thermostat': ThermostatCard

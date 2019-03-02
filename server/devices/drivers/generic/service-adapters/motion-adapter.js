@@ -2,10 +2,10 @@ const GenericServiceAdapter = require('./service-adapter.js'),
 	utils = require('../../../../utils.js'),
 	moment = require('moment'),
 	crypto = require('crypto'),
-	TAG = '[GenericButtonAdapter]',
+	TAG = '[GenericMotionAdapter]',
 	LEVEL_SCALE = 255;
 
-class GenericButtonAdapter extends GenericServiceAdapter {
+class GenericMotionAdapter extends GenericServiceAdapter {
 	_adaptState (state) {
 		return GenericServiceAdapter.prototype._adaptState.call(this, {
 			...state,
@@ -24,13 +24,13 @@ class GenericButtonAdapter extends GenericServiceAdapter {
 		switch (event) {
 			case 'action':
 				if ('mode' === data.property) {
-					adapted_event = 'button';
+					adapted_event = 'motion';
 					adapted_data = {mode: this._adaptModeToDevice(data.value)};
 				}
 				break;
 			case 'settings':
 				if ('sensitivity' in data.settings) {
-					adapted_event = 'button';
+					adapted_event = 'motion';
 					adapted_data = {sensitivity: this._adaptModeToDevice(data.settings.sensitivity)};
 				}
 				if ('schedule' in data.settings) {
@@ -201,9 +201,9 @@ class GenericButtonAdapter extends GenericServiceAdapter {
 	}
 };
 
-GenericButtonAdapter.generic_type = 'button';
-GenericButtonAdapter.relay_type = 'button';
-GenericButtonAdapter.settings_definitions = new Map([...GenericServiceAdapter.settings_definitions])
+GenericMotionAdapter.generic_type = 'motion';
+GenericMotionAdapter.relay_type = 'motion';
+GenericMotionAdapter.settings_definitions = new Map([...GenericServiceAdapter.settings_definitions])
 	.set('sensitivity', {
 		type: 'percentage',
 		label: 'Sensitivity',
@@ -232,4 +232,4 @@ GenericButtonAdapter.settings_definitions = new Map([...GenericServiceAdapter.se
 		validation: {is_required: false}
 	});
 
-module.exports = GenericButtonAdapter;
+module.exports = GenericMotionAdapter;

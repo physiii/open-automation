@@ -1,0 +1,13 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: space-around;
+	align-items: center;
+	height: 100%;
+	min-height: 128px;
+	padding: 24px 16px;
+}
+
+.sliderWrapper {
+	align-self: stretch;
+}

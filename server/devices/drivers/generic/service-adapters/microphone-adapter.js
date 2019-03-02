@@ -2,51 +2,56 @@ const GenericServiceAdapter = require('./service-adapter.js'),
 	utils = require('../../../../utils.js'),
 	moment = require('moment'),
 	crypto = require('crypto'),
-	LEVEL_SCALE = 1;
+	TAG = '[GenericMicrophoneAdapter]',
+	LEVEL_SCALE = 255;
 
-class GenericAlarmAdapter extends GenericServiceAdapter {
+class GenericMicrophoneAdapter extends GenericServiceAdapter {
 	_adaptState (state) {
 		return GenericServiceAdapter.prototype._adaptState.call(this, {
 			...state,
-			mode: this._adaptLevelToRelay(state.mode)
+			mode: this._adaptModeToRelay(state.mode)
 		});
 	}
 
 	_adaptSocketEmit (event, data, callback = () => { /* no-op */ }) {
-		console.log("_adaptSocketEmit",data);
 		let adapted_data = {...data},
 			adapted_event = event,
 			adapted_callback = callback,
 			should_emit = true;
 
 		// TODO: Validate action values. If error, callback and set should_emit false.
-
+		console.log(TAG,"_adaptSocketEmit",event,data);
 		switch (event) {
 			case 'action':
-				console.log("alarm-adapter events",event);
-				if (data.property === 'mode') {
-					adapted_event = 'alarm';
-					adapted_data = {mode: this._adaptLevelToDevice(data.value)};
+				if ('mode' === data.property) {
+					adapted_event = 'microphone';
+					adapted_data = {mode: this._adaptModeToDevice(data.value)};
 				}
 				break;
 			case 'settings':
-				should_emit = false;
-				this._sendSchedules(data.settings.schedule).then(() => callback()).catch((error) => {
-					console.error(error);
-					callback(error);
-				});
+				if ('sensitivity' in data.settings) {
+					adapted_event = 'microphone';
+					adapted_data = {sensitivity: this._adaptModeToDevice(data.settings.sensitivity)};
+				}
+				if ('schedule' in data.settings) {
+					this._sendSchedules(data.settings.schedule).then(() => callback()).catch((error) => {
+						console.error(error);
+						callback(error);
+					});
+				}
 				break;
 		}
 
+		console.log("adapted_data: ", adapted_data);
 		return GenericServiceAdapter.prototype._adaptSocketEmit.call(this, adapted_event, adapted_data, adapted_callback, should_emit);
 	}
 
-	_adaptLevelToDevice (mode) {
+	_adaptModeToDevice (mode) {
 		// Convert 0-1 percentage scale to value range of the mode property on the device.
 		return Math.round(mode * LEVEL_SCALE);
 	}
 
-	_adaptLevelToRelay (mode) {
+	_adaptModeToRelay (mode) {
 		// Convert mode property to a percentage between 0 and 1.
 		return Math.round((mode / LEVEL_SCALE) * 100) / 100;
 	}
@@ -69,9 +74,11 @@ class GenericAlarmAdapter extends GenericServiceAdapter {
 					return;
 				}
 
+				console.log(TAG,"_sendSchedules",settings);
 				// No schedule changes.
 				if (schedule_changes.length < 1) {
 					resolve();
+					// reject('Unable to save new settings!');
 					return;
 				}
 
@@ -148,7 +155,7 @@ class GenericAlarmAdapter extends GenericServiceAdapter {
 
 			return {
 				seconds_into_day: moment.duration(time.diff(time.clone().startOf('day'))).asSeconds(),
-				mode: this._adaptLevelToDevice(schedule.mode),
+				mode: this._adaptModeToDevice(schedule.mode),
 				on: true,
 				should_add: added_or_removed === 'added',
 				should_delete: added_or_removed === 'removed'
@@ -194,9 +201,15 @@ class GenericAlarmAdapter extends GenericServiceAdapter {
 	}
 };
 
-GenericAlarmAdapter.generic_type = 'alarm';
-GenericAlarmAdapter.relay_type = 'alarm';
-GenericAlarmAdapter.settings_definitions = new Map([...GenericServiceAdapter.settings_definitions])
+GenericMicrophoneAdapter.generic_type = 'microphone';
+GenericMicrophoneAdapter.relay_type = 'microphone';
+GenericMicrophoneAdapter.settings_definitions = new Map([...GenericServiceAdapter.settings_definitions])
+	.set('sensitivity', {
+		type: 'percentage',
+		label: 'Sensitivity',
+		default_value: 1,
+		validation: {is_required: true}
+	})
 	.set('schedule', {
 		type: 'list-of',
 		label: 'Schedule',
@@ -219,4 +232,4 @@ GenericAlarmAdapter.settings_definitions = new Map([...GenericServiceAdapter.set
 		validation: {is_required: false}
 	});
 
-module.exports = GenericAlarmAdapter;
+module.exports = GenericMicrophoneAdapter;
