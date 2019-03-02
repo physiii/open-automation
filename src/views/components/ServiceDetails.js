@@ -17,12 +17,25 @@ export class ServiceDetails extends React.Component {
 	}
 
 	handleSettingsChange (settings) {
+		console.log('handleSettingsChange', settings);
 		this.settings = {
 			...this.settings,
 			...settings
 		};
 
 		this.props.saveSettings(this.settings);
+	}
+
+	handleInput (value) {
+		console.log('handleInput', value);
+		this.settings.sensitivity = this.getPercentage1(value);
+		this.handleSettingsChange();
+	}
+
+	handleChange (value) {
+		console.log('handleChange', value);
+		this.settings.sensitivity = this.getPercentage1(value);
+		this.handleSettingsChange();
 	}
 
 	render () {
@@ -56,6 +69,8 @@ export class ServiceDetails extends React.Component {
 							values={service.settings}
 							disabled={!service.state.connected}
 							onSaveableChange={this.handleSettingsChange}
+							onInput={this.handleInput.bind(this)}
+							onChange={this.handleChange.bind(this)}
 							key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 					</React.Fragment>
 				)}
