@@ -157,9 +157,9 @@ const SAVE_DEBOUNCE_DELAY = 1000,
 
 			handleSettingsChange (value) {
 
-				this.props.values.show_on_dashboard = value;
-				if (!this.props.values.show_on_dashboard) {
-					this.props.values.show_on_dashboard = false;
+				this.props.values.show_on_dashboard = false;
+				if (this.props.values.show_on_dashboard === true) {
+					this.props.values.show_on_dashboard = value;
 				}
 
 				console.log(TAG, 'handleSettingsChange', this.props.values);
@@ -171,7 +171,7 @@ const SAVE_DEBOUNCE_DELAY = 1000,
 				let value = this.getValueFromEvent(event);
 
 				console.log('handleFieldChange', value);
-				this.handleSettingsChange(value);
+				// this.handleSettingsChange(value);
 				const fieldName = event.target.name,
 					field = this.props.fieldName
 						? this.props.field // Single setting

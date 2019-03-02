@@ -214,7 +214,7 @@ GenericButtonAdapter.settings_definitions = new Map([...GenericServiceAdapter.se
 		type: 'boolean',
 		label: 'Dashboard',
 		default_value: true,
-		validation: {is_required: true}
+		validation: {is_required: false}
 	})
 	.set('schedule', {
 		type: 'list-of',
