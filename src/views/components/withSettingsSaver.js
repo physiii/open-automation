@@ -5,7 +5,8 @@ import {isEmpty} from '../../utilities.js';
 import {debounce} from 'debounce';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
-const SAVE_DEBOUNCE_DELAY = 500,
+const SAVE_DEBOUNCE_DELAY = 1000,
+	TAG = '[withSettingsSaver]',
 	noOp = () => { /* no-op */ },
 	withSettingsSaver = (WrappedComponent) => {
 		class SettingsSaver extends React.Component {
@@ -154,11 +155,23 @@ const SAVE_DEBOUNCE_DELAY = 500,
 				this.validator.field(fieldName, _field.label, _field.validation);
 			}
 
+			handleSettingsChange (value) {
+
+				this.props.values.show_on_dashboard = value;
+				if (!this.props.values.show_on_dashboard) {
+					this.props.values.show_on_dashboard = false;
+				}
+
+				console.log(TAG, 'handleSettingsChange', this.props.values);
+				this.saveSettings(this.props.values);
+			}
+
 			handleFieldChange (event) {
 
-				console.log('handleFieldChange', event);
 				let value = this.getValueFromEvent(event);
 
+				console.log('handleFieldChange', value);
+				this.handleSettingsChange(value);
 				const fieldName = event.target.name,
 					field = this.props.fieldName
 						? this.props.field // Single setting

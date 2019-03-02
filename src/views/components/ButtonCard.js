@@ -50,6 +50,7 @@ export class ButtonCard extends React.Component {
 	}
 
 	handleInput (value) {
+		console.log('ButtonCard handleInput!', value);
 		this.settings.sensitivity = this.getPercentage1(value);
 		this.handleSettingsChange();
 	}

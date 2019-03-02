@@ -9,6 +9,8 @@ import BlankState from './BlankState.js';
 import {getServices} from '../../state/ducks/services-list/selectors.js';
 
 export const DashboardScreen = (props) => {
+	// const dashboardServices = props.services.filter((service) => service.settings.show_on_dashboard === true);
+
 	return (
 		<NavigationScreen title="Dashboard" url={props.match.urlWithoutOptionalParams} isContextRoot={true}>
 			{!props.services.length &&
