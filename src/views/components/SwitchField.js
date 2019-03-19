@@ -34,7 +34,7 @@ export class SwitchField extends React.Component {
 	render () {
 		return (
 			<div styleName="container">
-				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '')}>
+				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '') + (this.props.disabled ? ' isDisabled' : '')}>
 					<label htmlFor={this.inputId} styleName="label">{this.props.label}</label>
 					<Switch
 						id={this.inputId}

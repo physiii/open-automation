@@ -13,5 +13,11 @@
 	padding: 14px 0;
 }
 .isFocused {}
+.isDisabled {
+	cursor: not-allowed;
+}
 
 .label {}
+.isDisabled > .label {
+	opacity: 0.5;
+}

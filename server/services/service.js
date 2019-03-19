@@ -300,6 +300,12 @@ Service.settings_definitions = new Map()
 			is_required: true,
 			max_length: 24
 		}
+	})
+	.set('show_on_dashboard', {
+		type: 'boolean',
+		label: 'Show on Dashboard',
+		default_value: true,
+		validation: {is_required: false}
 	});
 
 module.exports = Service;

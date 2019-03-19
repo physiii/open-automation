@@ -17,7 +17,6 @@ export class ServiceDetails extends React.Component {
 	}
 
 	handleSettingsChange (settings) {
-		console.log('handleSettingsChange', settings);
 		this.settings = {
 			...this.settings,
 			...settings
@@ -27,20 +26,18 @@ export class ServiceDetails extends React.Component {
 	}
 
 	handleInput (value) {
-		console.log('handleInput', value);
 		this.settings.sensitivity = this.getPercentage1(value);
 		this.handleSettingsChange();
 	}
 
 	handleChange (value) {
-		console.log('handleChange', value);
 		this.settings.sensitivity = this.getPercentage1(value);
 		this.handleSettingsChange();
 	}
 
 	render () {
 		const service = this.props.service,
-			{name: nameField, ...restOfSettingsFields} = {...service.settings_definitions};
+			{name: nameField, show_on_dashboard: dashboardField, ...restOfSettingsFields} = {...service.settings_definitions};
 
 		return (
 			<section styleName="container">
@@ -60,6 +57,12 @@ export class ServiceDetails extends React.Component {
 					</div>
 				</header>
 				{this.props.shouldShowRoomField && <DeviceRoomField deviceId={service.device_id} />}
+				<SettingsForm
+					fields={{show_on_dashboard: dashboardField}}
+					values={{show_on_dashboard: service.settings.show_on_dashboard}}
+					disabled={!service.state.connected}
+					onSaveableChange={this.handleSettingsChange}
+					key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 				{this.props.children}
 				{SettingsForm.willAnyFieldsRender(restOfSettingsFields) && (
 					<React.Fragment>

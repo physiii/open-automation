@@ -23,7 +23,7 @@ export class SelectField extends React.Component {
 				label={label}
 				value={(currentOption && currentOption.label) || inputProps.value}
 				readOnly="{false}">
-				<div styleName="select">
+				<div styleName={'select' + (this.props.disabled ? ' isDisabled' : '')}>
 					<select
 						{...inputProps}
 						styleName="input"
