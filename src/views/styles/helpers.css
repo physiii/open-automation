@@ -1,0 +1,19 @@
+.fillContext {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.aspectRatio43 {
+	display: block;
+	width: 100%;
+
+	padding-top: calc((3 / 4) * 100%);
+}
+
+.selectable {
+	user-select: text;
+	cursor: auto;
+}

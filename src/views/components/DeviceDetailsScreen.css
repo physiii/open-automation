@@ -1,0 +1,15 @@
+.container {
+	max-width: 500px;
+}
+
+.settingsHeading {
+	margin: 32px 16px 24px 16px;
+	font-size: 14px;
+	line-height: 24px;
+}
+
+.infoHeading {
+	margin: 32px 16px 24px 16px;
+	font-size: 14px;
+	line-height: 24px;
+}

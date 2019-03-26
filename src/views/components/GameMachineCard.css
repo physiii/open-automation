@@ -1,0 +1,30 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	height: 100%;
+}
+
+.main {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	flex: 1 0;
+	margin: 24px 0;
+	text-align: center;
+}
+
+.hopperTotal {
+	display: block;
+	font-size: 32px;
+	color: #c8c8c8;
+}
+
+.hopperTotalDescription {
+	margin-top: 8px;
+	font-size: 13px;
+	color: #969696;
+}
+.hopperTotalDescription::before {
+	content: "…";
+}
