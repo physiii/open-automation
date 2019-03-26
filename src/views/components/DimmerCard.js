@@ -11,52 +11,30 @@ export class DimmerCard extends React.Component {
 	constructor (props) {
 		super(props);
 
-		this.handleSettingsChange = this.handleSettingsChange.bind(this);
-
-		this.settings = {...props.service.settings};
-		console.log('Loading settings...', this.settings);
 		this.state = {
-			slider_value: this.getPercentage100(props.service.settings.current_level),
+			slider_value: this.getPercentage100(props.service.settings.get('current_level')),
 			is_changing: false
 		};
 	}
 
-	handleSettingsChange () {
-		this.settings = {
-			...this.settings
-		};
-
-		console.log('Saving settings...', this.settings);
-		this.props.saveSettings(this.settings);
-	}
-
-	toggleLevel () {
-		if (this.settings.current_level > 0) {
-			this.settings.current_level = 0;
-		} else {
-			this.settings.current_level = 1;
-		}
-		this.handleSettingsChange();
-	}
-
-	toggleSwitch () {
-		// disabled to not interfer with onCardClick
-		// this.toggleLevel();
-		// this.handleSettingsChange();
-	}
-
 	onCardClick () {
-		this.toggleLevel();
+		this.setLevel(this.props.service.settings.get('current_level') > 0 ? 0 : 1);
 	}
 
-	handleInput (value) {
-		this.settings.current_level = this.getPercentage1(value);
-		this.handleSettingsChange();
+	handleSliderInput (value) {
+		this.setState({
+			slider_value: value,
+			is_changing: true
+		});
 	}
 
-	handleChange (value) {
-		this.settings.current_level = this.getPercentage1(value);
-		this.handleSettingsChange();
+	handleSliderChange (value) {
+		this.setState({
+			slider_value: value,
+			is_changing: false
+		});
+
+		this.setLevel(this.getPercentage1(value));
 	}
 
 	getPercentage1 (value) {
@@ -67,32 +45,48 @@ export class DimmerCard extends React.Component {
 		return Math.round(value * 100);
 	}
 
+	setLevel (value) {
+		if (!this.props.service.state.get('connected')) {
+			return;
+		}
+
+		this.props.doAction(this.props.service.id, {
+			property: 'level',
+			value
+		});
+
+		// Workaround for state bug
+		this.props.saveSettings({
+			...this.props.service.settings.toObject(),
+			current_level: value
+		});
+	}
+
 	render () {
-		const isConnected = this.props.service.state.connected,
+		const isConnected = this.props.service.state.get('connected'),
 			currentLevel = this.state.is_changing
 				? this.state.slider_value
-				: this.getPercentage100(this.settings.current_level);
+				: this.getPercentage100(this.props.service.settings.get('current_level'));
 
 		return (
 			<ServiceCardBase
-				name={this.settings.name || 'Dimmer'}
+				name={this.props.service.settings.get('name') || 'Dimmer'}
 				status={isConnected && Number.isFinite(currentLevel)
 					? currentLevel + '%'
 					: 'Unknown'}
 				isConnected={isConnected}
-				onCardClick={this.toggleLevel.bind(this)}
+				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
 				<div styleName="container">
 					<Switch
-						isOn={this.settings.current_level > 0}
+						isOn={this.props.service.settings.get('current_level') > 0}
 						showLabels={true}
-						onChange={this.toggleSwitch.bind(this)}
 						disabled={!isConnected} />
 					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
 						<SliderControl
 							value={currentLevel}
-							onInput={this.handleInput.bind(this)}
-							onChange={this.handleChange.bind(this)}
+							onInput={this.handleSliderInput.bind(this)}
+							onChange={this.handleSliderChange.bind(this)}
 							disabled={!isConnected} />
 					</div>
 				</div>
@@ -110,7 +104,7 @@ const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
 	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
-	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings))
+	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
 });
 
 export default connect(null, null, mergeProps)(DimmerCard);

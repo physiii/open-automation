@@ -109,8 +109,6 @@ class Service {
 			if (typeof setProperty === 'function') {
 				setProperty = setProperty.bind(this);
 			} else {
-				console.log(TAG,"Emitting action to adapter.", action);
-				this.events.emit(action.property,action); // Emitting action to adapter
 				setProperty = this._deviceEmitAction.bind(this, action.property);
 			}
 

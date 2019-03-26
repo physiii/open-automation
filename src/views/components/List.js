@@ -2,24 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {SortableContainer} from 'react-sortable-hoc';
 import {default as ListItem, SortableListItem} from './ListItem.js';
-import './List.css';
+import {AutoSizer, List as VirtualizedList} from 'react-virtualized';
+import styles from './List.css';
 
 export class List extends React.Component {
 	constructor (props) {
 		super(props);
 
-		this.renderList = this.renderList.bind(this);
-		this.renderSortableList = SortableContainer(this.renderList);
+		this.renderStandardList = this.renderStandardList.bind(this);
+		this.renderSortableList = SortableContainer(this.renderStandardList);
 
 		this.state = {itemBeingDragged: false};
 	}
 
-	renderList () {
+	renderStandardList () {
 		const ListElement = this.props.isOrdered ? 'ol' : 'ul',
 			ListItemComponent = this.props.isSortable ? SortableListItem : ListItem;
 
 		return (
-			<ListElement>
+			<ListElement className={styles.list}>
 				{this.props.children && Boolean(this.props.children.length) && this.props.children.map((item, index) => (
 					<ListItemComponent
 						{...item}
@@ -32,17 +33,36 @@ export class List extends React.Component {
 		);
 	}
 
-	render () {
-		if (!this.props.children.length && !this.props.renderIfEmpty) {
-			return null;
-		}
-
-		const ListComponent = this.props.isSortable ? this.renderSortableList : this.renderList;
-
+	renderVirtualizedList () {
 		return (
-			<div styleName="list">
-				{this.props.title && <h2 styleName="title">{this.props.title}</h2>}
-				<ListComponent
+			<AutoSizer>
+				{({width, height}) => (
+					<VirtualizedList
+						className={styles.list}
+						rowCount={this.props.children ? this.props.children.length : 0}
+						rowHeight={48}
+						rowRenderer={({index, key, style}) => (
+							<ListItem
+								{...this.props.children[index]}
+								element="div"
+								key={key}
+								style={style} />
+						)}
+						width={width}
+						height={height} />
+				)}
+			</AutoSizer>
+		);
+	}
+
+	renderList () {
+		if (this.props.shouldVirtualize) {
+			return this.renderVirtualizedList();
+		} else if (this.props.isSortable) {
+			const SortableList = this.renderSortableList;
+
+			return (
+				<SortableList
 					lockAxis="y"
 					lockToContainerEdges={true}
 					lockOffset={0}
@@ -61,6 +81,23 @@ export class List extends React.Component {
 
 						this.setState({itemBeingDragged: false});
 					}} />
+			);
+		}
+
+		return this.renderStandardList();
+	}
+
+	render () {
+		if (!this.props.children.length && !this.props.renderIfEmpty) {
+			return null;
+		}
+
+		return (
+			<div className={styles.container}>
+				{this.props.title && <h2 className={styles.title}>{this.props.title}</h2>}
+				<div className={styles.listWrapper}>
+					{this.renderList()}
+				</div>
 			</div>
 		);
 	}
@@ -71,6 +108,7 @@ List.propTypes = {
 	children: PropTypes.arrayOf(PropTypes.shape(ListItem.propTypes)),
 	isOrdered: PropTypes.bool,
 	isSortable: PropTypes.bool,
+	shouldVirtualize: PropTypes.bool,
 	renderIfEmpty: PropTypes.bool,
 	onSortStart: PropTypes.func,
 	onSortEnd: PropTypes.func

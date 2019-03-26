@@ -17,8 +17,8 @@ export const ServiceDetailsScreen = (props) => {
 	}
 
 	return (
-		<NavigationScreen title={props.service.settings.name || props.service.strings.friendly_type} url={props.match.urlWithoutOptionalParams}>
-			{!service.state.connected && (
+		<NavigationScreen title={props.service.settings.get('name') || props.service.strings.get('friendly_type')} url={props.match.urlWithoutOptionalParams}>
+			{!service.state.get('connected') && (
 				<List>
 					{[
 						{
@@ -40,7 +40,7 @@ ServiceDetailsScreen.propTypes = {
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-	const service = getServiceById(servicesList, match.params.serviceId);
+	const service = getServiceById(servicesList, match.params.serviceId, false);
 
 	if (!service) {
 		return {};

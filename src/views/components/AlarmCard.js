@@ -14,9 +14,8 @@ export class AlarmCard extends React.Component {
 		this.handleSettingsChange = this.handleSettingsChange.bind(this);
 
 		this.settings = {...props.service.settings};
-		console.log('Loading settings...', this.settings);
 		this.state = {
-			slider_value: this.getPercentage100(props.service.settings.current_mode),
+			slider_value: this.getPercentage100(props.service.settings.get('current_mode')),
 			is_changing: false
 		};
 	}
@@ -26,7 +25,6 @@ export class AlarmCard extends React.Component {
 			...this.settings
 		};
 
-		console.log('Saving settings...', this.settings);
 		this.props.saveSettings(this.settings);
 	}
 
@@ -36,13 +34,8 @@ export class AlarmCard extends React.Component {
 		} else {
 			this.settings.current_mode = 1;
 		}
-		this.handleSettingsChange();
-	}
 
-	toggleSwitch () {
-		// disabled to not interfer with onCardClick
-		// this.toggleMode();
-		// this.handleSettingsChange();
+		this.handleSettingsChange();
 	}
 
 	onCardClick () {
@@ -68,7 +61,7 @@ export class AlarmCard extends React.Component {
 	}
 
 	render () {
-		const isConnected = this.props.service.state.connected,
+		const isConnected = this.props.service.state.get('connected'),
 			currentMode = this.state.is_changing
 				? this.state.slider_value
 				: this.getPercentage100(this.settings.current_mode);
@@ -86,7 +79,6 @@ export class AlarmCard extends React.Component {
 					<Switch
 						isOn={this.settings.current_mode > 0}
 						showLabels={true}
-						onChange={this.toggleSwitch.bind(this)}
 						disabled={!isConnected} />
 					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
 						<SliderControl
@@ -110,7 +102,7 @@ const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
 	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
-	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings))
+	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
 });
 
 export default connect(null, null, mergeProps)(AlarmCard);

@@ -56,14 +56,17 @@ export class VideoStream extends React.Component {
 
 	componentWillUnmount () {
 		this.stop();
-		this.player.destroy();
+
+		if (this.player) {
+			this.player.destroy();
+		}
 	}
 
 	start () {
 		const streamId = this.getStreamIdForCurrentResource();
 
 		// Play JSMpeg. Need to match exactly false because of JSMpeg quirks.
-		if (this.player.isPlaying === false) {
+		if (this.player && this.player.isPlaying === false) {
 			this.player.play();
 		}
 
@@ -80,7 +83,7 @@ export class VideoStream extends React.Component {
 		const streamId = this.getStreamIdForCurrentResource();
 
 		// Pause JSMpeg.
-		if (this.player.isPlaying) {
+		if (this.player && this.player.isPlaying) {
 			this.player.pause();
 		}
 
@@ -117,8 +120,12 @@ export class VideoStream extends React.Component {
 		}
 
 		// Make the background black.
-		if (this.player.renderer) {
+		if (this.player && this.player.renderer) {
 			setTimeout(() => {
+				if (!this.player) {
+					return;
+				}
+
 				const {context, canvas} = this.player.renderer;
 
 				if (!context || !canvas) {

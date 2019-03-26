@@ -2,7 +2,6 @@ const GenericServiceAdapter = require('./service-adapter.js'),
 	utils = require('../../../../utils.js'),
 	moment = require('moment'),
 	crypto = require('crypto'),
-	TAG = '[GenericDimmerAdapter]',
 	LEVEL_SCALE = 255;
 
 class GenericDimmerAdapter extends GenericServiceAdapter {
@@ -20,21 +19,21 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 			should_emit = true;
 
 		// TODO: Validate action values. If error, callback and set should_emit false.
-		console.log(TAG,"_adaptSocketEmit",event,data);
+
 		switch (event) {
 			case 'action':
-				if (data.property === 'current_level') {
+				if (data.property === 'level') {
 					adapted_event = 'dimmer';
 					adapted_data = {level: this._adaptLevelToDevice(data.value)};
 				}
 				break;
 			case 'settings':
-				console.log("sending current level: ",data.settings.current_level);
 				if ('current_level' in data.settings) {
 					adapted_event = 'dimmer';
 					adapted_data = {level: this._adaptLevelToDevice(data.settings.current_level)};
 				}
-				if ('schedule' in data.settings) {
+
+                if ('schedule' in data.settings) {
 					this._sendSchedules(data.settings.schedule).then(() => callback()).catch((error) => {
 						console.error(error);
 						callback(error);
@@ -74,11 +73,9 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 					return;
 				}
 
-				console.log(TAG,"_sendSchedules",settings);
 				// No schedule changes.
 				if (schedule_changes.length < 1) {
 					resolve();
-					// reject('Unable to save new settings!');
 					return;
 				}
 

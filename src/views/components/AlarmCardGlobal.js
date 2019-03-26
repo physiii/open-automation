@@ -14,9 +14,8 @@ export class GlobalAlarmCard extends React.Component {
 		this.handleSettingsChange = this.handleSettingsChange.bind(this);
 
 		this.settings = {...props.service.settings};
-		console.log('Loading settings...', this.settings);
 		this.state = {
-			slider_value: this.getPercentage100(props.service.settings.current_mode),
+			slider_value: this.getPercentage100(props.service.settings.get('current_mode')),
 			is_changing: false
 		};
 	}
@@ -25,8 +24,6 @@ export class GlobalAlarmCard extends React.Component {
 		this.settings = {
 			...this.settings
 		};
-
-		console.log('Saving settings...', this.settings);
 
 		this.props.doAction(this.props.service.id, {
 			property: 'mode',
@@ -42,13 +39,8 @@ export class GlobalAlarmCard extends React.Component {
 		} else {
 			this.settings.current_mode = 1;
 		}
-		this.handleSettingsChange();
-	}
 
-	toggleSwitch () {
-		// disabled to not interfer with onCardClick
-		// this.toggleMode();
-		// this.handleSettingsChange();
+		this.handleSettingsChange();
 	}
 
 	onCardClick () {
@@ -91,8 +83,7 @@ export class GlobalAlarmCard extends React.Component {
 				<div styleName="container">
 					<Switch
 						isOn={this.settings.current_mode > 0}
-						showLabels={true}
-						onChange={this.toggleSwitch.bind(this)} />
+						showLabels={true} />
 					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
 						<SliderControl
 							value={currentMode}
@@ -114,7 +105,7 @@ const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
 	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
-	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings))
+	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
 });
 
 export default connect(null, null, mergeProps)(GlobalAlarmCard);

@@ -25,11 +25,9 @@ export class SliderControl extends React.Component {
 	}
 
 	handleInput (value) {
-		console.log('handleInput', value);
 		this.setState({value});
 
 		if (typeof this.props.onInput === 'function') {
-			console.log('handleInput onInput', value);
 			this.props.onInput(value);
 		}
 	}

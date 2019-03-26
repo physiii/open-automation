@@ -5,23 +5,36 @@ import {SortableElement} from 'react-sortable-hoc';
 import styles from './ListItem.css';
 
 export const ListItem = (props) => {
-	const LinkComponent = props.link ? Link : 'a',
+	const ItemElement = props.element,
+		LinkComponent = props.link ? Link : 'a',
 		itemContent = (
 			<div className={styles.rowContentInner}>
-				{props.icon && <div className={styles.rowIcon}>{props.icon}</div>}
+				{props.icon && <div className={styles.rowIcon}>{typeof props.icon === 'function'
+					? props.icon()
+					: props.icon}</div>}
 				<div className={styles.rowText}>
 					<span className={styles.primaryText}>
-						{props.label}
-						{props.meta && <span className={styles.metaText}>{props.meta}</span>}
+						{typeof props.label === 'function'
+							? props.label()
+							: props.label}
+						{props.meta && <span className={styles.metaText}>{typeof props.meta === 'function'
+							? props.meta()
+							: props.meta}</span>}
 					</span>
-					{props.secondaryText && <span className={styles.secondaryText}>{props.secondaryText}</span>}
-					{props.tertiaryText && <span className={styles.tertiaryText}>{props.tertiaryText}</span>}
+					{props.secondaryText && <span className={styles.secondaryText}>{typeof props.secondaryText === 'function'
+						? props.secondaryText()
+						: props.secondaryText}</span>}
+					{props.tertiaryText && <span className={styles.tertiaryText}>{typeof props.tertiaryText === 'function'
+						? props.tertiaryText()
+						: props.tertiaryText}</span>}
 				</div>
 			</div>
 		);
 
 	return (
-		<li className={styles.row + (props.isDraggable ? ' ' + styles.isDraggable : '') + (props.isBeingDragged ? ' ' + styles.isBeingDragged : '')}>
+		<ItemElement
+			className={styles.row + (props.isDraggable ? ' ' + styles.isDraggable : '') + (props.isBeingDragged ? ' ' + styles.isBeingDragged : '')}
+			style={props.style}>
 			{props.link || props.onClick
 				? <LinkComponent href="#" className={styles.rowContent} to={props.link} onClick={(event) => {
 					if (!props.link) {
@@ -39,24 +52,32 @@ export const ListItem = (props) => {
 				</div>
 			}
 			{props.secondaryAction &&
-				<div className={styles.rowActions}>{props.secondaryAction}</div>}
-		</li>
+				<div className={styles.rowActions}>{typeof props.secondaryAction === 'function'
+					? props.secondaryAction()
+					: props.secondaryAction}</div>}
+		</ItemElement>
 	);
 };
 
 ListItem.beingDraggedClass = styles.isBeingDragged;
 
 ListItem.propTypes = {
-	label: PropTypes.node,
-	secondaryText: PropTypes.node,
-	tertiaryText: PropTypes.node,
-	icon: PropTypes.node,
-	meta: PropTypes.node,
+	label: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+	secondaryText: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+	tertiaryText: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+	icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+	meta: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	link: PropTypes.string,
-	secondaryAction: PropTypes.node,
+	secondaryAction: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	isDraggable: PropTypes.bool,
 	isBeingDragged: PropTypes.bool,
+	element: PropTypes.string,
+	style: PropTypes.object,
 	onClick: PropTypes.func
+};
+
+ListItem.defaultProps = {
+	element: 'li'
 };
 
 export const SortableListItem = SortableElement(ListItem);

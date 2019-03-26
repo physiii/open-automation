@@ -1,4 +1,5 @@
 @value toolbarHeight from "./AppToolbar.css";
+@value tabBarHeight from "../layouts/App.css";
 @value liveRed: #bd2100;
 
 .player {
@@ -83,7 +84,7 @@
 	position: relative;
 	overflow: hidden;
 	width: 100%;
-	max-width: calc((100vh - toolbarHeight) * (4 / 3));
+	max-width: calc((100vh - toolbarHeight - tabBarHeight) * (4 / 3));
 	max-height: 100%;
 }
 .isFullScreen .video {

@@ -19,13 +19,20 @@ export class CameraRecordingsScreen extends React.Component {
 	constructor (props) {
 		super(props);
 
-		this.goToDate = this.goToDate.bind(this);
+		this.handleDateSelected = this.handleDateSelected.bind(this);
+		this.handleCloseClick = this.handleCloseClick.bind(this);
 
 		this.state = {selectedMonth: this.props.selectedDate.startOf('month')};
 	}
 
 	componentDidMount () {
 		this.props.fetchRecordings(this.props.cameraService);
+	}
+
+	componentDidUpdate (previousProps) {
+		if (this.props.cameraService.state.get('connected') && !previousProps.cameraService.state.get('connected')) {
+			this.props.fetchRecordings(this.props.cameraService);
+		}
 	}
 
 	getPathForDate (date) {
@@ -41,6 +48,16 @@ export class CameraRecordingsScreen extends React.Component {
 		this.props.history.replace(this.getPathForDate(this.props.selectedDate) + '/' + recordingId);
 	}
 
+	handleDateSelected (date) {
+		this.goToDate(date);
+	}
+
+	handleCloseClick (event) {
+		event.preventDefault();
+
+		this.goToDate(this.props.selectedDate);
+	}
+
 	render () {
 		let bottomContent;
 
@@ -52,12 +69,13 @@ export class CameraRecordingsScreen extends React.Component {
 			bottomContent = (
 				<List
 					title={this.props.selectedDate.format('MMMM Do')}
-					isOrdered={true}>
+					isOrdered={true}
+					shouldVirtualize={true}>
 					{this.props.selectedDateRecordings.map((recording) => ({
 						key: recording.id,
-						label: moment(recording.date).format('h:mm A'),
+						label: () => moment(recording.date).format('h:mm A'),
 						icon: playButtonIcon,
-						meta: 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
+						meta: () => 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
 						onClick: () => this.playRecording(recording.id)
 					}))}
 				</List>
@@ -87,16 +105,10 @@ export class CameraRecordingsScreen extends React.Component {
 								<DatePicker
 									selectedDate={this.props.selectedDate}
 									enabledDates={this.props.getDatesOfRecordings(this.state.selectedMonth).map((date) => moment(date))}
-									onSelect={this.goToDate}
+									onSelect={this.handleDateSelected}
 									onMonthChange={(selectedMonth) => this.setState({selectedMonth})} />
 							</div>}
-						{this.props.selectedRecording &&
-							<a href="#" styleName="closeButton" onClick={(event) => {
-								event.preventDefault();
-								this.goToDate(this.props.selectedDate);
-							}}>
-								Close
-							</a>}
+						{this.props.selectedRecording && <a href="#" styleName="closeButton" onClick={this.handleCloseClick}>Close</a>}
 					</div>
 					<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
 						{bottomContent}
@@ -122,12 +134,11 @@ CameraRecordingsScreen.propTypes = {
 };
 
 CameraRecordingsScreen.defaultProps = {
-	selectedDateRecordings: [],
-	fetchRecordings: () => { /* no-op */ }
+	selectedDateRecordings: []
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-		const cameraService = getServiceById(servicesList, match.params.cameraServiceId),
+		const cameraService = getServiceById(servicesList, match.params.cameraServiceId, false),
 			recordingsError = cameraGetRecordingsListError(servicesList, match.params.cameraServiceId);
 
 		let selectedDate = moment([
@@ -143,7 +154,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 
 		if (!cameraService) {
 			error = 'There was a problem loading the camera’s recordings.';
-		} else if (!cameraService.state.connected) {
+		} else if (!cameraService.state.get('connected')) {
 			error = 'Recordings cannot be viewed when the camera is not connected.';
 		} else if (recordingsError) {
 			error = recordingsError;
@@ -162,7 +173,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 	},
 	mapDispatchToProps = (dispatch) => {
 		return {
-			fetchRecordings: (cameraService) => cameraService && cameraService.state.connected && dispatch(cameraFetchRecordings(cameraService.id))
+			fetchRecordings: (cameraService) => cameraService && cameraService.state.get('connected') && dispatch(cameraFetchRecordings(cameraService.id))
 		};
 	};
 
