@@ -335,6 +335,14 @@ class ClientConnection {
 				.then(() => callback())
 				.catch((error) => callback(error));
 		});
+
+		// Game Machine Service API
+
+		this.clientEndpoint('game-machine/credit/add', function (data, callback) {
+			data.service.addCredit(data.dollar_value)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
 	}
 
 	clientEndpoint (event, callback, skip_device_lookup) {

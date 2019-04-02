@@ -143,6 +143,12 @@ class Api {
 		return Api.apiCall('thermostat/fan-mode/set', {service_id: thermostatServiceId, fan_mode: fanMode});
 	}
 
+	// Game Machine Service
+
+	gameMachineAddCredit (gameMachineServiceId, dollarValue) {
+		return Api.apiCall('game-machine/credit/add', {service_id: gameMachineServiceId, dollar_value: dollarValue});
+	}
+
 	// Session API
 
 	getAccessToken (grant_type = 'refresh', username, password) {

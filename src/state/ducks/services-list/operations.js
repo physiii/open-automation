@@ -81,6 +81,9 @@ const recordingsWorker = new RecordingsWorker(),
 	},
 	thermostatFanAuto = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'auto');
+	},
+	gameMachineAddCredit = (gameMachineServiceId, dollarValue) => () => {
+		Api.gameMachineAddCredit(gameMachineServiceId, dollarValue);
 	};
 
 export {
@@ -98,5 +101,6 @@ export {
 	thermostatSetMode,
 	thermostatSetHold,
 	thermostatFanOn,
-	thermostatFanAuto
+	thermostatFanAuto,
+	gameMachineAddCredit
 };

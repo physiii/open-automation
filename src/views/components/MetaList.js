@@ -32,8 +32,8 @@ MetaList.defaultProps = {
 
 MetaList.propTypes = {
 	children: PropTypes.arrayOf(PropTypes.shape({
-		label: PropTypes.string,
-		value: PropTypes.string
+		label: PropTypes.node,
+		value: PropTypes.node
 	})),
 	layout: PropTypes.oneOf(['horizontal', 'vertical']),
 	alignLabels: PropTypes.oneOf(['top', 'left']),

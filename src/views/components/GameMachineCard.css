@@ -11,6 +11,7 @@
 	justify-content: center;
 	flex: 1 0;
 	margin: 24px 0;
+	padding: 0 16px;
 	text-align: center;
 }
 
@@ -27,4 +28,22 @@
 }
 .hopperTotalDescription::before {
 	content: "…";
+}
+
+.addCredit {
+	display: flex;
+	flex-flow: column nowrap;
+	padding: 0 16px;
+}
+
+.addCreditTitle {
+	margin-top: 8px;
+	font-size: 13px;
+	color: #969696;
+}
+
+.addCreditButtons {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
 }
