@@ -10,7 +10,6 @@ class Camera extends ServiceRecord({
 		rotation: 0
 	},
 	state: {
-		preview_image: null,
 		motion_detected_date: null
 	},
 	preview_image: null,

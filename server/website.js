@@ -1,4 +1,5 @@
 const AccountsManager = require('./accounts/accounts-manager.js'),
+	DevicesManager = require('./devices/devices-manager.js'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
 	cookie = require('cookie'),
@@ -9,6 +10,7 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	compression = require('compression'),
 	helmet = require('helmet'),
 	jwt = require('jsonwebtoken'),
+	url = require('url'),
 	webpack = require('webpack'),
 	WebpackDevMiddleware = require('webpack-dev-middleware'),
 	WebpackHotMiddleware = require('webpack-hot-middleware'),
@@ -37,6 +39,41 @@ module.exports = function (jwt_secret) {
 			frameguard: {
 				action: 'deny' // Prevent the site from being loaded in a frame.
 			}
+		},
+		verifyAccessToken = (access_token, xsrf_token, skip_xsrf) => {
+			return new Promise((resolve, reject) => {
+				if (!access_token) {
+					reject('No access token');
+					return;
+				}
+
+				jwt.verify(access_token, jwt_secret, {issuer: process.env.OA_API_TOKEN_ISSUER}, (error, claims) => {
+					// Access token is invalid.
+					if (error) {
+						reject('Invalid access token ' + error.name);
+						return;
+					}
+
+					// Access token or CSRF token is invalid.
+					if (!skip_xsrf && xsrf_token !== claims.xsrf_token) {
+						reject('Invalid XSRF token');
+						return;
+					}
+
+					const account = AccountsManager.getAccountById(claims.sub);
+
+					if (!account) {
+						reject('Account not found');
+						return;
+					}
+
+					// Get the account for the account ID provided by the access token.
+					resolve({
+						account,
+						refresh_token: claims.refresh_token
+					});
+				});
+			});
 		};
 
 	let logo_file_path = process.env.OA_LOGO_PATH || 'logo.png',
@@ -124,42 +161,6 @@ module.exports = function (jwt_secret) {
 	});
 
 	app.post('/api/token', (request, response, next) => {
-		function verifyAccessToken (access_token, xsrf_token) {
-			return new Promise((resolve, reject) => {
-				if (!access_token) {
-					reject('No access token');
-					return;
-				}
-
-				jwt.verify(access_token, jwt_secret, {issuer: process.env.OA_API_TOKEN_ISSUER}, (error, claims) => {
-					// Access token is invalid.
-					if (error) {
-						reject('Invalid access token ' + error.name);
-						return;
-					}
-
-					// Access token or CSRF token is invalid.
-					if (xsrf_token !== claims.xsrf_token) {
-						reject('Invalid XSRF token');
-						return;
-					}
-
-					const account = AccountsManager.getAccountById(claims.sub);
-
-					if (!account) {
-						reject('Account not found');
-						return;
-					}
-
-					// Get the account for the account ID provided by the access token.
-					resolve({
-						account,
-						refresh_token: claims.refresh_token
-					});
-				});
-			});
-		}
-
 		function respondWithAccessToken (account) {
 			// Generate access token and CSRF token.
 			account.generateAccessToken(process.env.OA_API_TOKEN_ISSUER, jwt_secret).then((tokens) => {
@@ -250,6 +251,37 @@ module.exports = function (jwt_secret) {
 
 			console.error('Tried to create an account, but there was an error.', error);
 			response.sendStatus(500);
+		});
+	});
+
+	app.get('/service-content/camera-preview', (request, response) => {
+		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {},
+			referrer = request.get('Referrer');
+
+		if (referrer && url.parse(referrer).hostname !== process.env.OA_DOMAIN_NAME) {
+			response.sendStatus(401);
+			return;
+		}
+
+		verifyAccessToken(cookies.access_token, request.headers['x-xsrf-token'], true).then(({account}) => {
+			const service = DevicesManager.getServiceById(request.query.service_id, account.id);
+
+			if (!service) {
+				response.sendStatus(204);
+				return;
+			}
+
+			service.getPreviewImage().then((preview_image) => {
+				if (!preview_image) {
+					response.sendStatus(204);
+					return;
+				}
+
+				response.type('jpeg').end(Buffer.from(preview_image, 'base64'));
+			}).catch((error) => response.sendStatus(500));
+		}).catch((error) => {
+			console.log(TAG, 'Error validating access token (' + error + ').');
+			response.sendStatus(401);
 		});
 	});
 

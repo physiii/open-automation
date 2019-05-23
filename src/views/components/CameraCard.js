@@ -38,13 +38,13 @@ export class CameraCard extends React.Component {
 	}
 
 	render () {
-		const lastRecordingDate = this.props.service.state.get('motion_detected_date');
+		const motionDetectedDate = this.props.service.state.get('motion_detected_date');
 
 		return (
 			<ServiceCardBase
 				service={this.props.service}
 				name={this.props.service.settings.get('name') || 'Camera'}
-				status={lastRecordingDate && 'Movement detected ' + moment(lastRecordingDate).fromNow()}
+				status={motionDetectedDate && 'Movement detected ' + moment(motionDetectedDate).fromNow()}
 				isConnected={this.props.service.state.get('connected')}
 				onCardClick={this.onCardClick}
 				toolbarsOverlayContent={true}
@@ -55,7 +55,7 @@ export class CameraCard extends React.Component {
 					key={this.props.service.id}
 					cameraServiceId={this.props.service.id}
 					streamingToken={this.props.service.streaming_token}
-					posterUrl={this.props.service.state.get('preview_image') && 'data:image/jpg;base64,' + this.props.service.state.get('preview_image')}
+					posterUrl={'/service-content/camera-preview?service_id=' + this.props.service.id + '&date=' + motionDetectedDate}
 					showControlsWhenStopped={false}
 					width={this.props.service.settings.get('resolution_w')}
 					height={this.props.service.settings.get('resolution_h')}

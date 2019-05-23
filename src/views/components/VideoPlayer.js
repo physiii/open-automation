@@ -146,7 +146,7 @@ export class VideoPlayer extends React.Component {
 				<div styleName="video">
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
 					{this.props.posterUrl && !this.state.hasPlayedOnce &&
-						<img styleName="poster" src={this.props.posterUrl} />}
+						<object styleName="poster" data={this.props.posterUrl} type="image/jpg"></object>}
 					<VideoStream
 						styleName="canvas"
 						{...this.props}
