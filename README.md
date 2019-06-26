@@ -24,3 +24,5 @@
     source ~/.bashrc
     npm install
     #get .env key.pem cert.pem
+    npm run build
+    npm run start
