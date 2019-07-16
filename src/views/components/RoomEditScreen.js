@@ -4,7 +4,7 @@ import {Redirect} from 'react-router-dom';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import Button from './Button.js';
-import SettingsForm from './SettingsForm.js';
+import Form from './Form.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {addRoom, setRoomName} from '../../state/ducks/rooms-list/operations.js';
@@ -61,7 +61,7 @@ export class RoomEditScreen extends React.Component {
 				url={this.props.match.url}
 				toolbarActions={this.props.isNew ? <Button onClick={this.handleSaveClick} disabled={!this.state.isSaveable}>Save</Button> : null}
 				toolbarBackAction={this.props.isNew ? <Button to={this.props.match.parentMatch.url}>Cancel</Button> : null}>
-				<SettingsForm
+				<Form
 					fields={{name: {
 						type: 'string',
 						label: 'Name',

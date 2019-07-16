@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {Switch, Redirect} from 'react-router-dom';
 import {Route, withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
-import SettingsForm from './SettingsForm.js';
 import DeviceRoomField from './DeviceRoomField.js';
 import List from './List.js';
 import Button from './Button.js';
@@ -11,6 +10,8 @@ import MetaList from './MetaList.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
 import ServiceDetails from './ServiceDetails.js';
 import ServiceDetailsScreen from './ServiceDetailsScreen.js';
+import ServiceSettingsScreen from './ServiceSettingsScreen.js';
+import DeviceSettingsScreen from './DeviceSettingsScreen.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
@@ -23,12 +24,6 @@ export class DeviceDetailsScreen extends React.Component {
 		super(props);
 
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
-	}
-
-	getScreenTitle (hasOneService, firstService) {
-		return hasOneService
-			? firstService.settings.get('name') || firstService.strings.get('friendly_type')
-			: this.props.device.settings.name || 'Device';
 	}
 
 	handleDeleteClick () {
@@ -51,27 +46,22 @@ export class DeviceDetailsScreen extends React.Component {
 
 		return (
 			<NavigationScreen
-				title={this.getScreenTitle(hasOneService, firstService)}
+				title={this.props.device.settings.name || 'Device'}
 				url={this.props.match.urlWithoutOptionalParams}
-				toolbarActions={<Button onClick={this.handleDeleteClick}>Delete</Button>}>
+				toolbarActions={
+					<React.Fragment>
+						<Button to={this.props.match.url + '/settings'}>Device Settings</Button>
+						<Button onClick={this.handleDeleteClick}>Delete</Button>
+					</React.Fragment>
+				}>
 				<Switch>
+					<DeviceSettingsScreen path={this.props.match.path + '/settings'} device={device} />
 					<Route exact={!hasOneService} path={this.props.match.path} render={() => (
 						<section styleName="container">
-							{!device.state.connected && (
-								<List>
-									{[
-										{
-											label: 'Device is not responding',
-											secondaryText: 'Device must be reachable to update settings.'
-										}
-									]}
-								</List>
-							)}
 							{device.error && <p>The device settings could not be updated because of an error.</p>}
 							{hasOneService
-								? <ServiceDetails service={firstService} shouldShowRoomField={true} />
+								? <ServiceDetails service={firstService} shouldShowSettingsButton={true} />
 								: <React.Fragment>
-									<DeviceRoomField deviceId={device.id} />
 									<List
 										title="Features"
 										renderIfEmpty={false}>
@@ -79,22 +69,13 @@ export class DeviceDetailsScreen extends React.Component {
 											key: service.id,
 											label: service.settings.get('name') || service.strings.get('friendly_type'),
 											icon: <ServiceIcon service={service} size={24} shouldRenderBlank={true} />,
-											link: this.props.match.url + '/service/' + service.id
+											link: this.props.match.url + '/service/' + service.id,
+											secondaryAction: <Button to={this.props.match.url + '/service-settings/' + service.id}>Settings</Button>
 										}))}
 									</List>
 								</React.Fragment>}
-							{SettingsForm.willAnyFieldsRender(device.settings_definitions) && (
-								<React.Fragment>
-									<h1 styleName="settingsHeading">Device Settings</h1>
-									<SettingsForm
-										fields={device.settings_definitions}
-										values={device.settings}
-										disabled={!device.state.connected}
-										saveSettings={this.props.saveSettings}
-										key={device.error} /> {/* Re-create component when there's an error to make sure the latest device settings state is rendered. */}
-								</React.Fragment>
-							)}
-							<h1 styleName="infoHeading">Info</h1>
+							<DeviceRoomField deviceId={device.id} />
+							<h1 styleName="infoHeading">Device Info</h1>
 							<MetaList layout="vertical" alignLabels="left">
 								{[
 									{label: 'Manufacturer', value: device.info.manufacturer},
@@ -107,6 +88,7 @@ export class DeviceDetailsScreen extends React.Component {
 							</MetaList>
 						</section>
 					)} />
+					<ServiceSettingsScreen path={this.props.match.path + '/service-settings'} />
 					<ServiceDetailsScreen path={this.props.match.path + '/service'} />
 					<Route render={() => <Redirect to={this.props.match.url} />} />
 				</Switch>

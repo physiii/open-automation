@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import SettingsForm from './SettingsForm.js';
+import Form from './Form.js';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import {setDeviceRoom} from '../../state/ducks/devices-list/operations.js';
 import {getRooms, hasInitialFetchCompleted} from '../../state/ducks/rooms-list/selectors.js';
@@ -27,7 +27,7 @@ export class DeviceRoomField extends React.Component {
 
 	render () {
 		return (
-			<SettingsForm
+			<Form
 				fields={{room: {
 					type: 'one-of',
 					label: 'Room',

@@ -35,7 +35,6 @@ export class RoomsSettingsScreen extends React.Component {
 	}
 
 	handleDeleteClick (room) {
-		console.log('delete');
 		if (confirm('Do you want to delete ‘' + room.name + '’?')) {
 			this.props.deleteRoom(room);
 		}

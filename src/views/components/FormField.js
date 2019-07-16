@@ -8,7 +8,7 @@ import TimeField from './TimeField.js';
 import PercentageField from './PercentageField.js';
 import ListField from './ListField.js';
 
-export const SettingsField = (props) => {
+export const FormField = (props) => {
 	const fieldProps = {
 		name: props.property,
 		label: props.label || props.definition.label || props.property,
@@ -21,7 +21,7 @@ export const SettingsField = (props) => {
 		case 'string':
 		case 'integer':
 		case 'number':
-			// TODO: Set text input type to number for integer/number settings.
+			// TODO: Set text input type to number for integer/number fields.
 			return (
 				<TextField
 					{...fieldProps}
@@ -49,7 +49,7 @@ export const SettingsField = (props) => {
 			return (
 				<ListField
 					{...fieldProps}
-					itemFields={props.definition.item_properties}
+					itemFields={props.definition.item_properties.toJS()}
 					mainProperty={props.definition.main_property}
 					secondaryProperty={props.definition.secondary_property} />
 			);
@@ -62,9 +62,9 @@ const getUnitLabeledValue = (value, label) => {
 	return value.toString && value.toString() + (label ? ' ' + label : '');
 };
 
-SettingsField.supportsFieldType = (type) => SettingsField.supportedFieldTypes.includes(type);
+FormField.supportsFieldType = (type) => FormField.supportedFieldTypes.includes(type);
 
-SettingsField.propTypes = {
+FormField.propTypes = {
 	property: PropTypes.string.isRequired,
 	definition: PropTypes.object.isRequired,
 	label: PropTypes.string,
@@ -74,7 +74,7 @@ SettingsField.propTypes = {
 	onChange: PropTypes.func
 };
 
-SettingsField.supportedFieldTypes = [
+FormField.supportedFieldTypes = [
 	'string',
 	'integer',
 	'number',
@@ -83,4 +83,4 @@ SettingsField.supportedFieldTypes = [
 	'list-of'
 ];
 
-export default SettingsField;
+export default FormField;

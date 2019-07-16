@@ -1,6 +1,5 @@
 @value topBarHeight: 72px;
 @value bottomBarHeight: 48px;
-@value disconnectedRed: #d30808;
 
 .card {
 	display: flex;
@@ -30,58 +29,6 @@
 	composes: topBar;
 	opacity: 0;
 	pointer-events: none;
-}
-.icon {
-	display: flex;
-	flex-flow: row nowrap;
-	justify-content: center;
-	align-items: center;
-	width: 56px;
-	padding: 16px 16px 16px 0;
-	position: relative;
-}
-.disconnectedIcon {
-	composes: icon;
-}
-.disconnectedIcon::after {
-	content: "!";
-	display: table-cell;
-	vertical-align: middle;
-	box-sizing: border-box;
-	width: 18px;
-	height: 18px;
-	position: absolute;
-	right: 16px;
-	bottom: 16px;
-	border-radius: 100%;
-	background-color: disconnectedRed;
-	color: #ffffff;
-	font-size: 15px;
-	line-height: 20px;
-	font-weight: bold;
-	text-align: center;
-}
-.nameWrapper {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-}
-.name {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-	min-height: 20px;
-}
-.status {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-	min-height: 20px;
-	color: #909090;
-}
-.disconnectedStatus {
-	composes: status;
-	color: disconnectedRed;
 }
 
 .bottomBar {

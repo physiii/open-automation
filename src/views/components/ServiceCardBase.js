@@ -3,31 +3,20 @@ import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
 import Toolbar from './Toolbar.js';
 import Button from './Button.js';
-import ServiceIcon from '../icons/ServiceIcon.js';
+import ServiceHeader from './ServiceHeader.js';
 import './ServiceCardBase.css';
 
 export const ServiceCardBase = (props) => {
-	const settingsPath = `${props.match.url}/service/${props.service.id}`,
-		status = props.isConnected
-			? props.status
-			: 'Not Responding';
+	const detailsPath = `${props.match.url}/service/${props.service.id}`;
 
 	return (
-		<section styleName="card" onClick={props.onCardClick || (() => props.history.push(settingsPath))}>
+		<section styleName="card" onClick={props.onCardClick || (() => props.history.push(detailsPath))}>
 			<div styleName={props.hideToolbars ? 'topBarHidden' : 'topBar'}>
-				{ServiceIcon.willRenderIcon(props.service) &&
-					<div styleName={props.isConnected ? 'icon' : 'disconnectedIcon'}>
-						<ServiceIcon service={props.service} size={40} />
-					</div>}
-				<div styleName="nameWrapper">
-					<h1 styleName="name">
-						{props.name}
-					</h1>
-					{status &&
-						<span styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>
-							{status}
-						</span>}
-				</div>
+				<ServiceHeader
+					service={props.service}
+					name={props.name}
+					status={props.status}
+					isConnected={props.isConnected} />
 			</div>
 			<div styleName={props.toolbarsOverlayContent ? 'contentBehindToolbars' : 'content'}>
 				{props.children}
@@ -36,7 +25,7 @@ export const ServiceCardBase = (props) => {
 				<Toolbar
 					leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>}
 					rightChildren={<div onClick={(event) => event.stopPropagation()}>
-						<Button to={settingsPath}>Settings</Button>
+						<Button to={detailsPath}>Details</Button>
 					</div>} />
 			</div>
 		</section>
@@ -47,7 +36,6 @@ ServiceCardBase.propTypes = {
 	service: PropTypes.object,
 	name: PropTypes.string,
 	status: PropTypes.string,
-	icon: PropTypes.node,
 	isConnected: PropTypes.bool,
 	children: PropTypes.node,
 	toolbarsOverlayContent: PropTypes.bool,

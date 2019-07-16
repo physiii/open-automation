@@ -15,6 +15,7 @@
 	font-size: 1rem;
 	color: primary;
 	text-decoration: none;
+	cursor: pointer;
 }
 .button::before {
 	content: "";

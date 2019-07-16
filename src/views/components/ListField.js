@@ -4,7 +4,7 @@ import Route from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import Button from './Button.js';
 import List from './List.js';
-import SettingsForm from './SettingsForm.js';
+import Form from './Form.js';
 import BlankState from './BlankState.js';
 import SettingValue from './SettingValue.js';
 import {withRouter} from 'react-router-dom';
@@ -17,8 +17,6 @@ export class ListField extends React.Component {
 
 		this.handleAddClick = this.handleAddClick.bind(this);
 		this.handleListItemClick = this.handleListItemClick.bind(this);
-		this.handleListScreenButtonClick = this.handleListScreenButtonClick.bind(this);
-		this.handleBackClick = this.handleBackClick.bind(this);
 		this.handleCancelClick = this.handleCancelClick.bind(this);
 		this.handleSaveClick = this.handleSaveClick.bind(this);
 		this.handleFormChange = this.handleFormChange.bind(this);
@@ -26,11 +24,10 @@ export class ListField extends React.Component {
 		this.handleFormNoErrors = this.handleFormNoErrors.bind(this);
 
 		this.state = {
-			showListScreen: false,
 			showEditScreen: false,
 			editingItem: null,
 			editingItemValues: null,
-			editingItemSaveable: true,
+			editingItemSaveable: false,
 			editingItemNew: false
 		};
 	}
@@ -58,14 +55,6 @@ export class ListField extends React.Component {
 			editingItemValues: this.getItems()[itemIndex],
 			editingItemNew: false
 		});
-	}
-
-	handleListScreenButtonClick () {
-		this.setState({showListScreen: true});
-	}
-
-	handleBackClick () {
-		this.setState({showListScreen: false});
 	}
 
 	handleCancelClick () {
@@ -102,7 +91,10 @@ export class ListField extends React.Component {
 	}
 
 	handleFormChange (itemValues) {
-		this.setState({editingItemValues: itemValues});
+		this.setState({
+			editingItemValues: itemValues,
+			editingItemSaveable: true
+		});
 	}
 
 	handleFormErrors () {
@@ -150,7 +142,7 @@ export class ListField extends React.Component {
 				title={(this.state.editingItemNew ? 'Add ' : 'Edit ') + '‘' + this.props.label + '’ Item'}
 				toolbarActions={<Button onClick={this.handleSaveClick} disabled={!this.state.editingItemSaveable}>Save</Button>}
 				toolbarBackAction={<Button onClick={this.handleCancelClick}>Cancel</Button>}>
-				<SettingsForm
+				<Form
 					fields={this.props.itemFields}
 					values={this.state.editingItemValues}
 					disabled={this.props.disabled}
@@ -191,12 +183,14 @@ export class ListField extends React.Component {
 										label: <SettingValue type={this.props.itemFields[this.props.mainProperty].type}>
 											{item[this.props.mainProperty]}
 										</SettingValue>,
-										secondaryText: <React.Fragment>
-											{this.props.itemFields[this.props.secondaryProperty].label}:&nbsp;
-											<SettingValue type={this.props.itemFields[this.props.secondaryProperty].type}>
-												{item[this.props.secondaryProperty]}
-											</SettingValue>
-										</React.Fragment>,
+										secondaryText: this.props.secondaryProperty && this.props.itemFields[this.props.secondaryProperty]
+											? <React.Fragment>
+												{this.props.itemFields[this.props.secondaryProperty].label}:&nbsp;
+												<SettingValue type={this.props.itemFields[this.props.secondaryProperty].type}>
+													{item[this.props.secondaryProperty]}
+												</SettingValue>
+											</React.Fragment>
+											: null,
 										secondaryAction: <Button onClick={() => this.deleteItem(index)}>Delete</Button>,
 										onClick: () => this.handleListItemClick(index)
 									}))}

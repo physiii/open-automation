@@ -22,6 +22,10 @@ export const isEmpty = (value) => {
 			return true;
 		}
 	},
+	areValuesTheSame = (value1, value2) => {
+		return JSON.stringify(value1) === JSON.stringify(value2);
+	},
+	noOp = () => { /* no-op */ },
 	formatUsd = Intl
 		? new Intl.NumberFormat('en-US', {
 			style: 'currency',

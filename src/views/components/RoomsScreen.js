@@ -46,7 +46,7 @@ export const RoomsScreen = (props) => {
 
 						return (
 							<NavigationScreen title={room.name} url={routeProps.match.url}>
-								{!roomServices.length &&
+								{!roomServices.size &&
 									<BlankState
 										heading="No Devices"
 										body="Use a device’s settings to add it to this room." />}
@@ -61,16 +61,16 @@ export const RoomsScreen = (props) => {
 };
 
 RoomsScreen.propTypes = {
-	devices: PropTypes.array.isRequired,
-	services: PropTypes.array.isRequired,
+	devices: PropTypes.object.isRequired,
+	services: PropTypes.object.isRequired,
 	rooms: PropTypes.array.isRequired,
 	isLoading: PropTypes.bool,
 	match: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({devicesList, servicesList, roomsList}) => ({
-	devices: getDevices(devicesList),
-	services: getServices(servicesList),
+	devices: getDevices(devicesList, false),
+	services: getServices(servicesList, false),
 	rooms: getRooms(roomsList),
 	isLoading: !hasInitialFetchCompleted(roomsList)
 });
