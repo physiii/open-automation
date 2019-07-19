@@ -136,7 +136,7 @@ ServiceSettingsScreen.propTypes = {
 
 const mapStateToProps = ({servicesList}, {service: ownPropsService, match}) => {
 		if (ownPropsService) {
-			return {};
+			return {service: ownPropsService};
 		}
 
 		const service = getServiceById(servicesList, match.params.serviceId, false);
@@ -150,7 +150,7 @@ const mapStateToProps = ({servicesList}, {service: ownPropsService, match}) => {
 	mergeProps = (stateProps, {dispatch}, ownProps) => ({
 		...ownProps,
 		...stateProps,
-		saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
+		saveSettings: (settings) => dispatch(setServiceSettings(stateProps.service.id, settings, stateProps.service.settings.toObject()))
 	});
 
 export default compose(

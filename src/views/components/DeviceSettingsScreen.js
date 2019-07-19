@@ -97,7 +97,7 @@ DeviceSettingsScreen.propTypes = {
 
 const mapStateToProps = ({devicesList}, {device: ownPropsDevice, match}) => {
 		if (ownPropsDevice) {
-			return {};
+			return {device: ownPropsDevice};
 		}
 
 		const device = getDeviceById(devicesList, match.params.deviceId);
@@ -111,7 +111,7 @@ const mapStateToProps = ({devicesList}, {device: ownPropsDevice, match}) => {
 	mergeProps = (stateProps, {dispatch}, ownProps) => ({
 		...ownProps,
 		...stateProps,
-		saveSettings: (settings) => dispatch(setDeviceSettings(ownProps.device.id, settings, ownProps.device.settings))
+		saveSettings: (settings) => dispatch(setDeviceSettings(stateProps.device.id, settings, stateProps.device.settings))
 	});
 
 export default compose(
