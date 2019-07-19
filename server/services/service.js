@@ -295,7 +295,6 @@ Service.settings_definitions = new Map()
 		type: 'string',
 		label: 'Name',
 		validation: {
-			is_required: true,
 			max_length: 24
 		}
 	})
