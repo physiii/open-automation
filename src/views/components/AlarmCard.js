@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {doServiceAction, setServiceSettings} from '../../state/ducks/services-list/operations.js';
+import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import Switch from './Switch.js';
 import SliderControl from './SliderControl.js';
@@ -25,17 +25,19 @@ export class AlarmCard extends React.Component {
 			...this.settings
 		};
 
-		this.props.saveSettings(this.settings);
+		// this.props.saveSettings(this.settings);
 	}
 
 	toggleMode () {
-		if (this.settings.current_mode > 0) {
-			this.settings.current_mode = 0;
+		let mode;
+
+		if (this.props.service.state.get('mode') > 0) {
+			mode = 0;
 		} else {
-			this.settings.current_mode = 1;
+			mode = 1;
 		}
 
-		this.handleSettingsChange();
+		this.setMode(mode);
 	}
 
 	onCardClick () {
@@ -60,11 +62,22 @@ export class AlarmCard extends React.Component {
 		return Math.round(value * 100);
 	}
 
+	setMode (value) {
+		if (!this.props.service.state.get('connected')) {
+			return;
+		}
+
+		this.props.doAction(this.props.service.id, {
+			property: 'mode',
+			value
+		});
+	}
+
 	render () {
 		const isConnected = this.props.service.state.get('connected'),
 			currentMode = this.state.is_changing
 				? this.state.slider_value
-				: this.getPercentage100(this.settings.current_mode);
+				: this.getPercentage100(this.props.service.state.get('mode'));
 
 		return (
 			<ServiceCardBase
@@ -77,7 +90,7 @@ export class AlarmCard extends React.Component {
 				{...this.props}>
 				<div styleName="container">
 					<Switch
-						isOn={this.settings.current_mode > 0}
+						isOn={this.props.service.state.get('mode') > 0}
 						showLabels={true}
 						disabled={!isConnected} />
 					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
@@ -101,8 +114,7 @@ AlarmCard.propTypes = {
 const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
-	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
-	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
+	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action))
 });
 
 export default connect(null, null, mergeProps)(AlarmCard);
