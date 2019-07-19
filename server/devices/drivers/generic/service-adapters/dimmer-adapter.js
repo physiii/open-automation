@@ -29,8 +29,15 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 				break;
 			case 'settings':
 				if ('current_level' in data.settings) {
-					adapted_event = 'dimmer';
-					adapted_data = {level: this._adaptLevelToDevice(data.settings.current_level)};
+					this.socket.emit('dimmer', {level: this._adaptLevelToDevice(data.settings.current_level)}, (error) => {
+						if (error) {
+							console.error(error);
+							callback(error);
+							return;
+						}
+
+						callback();
+					});
 				}
 
                 if ('schedule' in data.settings) {

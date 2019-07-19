@@ -15,19 +15,13 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 		...defaultValues
 	}) {
 		constructor (values) {
+			const settings = mapWithDefaults(defaultValues.settings, values.settings);
+
 			super({
 				...defaultValues,
 				...values,
-				settings_definitions: Immutable.OrderedMap(values.settings_definitions.map(([property, definition]) => {
-					const hydratedDefinition = {...definition};
-
-					if (definition.type === 'list-of') {
-						hydratedDefinition.item_properties = Immutable.OrderedMap(hydratedDefinition.item_properties);
-					}
-
-					return [property, hydratedDefinition];
-				})),
-				settings: mapWithDefaults(defaultValues.settings, values.settings),
+				settings_definitions: hydrateSettingsDefinitions(values.settings_definitions, settings),
+				settings,
 				state: mapWithDefaults(defaultValues.state, values.state),
 				strings: Immutable.Map(values.strings)
 			});
@@ -42,7 +36,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 					_value = mapWithDefaults(defaultValues[key], value);
 					break;
 				case 'settings_definitions':
-					_value = Immutable.OrderedMap(value);
+					_value = hydrateSettingsDefinitions(value, this.settings);
 					break;
 				default:
 					_value = value;
@@ -52,6 +46,23 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 			return super.set(key, _value || defaultValues[key]);
 		}
 	},
+	hydrateSettingsDefinitions = (definitions, settings) => Immutable.OrderedMap(definitions.map(([property, definition]) => {
+		const hydratedDefinition = {...definition};
+
+		if (definition.type === 'list-of') {
+			hydratedDefinition.item_properties = Immutable.OrderedMap(hydratedDefinition.item_properties);
+		}
+
+		// If the service already has a name, name is a required field (can't be deleted).
+		if (property === 'name' && settings.get('name')) {
+			hydratedDefinition.validation = {
+				...hydratedDefinition.validation,
+				is_required: true
+			};
+		}
+
+		return [property, hydratedDefinition];
+	})),
 	mapWithDefaults = (defaults, values) => Immutable.Map({
 		...defaults,
 		...Immutable.Map.isMap(values) ? values.toObject() : values
