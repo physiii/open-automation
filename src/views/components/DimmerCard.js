@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {doServiceAction, setServiceSettings} from '../../state/ducks/services-list/operations.js';
+import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import Switch from './Switch.js';
 import SliderControl from './SliderControl.js';
@@ -12,13 +12,13 @@ export class DimmerCard extends React.Component {
 		super(props);
 
 		this.state = {
-			slider_value: this.getPercentage100(props.service.settings.get('current_level')),
+			slider_value: this.getPercentage100(props.service.state.get('level')),
 			is_changing: false
 		};
 	}
 
 	onCardClick () {
-		this.setLevel(this.props.service.settings.get('current_level') > 0 ? 0 : 1);
+		this.setLevel(this.props.service.state.get('level') > 0 ? 0 : 1);
 	}
 
 	handleSliderInput (value) {
@@ -54,19 +54,13 @@ export class DimmerCard extends React.Component {
 			property: 'level',
 			value
 		});
-
-		// Workaround for state bug
-		this.props.saveSettings({
-			...this.props.service.settings.toObject(),
-			current_level: value
-		});
 	}
 
 	render () {
 		const isConnected = this.props.service.state.get('connected'),
 			currentLevel = this.state.is_changing
 				? this.state.slider_value
-				: this.getPercentage100(this.props.service.settings.get('current_level'));
+				: this.getPercentage100(this.props.service.state.get('level'));
 
 		return (
 			<ServiceCardBase
@@ -79,7 +73,7 @@ export class DimmerCard extends React.Component {
 				{...this.props}>
 				<div styleName="container">
 					<Switch
-						isOn={this.props.service.settings.get('current_level') > 0}
+						isOn={this.props.service.state.get('level') > 0}
 						showLabels={true}
 						disabled={!isConnected} />
 					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
@@ -103,8 +97,7 @@ DimmerCard.propTypes = {
 const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
-	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
-	saveSettings: (settings) => dispatch(setServiceSettings(ownProps.service.id, settings, ownProps.service.settings.toObject()))
+	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action))
 });
 
 export default connect(null, null, mergeProps)(DimmerCard);

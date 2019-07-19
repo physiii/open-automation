@@ -28,18 +28,6 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 				}
 				break;
 			case 'settings':
-				if ('current_level' in data.settings) {
-					this.socket.emit('dimmer', {level: this._adaptLevelToDevice(data.settings.current_level)}, (error) => {
-						if (error) {
-							console.error(error);
-							callback(error);
-							return;
-						}
-
-						callback();
-					});
-				}
-
                 if ('schedule' in data.settings) {
 					this._sendSchedules(data.settings.schedule).then(() => callback()).catch((error) => {
 						console.error(error);
@@ -208,12 +196,6 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 GenericDimmerAdapter.generic_type = 'dimmer';
 GenericDimmerAdapter.relay_type = 'dimmer';
 GenericDimmerAdapter.settings_definitions = new Map([...GenericServiceAdapter.settings_definitions])
-	.set('current_level', {
-		type: 'percentage',
-		label: 'Current Level',
-		default_value: 1,
-		validation: {is_required: true}
-	})
 	.set('schedule', {
 		type: 'list-of',
 		label: 'Schedule',
