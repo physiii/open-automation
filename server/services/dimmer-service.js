@@ -1,5 +1,4 @@
-const Service = require('./service.js'),
-	TAG = '[DimmerService]';
+const Service = require('./service.js');
 
 class DimmerService extends Service {}
 

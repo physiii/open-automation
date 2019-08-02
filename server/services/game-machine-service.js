@@ -1,5 +1,4 @@
-const Service = require('./service.js'),
-	TAG = '[GameMachineService]';
+const Service = require('./service.js');
 
 class GameMachineService extends Service {
 	addCredit (dollar_value) {

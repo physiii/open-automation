@@ -3,11 +3,9 @@ const EventEmitter = require('events'),
 	GenericServiceAdapter = require('./service-adapters/service-adapter.js'),
 	service_adapter_classes = {
 		'dimmer': require('./service-adapters/dimmer-adapter.js'),
-		'alarm': require('./service-adapters/alarm-adapter.js'),
 		'microphone': require('./service-adapters/microphone-adapter.js'),
 		'motion': require('./service-adapters/motion-adapter.js'),
-		'button': require('./service-adapters/button-adapter.js'),
-		'global-alarm': require('./service-adapters/global-alarm-adapter.js')
+		'button': require('./service-adapters/button-adapter.js')
 	},
 	TAG = '[GenericDeviceDriver]';
 

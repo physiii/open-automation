@@ -116,7 +116,6 @@ ServicesManager.classes = {
 	'camera': require('./camera-service.js'),
 	'contact-sensor': require('./contact-sensor-service.js'),
 	'dimmer': require('./dimmer-service.js'),
-	'alarm': require('./alarm-service.js'),
 	'motion': require('./motion-service.js'),
 	'microphone': require('./microphone-service.js'),
 	'global-alarm': require('./global-alarm-service.js'),

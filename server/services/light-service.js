@@ -1,5 +1,4 @@
-const Service = require('./service.js'),
-	TAG = '[LightService]';
+const Service = require('./service.js');
 
 class LightService extends Service {
 	setPower (power) {

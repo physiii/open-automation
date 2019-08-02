@@ -8,7 +8,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 	_adaptState (state) {
 		return GenericServiceAdapter.prototype._adaptState.call(this, {
 			...state,
-			level: this._adaptLevelToRelay(state.level)
+			level: this._adaptPercentageToRelay(state.level, LEVEL_SCALE)
 		});
 	}
 
@@ -24,7 +24,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 			case 'action':
 				if (data.property === 'level') {
 					adapted_event = 'dimmer';
-					adapted_data = {level: this._adaptLevelToDevice(data.value)};
+					adapted_data = {level: this._adaptPercentageToDevice(data.value, LEVEL_SCALE)};
 				}
 				break;
 			case 'settings':
@@ -38,16 +38,6 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 		}
 
 		return GenericServiceAdapter.prototype._adaptSocketEmit.call(this, adapted_event, adapted_data, adapted_callback, should_emit);
-	}
-
-	_adaptLevelToDevice (level) {
-		// Convert 0-1 percentage scale to value range of the level property on the device.
-		return Math.round(level * LEVEL_SCALE);
-	}
-
-	_adaptLevelToRelay (level) {
-		// Convert level property to a percentage between 0 and 1.
-		return Math.round((level / LEVEL_SCALE) * 100) / 100;
 	}
 
 	_sendSchedules (new_schedules = []) {
@@ -147,7 +137,7 @@ class GenericDimmerAdapter extends GenericServiceAdapter {
 
 			return {
 				seconds_into_day: moment.duration(time.diff(time.clone().startOf('day'))).asSeconds(),
-				level: this._adaptLevelToDevice(schedule.level),
+				level: this._adaptPercentageToDevice(schedule.level, LEVEL_SCALE),
 				on: true,
 				should_add: added_or_removed === 'added',
 				should_delete: added_or_removed === 'removed'

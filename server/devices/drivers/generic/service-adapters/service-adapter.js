@@ -50,20 +50,26 @@ class GenericServiceAdapter {
 	}
 
 	_adaptSocketEmit (event, data, callback, should_emit = true) {
-		if (event === 'action') {
-			return [
-				event,
-				{
-					service_id: this.generic_id,
-					property: data.property,
-					value: data.value
-				},
-				callback,
-				should_emit
-			];
-		}
+		return [
+			event,
+			{
+				...data,
+				service_id: this.generic_id
+			},
+			callback,
+			should_emit
+		];
+	}
 
-		return [event, data, callback, should_emit];
+	// @value - Number between 0 and 1.
+	_adaptPercentageToDevice (value, scale) {
+		// Convert 0-1 percentage scale to device value.
+		return Math.round(value * scale);
+	}
+
+	_adaptPercentageToRelay (value, scale) {
+		// Convert device value to a percentage between 0 and 1.
+		return Math.round((value / scale) * 100) / 100;
 	}
 
 	_getPrefixedEvent (event) {

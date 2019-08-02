@@ -1,6 +1,5 @@
 const moment = require('moment'),
-	Service = require('./service.js'),
-	TAG = '[CameraService]';
+	Service = require('./service.js');
 
 class CameraService extends Service {
 	subscribeToDevice () {

@@ -1,11 +1,10 @@
-const Service = require('./service.js'),
-	TAG = '[SirenService]';
+const Service = require('./service.js');
 
 class SirenService extends Service {
 	setSiren (trigger) {
 		return new Promise((resolve, reject) => {
 			if (trigger) {
-				this.deviceEmit('siren', {chirp:2});
+				this.deviceEmit('siren', {chirp: 2});
 			}
 
 			resolve();

@@ -1,5 +1,4 @@
-const Service = require('./service.js'),
-	TAG = '[ButtonService]';
+const Service = require('./service.js');
 
 class ButtonService extends Service {
 	subscribeToDevice () {

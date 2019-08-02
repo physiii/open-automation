@@ -1,5 +1,4 @@
-const Service = require('./service.js'),
-	TAG = '[ThermostatService]';
+const Service = require('./service.js');
 
 class ThermostatService extends Service {
 	action (data) {

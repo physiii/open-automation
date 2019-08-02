@@ -8,7 +8,7 @@ class GlobalAlarmService extends Service {
 		this.events.on('mode', (event_data) => {
 			let trigger_data = { state: { value: null } };
 
-			console.log(TAG,'mode', event_data);
+			console.log(TAG, 'mode', event_data);
 
 			if (event_data.value > 0) {
 				trigger_data.state.value = 'arm';
@@ -19,7 +19,7 @@ class GlobalAlarmService extends Service {
 			// TODO: validate this value before passing it through
 			this._emit(trigger_data.state.value, trigger_data);
 
-			console.log(TAG,event_data, trigger_data);
+			console.log(TAG, event_data, trigger_data);
 		});
 	}
 }
@@ -27,10 +27,5 @@ class GlobalAlarmService extends Service {
 GlobalAlarmService.type = 'global-alarm';
 GlobalAlarmService.friendly_type = 'Global Alarm';
 GlobalAlarmService.indefinite_article = 'A';
-GlobalAlarmService.state_definitions = new Map()
-	.set('trigger', {
-		type: 'boolean',
-		setter: 'setAlarm'
-	});
 
 module.exports = GlobalAlarmService;

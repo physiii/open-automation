@@ -1,5 +1,4 @@
-const Service = require('./service.js'),
-	TAG = '[LockService]';
+const Service = require('./service.js');
 
 class LockService extends Service {
 	constructor (data, onUpdate, deviceOn, deviceEmit, save) {
@@ -25,19 +24,6 @@ class LockService extends Service {
 	unlock () {
 		return new Promise((resolve, reject) => {
 			this.deviceEmit('unlock/set', {}, (error, data) => {
-				if (error) {
-					reject(error);
-					return;
-				}
-
-				resolve();
-			});
-		});
-	}
-
-	setRelockDelay (delay) {
-		return new Promise((resolve, reject) => {
-			this.deviceEmit('relockDelay/set', {relock_delay: delay}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
