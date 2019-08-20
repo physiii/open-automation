@@ -24,10 +24,7 @@ ServiceCard.cardComponents = {
 	'camera': CameraCard,
 	'dimmer': DimmerCard,
 	'global-alarm': GlobalAlarmCard,
-	'alarm': AlarmCard,
-	'motion': MotionCard,
 	'button': ButtonCard,
-	'microphone': MicrophoneCard,
 	'game-machine': GameMachineCard,
 	'lock': LockCard,
 	'thermostat': ThermostatCard

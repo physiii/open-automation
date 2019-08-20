@@ -1,7 +1,7 @@
 const TAG = '[DeviceDriver]';
 
 class DeviceDriver {
-	constructor (data, socket, device_id) {
+	constructor (data, device_id) {
 		this.device_id = device_id;
 	}
 
