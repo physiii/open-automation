@@ -69,19 +69,6 @@ class AutomationsManager extends EventEmitter {
 		return true;
 	}
 
-	// createAutomation (data) {
-	// 	return new Promise((resolve, reject) => {
-	// 		const automation = this._registerAutomation(data);
-
-	// 		database.saveAutomation(automation.dbSerialize()).then(() => {
-	// 			resolve(automation);
-	// 		}).catch((error) => {
-	// 			this._deregisterAutomation(automation.id, automation.account_id);
-	// 			reject(error);
-	// 		});
-	// 	});
-	// }
-
 	saveAutomation (data) {
 		return new Promise((resolve, reject) => {
 			const automation = new Automation(data),
@@ -147,21 +134,6 @@ class AutomationsManager extends EventEmitter {
 	verifyAccountAccessToAutomation (account_id, automation, force) {
 		return (automation && automation.account_id === account_id) || force;
 	}
-
-	// getAutomationsTriggeredByDate (date) {
-	// 	return Array.from(automations_list.values()).map((automation) => {
-	// 		const matching_trigger = automation.checkIfDateShouldTrigger(date);
-
-	// 		if (!matching_trigger) {
-	// 			return false;
-	// 		}
-
-	// 		return {
-	// 			automation,
-	// 			trigger: matching_trigger
-	// 		};
-	// 	}).filter((automation) => automation); // Filter out the automations without triggers matching the date.
-	// }
 
 	_loadAutomationsFromDb () {
 		return new Promise((resolve, reject) => {

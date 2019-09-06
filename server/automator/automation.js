@@ -1,9 +1,5 @@
 const uuid = require('uuid/v4'),
 	moment = require('moment'),
-	// TRIGGER_CHECKS = {
-	// 	'time-of-day': (trigger, date) => moment(date).utc().startOf('day').add(trigger.time, 'minutes').isSame(date, 'minute'), // TODO: This probably doesn't work with DST.
-	// 	'date': (trigger, date) => moment(trigger.date).utc().isSame(date, 'minute') // TODO: Make sure this works with DST.
-	// },
 	TAG = '[Automation]';
 
 class Automation {
@@ -17,18 +13,6 @@ class Automation {
 		this.scenes = data.scenes || [];
 		this.notifications = data.notifications || [];
 	}
-
-	// checkIfDateShouldTrigger (date) {
-	// 	return this.triggers.find((trigger) => {
-	// 		const triggerChecker = TRIGGER_CHECKS[trigger.type];
-
-	// 		if (typeof triggerChecker !== 'function') {
-	// 			return false;
-	// 		}
-
-	// 		return triggerChecker(trigger, date);
-	// 	});
-	// }
 
 	getNextTimeOfDayDate (trigger) {
 		if (!trigger || trigger.type !== 'time-of-day' || !Number.isInteger(trigger.time)) {
