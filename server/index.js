@@ -14,6 +14,7 @@ const dotenv = require('dotenv'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	ScenesManager = require('./scenes/scenes-manager.js'),
 	Notifications = require('./automator/notifications.js'),
+	AutomationsManager = require('./automator/automations-manager.js'),
 	Automator = require('./automator/automator.js');
 
 let key,
@@ -43,7 +44,8 @@ AccountsManager.init()
 	.then(DevicesManager.init)
 	.then(ScenesManager.init)
 	.then(Notifications.init)
-	.then(Automator.init)
+	.then(() => Promise.resolve(new Automator()))
+	.then(AutomationsManager.init)
 	.then(() => {
 		const jwt_secret = process.env.OA_JWT_SECRET || key || uuidV4(),
 			website = setUpWebsite(jwt_secret),

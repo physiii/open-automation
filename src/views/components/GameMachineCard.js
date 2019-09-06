@@ -12,6 +12,11 @@ import {getServiceByTypeAndDeviceId, getSettingsOptionLabelByValue} from '../../
 import {gameMachineAddCredit} from '../../state/ducks/services-list/operations.js';
 import './GameMachineCard.css';
 
+const ONE_DOLLAR = 1,
+	FIVE_DOLLARS = 5,
+	TEN_DOLLARS = 10,
+	TWENTY_DOLLARS = 20;
+
 export class GameMachineCard extends React.Component {
 	handleAddCreditClick (dollarValue, event) {
 		event.stopPropagation();
@@ -52,10 +57,10 @@ export class GameMachineCard extends React.Component {
 					<section styleName="addCredit">
 						<h2 styleName="addCreditTitle">Add Credit</h2>
 						<div styleName="addCreditButtons">
-							<Button type="link" onClick={this.handleAddCreditClick.bind(this, 1)}>$1</Button>
-							<Button type="link" onClick={this.handleAddCreditClick.bind(this, 5)}>$5</Button>
-							<Button type="link" onClick={this.handleAddCreditClick.bind(this, 10)}>$10</Button>
-							<Button type="link" onClick={this.handleAddCreditClick.bind(this, 20)}>$20</Button>
+							<Button type="link" onClick={this.handleAddCreditClick.bind(this, ONE_DOLLAR)}>$1</Button>
+							<Button type="link" onClick={this.handleAddCreditClick.bind(this, FIVE_DOLLARS)}>$5</Button>
+							<Button type="link" onClick={this.handleAddCreditClick.bind(this, TEN_DOLLARS)}>$10</Button>
+							<Button type="link" onClick={this.handleAddCreditClick.bind(this, TWENTY_DOLLARS)}>$20</Button>
 						</div>
 					</section>
 					<MetaList layout="vertical" alignLabels="left" alignValuesRight={true}>

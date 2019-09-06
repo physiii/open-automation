@@ -43,3 +43,14 @@ export const registerError = (error) => ({
 	payload: {error},
 	error: true
 });
+
+export const setArmed = (mode) => ({
+	type: types.SET_ARMED,
+	payload: {mode}
+});
+
+export const setArmedError = (mode, error) => ({
+	type: types.SET_ARMED_ERROR,
+	payload: {mode, error},
+	error: true
+});

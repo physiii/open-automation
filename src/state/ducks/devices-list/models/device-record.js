@@ -7,6 +7,7 @@ class DeviceRecord extends Immutable.Record({
 	services: Immutable.OrderedMap({}),
 	settings_definitions: Immutable.OrderedMap({}),
 	settings: Immutable.Map({}),
+	automator_supported: false,
 	room_id: null,
 	info: Immutable.Map({}),
 	state: Immutable.Map({}),

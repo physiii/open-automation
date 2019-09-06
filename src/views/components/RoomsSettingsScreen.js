@@ -54,9 +54,7 @@ export class RoomsSettingsScreen extends React.Component {
 				title="Rooms"
 				url={this.props.match.urlWithoutOptionalParams}
 				toolbarActions={this.state.isEditingList
-					? <React.Fragment>
-						<Button onClick={this.handleDoneClick}>Done</Button>
-					</React.Fragment>
+					? <Button onClick={this.handleDoneClick}>Done</Button>
 					: <React.Fragment>
 						{Boolean(this.props.rooms.length) && <Button onClick={this.handleEditClick}>Edit</Button>}
 						<Button to={this.props.match.url + '/add'}>Add</Button>

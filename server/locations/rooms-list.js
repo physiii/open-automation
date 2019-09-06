@@ -1,7 +1,7 @@
 const EventEmitter = require('events'),
-	TAG = '[RoomsManager]';
+	TAG = '[RoomsList]';
 
-class RoomsManager extends EventEmitter {
+class RoomsList extends EventEmitter {
 	constructor (rooms = [], saveRooms) {
 		super();
 
@@ -132,4 +132,4 @@ class RoomsManager extends EventEmitter {
 	}
 }
 
-module.exports = RoomsManager;
+module.exports = RoomsList;

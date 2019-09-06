@@ -1,0 +1,300 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import {Switch, Redirect, Link} from 'react-router-dom';
+import {Route, withRoute} from './Route.js';
+import NavigationScreen from './NavigationScreen.js';
+import Button from './Button.js';
+import Form from './Form.js';
+import AutomationEditTrigger from './AutomationEditTrigger.js';
+import AutomationEditCondition from './AutomationEditCondition.js';
+import AutomationEditAction from './AutomationEditAction.js';
+import AddIcon from '../icons/AddIcon.js';
+import {connect} from 'react-redux';
+import {compose} from 'redux';
+import {addAutomation, saveAutomation, deleteAutomation} from '../../state/ducks/automations-list/operations.js';
+import {getAutomationById, getEmptyAutomation} from '../../state/ducks/automations-list/selectors.js';
+import {getServices} from '../../state/ducks/services-list/selectors.js';
+import './AutomationEditScreen.css';
+
+const ARMED_LABELS = [
+	'Disarmed',
+	'Armed – Stay',
+	'Armed – Away'
+];
+
+export class AutomationEditScreen extends React.Component {
+	constructor (props) { // eslint-disable-line max-statements
+		super(props);
+
+		this.handleSaveClick = this.handleSaveClick.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handleSettingsChange = this.handleSettingsChange.bind(this);
+		this.handleSettingsErrors = this.handleSettingsErrors.bind(this);
+		this.handleNoSettingsErrors = this.handleNoSettingsErrors.bind(this);
+		this.saveTrigger = this.saveElement.bind(this, 'triggers');
+		this.saveCondition = this.saveElement.bind(this, 'conditions');
+		this.saveNotification = this.saveElement.bind(this, 'notifications');
+		this.deleteTrigger = this.deleteElement.bind(this, 'triggers');
+		this.deleteCondition = this.deleteElement.bind(this, 'conditions');
+		this.deleteNotification = this.deleteElement.bind(this, 'notifications');
+
+		this.state = {
+			automation: this.props.isNew
+				? getEmptyAutomation()
+				: this.props.automation,
+			isSaveable: !this.props.isNew,
+			shouldRedirectBack: false
+		};
+	}
+
+	handleSettingsChange ({name, is_enabled: isEnabled}) {
+		this.setState({
+			automation: this.state.automation
+				.set('name', name)
+				.set('is_enabled', this.props.isNew ? true : isEnabled),
+			isSaveable: true
+		});
+	}
+
+	handleSettingsErrors () {
+		this.setState({isSaveable: false});
+	}
+
+	handleNoSettingsErrors () {
+		this.setState({isSaveable: true});
+	}
+
+	handleSaveClick () {
+		if (this.props.isNew) {
+			this.props.addAutomation(this.state.automation);
+		} else {
+			this.props.saveAutomation(this.state.automation, this.props.automation);
+		}
+
+		this.setState({shouldRedirectBack: true});
+	}
+
+	handleDeleteClick () {
+		if (confirm('Do you want to delete ' + (this.state.automation.name
+			? '‘' + this.state.automation.name + '’'
+			: 'this automation') + '?')) {
+			this.props.deleteAutomation(this.props.automation);
+		}
+	}
+
+	saveElement (type, element, index) {
+		if (Number.isInteger(index)) {
+			this.setState({automation: this.state.automation.setIn([type, index], element)});
+		} else {
+			this.setState({automation: this.state.automation.updateIn([type], (elements) => elements.push(element))});
+		}
+
+		this.props.history.push(this.props.match.url);
+	}
+
+	deleteElement (type, index) {
+		this.setState({automation: this.state.automation.deleteIn([type, index])});
+		this.props.history.push(this.props.match.url);
+	}
+
+	render () {
+		if (this.state.shouldRedirectBack || (!this.props.isNew && !this.props.automation)) {
+			return <Redirect to={this.props.match.parentMatch.url} />;
+		}
+
+		const triggers = this.state.automation.triggers.toArray(),
+			conditions = this.state.automation.conditions.toArray(),
+			notifications = this.state.automation.notifications.toArray();
+
+		return (
+			<NavigationScreen
+				title={this.props.isNew ? 'Add Automation' : this.state.automation.name}
+				url={this.props.match.url}
+				toolbarActions={
+					<React.Fragment>
+						{!this.props.isNew ? <Button onClick={this.handleDeleteClick}>Delete</Button> : null}
+						<Button onClick={this.handleSaveClick} disabled={!this.state.isSaveable}>Save</Button>
+					</React.Fragment>}
+				toolbarBackAction={<Button to={this.props.match.parentMatch.url}>Cancel</Button>}>
+				<Switch>
+					<Route exact path={this.props.match.path} render={() => (
+						<div styleName="container">
+							<Form
+								fields={{
+									name: {
+										type: 'string',
+										label: 'Name',
+										validation: {
+											is_required: true,
+											max_length: 24
+										}
+									},
+									is_enabled: this.props.isNew ? null : {
+										type: 'boolean',
+										label: 'Enable this automation'
+									}
+								}}
+								values={this.state.automation}
+								onSaveableChange={this.handleSettingsChange}
+								onError={this.handleSettingsErrors}
+								onNoError={this.handleNoSettingsErrors} />
+							<div styleName="sections">
+								<section styleName="section">
+									<h1 styleName="sectionHeading">When this happens</h1>
+									<div styleName="sectionContent">
+										{triggers.length ? <ul styleName="elementList">
+											{triggers.map((trigger, index) => {
+												const service = this.props.services.get(trigger.service_id);
+
+												if (!service) {
+													return null;
+												}
+
+												return (
+													<li styleName="elementListItem" key={index}>
+														<Link styleName="elementListLink" to={this.props.match.url + '/edit-trigger/' + service.device_id + '/' + index}>
+															{service.getEventLabel(trigger.event) + ' on ' + service.settings.get('name')}
+														</Link>
+													</li>
+												);
+											})}
+										</ul> : null}
+										<span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
+											<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
+												<Button to={this.props.match.url + '/add-trigger'}>
+													<span styleName={triggers.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
+													<span styleName={triggers.length ? 'addButtonLabel' : 'primaryAddButtonLabel'}>Add Trigger</span>
+												</Button>
+											</span>
+										</span>
+									</div>
+								</section>
+								<section styleName="section">
+									<h1 styleName="sectionHeading">Under the condition</h1>
+									<div styleName="sectionContent">
+										{conditions.length ? <ul styleName="elementList">
+											{conditions.map((condition, index) => (
+												<li styleName="elementListItem" key={index}>
+													<Link styleName="elementListLink" to={this.props.match.url + '/edit-condition/' + condition.type + '/' + index}>
+														{ARMED_LABELS[condition.mode]}
+													</Link>
+												</li>
+											))}
+										</ul> : null}
+										{triggers.length
+											? <span styleName="addButton">
+												<span styleName="addButtonLink">
+													<Button to={this.props.match.url + '/add-condition'}>
+														<span styleName="addButtonIcon"><AddIcon size={12} /></span>
+														<span styleName="addButtonLabel">Add Condition</span>
+													</Button>
+												</span>
+											</span>
+											: !conditions.length && <span styleName="addButtonPlaceholder"><span styleName="addButtonPlaceholderInner" /></span>}
+									</div>
+								</section>
+								<section styleName="section">
+									<h1 styleName="sectionHeading">Perform these actions</h1>
+									<div styleName="sectionContent">
+										{notifications.length ? <ul styleName="elementList">
+											{notifications.map((notification, index) => (
+												<li styleName="elementListItem" key={index}>
+													<Link styleName="elementListLink" to={this.props.match.url + '/edit-action/notification/' + notification.type + '/' + index}>
+														{notification.type === 'email'
+															? 'Email ' + notification.email
+															: 'Send text to ' + notification.phone_number}
+													</Link>
+												</li>
+											))}
+										</ul> : null}
+										{triggers.length
+											? <span styleName={notifications.length ? 'addButton' : 'primaryAddButton'}>
+												<span styleName={notifications.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
+													<Button to={this.props.match.url + '/add-action'}>
+														<span styleName={notifications.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
+														<span styleName={notifications.length ? 'addButtonLabel' : 'primaryAddButtonLabel'}>Add Action</span>
+													</Button>
+												</span>
+											</span>
+											: !notifications.length && <span styleName="addButtonPlaceholder"><span styleName="addButtonPlaceholderInner" /></span>}
+									</div>
+								</section>
+							</div>
+						</div>
+					)} />
+					<Route path={this.props.match.path + '/add-trigger'} render={({...routeProps}) => (
+						<AutomationEditTrigger
+							{...routeProps}
+							isNew={true}
+							saveTrigger={this.saveTrigger} />
+					)} />
+					<Route path={this.props.match.path + '/edit-trigger'} render={({...routeProps}) => (
+						<AutomationEditTrigger
+							{...routeProps}
+							triggers={this.state.automation.triggers}
+							saveTrigger={this.saveTrigger}
+							deleteTrigger={this.deleteTrigger} />
+					)} />
+					<Route path={this.props.match.path + '/add-condition'} render={({...routeProps}) => (
+						<AutomationEditCondition
+							{...routeProps}
+							isNew={true}
+							saveCondition={this.saveCondition} />
+					)} />
+					<Route path={this.props.match.path + '/edit-condition'} render={({...routeProps}) => (
+						<AutomationEditCondition
+							{...routeProps}
+							conditions={this.state.automation.conditions}
+							saveCondition={this.saveCondition}
+							deleteCondition={this.deleteCondition} />
+					)} />
+					<Route path={this.props.match.path + '/add-action'} render={({...routeProps}) => (
+						<AutomationEditAction
+							{...routeProps}
+							isNew={true}
+							notifications={this.state.automation.notifications}
+							saveNotification={this.saveNotification} />
+					)} />
+					<Route path={this.props.match.path + '/edit-action'} render={({...routeProps}) => (
+						<AutomationEditAction
+							{...routeProps}
+							notifications={this.state.automation.notifications}
+							saveNotification={this.saveNotification}
+							deleteNotification={this.deleteNotification} />
+					)} />
+					<Route render={() => <Redirect to={this.props.match.url} />} />
+				</Switch>
+			</NavigationScreen>
+		);
+	}
+}
+
+AutomationEditScreen.propTypes = {
+	automation: PropTypes.object,
+	services: PropTypes.object,
+	isNew: PropTypes.bool,
+	match: PropTypes.object,
+	history: PropTypes.object,
+	addAutomation: PropTypes.func,
+	saveAutomation: PropTypes.func,
+	deleteAutomation: PropTypes.func
+};
+
+const mapStateToProps = ({automationsList, servicesList}, {match}) => {
+		const automation = getAutomationById(automationsList, match.params.automationId, false);
+
+		return {
+			automation,
+			services: getServices(servicesList, false)
+		};
+	},
+	mapDispatchToProps = (dispatch) => ({
+		addAutomation: (automation) => dispatch(addAutomation(automation)),
+		saveAutomation: (automation, originalAutomation) => dispatch(saveAutomation(automation, originalAutomation)),
+		deleteAutomation: (automation) => dispatch(deleteAutomation(automation))
+	});
+
+export default compose(
+	withRoute({params: '/:automationId?'}),
+	connect(mapStateToProps, mapDispatchToProps)
+)(AutomationEditScreen);

@@ -7,3 +7,5 @@ export const LOGOUT_SUCCESS = 'open-automation/session/LOGOUT_SUCCESS';
 export const LOGOUT_ERROR = 'open-automation/session/LOGOUT_ERROR';
 export const REGISTER = 'open-automation/session/REGISTER';
 export const REGISTER_ERROR = 'open-automation/session/REGISTER_ERROR';
+export const SET_ARMED = 'open-automation/session/SET_ARMED';
+export const SET_ARMED_ERROR = 'open-automation/session/SET_ARMED_ERROR';

@@ -1,5 +1,6 @@
 const AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
+	AutomationsManager = require('./automator/automations-manager.js'),
 	jwt = require('jsonwebtoken'),
 	TAG = '[ClientConnection]';
 
@@ -12,6 +13,7 @@ class ClientConnection {
 
 		this.handleRoomsUpdate = this.handleRoomsUpdate.bind(this);
 		this.handleAccountDevicesUpdate = this.handleAccountDevicesUpdate.bind(this);
+		this.handleAccountAutomationsUpdate = this.handleAccountAutomationsUpdate.bind(this);
 
 		if (!this.access_token) {
 			this.handleAuthenticationError('no access token');
@@ -33,6 +35,7 @@ class ClientConnection {
 			// Push changes to client.
 			this.account.on('rooms-updated', this.handleRoomsUpdate);
 			DevicesManager.on('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
+			AutomationsManager.on('automations-update/account/' + this.account.id, this.handleAccountAutomationsUpdate);
 
 			this.destroy = this.destroy.bind(this, this.account.id);
 
@@ -83,13 +86,63 @@ class ClientConnection {
 		this.socket.emit('devices', {devices});
 	}
 
+	handleAccountAutomationsUpdate ({automations}) {
+		this.socket.emit('automations', {automations});
+	}
+
 	listenToClient () {
+		this.clientEndpoint('armed/set', (data, callback) => {
+			this.account.setArmed(data.mode).then(() => callback()).catch((error) => {
+				console.error(TAG, 'Set armed error:', error);
+				callback(error, {mode: this.account.armed});
+			});
+		});
+
+		this.clientEndpoint('automations/get', (data, callback) => {
+			const accountAutomations = AutomationsManager.getAutomationsByAccountId(this.account.id);
+
+			callback(null, {automations: AutomationsManager.getClientSerializedAutomations(accountAutomations)});
+		});
+
+		this.clientEndpoint('automation/add', (data, callback) => {
+			AutomationsManager.saveAutomation({
+					...data.automation,
+					account_id: this.account.id
+				})
+				.then((automation) => callback(null, {automation}))
+				.catch((error) => {
+					console.error(TAG, 'Add automation error:', error);
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('automation/save', (data, callback) => {
+			AutomationsManager.saveAutomation({
+					...data.automation,
+					account_id: this.account.id
+				})
+				.then((automation) => callback(null, {automation}))
+				.catch((error) => {
+					console.error(TAG, 'Add automation error:', error);
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('automation/delete', (data, callback) => {
+			AutomationsManager.deleteAutomation(data.automation_id, this.account.id)
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Delete automation error:', error);
+					callback(error);
+				});
+		});
+
 		this.clientEndpoint('rooms/get', (data, callback) => {
-			callback(null, {rooms: this.account.clientSerialize().rooms});
+			callback(null, {rooms: this.account.rooms.clientSerialize()});
 		});
 
 		this.clientEndpoint('room/add', (data, callback) => {
-			this.account.roomsManager.addRoom(data.name)
+			this.account.rooms.addRoom(data.name)
 				.then((room) => callback(null, {room}))
 				.catch((error) => {
 					console.error(TAG, 'Add room error:', error);
@@ -98,7 +151,7 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('room/delete', (data, callback) => {
-			this.account.roomsManager.deleteRoom(data.room_id)
+			this.account.rooms.deleteRoom(data.room_id)
 				.then(() => callback())
 				.catch((error) => {
 					console.error(TAG, 'Delete room error:', error);
@@ -107,7 +160,7 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('room/name/set', (data, callback) => {
-			this.account.roomsManager.setRoomName(data.room_id, data.name)
+			this.account.rooms.setRoomName(data.room_id, data.name)
 				.then((room) => callback(null, {room}))
 				.catch((error) => {
 					console.error(TAG, 'Name room error:', error);
@@ -116,7 +169,7 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('rooms/sort', (data, callback) => {
-			this.account.roomsManager.sortRooms(data.order)
+			this.account.rooms.sortRooms(data.order)
 				.then((rooms) => callback(null, {rooms}))
 				.catch((error) => {
 					console.error(TAG, 'Sort rooms error:', error);
@@ -150,7 +203,7 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('device/room/set', (data, callback) => {
-			const room = this.account.getRoomById(data.room_id);
+			const room = this.account.rooms.getRoomById(data.room_id);
 
 			if (!room) {
 				callback('The room does not exist.');
@@ -392,6 +445,7 @@ class ClientConnection {
 		}
 
 		DevicesManager.off('devices-update/account/' + accountId, this.handleAccountDevicesUpdate);
+		AutomationsManager.off('automations-update/account/' + accountId, this.handleAccountAutomationsUpdate);
 
 		if (this.socket) {
 			this.socket.removeAllListeners();

@@ -7,6 +7,7 @@ import PrivateRoute from '../components/PrivateRoute.js';
 import AppToolbar from '../components/AppToolbar.js';
 import DashboardScreen from '../components/DashboardScreen.js';
 import RoomsScreen from '../components/RoomsScreen.js';
+import AutomationsScreen from '../components/AutomationsScreen.js';
 import SettingsScreen from '../components/SettingsScreen.js';
 import TabBar from '../components/TabBar.js';
 import DashboardIcon from '../icons/DashboardIcon.js';
@@ -19,6 +20,7 @@ import {isAuthenticated, isLoading} from '../../state/ducks/session/selectors.js
 import {fetchDevices} from '../../state/ducks/devices-list/operations.js';
 import {hasInitialFetchCompleted} from '../../state/ducks/devices-list/selectors.js';
 import {fetchRooms} from '../../state/ducks/rooms-list/operations.js';
+import {fetchAutomations} from '../../state/ducks/automations-list/operations.js';
 import {getCurrentContextPath, getContextCurrentFullPath} from '../../state/ducks/navigation/selectors.js';
 import {compose} from 'redux';
 import {hot} from 'react-hot-loader';
@@ -29,7 +31,11 @@ export class App extends React.Component {
 		this.fetch();
 	}
 
-	componentDidUpdate () {
+	componentDidUpdate (previousProps) {
+		if (previousProps.isAuthenticated && !this.props.isAuthenticated) {
+			this.didInitialFetch = false;
+		}
+
 		this.fetch();
 	}
 
@@ -40,6 +46,7 @@ export class App extends React.Component {
 
 		this.props.fetchDevices();
 		this.props.fetchRooms();
+		this.props.fetchAutomations();
 		this.didInitialFetch = true;
 	}
 
@@ -67,6 +74,7 @@ export class App extends React.Component {
 										<Route path="/logout" component={Logout} />
 										<DashboardScreen path="/dashboard" />
 										<RoomsScreen path="/rooms" />
+										<AutomationsScreen path="/automations" />
 										<SettingsScreen path="/settings" />
 										<Route render={() => <Redirect to="/dashboard" />} />
 									</Switch>}
@@ -84,6 +92,11 @@ export class App extends React.Component {
 										icon: <DoorIcon size={24} />,
 										to: this.props.getTabPath('/rooms'),
 										isActive: this.props.activeTabPath === '/rooms'
+									},
+									{
+										label: 'Automations',
+										to: this.props.getTabPath('/automations'),
+										isActive: this.props.activeTabPath === '/automations'
 									},
 									{
 										label: 'Settings',
@@ -108,7 +121,8 @@ App.propTypes = {
 	activeTabPath: PropTypes.string,
 	getTabPath: PropTypes.func.isRequired,
 	fetchDevices: PropTypes.func.isRequired,
-	fetchRooms: PropTypes.func.isRequired
+	fetchRooms: PropTypes.func.isRequired,
+	fetchAutomations: PropTypes.func.isRequired
 };
 
 const mapStateToProps = ({session, navigation, devicesList}) => ({
@@ -119,7 +133,8 @@ const mapStateToProps = ({session, navigation, devicesList}) => ({
 	}),
 	mapDispatchToProps = (dispatch) => ({
 		fetchDevices: () => dispatch(fetchDevices()),
-		fetchRooms: () => dispatch(fetchRooms())
+		fetchRooms: () => dispatch(fetchRooms()),
+		fetchAutomations: () => dispatch(fetchAutomations())
 	});
 
 export default compose(

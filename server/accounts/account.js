@@ -1,5 +1,5 @@
 const database = require('../database.js'),
-	RoomsManager = require('../locations/rooms-manager.js'),
+	RoomsList = require('../locations/rooms-list.js'),
 	EventEmitter = require('events'),
 	crypto = require('crypto'),
 	jwt = require('jsonwebtoken'),
@@ -14,19 +14,20 @@ class Account extends EventEmitter {
 
 		this.id = data.id;
 		this.username = data.username;
-		this.password = data.password || data.token; // token is a legacy property.
+		this.password = data.password;
 		this.salt = data.salt;
 		this.hash_algorithm = data.hash_algorithm || PASSWORD_HASH_ALGORITHM;
 		this.email = this.username;
 		this.phone_number = data.phone_number;
 		this.phone_provider = data.phone_provider;
+		this.armed = data.armed || 0;
 
 		if (data.registration_date) {
 			this.registration_date = new Date(data.registration_date);
 		}
 
-		this.roomsManager = new RoomsManager(data.rooms, this._saveRooms.bind(this));
-		this.roomsManager.on('rooms-updated', (data) => this.emit('rooms-updated', data));
+		this.rooms = new RoomsList(data.rooms, this._saveRooms.bind(this));
+		this.rooms.on('rooms-updated', (data) => this.emit('rooms-updated', data));
 	}
 
 	setPassword (password) {
@@ -130,8 +131,17 @@ class Account extends EventEmitter {
 		});
 	}
 
-	getRoomById (room_id) {
-		return this.roomsManager.getRoomById(room_id);
+	setArmed (mode) {
+		return new Promise((resolve, reject) => {
+			if (mode !== 0 && mode !== 1 && mode !== 2) {
+				reject('mode must be 0, 1, or 2.');
+
+				return;
+			}
+
+			this.armed = mode;
+			this.save().then(resolve).catch(reject);
+		});
 	}
 
 	_saveRooms (rooms) {
@@ -156,7 +166,8 @@ class Account extends EventEmitter {
 	_serialize () {
 		return {
 			id: this.id,
-			username: this.username
+			username: this.username,
+			armed: this.armed
 		};
 	}
 
@@ -169,14 +180,14 @@ class Account extends EventEmitter {
 			phone_number: this.phone_number,
 			phone_provider: this.phone_provider,
 			registration_date: this.registration_date,
-			rooms: this.roomsManager.dbSerialize()
+			rooms: this.rooms.dbSerialize()
 		};
 	}
 
 	clientSerialize () {
 		return {
 			...this._serialize(),
-			rooms: this.roomsManager.clientSerialize()
+			rooms: this.rooms.clientSerialize()
 		};
 	}
 

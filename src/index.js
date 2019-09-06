@@ -12,6 +12,7 @@ import {initialize as initializeConfig} from './state/ducks/config/operations.js
 import {initialize as initializeSession} from './state/ducks/session/operations.js';
 import {listenForDeviceChanges} from './state/ducks/devices-list/operations.js';
 import {listenForRoomChanges} from './state/ducks/rooms-list/operations.js';
+import {listenForAutomationChanges} from './state/ducks/automations-list/operations.js';
 import AppContext from './views/AppContext.js';
 import App from './views/layouts/App';
 
@@ -36,6 +37,7 @@ reduxStore.dispatch(initializeSession());
 // Listen for changes pushed from server.
 reduxStore.dispatch(listenForDeviceChanges());
 reduxStore.dispatch(listenForRoomChanges());
+reduxStore.dispatch(listenForAutomationChanges());
 
 ReactDOM.render(
 	<ReduxProvider store={reduxStore}>

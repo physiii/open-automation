@@ -10,7 +10,7 @@ const path = require('path'),
 	autoprefixer = require('autoprefixer'),
 	getLocalIdent = require('css-loader/lib/getLocalIdent'),
 	{getIfUtils, propIf, propIfNot, removeEmpty} = require('webpack-config-utils'),
-	LOCAL_IDENT_NAME = '[name]__[local]___[hash:base64:5]';
+	LOCAL_IDENT_NAME = '[name]__[local]___[hash:base64:8]';
 
 dotenvExpand(dotenv.config());
 
@@ -118,6 +118,7 @@ module.exports = (env = {}) => {
 						{
 							loader: 'css-loader',
 							options: {
+								hmr: false, // HMR for style-loader should work again in Webpack 5.
 								modules: true,
 								localIdentName: LOCAL_IDENT_NAME,
 								getLocalIdent: (loaderContext, localIdentName, localName, options) => {

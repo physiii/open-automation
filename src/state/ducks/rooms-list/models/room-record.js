@@ -1,9 +1,9 @@
 import Immutable from 'immutable';
 
-class DeviceRecord extends Immutable.Record({
+class RoomRecord extends Immutable.Record({
 	id: null,
 	name: null,
 	isUnsaved: false
 }) {}
 
-export default DeviceRecord;
+export default RoomRecord;

@@ -2,6 +2,7 @@ import * as types from './types';
 
 const initialState = {
 		user: null,
+		armed: 0,
 		loading: true, // Loading by default so we don't try to render the app until we know whether user is logged in or not.
 		error: false
 	},
@@ -25,6 +26,7 @@ const initialState = {
 				return {
 					...state,
 					user: {username: action.payload.user.username},
+					armed: action.payload.user.armed,
 					loading: false,
 					error: false
 				};
@@ -51,6 +53,18 @@ const initialState = {
 				return {
 					...state,
 					loading: false,
+					error: action.payload.error.message
+				};
+			case types.SET_ARMED:
+				return {
+					...state,
+					armed: action.payload.mode,
+					error: false
+				};
+			case types.SET_ARMED_ERROR:
+				return {
+					...state,
+					armed: action.payload.mode,
 					error: action.payload.error.message
 				};
 			case '@@router/LOCATION_CHANGE':

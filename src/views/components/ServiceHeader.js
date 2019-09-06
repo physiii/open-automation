@@ -16,7 +16,7 @@ export const ServiceHeader = (props) => {
 				</div>}
 			<div styleName="nameWrapper">
 				<h1 styleName="name">
-					{props.name}
+					{props.name || props.service.settings.get('name') || props.service.strings.get('friendly_type')}
 				</h1>
 				{status &&
 					<span styleName={props.isConnected ? 'status' : 'disconnectedStatus'}>

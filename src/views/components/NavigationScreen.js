@@ -82,7 +82,7 @@ NavigationScreen.propTypes = {
 	url: PropTypes.string.isRequired,
 	title: PropTypes.string,
 	toolbarActions: PropTypes.node,
-	toolbarBackAction: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+	toolbarBackAction: PropTypes.oneOfType([PropTypes.func, PropTypes.node, PropTypes.object]),
 	children: PropTypes.node,
 	location: PropTypes.object.isRequired,
 	handleContextLoad: PropTypes.func.isRequired,

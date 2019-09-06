@@ -3,7 +3,6 @@ const EventEmitter = require('events'),
 	validateUuid = require('uuid-validate'),
 	database = require('../database.js'),
 	Device = require('./device.js'),
-	AccountsManager = require('../accounts/accounts-manager.js'),
 	socketEscrow = new Map(),
 	devicesList = new Map(),
 	is_production = process.env.NODE_ENV === 'production',
@@ -40,7 +39,6 @@ class DevicesManager extends EventEmitter {
 			{
 				...data,
 				type: data.type || escrowData.type,
-				account: AccountsManager.getAccountById(data.account_id),
 				gateway: this.getServiceById(data.gateway_id, data.account_id)
 			},
 			this.handleDeviceUpdate,
@@ -100,7 +98,7 @@ class DevicesManager extends EventEmitter {
 				}).catch((error) => {
 					// Since the token wasn't successfully set, delete the
 					// device so the user can try again.
-					this.deleteDevice(device.id, device.account && device.account.id);
+					this.deleteDevice(device.id, device.account_id);
 					reject(error);
 				});
 			}).catch(reject);
@@ -201,7 +199,7 @@ class DevicesManager extends EventEmitter {
 	}
 
 	getDevicesByAccountId (accountId) {
-		return Array.from(devicesList.values()).filter((device) => (device.account && device.account.id) === accountId);
+		return Array.from(devicesList.values()).filter((device) => device.account_id === accountId);
 	}
 
 	// NOTE: Use skipAccountAccessCheck with caution. Never use for requests
@@ -218,7 +216,7 @@ class DevicesManager extends EventEmitter {
 	// NOTE: Use "force" with caution. Never use for requests originating from
 	// the client API.
 	verifyAccountAccessToDevice (accountId, device, force) {
-		return (device && ((device.account && device.account.id) === accountId)) || force;
+		return (device && device.account_id === accountId) || force;
 	}
 
 	generateDeviceToken () {

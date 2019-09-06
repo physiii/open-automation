@@ -9,7 +9,7 @@ import {Route as ReactRouterRoute, matchPath, withRouter} from 'react-router-dom
 
 export const Route = (props) => {
 	const route = (
-		<ReactRouterRoute {...props} render={({match}) => (
+		<ReactRouterRoute {...props} component={null} render={({match}) => (
 			<ReactRouterRoute {...{
 				...props,
 				computedMatch: { // Private React Router API.
@@ -52,7 +52,7 @@ export const withRoute = (routeProps = {}) => (WrappedComponent) => {
 		delete _props.computedMatch;
 
 		return (
-			<Route {..._props} path={_props.path + (routeProps.params || '')} render={(_routeProps) => (
+			<Route {..._props} children={null} path={_props.path + (routeProps.params || '')} render={(_routeProps) => (
 				<WrappedComponent {..._props} {..._routeProps} />
 			)} />
 		);

@@ -67,8 +67,9 @@ class Service {
 
 		if (settings_definitions) {
 			this.settings.setDefinitions(settings_definitions);
-			this.onUpdate();
 		}
+
+		this.onUpdate();
 	}
 
 	setState (state) {
@@ -77,8 +78,6 @@ class Service {
 		}
 
 		this.state = {...state};
-
-		this.onUpdate();
 	}
 
 	setSettings (settings) {
@@ -280,7 +279,12 @@ class Service {
 			strings: {
 				friendly_type: this.getFriendlyType(),
 				indefinite_article: this.getIndefiniteArticle()
-			}
+			},
+			event_definitions: [...this.constructor.event_definitions.entries()].map(([event, definition]) => ([
+				event,
+				{label: definition.label}
+			])),
+			automator_supported: this.constructor.event_definitions.size > 0
 		};
 	}
 
@@ -304,5 +308,6 @@ Service.settings_definitions = new Map()
 		default_value: true,
 		validation: {is_required: false}
 	});
+Service.event_definitions = new Map();
 
 module.exports = Service;

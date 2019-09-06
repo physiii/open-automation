@@ -35,6 +35,26 @@ class Api {
 		}
 	}
 
+	setArmed (mode) {
+		return Api.apiCall('armed/set', {mode});
+	}
+
+	getAutomations () {
+		return Api.apiCall('automations/get');
+	}
+
+	addAutomation (automation) {
+		return Api.apiCall('automation/add', {automation});
+	}
+
+	saveAutomation (automation) {
+		return Api.apiCall('automation/save', {automation});
+	}
+
+	deleteAutomation (automationId) {
+		return Api.apiCall('automation/delete', {automation_id: automationId});
+	}
+
 	getRooms () {
 		return Api.apiCall('rooms/get');
 	}

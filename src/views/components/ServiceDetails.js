@@ -19,7 +19,6 @@ export class ServiceDetails extends React.Component {
 							<div styleName="nameContainer">
 								<ServiceHeader
 									service={this.props.service}
-									name={this.props.service.settings.get('name') || this.props.service.strings.get('friendly_type')}
 									isConnected={this.props.service.state.get('connected')} />
 							</div>
 							{this.props.shouldShowSettingsButton && <Button to={this.props.match.url + ServiceDetails.settingsPath}>Settings</Button>}

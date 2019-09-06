@@ -52,7 +52,8 @@ export class Form extends React.Component {
 			this.props.onNoError();
 		}
 
-		if (!hasErrors) {
+		// Check whole form for validation errors (without effecting UI) and if none, broadcast the update.
+		if (!this.validator.hasErrors(this.validator.getValidationErrors())) {
 			this.handleSaveableChange({...this.state.values});
 		}
 	}
@@ -63,7 +64,7 @@ export class Form extends React.Component {
 
 	setValidationRules () {
 		// Add fields to validator.
-		Object.keys(this.props.fields).forEach((fieldName) => {
+		Object.keys(this.props.fields).filter((fieldName) => this.props.fields[fieldName]).forEach((fieldName) => {
 			const field = this.props.fields[fieldName];
 
 			this.validator.field(
@@ -156,7 +157,7 @@ export class Form extends React.Component {
 	render () {
 		return (
 			<form styleName="form">
-				{Object.keys(this.props.fields).map((fieldName) => (
+				{Object.keys(this.props.fields).filter((fieldName) => this.props.fields[fieldName]).map((fieldName) => (
 					<FormField
 						property={fieldName}
 						definition={this.props.fields[fieldName]}

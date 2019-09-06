@@ -4,16 +4,26 @@ const nodemailer = require('nodemailer'),
 	AccountsManager = require('../accounts/accounts-manager.js'),
 	moment = require('moment'),
 	CELL_PROVIDERS = {
-		'ATT':'@mms.att.net',
-		'TMobile':'@tmomail.net',
-		'Verizon':'@vzwpix.com',
-		'Sprint':'@pm.sprint.com',
-		'VirginMobile':'@vmpix.comm',
-		'Tracfone':'@mmst5.tracfone.com',
-		'MetroPCS':'@mymetropcs.com',
-		'Boost':'@myboostmobile.com',
-		'Cricket':'@mms.cricketwireless.net',
-		'US_Cellular':'@mms.uscc.net'
+		'AT&T': '@mms.att.net',
+		'T-Mobile': '@tmomail.net',
+		'Verizon': '@vzwpix.com',
+		'Sprint': '@pm.sprint.com',
+		'Virgin Mobile': '@vmpix.comm',
+		'Tracfone': '@mmst5.tracfone.com',
+		'MetroPCS': '@mymetropcs.com',
+		'Boost': '@myboostmobile.com',
+		'Cricket': '@mms.cricketwireless.net',
+		'US Cellular': '@mms.uscc.net'
+	},
+	CELL_PROVIDER_ALIASES = {
+		'ATT': CELL_PROVIDERS['AT&T'],
+		'TMobile': CELL_PROVIDERS['T-Mobile'],
+		'VirginMobile': CELL_PROVIDERS['Virgin Mobile'],
+		'US_Cellular': CELL_PROVIDERS['US Cellular']
+	},
+	ALL_CELL_PROVIDERS = {
+		...CELL_PROVIDERS,
+		...CELL_PROVIDER_ALIASES
 	},
 	TAG = '[Notifications]';
 
@@ -139,7 +149,7 @@ class Notifications {
 		return new Promise((resolve, reject) => {
 			const account = AccountsManager.getAccountById(recipient.account_id);
 			let phone = recipient.phone_number || (account && account.phone_number),
-				provider = CELL_PROVIDERS[(recipient.phone_provider || (account && account.phone_provider))],
+				provider = ALL_CELL_PROVIDERS[(recipient.phone_provider || (account && account.phone_provider))],
 				error;
 
 			if (!phone) {

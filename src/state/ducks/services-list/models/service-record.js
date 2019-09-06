@@ -12,6 +12,8 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 		state: null,
 		logList: null,
 		strings: null,
+		event_definitions: null,
+		automator_supported: false,
 		...defaultValues
 	}) {
 		constructor (values) {
@@ -23,7 +25,8 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 				settings_definitions: hydrateSettingsDefinitions(values.settings_definitions, settings),
 				settings,
 				state: mapWithDefaults(defaultValues.state, values.state),
-				strings: Immutable.Map(values.strings)
+				strings: Immutable.Map(values.strings),
+				event_definitions: Immutable.OrderedMap(values.event_definitions)
 			});
 		}
 
@@ -38,12 +41,24 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 				case 'settings_definitions':
 					_value = hydrateSettingsDefinitions(value, this.settings);
 					break;
+				case 'strings':
+					_value = Immutable.Map(value);
+					break;
+				case 'event_definitions':
+					_value = Immutable.OrderedMap(value);
+					break;
 				default:
 					_value = value;
 					break;
 			}
 
 			return super.set(key, _value || defaultValues[key]);
+		}
+
+		getEventLabel (event) {
+			const definition = this.event_definitions && this.event_definitions.get(event);
+
+			return definition ? definition.label : event || event;
 		}
 	},
 	hydrateSettingsDefinitions = (definitions, settings) => Immutable.OrderedMap(definitions.map(([property, definition]) => {

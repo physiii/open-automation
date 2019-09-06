@@ -59,11 +59,19 @@ const initialize = () => (dispatch) => {
 		}).catch((error) => {
 			dispatch(actions.registerError(error));
 		});
+	},
+	setArmed = (mode) => (dispatch) => {
+		dispatch(actions.setArmed(mode));
+
+		Api.setArmed(mode).catch((error, data) => {
+			dispatch(actions.setArmedError(data.mode, error));
+		});
 	};
 
 export {
 	initialize,
 	login,
 	logout,
-	register
+	register,
+	setArmed
 };

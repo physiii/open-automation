@@ -6,25 +6,37 @@ import {withAppContext} from '../AppContext.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getAppName, getLogoPath} from '../../state/ducks/config/selectors.js';
-import {getCurrentScreenTitle, shouldShowCurrentScreenTitle, getPreviousScreenPath, getPreviousScreenTitle} from '../../state/ducks/navigation/selectors.js';
-import {getUsername} from '../../state/ducks/session/selectors.js';
+import {getCurrentScreenTitle, getCurrentScreenDepth, shouldShowCurrentScreenTitle, getPreviousScreenPath, getPreviousScreenTitle} from '../../state/ducks/navigation/selectors.js';
+import {getUsername, getArmed} from '../../state/ducks/session/selectors.js';
+import {setArmed} from '../../state/ducks/session/operations.js';
 import './AppToolbar.css';
 
+const DISARMED = 0,
+	ARMED_STAY = 1,
+	ARMED_AWAY = 2;
+
 export const AppToolbar = (props) => {
-	let backProps,
+	let backLabel = props.previousScreenTitle,
+		backProps,
 		left;
 
-	if (typeof props.backAction === 'function') {
+	if (typeof props.backAction === 'object' && !React.isValidElement(props.backAction)) {
+		backProps = {
+			onClick: props.backAction.onClick,
+			to: props.backAction.to || props.previousScreenUrl
+		};
+		backLabel = props.backAction.label;
+	} else if (typeof props.backAction === 'function') {
 		backProps = {onClick: props.backAction};
 	} else if (typeof props.backAction === 'string') {
 		backProps = {to: props.backAction};
 	}
 
-	if (backProps) {
+	if (backProps || (!props.backAction && !props.isRootScreen)) {
 		left = (
-			<Button {...backProps}>
+			<Button to={props.previousScreenUrl} {...backProps}>
 				&lt;
-				{props.backLabel && ' ' + props.backLabel}
+				{backLabel && ' ' + backLabel}
 			</Button>
 		);
 	} else if (props.backAction) {
@@ -44,12 +56,19 @@ export const AppToolbar = (props) => {
 			<Toolbar
 				leftChildren={left}
 				middleChildren={props.title && props.shouldShowTitle && <h1>{props.title}</h1>}
-				rightChildren={props.screenActions || (!props.shouldShowTitle &&
+				rightChildren={
 					<React.Fragment>
-						<span>{props.username}</span>
-						<Button to="/logout">Logout</Button>
+						{props.screenActions}
+						{props.isRootScreen &&
+							<React.Fragment>
+								<Button disabled={props.armed === ARMED_AWAY} onClick={() => props.setArmed(ARMED_AWAY)}>A</Button>
+								<Button disabled={props.armed === ARMED_STAY} onClick={() => props.setArmed(ARMED_STAY)}>S</Button>
+								<Button disabled={props.armed === DISARMED} onClick={() => props.setArmed(DISARMED)}>D</Button>
+								<span>{props.username}</span>
+								<Button to="/logout">Logout</Button>
+							</React.Fragment>}
 					</React.Fragment>
-				)}
+				}
 			/>
 		</div>
 	);
@@ -59,28 +78,37 @@ AppToolbar.propTypes = {
 	appName: PropTypes.string,
 	logoPath: PropTypes.string,
 	title: PropTypes.string,
+	isRootScreen: PropTypes.bool,
 	shouldShowTitle: PropTypes.bool,
-	backPath: PropTypes.string,
-	backLabel: PropTypes.string,
-	backAction: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+	backAction: PropTypes.oneOfType([PropTypes.func, PropTypes.node, PropTypes.object]),
+	previousScreenTitle: PropTypes.string,
+	previousScreenUrl: PropTypes.string,
 	screenActions: PropTypes.node,
-	username: PropTypes.string
+	username: PropTypes.string,
+	armed: PropTypes.number,
+	setArmed: PropTypes.func
 };
 
 const mapStateToProps = (state, ownProps) => {
-	return {
-		appName: getAppName(state.config),
-		logoPath: getLogoPath(state.config),
-		title: getCurrentScreenTitle(state.navigation),
-		shouldShowTitle: shouldShowCurrentScreenTitle(state.navigation),
-		screenActions: ownProps.navigationScreenActions,
-		backAction: ownProps.navigationScreenBackAction || getPreviousScreenPath(state.navigation),
-		backLabel: getPreviousScreenTitle(state.navigation),
-		username: getUsername(state.session)
-	};
-};
+		return {
+			appName: getAppName(state.config),
+			logoPath: getLogoPath(state.config),
+			title: getCurrentScreenTitle(state.navigation),
+			isRootScreen: getCurrentScreenDepth(state.navigation) < 1,
+			shouldShowTitle: shouldShowCurrentScreenTitle(state.navigation),
+			screenActions: ownProps.navigationScreenActions,
+			backAction: ownProps.navigationScreenBackAction,
+			previousScreenTitle: getPreviousScreenTitle(state.navigation),
+			previousScreenUrl: getPreviousScreenPath(state.navigation),
+			username: getUsername(state.session),
+			armed: getArmed(state.session)
+		};
+	},
+	mapDispatchToProps = (dispatch) => ({
+		setArmed: (mode) => dispatch(setArmed(mode))
+	});
 
 export default compose(
 	withAppContext({includeScreenActions: true}),
-	connect(mapStateToProps)
+	connect(mapStateToProps, mapDispatchToProps)
 )(AppToolbar);

@@ -133,7 +133,7 @@ function getAccounts () {
 					account.id = account._id.toHexString();
 
 					if (Array.isArray(account.rooms)) {
-						account.rooms.forEach((room) => room.id = room.id.toHexString());
+						account.rooms = convertRoomObjectIdsToStrings(account.rooms);
 					}
 
 					delete account._id;
@@ -172,6 +172,22 @@ function saveAccount (account) {
 	});
 }
 
+function convertRoomIdsToObjectIds (rooms = []) {
+	return rooms.map((room) => ({
+		...room,
+		id: ObjectId(room.id)
+	}));
+}
+
+function convertRoomObjectIdsToStrings (rooms = []) {
+	return rooms.map((room) => ({
+		...room,
+		id: room.id.toHexString
+			? room.id.toHexString()
+			: room.id
+	}));
+}
+
 function saveRooms (account_id, rooms = []) {
 	return new Promise((resolve, reject) => {
 		if (!Array.isArray(rooms)) {
@@ -179,16 +195,12 @@ function saveRooms (account_id, rooms = []) {
 			return;
 		}
 
-		const _rooms = [...rooms];
-
-		_rooms.forEach((room) => room.id = ObjectId(room.id));
-
-		// TODO: Atomically remove the room ID from devices.
+		// TODO: Atomically remove the room ID from devices for rooms that were deleted.
 
 		connect((db) => {
 			db.collection('accounts').updateOne(
 				{_id: ObjectId(account_id)},
-				{$set: {rooms: _rooms}},
+				{$set: {rooms: convertRoomIdsToObjectIds(rooms)}},
 				// {upsert: true},
 				(error, data) => {
 					db.close();
@@ -200,9 +212,7 @@ function saveRooms (account_id, rooms = []) {
 						return;
 					}
 
-					rooms.forEach((room) => room.id = room.id.toHexString())
-
-					resolve(rooms);
+					resolve(convertRoomObjectIdsToStrings(rooms));
 				}, reject);
 		});
 	});

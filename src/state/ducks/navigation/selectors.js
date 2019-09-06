@@ -47,15 +47,20 @@ const SECOND_TO_LAST = -2,
 
 		return toJs ? screen.toJS() : screen;
 	},
+	getCurrentScreenPath = (navigation) => {
+		const currentScreen = getCurrentScreenInfo(navigation, false);
+
+		return currentScreen && currentScreen.get('path');
+	},
 	getCurrentScreenTitle = (navigation) => {
 		const currentScreen = getCurrentScreenInfo(navigation, false);
 
 		return currentScreen && currentScreen.get('title');
 	},
-	getCurrentScreenPath = (navigation) => {
+	getCurrentScreenDepth = (navigation) => {
 		const currentScreen = getCurrentScreenInfo(navigation, false);
 
-		return currentScreen && currentScreen.get('path');
+		return currentScreen && currentScreen.get('depth');
 	},
 	shouldShowCurrentScreenTitle = (navigation) => {
 		const currentScreen = getCurrentScreenInfo(navigation, false);
@@ -92,6 +97,7 @@ export {
 	getCurrentScreenInfo,
 	getCurrentScreenPath,
 	getCurrentScreenTitle,
+	getCurrentScreenDepth,
 	shouldShowCurrentScreenTitle,
 	getPreviousScreenInfo,
 	getPreviousScreenPath,

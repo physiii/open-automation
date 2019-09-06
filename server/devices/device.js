@@ -19,7 +19,6 @@ class Device {
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.type = data.type;
-		this.account = data.account;
 		this.account_id = data.account_id;
 		this.room = data.room;
 		this.room_id = data.room_id;
@@ -253,10 +252,13 @@ class Device {
 	}
 
 	clientSerialize () {
+		const services = this.services.getClientSerializedServices();
+
 		return {
 			...this.serialize(),
 			state: this.state,
-			services: this.services.getClientSerializedServices()
+			services,
+			automator_supported: services.some((service) => service.automator_supported)
 		};
 	}
 

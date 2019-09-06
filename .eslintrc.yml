@@ -111,7 +111,7 @@ rules:
   newline-before-return: error
   newline-per-chained-call:
     - error
-    - ignoreChainWithDepth: 3
+    - ignoreChainWithDepth: 4
   no-alert: warn
   no-array-constructor: error
   no-await-in-loop: error
@@ -241,7 +241,7 @@ rules:
   quotes:
     - error
     - single
-  radix: error
+  radix: 'off'
   react/jsx-boolean-value: 'off'
   react/jsx-curly-spacing: 'off'
   react/jsx-max-props-per-line:

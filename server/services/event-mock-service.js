@@ -9,7 +9,7 @@ class EventMockService extends Service {
 		this.setState({connected: true});
 
 		setInterval(() => {
-			this._emit('mock', {date: Date()});
+			this._emit('mock', {date: new Date()});
 		}, EVENT_INTERVAL_DELAY);
 	}
 }

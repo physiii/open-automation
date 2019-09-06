@@ -129,6 +129,7 @@ const ruleNameToFunctionMap = {
 	'integer': () => integer,
 	'time-of-day': () => () => null,
 	'is_required': (isRequired) => isRequired ? required : () => null,
+	'is_email': (isEmail) => isEmail ? email : () => null,
 	min,
 	max,
 	'min_length': minLength,
