@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Switch, Redirect} from 'react-router-dom';
 import {Route, withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import DeviceRoomField from './DeviceRoomField.js';
 import List from './List.js';
 import Button from './Button.js';
@@ -57,7 +58,7 @@ export class DeviceDetailsScreen extends React.Component {
 				<Switch>
 					<DeviceSettingsScreen path={this.props.match.path + '/settings'} device={device} />
 					<Route exact={!hasOneService} path={this.props.match.path} render={() => (
-						<section styleName="container">
+						<SettingsScreenContainer section={true}>
 							{device.error && <p>The device settings could not be updated because of an error.</p>}
 							{hasOneService
 								? <ServiceDetails service={firstService} shouldShowSettingsButton={true} />
@@ -86,7 +87,7 @@ export class DeviceDetailsScreen extends React.Component {
 									{label: 'ID', value: device.id, long: true}
 								].filter((item) => Boolean(item.value))}
 							</MetaList>
-						</section>
+						</SettingsScreenContainer>
 					)} />
 					<ServiceSettingsScreen path={this.props.match.path + '/service-settings'} />
 					<ServiceDetailsScreen path={this.props.match.path + '/service'} />

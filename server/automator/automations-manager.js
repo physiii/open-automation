@@ -2,6 +2,8 @@ const EventEmitter = require('events'),
 	database = require('../database.js'),
 	Automation = require('./automation.js'),
 	automations_list = new Map(),
+	ARMED_STAY = 1,
+	ARMED_AWAY = 2,
 	TAG = '[AutomationsManager]';
 
 let is_initialized = false,
@@ -101,6 +103,11 @@ class AutomationsManager extends EventEmitter {
 				return;
 			}
 
+			if (automation.type === 'security') {
+				reject('Security automations cannot be deleted.');
+				return;
+			}
+
 			database.deleteAutomation(automation_id).then(() => {
 				this._deregisterAutomation(automation.id, automation.account_id);
 				resolve();
@@ -109,9 +116,9 @@ class AutomationsManager extends EventEmitter {
 	}
 
 	handleAutomationUpdate (automation) {
-		const accountAutomations = this.getClientSerializedAutomations(this.getAutomationsByAccountId(automation.account_id));
-
-		this.emit('automations-update/account/' + automation.account_id, {automations: accountAutomations});
+		this.getAutomationsByAccountId(automation.account_id).then((accountAutomations) => {
+			this.emit('automations-update/account/' + automation.account_id, {automations: this.clientSerializeAutomations(accountAutomations)});
+		});
 	}
 
 	// NOTE: Use skip_account_access_check with caution. Never use for requests
@@ -126,7 +133,44 @@ class AutomationsManager extends EventEmitter {
 	}
 
 	getAutomationsByAccountId (account_id) {
-		return Array.from(automations_list.values()).filter((automation) => automation.account_id === account_id);
+		return new Promise((resolve, reject) => {
+			const accountAutomations = Array.from(automations_list.values()).filter((automation) => automation.account_id === account_id),
+				hasSecurityAutomations = accountAutomations.some((automation) => automation.type = 'security');
+
+			if (hasSecurityAutomations) {
+				resolve(accountAutomations);
+			} else {
+				const baseSecurityAutomation = {
+					is_enabled: true,
+					type: 'security',
+					source: {system: true},
+					user_editable: {
+						name: false,
+						conditions: false,
+						delete: false
+					},
+					account_id
+				};
+
+				// Create security automations.
+				Promise.all([this.saveAutomation({
+					...baseSecurityAutomation,
+					name: 'Armed Stay',
+					conditions: [{
+						type: 'armed',
+						mode: ARMED_STAY
+					}]
+				}),
+				this.saveAutomation({
+					...baseSecurityAutomation,
+					name: 'Armed Away',
+					conditions: [{
+						type: 'armed',
+						mode: ARMED_AWAY
+					}]
+				})]).then((securityAutomations) => resolve([...accountAutomations, ...securityAutomations]));
+			}
+		});
 	}
 
 	// NOTE: Use "force" with caution. Never use for requests originating from
@@ -151,7 +195,7 @@ class AutomationsManager extends EventEmitter {
 		});
 	}
 
-	getClientSerializedAutomations (automations = []) {
+	clientSerializeAutomations (automations = []) {
 		return automations.map((automation) => automation.clientSerialize());
 	}
 }

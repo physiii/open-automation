@@ -61,9 +61,11 @@ const initialize = () => (dispatch) => {
 		});
 	},
 	setArmed = (mode) => (dispatch) => {
-		dispatch(actions.setArmed(mode));
+		dispatch(actions.setArmed());
 
-		Api.setArmed(mode).catch((error, data) => {
+		Api.setArmed(mode).then((data) => {
+			dispatch(actions.setArmedSuccess(data.mode));
+		}).catch((error, data) => {
 			dispatch(actions.setArmedError(data.mode, error));
 		});
 	};

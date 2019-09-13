@@ -13,7 +13,7 @@ const dotenv = require('dotenv'),
 	AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	ScenesManager = require('./scenes/scenes-manager.js'),
-	Notifications = require('./automator/notifications.js'),
+	Notifications = require('./notifications.js'),
 	AutomationsManager = require('./automator/automations-manager.js'),
 	Automator = require('./automator/automator.js');
 

@@ -75,8 +75,11 @@
 	color: primary;
 }
 
-.label {}
+.label {
+	display: inline-flex;
+}
 .tabButton .label {
+	margin: 5px 0;
 	font-size: 12px;
 }
 
@@ -84,7 +87,7 @@
 	display: flex;
 }
 .tabButton .icon {
-	margin-bottom: 10px;
+	margin: 5px 0 3px 0;
 }
 
 .submit {

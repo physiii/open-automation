@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import Form from './Form.js';
 import Button from './Button.js';
 
@@ -69,104 +70,106 @@ export class AutomationNotificationScreen extends React.Component {
 						<Button disabled={this.state.forms_with_errors_count > 0} onClick={this.handleSaveClick}>Done</Button>
 					</React.Fragment>}
 				toolbarBackAction={{label: 'Back'}}>
-				{this.props.match.params.type === 'email' &&
-					<Form
-						fields={{
-							email: {
-								type: 'string',
-								label: 'Email Address',
-								validation: {
-									is_required: true,
-									is_email: true
+				<SettingsScreenContainer>
+					{this.props.match.params.type === 'email' &&
+						<Form
+							fields={{
+								email: {
+									type: 'string',
+									label: 'Email Address',
+									validation: {
+										is_required: true,
+										is_email: true
+									}
 								}
-							}
-						}}
-						values={{email: this.state.email}}
-						onError={this.handleSettingsErrors}
-						onNoError={this.handleNoSettingsErrors}
-						onSaveableChange={({email}) => this.setState({email})} />}
-				{this.props.match.params.type === 'sms' &&
-					<Form
-						fields={{
-							phone_number: {
-								type: 'string',
-								label: 'Phone Number',
-								validation: {
-									is_required: true
-								}
-							},
-							phone_provider: {
-								type: 'one-of',
-								label: 'Phone Provider',
-								value_options: [
-									{value: 'AT&T'},
-									{value: 'T-Mobile'},
-									{value: 'Verizon'},
-									{value: 'Sprint'},
-									{value: 'Virgin Mobile'},
-									{value: 'Tracfone'},
-									{value: 'MetroPCS'},
-									{value: 'Boost'},
-									{value: 'Cricket'},
-									{value: 'US Cellular'}
-								],
-								validation: {
-									is_required: true
-								}
-							}
-						}}
-						values={{
-							phone_number: this.state.phone_number,
-							phone_provider: this.state.phone_provider
-						}}
-						onError={this.handleSettingsErrors}
-						onNoError={this.handleNoSettingsErrors}
-						onSaveableChange={(values) => this.setState({
-							phone_number: values.phone_number,
-							phone_provider: values.phone_provider
-						})} />}
-				<Form
-					fields={{
-						notification_content: {
-							type: 'one-of',
-							label: 'Message',
-							value_options: [
-								{
-									value: 'trigger',
-									label: 'A description of what triggered the automation'
+							}}
+							values={{email: this.state.email}}
+							onError={this.handleSettingsErrors}
+							onNoError={this.handleNoSettingsErrors}
+							onSaveableChange={({email}) => this.setState({email})} />}
+					{this.props.match.params.type === 'sms' &&
+						<Form
+							fields={{
+								phone_number: {
+									type: 'string',
+									label: 'Phone Number',
+									validation: {
+										is_required: true
+									}
 								},
-								{
-									value: 'custom',
-									label: 'A custom message'
+								phone_provider: {
+									type: 'one-of',
+									label: 'Phone Provider',
+									value_options: [
+										{value: 'AT&T'},
+										{value: 'T-Mobile'},
+										{value: 'Verizon'},
+										{value: 'Sprint'},
+										{value: 'Virgin Mobile'},
+										{value: 'Tracfone'},
+										{value: 'MetroPCS'},
+										{value: 'Boost'},
+										{value: 'Cricket'},
+										{value: 'US Cellular'}
+									],
+									validation: {
+										is_required: true
+									}
 								}
-							]
-						}
-					}}
-					values={{notification_content: this.state.notification_content}}
-					onError={this.handleSettingsErrors}
-					onNoError={this.handleNoSettingsErrors}
-					onSaveableChange={(values) => this.setState({notification_content: values.notification_content})} />
-				{this.state.notification_content === 'trigger' &&
-					<React.Fragment>
-						<p>The notification content will be based on what triggers the automation.</p>
-						<p>e.g. "Movement was detected on Front Door Camera at 6:50 am on Tuesday, September 3rd."</p>
-					</React.Fragment>}
-				{this.state.notification_content === 'custom' &&
+							}}
+							values={{
+								phone_number: this.state.phone_number,
+								phone_provider: this.state.phone_provider
+							}}
+							onError={this.handleSettingsErrors}
+							onNoError={this.handleNoSettingsErrors}
+							onSaveableChange={(values) => this.setState({
+								phone_number: values.phone_number,
+								phone_provider: values.phone_provider
+							})} />}
 					<Form
 						fields={{
-							message: {
-								type: 'string',
-								label: 'Custom Message',
-								validation: {
-									is_required: true,
-									max_length: 140
-								}
+							notification_content: {
+								type: 'one-of',
+								label: 'Message',
+								value_options: [
+									{
+										value: 'trigger',
+										label: 'A description of what triggered the automation'
+									},
+									{
+										value: 'custom',
+										label: 'A custom message'
+									}
+								]
 							}
 						}}
-						values={{message: this.state.message}}
+						values={{notification_content: this.state.notification_content}}
 						onError={this.handleSettingsErrors}
 						onNoError={this.handleNoSettingsErrors}
-						onSaveableChange={(values) => this.setState({message: values.message})} />}
+						onSaveableChange={(values) => this.setState({notification_content: values.notification_content})} />
+					{this.state.notification_content === 'trigger' &&
+						<SettingsScreenContainer withPadding={true}>
+							<p>The notification content will be based on what triggers the automation.</p>
+							<p>Example: "Movement was detected on Front Door Camera at 6:50 am on Tuesday, September 3rd."</p>
+						</SettingsScreenContainer>}
+					{this.state.notification_content === 'custom' &&
+						<Form
+							fields={{
+								message: {
+									type: 'long-string',
+									label: 'Custom Message',
+									validation: {
+										is_required: true,
+										max_length: 140
+									}
+								}
+							}}
+							values={{message: this.state.message}}
+							onError={this.handleSettingsErrors}
+							onNoError={this.handleNoSettingsErrors}
+							onSaveableChange={(values) => this.setState({message: values.message})} />}
+				</SettingsScreenContainer>
 			</NavigationScreen>
 		);
 	}

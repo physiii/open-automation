@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import Button from './Button.js';
 import List from './List.js';
 import ServiceIcon from '../icons/ServiceIcon.js';
@@ -69,7 +70,7 @@ export class ServiceSettingsScreen extends React.Component {
 				url={this.props.match.url}
 				toolbarActions={<Button onClick={this.handleSaveClick} disabled={this.state.formsWithErrorsCount > 0 || !service.state.get('connected')}>Save</Button>}
 				toolbarBackAction={<Button to={this.props.match.parentMatch.url}>Cancel</Button>}>
-				<section styleName="container">
+				<SettingsScreenContainer section={true}>
 					{service.error && <p>The device settings could not be updated because of an error.</p>}
 					{!service.state.get('connected') && (
 						<List>
@@ -120,7 +121,7 @@ export class ServiceSettingsScreen extends React.Component {
 								key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 						</React.Fragment>
 					)}
-				</section>
+				</SettingsScreenContainer>
 			</NavigationScreen>
 		);
 	}

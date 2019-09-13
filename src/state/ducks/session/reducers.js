@@ -25,7 +25,10 @@ const initialState = {
 			case types.LOGIN_SUCCESS:
 				return {
 					...state,
-					user: {username: action.payload.user.username},
+					user: {
+						username: action.payload.user.username,
+						email: action.payload.user.email
+					},
 					armed: action.payload.user.armed,
 					loading: false,
 					error: false
@@ -56,6 +59,12 @@ const initialState = {
 					error: action.payload.error.message
 				};
 			case types.SET_ARMED:
+				return {
+					...state,
+					armed: action.payload.mode,
+					error: false
+				};
+			case types.SET_ARMED_SUCCESS:
 				return {
 					...state,
 					armed: action.payload.mode,

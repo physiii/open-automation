@@ -93,6 +93,11 @@
 
 	cursor: inherit !important;
 }
+.textarea {
+	composes: input;
+	height: 108px;
+	resize: none;
+}
 
 .bottom {
 	height: 16px;

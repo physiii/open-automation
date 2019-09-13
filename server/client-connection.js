@@ -92,21 +92,27 @@ class ClientConnection {
 
 	listenToClient () {
 		this.clientEndpoint('armed/set', (data, callback) => {
-			this.account.setArmed(data.mode).then(() => callback()).catch((error) => {
+			this.account.setArmed(data.mode).then((mode) => callback(null, {mode})).catch((error) => {
 				console.error(TAG, 'Set armed error:', error);
 				callback(error, {mode: this.account.armed});
 			});
 		});
 
 		this.clientEndpoint('automations/get', (data, callback) => {
-			const accountAutomations = AutomationsManager.getAutomationsByAccountId(this.account.id);
-
-			callback(null, {automations: AutomationsManager.getClientSerializedAutomations(accountAutomations)});
+			AutomationsManager.getAutomationsByAccountId(this.account.id).then((accountAutomations) => {
+				callback(null, {automations: AutomationsManager.clientSerializeAutomations(accountAutomations)});
+			}).catch((error) => {
+				console.error(TAG, 'Get automations error:', error);
+				callback(error);
+			});
 		});
 
 		this.clientEndpoint('automation/add', (data, callback) => {
 			AutomationsManager.saveAutomation({
 					...data.automation,
+					type: 'user',
+					source: {web: true},
+					user_editable: true,
 					account_id: this.account.id
 				})
 				.then((automation) => callback(null, {automation}))
@@ -117,8 +123,48 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('automation/save', (data, callback) => {
+			const automation = AutomationsManager.getAutomationById(data.automation.id, this.account.id);
+
+			if (!automation.user_editable) {
+				callback('This automation cannot be modified.');
+				return;
+			}
+
+			if (automation.user_editable.name === false && data.automation.name !== automation.name) {
+				callback('This automation’s name cannot be modified.');
+				return;
+			}
+
+			if (automation.user_editable.is_enabled === false && data.automation.is_enabled !== automation.is_enabled) {
+				callback('This automation cannot be disabled.');
+				return;
+			}
+
+			if (automation.user_editable.triggers === false && JSON.stringify(data.automation.triggers) !== JSON.stringify(automation.triggers)) {
+				callback('This automation’s triggers cannot be modified.');
+				return;
+			}
+
+			if (automation.user_editable.conditions === false && JSON.stringify(data.automation.conditions) !== JSON.stringify(automation.conditions)) {
+				callback('This automation’s conditions cannot be modified.');
+				return;
+			}
+
+			if (automation.user_editable.notifications === false && JSON.stringify(data.automation.notifications) !== JSON.stringify(automation.notifications)) {
+				callback('This automation’s notifications cannot be modified.');
+				return;
+			}
+
+			if (automation.user_editable.scenes === false && JSON.stringify(data.automation.scenes) !== JSON.stringify(automation.scenes)) {
+				callback('This automation’s scenes cannot be modified.');
+				return;
+			}
+
 			AutomationsManager.saveAutomation({
 					...data.automation,
+					type: automation.type, // Ignore changes from client.
+					source: automation.source, // Ignore changes from client.
+					user_editable: automation.user_editable, // Ignore changes from client.
 					account_id: this.account.id
 				})
 				.then((automation) => callback(null, {automation}))
@@ -129,6 +175,13 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('automation/delete', (data, callback) => {
+			const automation = AutomationsManager.getAutomationById(data.automation_id, this.account.id);
+
+			if (!automation.user_editable || (automation.user_editable && automation.user_editable.delete === false)) {
+				callback('This automation cannot be deleted.');
+				return;
+			}
+
 			AutomationsManager.deleteAutomation(data.automation_id, this.account.id)
 				.then(() => callback())
 				.catch((error) => {

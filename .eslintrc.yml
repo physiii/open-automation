@@ -11,6 +11,7 @@ parserOptions:
   sourceType: module
 plugins:
   - react
+  - react-hooks
 rules:
   accessor-pairs: error
   array-bracket-newline:
@@ -100,6 +101,7 @@ rules:
   max-statements:
     - error
     - max: 12
+    - ignoreTopLevelFunctions: true
   max-statements-per-line: error
   multiline-comment-style: 'off'
   multiline-ternary: 'off'
@@ -150,6 +152,7 @@ rules:
   no-magic-numbers:
     - error
     - ignore:
+      - -1
       - 0
       - 1
       - 100
@@ -276,6 +279,8 @@ rules:
       - everything-else
       - render
   react/sort-prop-types: 'off'
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: warn
   require-await: error
   require-jsdoc: 'off' # TODO: Turn on
   rest-spread-spacing:

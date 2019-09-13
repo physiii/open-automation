@@ -4,11 +4,15 @@ class AutomationRecord extends Immutable.Record({
 	id: null,
 	name: null,
 	is_enabled: true,
+	type: 'user',
+	source: {web: true},
+	user_editable: true,
 	triggers: Immutable.List(),
 	conditions: Immutable.List(),
 	scenes: Immutable.List(),
 	notifications: Immutable.List(),
-	isUnsaved: false
+	isUnsaved: false,
+	error: null
 }) {
 	constructor (values = {}) {
 		super({

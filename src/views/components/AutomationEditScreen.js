@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Switch, Redirect, Link} from 'react-router-dom';
 import {Route, withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import Button from './Button.js';
 import Form from './Form.js';
 import AutomationEditTrigger from './AutomationEditTrigger.js';
@@ -104,7 +105,11 @@ export class AutomationEditScreen extends React.Component {
 
 		const triggers = this.state.automation.triggers.toArray(),
 			conditions = this.state.automation.conditions.toArray(),
-			notifications = this.state.automation.notifications.toArray();
+			notifications = this.state.automation.notifications.toArray(),
+			userEditable = this.state.automation.user_editable,
+			areTriggersEditable = userEditable && (userEditable.triggers !== false),
+			areConditionsEditable = userEditable && (userEditable.conditions !== false),
+			areNotificationsEditable = userEditable && (userEditable.notifications !== false);
 
 		return (
 			<NavigationScreen
@@ -112,13 +117,13 @@ export class AutomationEditScreen extends React.Component {
 				url={this.props.match.url}
 				toolbarActions={
 					<React.Fragment>
-						{!this.props.isNew ? <Button onClick={this.handleDeleteClick}>Delete</Button> : null}
+						{!this.props.isNew ? <Button onClick={this.handleDeleteClick} disabled={!userEditable || (userEditable.delete === false)}>Delete</Button> : null}
 						<Button onClick={this.handleSaveClick} disabled={!this.state.isSaveable}>Save</Button>
 					</React.Fragment>}
 				toolbarBackAction={<Button to={this.props.match.parentMatch.url}>Cancel</Button>}>
 				<Switch>
-					<Route exact path={this.props.match.path} render={() => (
-						<div styleName="container">
+					<Route exact path={this.props.match.path} render={() => ( // eslint-disable-line complexity
+						<SettingsScreenContainer>
 							<Form
 								fields={{
 									name: {
@@ -127,11 +132,13 @@ export class AutomationEditScreen extends React.Component {
 										validation: {
 											is_required: true,
 											max_length: 24
-										}
+										},
+										disabled: userEditable && (userEditable.name === false)
 									},
 									is_enabled: this.props.isNew ? null : {
 										type: 'boolean',
-										label: 'Enable this automation'
+										label: 'Enable this automation',
+										disabled: userEditable && (userEditable.is_enabled === false)
 									}
 								}}
 								values={this.state.automation}
@@ -152,21 +159,23 @@ export class AutomationEditScreen extends React.Component {
 
 												return (
 													<li styleName="elementListItem" key={index}>
-														<Link styleName="elementListLink" to={this.props.match.url + '/edit-trigger/' + service.device_id + '/' + index}>
+														<Link styleName="elementListLink" to={areTriggersEditable ? this.props.match.url + '/edit-trigger/' + service.device_id + '/' + index : '#'}>
 															{service.getEventLabel(trigger.event) + ' on ' + service.settings.get('name')}
 														</Link>
 													</li>
 												);
 											})}
 										</ul> : null}
-										<span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
-											<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
-												<Button to={this.props.match.url + '/add-trigger'}>
-													<span styleName={triggers.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
-													<span styleName={triggers.length ? 'addButtonLabel' : 'primaryAddButtonLabel'}>Add Trigger</span>
-												</Button>
+										{areTriggersEditable
+											? <span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
+												<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
+													<Button to={this.props.match.url + '/add-trigger'}>
+														<span styleName={triggers.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
+														<span styleName={triggers.length ? 'addButtonLabel' : 'primaryAddButtonLabel'}>Add Trigger</span>
+													</Button>
+												</span>
 											</span>
-										</span>
+											: !triggers.length && <span styleName="addButtonPlaceholder"><span styleName="addButtonPlaceholderInner" /></span>}
 									</div>
 								</section>
 								<section styleName="section">
@@ -175,13 +184,13 @@ export class AutomationEditScreen extends React.Component {
 										{conditions.length ? <ul styleName="elementList">
 											{conditions.map((condition, index) => (
 												<li styleName="elementListItem" key={index}>
-													<Link styleName="elementListLink" to={this.props.match.url + '/edit-condition/' + condition.type + '/' + index}>
+													<Link styleName="elementListLink" to={areConditionsEditable ? this.props.match.url + '/edit-condition/' + condition.type + '/' + index : '#'}>
 														{ARMED_LABELS[condition.mode]}
 													</Link>
 												</li>
 											))}
 										</ul> : null}
-										{triggers.length
+										{triggers.length && areConditionsEditable
 											? <span styleName="addButton">
 												<span styleName="addButtonLink">
 													<Button to={this.props.match.url + '/add-condition'}>
@@ -199,7 +208,7 @@ export class AutomationEditScreen extends React.Component {
 										{notifications.length ? <ul styleName="elementList">
 											{notifications.map((notification, index) => (
 												<li styleName="elementListItem" key={index}>
-													<Link styleName="elementListLink" to={this.props.match.url + '/edit-action/notification/' + notification.type + '/' + index}>
+													<Link styleName="elementListLink" to={areNotificationsEditable ? this.props.match.url + '/edit-action/notification/' + notification.type + '/' + index : '#'}>
 														{notification.type === 'email'
 															? 'Email ' + notification.email
 															: 'Send text to ' + notification.phone_number}
@@ -207,7 +216,7 @@ export class AutomationEditScreen extends React.Component {
 												</li>
 											))}
 										</ul> : null}
-										{triggers.length
+										{triggers.length && areNotificationsEditable
 											? <span styleName={notifications.length ? 'addButton' : 'primaryAddButton'}>
 												<span styleName={notifications.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
 													<Button to={this.props.match.url + '/add-action'}>
@@ -220,44 +229,38 @@ export class AutomationEditScreen extends React.Component {
 									</div>
 								</section>
 							</div>
-						</div>
+						</SettingsScreenContainer>
 					)} />
-					<Route path={this.props.match.path + '/add-trigger'} render={({...routeProps}) => (
+					<Route path={this.props.match.path + '/add-trigger'} render={() => (
 						<AutomationEditTrigger
-							{...routeProps}
 							isNew={true}
 							saveTrigger={this.saveTrigger} />
 					)} />
-					<Route path={this.props.match.path + '/edit-trigger'} render={({...routeProps}) => (
+					<Route path={this.props.match.path + '/edit-trigger'} render={() => (
 						<AutomationEditTrigger
-							{...routeProps}
 							triggers={this.state.automation.triggers}
 							saveTrigger={this.saveTrigger}
 							deleteTrigger={this.deleteTrigger} />
 					)} />
-					<Route path={this.props.match.path + '/add-condition'} render={({...routeProps}) => (
+					<Route path={this.props.match.path + '/add-condition'} render={() => (
 						<AutomationEditCondition
-							{...routeProps}
 							isNew={true}
 							saveCondition={this.saveCondition} />
 					)} />
-					<Route path={this.props.match.path + '/edit-condition'} render={({...routeProps}) => (
+					<Route path={this.props.match.path + '/edit-condition'} render={() => (
 						<AutomationEditCondition
-							{...routeProps}
 							conditions={this.state.automation.conditions}
 							saveCondition={this.saveCondition}
 							deleteCondition={this.deleteCondition} />
 					)} />
-					<Route path={this.props.match.path + '/add-action'} render={({...routeProps}) => (
+					<Route path={this.props.match.path + '/add-action'} render={() => (
 						<AutomationEditAction
-							{...routeProps}
 							isNew={true}
 							notifications={this.state.automation.notifications}
 							saveNotification={this.saveNotification} />
 					)} />
-					<Route path={this.props.match.path + '/edit-action'} render={({...routeProps}) => (
+					<Route path={this.props.match.path + '/edit-action'} render={() => (
 						<AutomationEditAction
-							{...routeProps}
 							notifications={this.state.automation.notifications}
 							saveNotification={this.saveNotification}
 							deleteNotification={this.deleteNotification} />

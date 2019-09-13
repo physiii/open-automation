@@ -44,9 +44,15 @@ export const registerError = (error) => ({
 	error: true
 });
 
-export const setArmed = (mode) => ({
+export const setArmed = () => ({
 	type: types.SET_ARMED,
-	payload: {mode}
+	payload: {mode: -1}
+});
+
+export const setArmedSuccess = (mode) => ({
+	type: types.SET_ARMED_SUCCESS,
+	payload: {mode},
+	error: true
 });
 
 export const setArmedError = (mode, error) => ({

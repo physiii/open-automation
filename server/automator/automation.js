@@ -6,6 +6,9 @@ class Automation {
 	constructor (data) {
 		this.id = data.id || uuid();
 		this.is_enabled = data.is_enabled || false;
+		this.type = data.type;
+		this.source = data.source || {unknown: true};
+		this.user_editable = data.user_editable || false;
 		this.name = data.name || '';
 		this.account_id = data.account_id;
 		this.triggers = data.triggers || [];
@@ -35,6 +38,9 @@ class Automation {
 		return {
 			id: this.id,
 			is_enabled: this.is_enabled,
+			type: this.type,
+			source: this.source,
+			user_editable: this.user_editable,
 			name: this.name,
 			account_id: this.account_id,
 			triggers: this.triggers,

@@ -5,6 +5,7 @@ import {compose} from 'redux';
 import {Redirect} from 'react-router-dom';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceHeader from './ServiceHeader.js';
 import Button from './Button.js';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
@@ -46,19 +47,21 @@ export class AutomationChooseServiceTriggerScreen extends React.Component {
 				url={this.props.match.urlWithoutOptionalParams}
 				toolbarActions={!this.props.isNew && <Button onClick={this.handleDeleteClick}>Delete</Button>}
 				toolbarBackAction={{label: 'Back'}}>
-				{this.props.device.services.map((service) => {
-					return (
-						<section key={service.id}>
-							<ServiceHeader service={service} isConnected={true} />
-							<h2>Event Triggers</h2>
-							{service.event_definitions.toArray().map(([event, definition]) => (
-								<Button key={event} onClick={() => this.handleEventClick(event, service)}>
-									{definition.label}
-								</Button>
-							))}
-						</section>
-					);
-				})}
+				<SettingsScreenContainer withPadding={true}>
+					{this.props.device.services.map((service) => {
+						return (
+							<section key={service.id}>
+								<ServiceHeader service={service} isConnected={true} />
+								<h2>Event Triggers</h2>
+								{service.event_definitions.toArray().map(([event, definition]) => (
+									<Button key={event} onClick={() => this.handleEventClick(event, service)}>
+										{definition.label}
+									</Button>
+								))}
+							</section>
+						);
+					})}
+				</SettingsScreenContainer>
 			</NavigationScreen>
 		);
 	}

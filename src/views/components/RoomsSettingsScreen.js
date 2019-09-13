@@ -4,6 +4,7 @@ import {Switch, Redirect} from 'react-router-dom';
 import {Route, withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import RoomEditScreen from './RoomEditScreen.js';
+import AddIcon from '../icons/AddIcon.js';
 import List from './List.js';
 import Button from './Button.js';
 import BlankState from './BlankState.js';
@@ -57,7 +58,7 @@ export class RoomsSettingsScreen extends React.Component {
 					? <Button onClick={this.handleDoneClick}>Done</Button>
 					: <React.Fragment>
 						{Boolean(this.props.rooms.length) && <Button onClick={this.handleEditClick}>Edit</Button>}
-						<Button to={this.props.match.url + '/add'}>Add</Button>
+						<Button to={this.props.match.url + '/add'}><AddIcon size={20} /></Button>
 					</React.Fragment>}
 				toolbarBackAction={this.state.isEditingList
 					? <React.Fragment />

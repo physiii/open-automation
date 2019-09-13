@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import DevicesList from './DevicesList.js';
 import BlankState from './BlankState.js';
 import {getDevices} from '../../state/ducks/devices-list/selectors.js';
@@ -23,7 +24,7 @@ export const ChooseDeviceScreen = (props) => {
 				? <BlankState
 					heading="No Devices"
 					body={props.blankstateBody} />
-				: <React.Fragment>
+				: <SettingsScreenContainer withPadding={true}>
 					{props.instructions}
 					{props.rooms.map((room) => {
 						const roomDevices = props.devices.filter((device) => device.room_id === room.id);
@@ -47,7 +48,7 @@ export const ChooseDeviceScreen = (props) => {
 					{props.devicesWithoutRoom.length
 						? <DevicesList devices={props.devicesWithoutRoom} deviceLinkBase={props.match.url} />
 						: null}
-				</React.Fragment>}
+				</SettingsScreenContainer>}
 		</NavigationScreen>
 	);
 };

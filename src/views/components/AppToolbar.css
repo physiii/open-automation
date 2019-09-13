@@ -19,3 +19,40 @@
 	height: 100%;
 	padding: 5px 0;
 }
+
+.armedButton {
+	display: inline-flex;
+	padding: 0 8px;
+	color: #888888;
+	cursor: pointer;
+}
+.armedButton.isArmed {
+	color: #eac13d;
+}
+
+.userButton {
+	display: inline-flex;
+	padding: 0 8px;
+	color: inherit;
+	cursor: pointer;
+}
+
+.user {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	padding: 0 16px 16px 16px;
+	border-bottom: 1px solid #7e7e7e;
+}
+.username {
+	flex: 1 0 auto;
+	font-size: 0.875em;
+}
+
+.security {
+	padding: 16px;
+}
+.securityTitle {
+	margin: 8px 0;
+	font-size: 0.875em;
+}

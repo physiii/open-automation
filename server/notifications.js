@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
-	utils = require('../utils.js'),
-	AccountsManager = require('../accounts/accounts-manager.js'),
+	utils = require('./utils.js'),
+	AccountsManager = require('./accounts/accounts-manager.js'),
 	moment = require('moment'),
 	CELL_PROVIDERS = {
 		'AT&T': '@mms.att.net',

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import Button from './Button.js';
 import List from './List.js';
 import Form from './Form.js';
@@ -10,7 +11,6 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import {setDeviceSettings} from '../../state/ducks/devices-list/operations.js';
-import './DeviceSettingsScreen.css';
 
 export class DeviceSettingsScreen extends React.Component {
 	constructor (props) {
@@ -61,7 +61,7 @@ export class DeviceSettingsScreen extends React.Component {
 				url={this.props.match.url}
 				toolbarActions={<Button onClick={this.handleSaveClick} disabled={this.state.formHasErrors || !device.state.connected}>Save</Button>}
 				toolbarBackAction={<Button to={this.props.match.parentMatch.url}>Cancel</Button>}>
-				<section styleName="container">
+				<SettingsScreenContainer section={true}>
 					{device.error && <p>The device settings could not be updated because of an error.</p>}
 					{!device.state.connected && (
 						<List>
@@ -81,7 +81,7 @@ export class DeviceSettingsScreen extends React.Component {
 						onError={this.handleSettingsErrors}
 						onNoError={this.handleNoSettingsErrors}
 						key={device.error} /> {/* Re-create component when there's an error to make sure the latest device settings state is rendered. */}
-				</section>
+				</SettingsScreenContainer>
 			</NavigationScreen>
 		);
 	}

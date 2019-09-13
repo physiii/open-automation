@@ -1,0 +1,14 @@
+.list {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	max-width: 300px;
+	margin: 24px 0 16px 0;
+}
+
+.option {
+	color: #bebebe;
+}
+.option.active {
+	color: #ffffff;
+}

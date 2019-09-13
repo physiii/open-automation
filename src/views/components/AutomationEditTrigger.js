@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import ChooseDeviceScreen from './ChooseDeviceScreen.js';
 import AutomationChooseServiceTriggerScreen from './AutomationChooseServiceTriggerScreen.js';
 import {getDevicesWithAutomatorSupport} from '../../state/ducks/devices-list/selectors.js';
@@ -11,7 +12,7 @@ export const AutomationEditTrigger = (props) => {
 			{props.isNew && <ChooseDeviceScreen
 				path={props.match.path}
 				title="Add Trigger"
-				instructions={<p>Choose a device to trigger this automation.</p>}
+				instructions={<p>Choose which device should trigger this automation.</p>}
 				devices={props.devices}
 				blankstateBody={'There are no devices that can trigger automations.'} />}
 			<AutomationChooseServiceTriggerScreen
@@ -37,4 +38,4 @@ const mapStateToProps = ({devicesList}) => ({
 	devices: getDevicesWithAutomatorSupport(devicesList)
 });
 
-export default connect(mapStateToProps)(AutomationEditTrigger);
+export default withRouter(connect(mapStateToProps)(AutomationEditTrigger));

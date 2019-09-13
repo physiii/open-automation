@@ -12,6 +12,7 @@ import SettingsScreen from '../components/SettingsScreen.js';
 import TabBar from '../components/TabBar.js';
 import DashboardIcon from '../icons/DashboardIcon.js';
 import DoorIcon from '../icons/DoorIcon.js';
+import AutomationsIcon from '../icons/AutomationsIcon.js';
 import SettingsIcon from '../icons/SettingsIcon.js';
 import Logout from '../components/Logout.js';
 import ConsoleInterface from '../components/ConsoleInterface.js';
@@ -95,6 +96,7 @@ export class App extends React.Component {
 									},
 									{
 										label: 'Automations',
+										icon: <AutomationsIcon size={24} />,
 										to: this.props.getTabPath('/automations'),
 										isActive: this.props.activeTabPath === '/automations'
 									},

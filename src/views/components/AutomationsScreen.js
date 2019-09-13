@@ -9,8 +9,8 @@ import AutomationEditScreen from './AutomationEditScreen.js';
 import List from './List.js';
 import Button from './Button.js';
 import BlankState from './BlankState.js';
-import {getDevices} from '../../state/ducks/devices-list/selectors.js';
-import {getServices} from '../../state/ducks/services-list/selectors.js';
+import AddIcon from '../icons/AddIcon.js';
+import ShieldIcon from '../icons/ShieldIcon.js';
 import {getAutomations, hasInitialFetchCompleted} from '../../state/ducks/automations-list/selectors.js';
 
 export const AutomationsScreen = (props) => {
@@ -19,7 +19,7 @@ export const AutomationsScreen = (props) => {
 			title="Automations"
 			url={props.match.urlWithoutOptionalParams}
 			isContextRoot={true}
-			toolbarActions={<Button to={props.match.url + '/add/new'}>Add</Button>}>
+			toolbarActions={<Button to={props.match.url + '/add/new'}><AddIcon size={20} /></Button>}>
 			{props.error && <p>{props.error}</p>}
 			{props.isLoading
 				? <span>Loading</span>
@@ -32,8 +32,9 @@ export const AutomationsScreen = (props) => {
 									body="Use the ‘Add’ button and automations will show up here." />
 							}
 							<List isOrdered={true} renderIfEmpty={false}>
-								{props.automations.map((automation) => ({
+								{props.automations.sort((automation) => automation.type === 'security' ? -1 : 1).map((automation) => ({
 									key: automation.id,
+									icon: automation.type === 'security' ? <ShieldIcon size={24} /> : <span style={{width: 24}} />,
 									label: automation.name || 'Automation',
 									link: props.match.url + '/' + automation.id
 								}))}
@@ -49,18 +50,18 @@ export const AutomationsScreen = (props) => {
 };
 
 AutomationsScreen.propTypes = {
-	devices: PropTypes.object.isRequired, // TODO
-	services: PropTypes.object.isRequired, // TODO
 	automations: PropTypes.array.isRequired,
 	error: PropTypes.string,
 	isLoading: PropTypes.bool,
 	match: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({devicesList, servicesList, automationsList}) => ({
-	devices: getDevices(devicesList, false), // TODO
-	services: getServices(servicesList, false), // TODO
-	automations: getAutomations(automationsList, false).reverse().toList().toJS(),
+const mapStateToProps = ({automationsList}) => ({
+	automations: getAutomations(automationsList, false)
+		.filter((automation) => automation.user_editable)
+		.reverse()
+		.toList()
+		.toJS(),
 	isLoading: !hasInitialFetchCompleted(automationsList)
 });
 

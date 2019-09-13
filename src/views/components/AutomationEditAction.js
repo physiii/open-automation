@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
 import NavigationScreen from './NavigationScreen.js';
+import SettingsScreenContainer from './SettingsScreenContainer.js';
 import AutomationNotificationScreen from './AutomationNotificationScreen.js';
 import Button from './Button.js';
 
@@ -11,9 +12,11 @@ export const AutomationEditAction = (props) => {
 			{props.isNew && <NavigationScreen
 				title={'Add Action'}
 				url={props.match.url}>
-				<h1>Send a Notification</h1>
-				<Button to={props.match.url + '/notification/email'}>Email</Button>
-				<Button to={props.match.url + '/notification/sms'}>SMS</Button>
+				<SettingsScreenContainer withPadding={true}>
+					<h1>Send a Notification</h1>
+					<Button to={props.match.url + '/notification/email'}>Email</Button>
+					<Button to={props.match.url + '/notification/sms'}>SMS</Button>
+				</SettingsScreenContainer>
 			</NavigationScreen>}
 			<AutomationNotificationScreen
 				path={props.match.path + '/notification'}

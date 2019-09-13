@@ -60,7 +60,7 @@ const SECOND_TO_LAST = -2,
 	getCurrentScreenDepth = (navigation) => {
 		const currentScreen = getCurrentScreenInfo(navigation, false);
 
-		return currentScreen && currentScreen.get('depth');
+		return (currentScreen || 0) && currentScreen.get('depth');
 	},
 	shouldShowCurrentScreenTitle = (navigation) => {
 		const currentScreen = getCurrentScreenInfo(navigation, false);

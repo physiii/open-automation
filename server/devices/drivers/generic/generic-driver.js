@@ -77,7 +77,7 @@ class GenericDeviceDriver extends DeviceDriver {
 		}
 	}
 
-	_socketEmit (event, data, callback, service_id) {
+	_socketEmit (event, data, callback = () => {}, service_id) {
 		if (!this.socket) {
 			console.log(TAG, this.device_id, 'Tried to emit socket event "' + event + '" but the device does not have a socket.');
 			callback('Device not connected');

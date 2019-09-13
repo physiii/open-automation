@@ -1,7 +1,3 @@
-.container {
-	max-width: 500px;
-}
-
 .header {
 	display: flex;
 	flex-flow: row nowrap;

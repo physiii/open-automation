@@ -1,10 +1,6 @@
 @value sequenceGutterWidth: 50px;
 @value elementListBottomPadding: 8px;
 
-.container {
-	max-width: 500px;
-}
-
 .sections {
 	margin: 8px 0;
 	padding-top: 16px;
@@ -37,7 +33,7 @@
 	display: block;
 	width: 2px;
 	background-color: #ffffff;
-	opacity: 0.3;
+	opacity: 0.2;
 	z-index: -1;
 }
 .sequenceLine::before {
@@ -136,7 +132,6 @@
 }
 .primaryAddButtonLink {
 	composes: addButtonLink;
-	/*margin-top: -1px;*/
 }
 .primaryAddButtonIcon {
 	composes: addButtonIcon;

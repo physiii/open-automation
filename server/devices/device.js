@@ -218,6 +218,15 @@ class Device {
 		this.save();
 	}
 
+	emit (event, data) {
+		if (event === 'token') {
+			console.error(TAG, this.id, 'Do not use emit to set the device token. Use setToken.');
+			return;
+		}
+
+		this.driver.emit(event, data);
+	}
+
 	save () {
 		return new Promise((resolve, reject) => {
 			if (!this.is_saveable) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {getUniqueId} from '../../utilities.js';
-import './TextField.css';
+import styles from './TextField.css';
 
 const labelScale = 0.75;
 
@@ -100,26 +100,26 @@ export class TextField extends React.PureComponent {
 	}
 
 	getFieldClasses (inputProps) {
-		let fieldClasses = 'field';
+		let fieldClasses = styles.field;
 
 		if (this.state.isFocused) {
-			fieldClasses += ' isFocused';
+			fieldClasses += ' ' + styles.isFocused;
 		}
 
 		if (this.props.error) {
-			fieldClasses += ' hasError';
+			fieldClasses += ' ' + styles.hasError;
 		}
 
 		if (inputProps.value.length > 0) {
-			fieldClasses += ' isPopulated';
+			fieldClasses += ' ' + styles.isPopulated;
 		}
 
 		if (inputProps.disabled) {
-			fieldClasses += ' isDisabled';
+			fieldClasses += ' ' + styles.isDisabled;
 		}
 
 		if (this.state.isOutlineSetUp) {
-			fieldClasses += ' hasNotchedOutline';
+			fieldClasses += ' ' + styles.hasNotchedOutline;
 		}
 
 		return fieldClasses;
@@ -145,27 +145,31 @@ export class TextField extends React.PureComponent {
 		delete inputProps.onBlur;
 
 		return (
-			<div styleName="container" onAnimationEnd={this.setUpOutline}>
-				<div styleName={this.getFieldClasses(inputProps)} ref={this.field}>
-					{this.state.isOutlineSetUp && <svg styleName="outlineWrapper" xmlns="http://www.w3.org/2000/svg">
-						<path styleName="outline" d={outlinePath} clipPath={'url(#' + this.clipPathId + ')'} />
+			<div className={styles.container} onAnimationEnd={this.setUpOutline}>
+				<div className={this.getFieldClasses(inputProps)} ref={this.field}>
+					{this.state.isOutlineSetUp && <svg className={styles.outlineWrapper} xmlns="http://www.w3.org/2000/svg">
+						<path className={styles.outline} d={outlinePath} clipPath={'url(#' + this.clipPathId + ')'} />
 						<clipPath id={this.clipPathId}>
 							<path d={outlinePath} />
 						</clipPath>
 					</svg>}
-					<label htmlFor={altInputId || this.inputId} styleName="label" ref={this.label}>{label}</label>
-					{shouldShowMask && <span styleName="mask">{fieldMask}</span>}
-					<input
-						{...inputProps}
-						styleName="input"
-						id={this.inputId}
-						onFocus={this.handleFocus}
-						onBlur={this.handleBlur} />
+					<label htmlFor={altInputId || this.inputId} className={styles.label} ref={this.label}>{label}</label>
+					{shouldShowMask && <span className={styles.mask}>{fieldMask}</span>}
+					{React.createElement(
+						this.props.type === 'textarea' ? 'textarea' : 'input',
+						{
+							...inputProps,
+							className: this.props.type === 'textarea' ? styles.textarea : styles.input,
+							id: this.inputId,
+							onFocus: this.handleFocus,
+							onBlur: this.handleBlur
+						}
+					)}
 					{children}
 				</div>
-				<div styleName="bottom">
+				<div className={styles.bottom}>
 					{error && !inputProps.disabled &&
-						<span styleName="errorMessage">{error}</span>}
+						<span className={styles.errorMessage}>{error}</span>}
 				</div>
 			</div>
 		);
@@ -192,7 +196,8 @@ TextField.propTypes = {
 		'tel',
 		'url',
 		'email',
-		'password'
+		'password',
+		'textarea'
 	]),
 	disabled: PropTypes.bool,
 	onFocus: PropTypes.func,

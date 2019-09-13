@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from '../components/Toolbar.js';
 import Button from '../components/Button.js';
+import ModalShelf from '../components/ModalShelf.js';
+import ArmMenu from '../components/ArmMenu.js';
+import UserIcon from '../icons/UserIcon.js';
+import ShieldIcon from '../icons/ShieldIcon.js';
+import ShieldCrossedIcon from '../icons/ShieldCrossedIcon.js';
 import {withAppContext} from '../AppContext.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -11,16 +16,26 @@ import {getUsername, getArmed} from '../../state/ducks/session/selectors.js';
 import {setArmed} from '../../state/ducks/session/operations.js';
 import './AppToolbar.css';
 
-const DISARMED = 0,
-	ARMED_STAY = 1,
+const ARMED_STAY = 1,
 	ARMED_AWAY = 2;
 
-export const AppToolbar = (props) => {
+export const AppToolbar = (props) => { // eslint-disable-line max-statements, complexity
+	const [shelfIsShowing, setShelfIsShowing] = useState(false),
+		isArmed = props.armed === ARMED_AWAY || props.armed === ARMED_STAY,
+		setArmedMode = (mode) => {
+			if (props.armed === mode) {
+				return;
+			}
+
+			props.setArmed(mode);
+			setShelfIsShowing(false);
+		};
+
 	let backLabel = props.previousScreenTitle,
 		backProps,
 		left;
 
-	if (typeof props.backAction === 'object' && !React.isValidElement(props.backAction)) {
+	if (props.backAction && typeof props.backAction === 'object' && !React.isValidElement(props.backAction)) {
 		backProps = {
 			onClick: props.backAction.onClick,
 			to: props.backAction.to || props.previousScreenUrl
@@ -59,14 +74,27 @@ export const AppToolbar = (props) => {
 				rightChildren={
 					<React.Fragment>
 						{props.screenActions}
-						{props.isRootScreen &&
-							<React.Fragment>
-								<Button disabled={props.armed === ARMED_AWAY} onClick={() => props.setArmed(ARMED_AWAY)}>A</Button>
-								<Button disabled={props.armed === ARMED_STAY} onClick={() => props.setArmed(ARMED_STAY)}>S</Button>
-								<Button disabled={props.armed === DISARMED} onClick={() => props.setArmed(DISARMED)}>D</Button>
-								<span>{props.username}</span>
-								<Button to="/logout">Logout</Button>
-							</React.Fragment>}
+						{props.isRootScreen ? <React.Fragment>
+							<button styleName={'armedButton' + (isArmed ? ' isArmed' : '')} onClick={() => setShelfIsShowing(true)}>
+								{isArmed
+									? <ShieldIcon shieldChecked={true} size={24} />
+									: <ShieldCrossedIcon size={24} />}
+							</button>
+							<button styleName="userButton" onClick={() => setShelfIsShowing(true)}>
+								<UserIcon size={24} />
+							</button>
+						</React.Fragment> : null}
+						{shelfIsShowing &&
+							<ModalShelf hide={() => setShelfIsShowing(false)}>
+								<section styleName="user">
+									<h1 styleName="username">{props.username}</h1>
+									<Button to="/logout">Logout</Button>
+								</section>
+								<section styleName="security">
+									<h1 styleName="securityTitle">Security</h1>
+									<ArmMenu mode={props.armed} setArmed={setArmedMode} />
+								</section>
+							</ModalShelf>}
 					</React.Fragment>
 				}
 			/>

@@ -3,7 +3,7 @@ const moment = require('moment'),
 	AccountsManager = require('../accounts/accounts-manager.js'),
 	DevicesManager = require('../devices/devices-manager.js'),
 	ScenesManager = require('../scenes/scenes-manager.js'),
-	Notifications = require('./notifications.js'),
+	Notifications = require('../notifications.js'),
 	ONE_SECOND_IN_MILLISECONDS = 1000,
 	services_subscribed_to = new Map(),
 	TAG = '[Automator]';
@@ -146,7 +146,7 @@ class Automator {
 		});
 
 		automation.notifications.forEach((notification) => {
-			const content = this.generateNotificationContent(trigger_data, notification.type, automation);
+			const content = this.generateNotificationContent(trigger_data, notification, automation);
 
 			Notifications.sendNotification(
 				notification.type,
@@ -163,7 +163,7 @@ class Automator {
 		});
 	}
 
-	generateNotificationContent (trigger_data, notification_type, automation) {
+	generateNotificationContent (trigger_data, notification, automation) {
 		const {trigger, service, date, event_data} = trigger_data;
 		let subject, body, attachment;
 
@@ -188,8 +188,12 @@ class Automator {
 		}
 
 		// Sanitize attachment for text messages.
-		if (attachment && notification_type === 'sms') {
+		if (attachment && notification.type === 'sms') {
 			delete attachment.cid;
+		}
+
+		if (notification.message && typeof notification.message === 'string') {
+			body = notification.message;
 		}
 
 		return {

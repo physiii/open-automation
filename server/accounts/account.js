@@ -1,5 +1,7 @@
 const database = require('../database.js'),
 	RoomsList = require('../locations/rooms-list.js'),
+	DevicesManager = require('../devices/devices-manager.js'),
+	utils = require('../utils.js'),
 	EventEmitter = require('events'),
 	crypto = require('crypto'),
 	jwt = require('jsonwebtoken'),
@@ -17,7 +19,7 @@ class Account extends EventEmitter {
 		this.password = data.password;
 		this.salt = data.salt;
 		this.hash_algorithm = data.hash_algorithm || PASSWORD_HASH_ALGORITHM;
-		this.email = this.username;
+		this.email = data.email || utils.isEmail(this.username) ? this.username : undefined;
 		this.phone_number = data.phone_number;
 		this.phone_provider = data.phone_provider;
 		this.armed = data.armed || 0;
@@ -139,8 +141,18 @@ class Account extends EventEmitter {
 				return;
 			}
 
+			const previous_mode = this.armed;
+
 			this.armed = mode;
-			this.save().then(resolve).catch(reject);
+			this.save().then(() => {
+				DevicesManager.emitEventToAccountDevices(this.id, 'armed-state', {mode});
+
+				resolve(this.armed);
+			}).catch((error) => {
+				this.armed = previous_mode;
+
+				reject(error);
+			});
 		});
 	}
 
@@ -167,6 +179,7 @@ class Account extends EventEmitter {
 		return {
 			id: this.id,
 			username: this.username,
+			email: this.email,
 			armed: this.armed
 		};
 	}

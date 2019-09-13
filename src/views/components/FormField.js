@@ -13,7 +13,7 @@ export const FormField = (props) => {
 		name: props.property,
 		label: props.label || props.definition.label || props.property,
 		value: props.value,
-		disabled: props.disabled,
+		disabled: props.disabled || props.definition.disabled,
 		onChange: props.onChange
 	};
 
@@ -21,10 +21,12 @@ export const FormField = (props) => {
 		case 'string':
 		case 'integer':
 		case 'number':
+		case 'long-string':
 			// TODO: Set text input type to number for integer/number fields.
 			return (
 				<TextField
 					{...fieldProps}
+					type={props.definition.type === 'long-string' ? 'textarea' : null}
 					mask={isEmpty(props.value) && props.definition.validation.is_required ? props.originalValue : ''}
 					error={props.error}
 					onBlur={props.onChange}
@@ -71,6 +73,7 @@ FormField.propTypes = {
 	value: PropTypes.any,
 	originalValue: PropTypes.any,
 	disabled: PropTypes.bool,
+	error: PropTypes.string,
 	onChange: PropTypes.func
 };
 
