@@ -88,6 +88,7 @@ export class TimeField extends React.Component {
 
 	render () {
 		const {label, name, value, ...inputProps} = this.props;
+
 		let currentTime = moment.utc(value || DEFAULT_TIME);
 
 		if (!currentTime.isValid()) {

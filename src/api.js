@@ -191,6 +191,7 @@ class Api {
 				});
 			}).catch((error) => {
 				const unauthorizedErrorCode = 401;
+
 				let errorMessage = GENERIC_LOGIN_ERROR;
 
 				if (error.response && error.response.status === unauthorizedErrorCode) {

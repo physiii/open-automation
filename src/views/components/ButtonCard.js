@@ -95,7 +95,8 @@ export class ButtonCard extends React.Component {
 
 ButtonCard.propTypes = {
 	service: PropTypes.object,
-	doAction: PropTypes.func
+	doAction: PropTypes.func,
+	saveSettings: PropTypes.func
 };
 
 const mergeProps = (stateProps, {dispatch}, ownProps) => ({
