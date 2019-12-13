@@ -3,6 +3,7 @@ const EventEmitter = require('events'),
 	GenericServiceAdapter = require('./service-adapters/service-adapter.js'),
 	service_adapter_classes = {
 		'dimmer': require('./service-adapters/dimmer-adapter.js'),
+		'grow-pod': require('./service-adapters/grow-pod-adapter.js'),
 		'microphone': require('./service-adapters/microphone-adapter.js'),
 		'motion': require('./service-adapters/motion-adapter.js'),
 		'button': require('./service-adapters/button-adapter.js')

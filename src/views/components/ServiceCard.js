@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CameraCard from './CameraCard.js';
 import DimmerCard from './DimmerCard.js';
+import GrowPodCard from './GrowPodCard.js';
 import ButtonCard from './ButtonCard.js';
 import GlobalAlarmCard from './AlarmCardGlobal.js';
 import GameMachineCard from './GameMachineCard.js';
@@ -23,6 +24,7 @@ ServiceCard.propTypes = {
 ServiceCard.cardComponents = {
 	'camera': CameraCard,
 	'dimmer': DimmerCard,
+	'grow-pod': GrowPodCard,
 	'global-alarm': GlobalAlarmCard,
 	'button': ButtonCard,
 	'game-machine': GameMachineCard,

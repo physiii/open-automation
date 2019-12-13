@@ -1,0 +1,25 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: space-around;
+	align-items: center;
+	height: 100%;
+	min-height: 128px;
+	padding: 24px 16px;
+}
+
+.sliderWrapper {
+	align-self: stretch;
+}
+
+.hopperTotal {
+	display: block;
+	font-size: 32px;
+	color: #c8c8c8;
+}
+
+.hopperTotalDescription {
+	margin-top: 8px;
+	font-size: 13px;
+	color: #969696;
+}
