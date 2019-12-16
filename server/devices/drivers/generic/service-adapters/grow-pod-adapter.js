@@ -8,7 +8,7 @@ class GenericGrowPodAdapter extends GenericServiceAdapter {
 	_adaptState (state) {
 		return GenericServiceAdapter.prototype._adaptState.call(this, {
 			...state,
-			level: this._adaptPercentageToRelay(state.level, LEVEL_SCALE)
+			light_level: this._adaptPercentageToRelay(state.light_level, LEVEL_SCALE)
 		});
 	}
 
@@ -22,9 +22,9 @@ class GenericGrowPodAdapter extends GenericServiceAdapter {
 
 		switch (event) {
 			case 'action':
-				if (data.property === 'level') {
+				if (data.property === 'light_level') {
 					adapted_event = 'grow-pod';
-					adapted_data = {level: this._adaptPercentageToDevice(data.value, LEVEL_SCALE)};
+					adapted_data = {light_level: this._adaptPercentageToDevice(data.value, LEVEL_SCALE)};
 				}
 				break;
 			case 'settings':

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
+import Switch from './Switch.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import './GrowPodCard.css';
 
@@ -12,10 +13,6 @@ export class GrowPodCard extends React.Component {
 		this.state = {
 			is_changing: false
 		};
-	}
-
-	onCardClick () {
-		// this.setLevel(this.props.service.state.get('level') > 0 ? 0 : 1);
 	}
 
 	getPercentage1 (value) {
@@ -45,7 +42,6 @@ export class GrowPodCard extends React.Component {
 				name={this.props.service.settings.get('name') || 'GrowPod'}
 				status={this.props.service.state.get('connected') ? this.props.service.state.get('uptime') : 'Unknown'}
 				isConnected={isConnected}
-				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
 				<div styleName="container">
 					<section styleName="main">
@@ -58,19 +54,26 @@ export class GrowPodCard extends React.Component {
 						</span>
 						<br />
 						<span styleName="hopperTotalDescription">
-							Temp (water):{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('water_temp') : 'Unknown'}
+							Temp (water):{this.props.service.state.get('water_temp') ? ' ' + this.props.service.state.get('water_temp').toFixed(1) : 'Unknown'}
 						</span>
 						<br />
 						<span styleName="hopperTotalDescription">
-							pH:{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('ph') : 'Unknown'}
+							pH:{this.props.service.state.get('ph') ? ' ' + this.props.service.state.get('ph').toFixed(1) : 'Unknown'}
 						</span>
 						<br />
 						<span styleName="hopperTotalDescription">
 							EC:{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('ec') : 'Unknown'}
 						</span>
 						<br />
+					</section>
+					<section>
 						<span styleName="hopperTotalDescription">
-							Light:{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('light_level') : 'Unknown'}
+							Light
+							<Switch
+								isOn={this.props.service.state.get('light_level') > 0}
+								onClick={this.setLevel.bind(this)}
+								showLabels={true}
+								disabled={!isConnected} />
 						</span>
 					</section>
 				</div>

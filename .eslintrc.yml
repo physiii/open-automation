@@ -156,7 +156,7 @@ rules:
   no-lonely-if: error
   no-loop-func: error
   no-magic-numbers:
-    - error
+    - warn
     - ignore:
       - -1
       - 0
