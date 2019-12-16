@@ -15,6 +15,10 @@ export class GrowPodCard extends React.Component {
 		};
 	}
 
+	onCardClick () {
+		this.setLevel(this.props.service.state.get('light_level') > 0 ? 0 : 1);
+	}
+
 	getPercentage1 (value) {
 		return Math.round(value) / 100;
 	}
@@ -42,6 +46,7 @@ export class GrowPodCard extends React.Component {
 				name={this.props.service.settings.get('name') || 'GrowPod'}
 				status={this.props.service.state.get('connected') ? this.props.service.state.get('uptime') : 'Unknown'}
 				isConnected={isConnected}
+				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
 				<div styleName="container">
 					<section styleName="main">
@@ -66,16 +71,12 @@ export class GrowPodCard extends React.Component {
 						</span>
 						<br />
 					</section>
-					<section>
-						<span styleName="hopperTotalDescription">
-							Light
-							<Switch
-								isOn={this.props.service.state.get('light_level') > 0}
-								onClick={this.setLevel.bind(this)}
-								showLabels={true}
-								disabled={!isConnected} />
-						</span>
-					</section>
+					<br />
+					Light <Switch
+						isOn={this.props.service.state.get('light_level') > 0}
+						onClick={this.setLevel.bind(this)}
+						showLabels={true}
+						disabled={!isConnected} />
 				</div>
 			</ServiceCardBase>
 		);
