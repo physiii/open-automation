@@ -206,6 +206,11 @@ GenericGrowPodAdapter.settings_definitions = new Map([...GenericServiceAdapter.s
 		secondary_property: 'level',
 		sort_by: 'time',
 		validation: {is_required: false}
-	});
+	})
+	.set('calibrate_ph', {
+		type: 'boolean',
+		label: 'Calibrate pH',
+		validation: {is_required: false}
+	})
 
 module.exports = GenericGrowPodAdapter;
