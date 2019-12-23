@@ -212,5 +212,10 @@ GenericGrowPodAdapter.settings_definitions = new Map([...GenericServiceAdapter.s
 		label: 'Calibrate pH',
 		validation: {is_required: false}
 	})
+	.set('reset_cycletime', {
+		type: 'boolean',
+		label: 'Reset Grow Cycle Time',
+		validation: {is_required: false}
+	});
 
 module.exports = GenericGrowPodAdapter;

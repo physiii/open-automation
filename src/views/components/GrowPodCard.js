@@ -38,45 +38,65 @@ export class GrowPodCard extends React.Component {
 		});
 	}
 
+	minTwoDigits (number) {
+		return (number < 10 ? '0' : '') + number;
+	}
+
 	render () {
 		const isConnected = this.props.service.state.get('connected');
 
 		return (
 			<ServiceCardBase
 				name={this.props.service.settings.get('name') || 'GrowPod'}
-				status={this.props.service.state.get('connected') ? this.props.service.state.get('uptime') : 'Unknown'}
+				status={this.props.service.state.get('connected')
+					? Math.trunc(this.props.service.state.get('cycletime') / 604800) + 'w ' +
+						Math.trunc((this.props.service.state.get('cycletime') % 604800) / 86400) + 'd ' +
+						this.minTwoDigits(Math.trunc((this.props.service.state.get('cycletime') % 86400) / 3600)) + ':' +
+						this.minTwoDigits(Math.trunc((this.props.service.state.get('cycletime') % 3600) / 60)) + ':' +
+						this.minTwoDigits(this.props.service.state.get('cycletime') % 60)
+					:	'Unknown'}
 				isConnected={isConnected}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
 				<div styleName="container">
-					<section styleName="main">
-						<span styleName="hopperTotalDescription">
-							Temp (Atmosphere):{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('atm_temp') : 'Unknown'}
+					<section styleName="sensorPanelA">
+						<span styleName="sensorTitle">
+							Atmosphere
 						</span>
 						<br />
-						<span styleName="hopperTotalDescription">
-							Humidity:{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('humidity') : 'Unknown'}
+						<span styleName="sensorValues">
+							<span styleName="sensorValue">
+								{this.props.service.state.get('connected') ? this.props.service.state.get('atm_temp').toFixed(1) : 'Unknown'} &#8451;
+							</span>
+							<span styleName="sensorValue">
+								{this.props.service.state.get('connected') ? this.props.service.state.get('humidity').toFixed(1) : 'Unknown'} RH
+							</span>
+							<span styleName="sensorValue">
+								Light <Switch
+									isOn={this.props.service.state.get('light_level') > 0}
+									onClick={this.setLevel.bind(this)}
+									showLabels={false}
+									disabled={!isConnected} />
+							</span>
 						</span>
-						<br />
-						<span styleName="hopperTotalDescription">
-							Temp (water):{this.props.service.state.get('water_temp') ? ' ' + this.props.service.state.get('water_temp').toFixed(1) : 'Unknown'}
-						</span>
-						<br />
-						<span styleName="hopperTotalDescription">
-							pH:{this.props.service.state.get('ph') ? ' ' + this.props.service.state.get('ph').toFixed(1) : 'Unknown'}
-						</span>
-						<br />
-						<span styleName="hopperTotalDescription">
-							EC:{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('ec') : 'Unknown'}
-						</span>
-						<br />
 					</section>
-					<br />
-					Light <Switch
-						isOn={this.props.service.state.get('light_level') > 0}
-						onClick={this.setLevel.bind(this)}
-						showLabels={true}
-						disabled={!isConnected} />
+					<section styleName="sensorPanelB">
+						<span styleName="sensorTitle">
+							Water
+						</span>
+						<br />
+						<span styleName="sensorValues">
+							<span styleName="sensorValue">
+								{this.props.service.state.get('water_temp') ? this.props.service.state.get('water_temp').toFixed(1) : 'Unknown'} &#8451;
+							</span>
+							<span styleName="sensorValue">
+								{this.props.service.state.get('ph') ? this.props.service.state.get('ph').toFixed(1) : 'Unknown'} pH
+							</span>
+							<span styleName="sensorValue">
+								{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('ec').toFixed(3) : 'Unknown'} mS/cm
+							</span>
+						</span>
+					</section>
 				</div>
 			</ServiceCardBase>
 		);

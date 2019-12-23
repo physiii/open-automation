@@ -89,7 +89,7 @@ class CameraService extends Service {
 	}
 
 	getRecordingLink (recording_id, recording_date) {
-		return `${process.env.OA_SSL ? 'https' : 'http'}://${process.env.OA_DOMAIN_NAME}:${process.env.OA_WEBSITE_PORT}/dashboard/recordings/${this.id}/${moment(recording_date).format('YYYY/MM/DD')}/${recording_id}`;
+		return `${process.env.OA_SSL ? 'https' : 'http'}://${process.env.OA_DOMAIN_NAME}/dashboard/recordings/${this.id}/${moment(recording_date).format('YYYY/MM/DD')}/${recording_id}`;
 	}
 }
 
