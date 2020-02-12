@@ -2,7 +2,11 @@ const url = require('url'),
 	WebSocket = require('ws'),
 	uuidV4 = require('uuid/v4'),
 	UTILITIES_SERVER_PATH = '/utilities',
-	TAG = '[utilities-server.js]';
+	TAG = '[utilities-server.js]',
+	DEFAULT_TIME = '0001-01-01T12:00:00.000Z',
+	HOURS = 12,
+	MINUTES = 60,
+	MINUTE_WIDTH = 2;
 
 module.exports = (http_server) => {
 	const websocket_server = new WebSocket.Server({noServer: true});
@@ -34,6 +38,16 @@ module.exports = (http_server) => {
 						payload: {uuid: uuidV4()}
 					}));
 				}
+
+				if (message.event_type === 'time') {
+					socket.send(JSON.stringify({
+						id: message.id,
+						callback: true,
+						event_type: "time",
+						payload: {time: Math.trunc(Date.now() / 1000)}
+					}));
+				}
+
 			});
 		});
 	});
