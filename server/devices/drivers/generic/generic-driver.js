@@ -1,9 +1,11 @@
 const EventEmitter = require('events'),
 	DeviceDriver = require('../device-driver.js'),
+	database = require('../../../database.js'),
 	GenericServiceAdapter = require('./service-adapters/service-adapter.js'),
 	service_adapter_classes = {
 		'dimmer': require('./service-adapters/dimmer-adapter.js'),
 		'grow-pod': require('./service-adapters/grow-pod-adapter.js'),
+		'scale': require('./service-adapters/scale-adapter.js'),
 		'microphone': require('./service-adapters/microphone-adapter.js'),
 		'motion': require('./service-adapters/motion-adapter.js'),
 		'button': require('./service-adapters/button-adapter.js')
@@ -32,6 +34,18 @@ class GenericDeviceDriver extends DeviceDriver {
 			this.save();
 			this._emitLoadToRelay(device);
 		});
+		this._socketOn('log', (log) => {
+			return new Promise((resolve, reject) => {
+				database.saveLog(
+					{
+						date: new Date(),
+						id: device_id,
+						...log
+					}
+				).then(resolve).catch(reject);
+			});
+		});
+
 	}
 
 	// This gets called when a relay device listens for an event from the hardware device.

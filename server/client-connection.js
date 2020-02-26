@@ -280,6 +280,12 @@ class ClientConnection {
 				});
 		});
 
+		this.clientEndpoint('device/log/get', (data, callback) => {
+			DevicesManager.getDeviceLog(data.service_id, this.account.id)
+			.then((log) => callback(null, {log}))
+			.catch(callback);
+		});
+
 		this.clientEndpoint('service/action', (data, callback) => {
 			data.service.action(data.action)
 				.then(() => callback())

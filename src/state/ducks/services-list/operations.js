@@ -26,6 +26,15 @@ const recordingsWorker = new RecordingsWorker(),
 			dispatch(actions.fetchServiceLogError(serviceId, error));
 		});
 	},
+	fetchDeviceLog = (serviceId) => (dispatch) => {
+		dispatch(actions.fetchServiceLog(serviceId));
+
+		Api.getDeviceLog(serviceId).then((data) => {
+			dispatch(actions.fetchServiceLogSuccess(serviceId, data.log));
+		}).catch((error) => {
+			dispatch(actions.fetchServiceLogError(serviceId, error));
+		});
+	},
 	cameraStartStream = (cameraServiceId) => (dispatch) => {
 		Api.cameraStartLiveStream(cameraServiceId).then((data) => {
 			dispatch(actions.cameraStreamLive(cameraServiceId, data.stream_token));
@@ -90,6 +99,7 @@ export {
 	doServiceAction,
 	setServiceSettings,
 	fetchServiceLog,
+	fetchDeviceLog,
 	cameraStartStream,
 	cameraStopStream,
 	cameraFetchRecordings,

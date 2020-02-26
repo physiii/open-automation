@@ -10,6 +10,16 @@ export const doServiceActionError = (serviceId, originalValue, error) => ({
 	payload: {serviceId, originalValue, error}
 });
 
+export const doDeviceAction = (deviceId, deviceAction) => ({
+	type: types.DO_SERVICE_ACTION,
+	payload: {deviceId, deviceAction}
+});
+
+export const doDeviceActionError = (deviceId, originalValue, error) => ({
+	type: types.DO_SERVICE_ACTION_ERROR,
+	payload: {deviceId, originalValue, error}
+});
+
 export const setSettings = (serviceId, settings) => ({
 	type: types.SET_SETTINGS,
 	payload: {serviceId, settings}
@@ -34,6 +44,22 @@ export const fetchServiceLogSuccess = (serviceId, log) => ({
 export const fetchServiceLogError = (serviceId, error) => ({
 	type: types.FETCH_SERVICE_LOG_ERROR,
 	payload: {serviceId, error},
+	error: true
+});
+
+export const fetchDeviceLog = (serviceId) => ({
+	type: types.FETCH_SERVICE_LOG,
+	payload: {serviceId}
+});
+
+export const fetchDeviceLogSuccess = (deviceId, log) => ({
+	type: types.FETCH_SERVICE_LOG_SUCCESS,
+	payload: {deviceId, log}
+});
+
+export const fetchDeviceLogError = (deviceId, error) => ({
+	type: types.FETCH_SERVICE_LOG_ERROR,
+	payload: {deviceId, error},
 	error: true
 });
 

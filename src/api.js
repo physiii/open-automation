@@ -107,6 +107,10 @@ class Api {
 		return Api.apiCall('service/log/get', {service_id: serviceId});
 	}
 
+	getDeviceLog (serviceId) {
+		return Api.apiCall('device/log/get', {service_id: serviceId});
+	}
+
 	// Gateway Service
 
 	getGatewayDevicesToAdd (gatewayServiceId) {

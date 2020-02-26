@@ -57,6 +57,17 @@ const getServices = (servicesList, toJs = true) => {
 
 		return option.label || option.value;
 	},
+	getDeviceLog = (servicesList, serviceId, toJs = true) => {
+		const service = getServiceById(servicesList, serviceId, false);
+
+		if (!service) {
+			return;
+		}
+
+		const log = service.logList.get('log');
+
+		return toJs ? log.toList().toJS() : log;
+	},
 	getServiceLog = (servicesList, serviceId, toJs = true) => {
 		const service = getServiceById(servicesList, serviceId, false);
 
@@ -175,6 +186,7 @@ export {
 	getServiceByTypeAndDeviceId,
 	getSettingsOptionLabelByValue,
 	getServiceLog,
+	getDeviceLog,
 	isServiceLogLoading,
 	cameraGetRecordings,
 	cameraGetRecordingsByDate,

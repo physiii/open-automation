@@ -6,6 +6,8 @@ const mongodb = require('mongodb'),
 module.exports = {
 	getDevices,
 	getDevice,
+	saveLog,
+	getDeviceLog,
 	saveDevice,
 	deleteDevice,
 	getAccounts,
@@ -70,6 +72,43 @@ function getDevice (device_id) {
 				resolve(result);
 			});
 		}, reject);
+	});
+}
+
+function getDeviceLog (device_id) {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('logs').find({id: device_id}).toArray((error, result) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'getDevice', error);
+					reject(error);
+
+					return;
+				}
+				
+				resolve(result);
+			});
+		}, reject);
+	});
+}
+
+function saveLog (log) {
+	return new Promise((resolve, reject) => {
+		connect((db) => {
+			db.collection('logs').insertOne(log, (error, record) => {
+				db.close();
+
+				if (error) {
+					console.error(TAG, 'saveLog', error);
+					reject('Database error');
+					return;
+				}
+
+				resolve(record);
+			});
+		});
 	});
 }
 

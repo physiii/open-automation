@@ -219,6 +219,24 @@ class DevicesManager extends EventEmitter {
 		}
 	}
 
+	getDeviceLog (serviceId, accountId) {
+		return new Promise((resolve, reject) => {
+			const device = this.getDeviceByServiceId(serviceId, accountId);
+
+			if (!device) {
+				reject('No device belonging to that account was found with that ID.');
+				return;
+			}
+
+			database.getDeviceLog(device.id).then((log) => {
+				resolve(log);
+			}).catch((error) => {
+				console.error(TAG, 'There was an error getting log from the database.', device.id);
+				reject('There was an error getting log.');
+			});
+		});
+	}
+
 	// NOTE: Use "force" with caution. Never use for requests originating from
 	// the client API.
 	verifyAccountAccessToDevice (accountId, device, force) {
