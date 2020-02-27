@@ -21,8 +21,6 @@ export class ServiceLogScreen extends React.Component {
 
 		if (!service) {
 			error = 'There was a problem loading the logs.';
-		} else if (!service.state.get('connected')) {
-			error = 'Device is not responding! Device must be reachable to view logs.';
 		}
 
 		if (this.props.isLoading) {

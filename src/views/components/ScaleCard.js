@@ -59,13 +59,13 @@ export class ScaleCard extends React.Component {
 					:	'Unknown'}
 				isConnected={isConnected}
 				// secondaryAction={<Button>{this.props.service.settings.get('name') || 'Bill Acceptor'} Log</Button>}
-				secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>{this.props.service.settings.get('name') || 'Bill Acceptor'} Log</Button>}
+				secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Device Log</Button>}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
 				<div styleName="container">
 					<section>
 						<span styleName="sensorTitle">
-							{this.props.service.state.get('connected') ? this.props.service.state.get('weight').toFixed(1) : 'Unknown'} lbs
+							{this.props.service.state.get('weight') ? this.props.service.state.get('weight').toFixed(1) : '0'} lbs
 						</span>
 						<br />
 					</section>
