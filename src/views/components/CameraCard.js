@@ -54,6 +54,7 @@ export class CameraCard extends React.Component {
 				<VideoPlayer
 					key={this.props.service.id}
 					cameraServiceId={this.props.service.id}
+					shouldShowControls={true}
 					streamingToken={this.props.service.streaming_token}
 					posterUrl={'/service-content/camera-preview?service_id=' + this.props.service.id + '&date=' + motionDetectedDate}
 					showControlsWhenStopped={false}

@@ -41,6 +41,18 @@
 	composes: topBarHidden;
 }
 
+.topBarNone {
+	composes: topBar;
+	display: none;
+	pointer-events: none;
+}
+
+.bottomBarNone {
+	composes: bottomBar;
+	composes: topBarHidden;
+	display: none;
+}
+
 .content {
 	flex: 1 1 auto;
 	position: relative;

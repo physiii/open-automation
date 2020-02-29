@@ -259,8 +259,9 @@ module.exports = function (jwt_secret) {
 			referrer = request.get('Referrer');
 
 		if (referrer && url.parse(referrer).hostname !== process.env.OA_DOMAIN_NAME) {
-			response.sendStatus(401);
-			return;
+			console.log(TAG, 'URL does not match OA_DOMAIN_NAME in .env file!');
+			// response.sendStatus(401);
+			// return;
 		}
 
 		verifyAccessToken(cookies.access_token, request.headers['x-xsrf-token'], true).then(({account}) => {

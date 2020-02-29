@@ -105,7 +105,7 @@ rules:
   max-nested-callbacks: error
   max-params: 'off'
   max-statements:
-    - error
+    - warn
     - max: 12
     - ignoreTopLevelFunctions: true
   max-statements-per-line: error
@@ -170,7 +170,7 @@ rules:
   no-native-reassign: error
   no-negated-condition: 'off'
   no-negated-in-lhs: error
-  no-nested-ternary: error
+  no-nested-ternary: warn
   no-new: error
   no-new-func: error
   no-new-object: error

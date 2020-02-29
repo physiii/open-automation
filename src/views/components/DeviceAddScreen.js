@@ -7,7 +7,6 @@ import Button from './Button.js';
 import Form from './Form.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
-import {addRoom} from '../../state/ducks/devices-list/operations.js';
 import {getRooms, getRoomById} from '../../state/ducks/rooms-list/selectors.js';
 import Api from '../../api.js';
 
@@ -30,7 +29,7 @@ export class DeviceAddScreen extends React.Component {
 
 	handleSettingsChange ({name}) {
 		this.setState({
-			device : {id:name, settings:{}},
+			device: {id: name, settings: {}},
 			room: {name},
 			isSaveable: true
 		});
@@ -46,7 +45,7 @@ export class DeviceAddScreen extends React.Component {
 
 	handleSaveClick () {
 
-		let device = this.state.device;
+		const device = this.state.device;
 
 		console.log('!! adding divice !!', device);
 
@@ -91,23 +90,17 @@ DeviceAddScreen.propTypes = {
 	rooms: PropTypes.array,
 	room: PropTypes.object,
 	isNew: PropTypes.bool,
-	match: PropTypes.object,
-	addRoom: PropTypes.func,
-	setRoomName: PropTypes.func
+	match: PropTypes.object
 };
 
 const mapStateToProps = ({roomsList}, {match}) => {
-		return {
-			rooms: getRooms(roomsList),
-			room: getRoomById(roomsList, match.params.roomId)
-		};
-	},
-	mapDispatchToProps = (dispatch) => ({
-		addRoom: (name) => dispatch(addRoom(name)),
-		setRoomName: (roomId, name, originalName) => dispatch(setRoomName(roomId, name, originalName))
-	});
+	return {
+		rooms: getRooms(roomsList),
+		room: getRoomById(roomsList, match.params.roomId)
+	};
+};
 
 export default compose(
 	withRoute({params: '/:roomId?'}),
-	connect(mapStateToProps, mapDispatchToProps)
+	connect(mapStateToProps, null)
 )(DeviceAddScreen);

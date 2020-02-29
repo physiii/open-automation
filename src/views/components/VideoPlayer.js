@@ -109,7 +109,27 @@ export class VideoPlayer extends React.Component {
 			hasPlayedOnce: true
 		});
 
-		this.showHideControls(true);
+		this.showHideControls();
+	}
+
+	getVideoWidth () {
+		if (this.element) {
+			if (this.element.current) {
+				return this.element.current.clientWidth;
+			}
+		}
+
+		return 0;
+	}
+
+	getVideoHeight () {
+		if (this.element) {
+			if (this.element.current) {
+				return this.element.current.clientHeight;
+			}
+		}
+
+		return 0;
 	}
 
 	stop () {
@@ -125,19 +145,45 @@ export class VideoPlayer extends React.Component {
 		return (aspectRatio * 100) + '%';
 	}
 
+	getMotionWidth () {
+		const width1 = this.props.motionArea.p1[0] * this.getVideoWidth(),
+			width2 = this.props.motionArea.p2[0] * this.getVideoWidth();
+
+		let width = width2 - width1;
+
+		if (!this.props.firstPointSet && !this.props.firstLoad) {
+			width = 0;
+		}
+
+		return width;
+	}
+
+	getMotionHeight () {
+		const width1 = this.props.motionArea.p1[1] * this.getVideoHeight(),
+			width2 = this.props.motionArea.p2[1] * this.getVideoHeight();
+
+		let width = width2 - width1;
+
+		if (!this.props.firstPointSet && !this.props.firstLoad) {
+			width = 0;
+		}
+
+		return width;
+	}
+
 	render () {
 		return (
 			<div
+				onKeyDown={this.handleKeyPress}
 				styleName={'player' + (this.state.isPlaying ? ' isPlaying' : '') + (this.state.isFullScreen ? ' isFullScreen' : '')}
 				ref={this.element}
 				onClick={this.handleClick}
 				onMouseMove={() => this.showHideControls()}>
 				<div styleName="overlay">
-					{this.state.isPlaying
-						? <StopButtonIcon size={64} shadowed={true} />
-						: <PlayButtonIcon size={64} shadowed={true} />}
+					{this.state.isPlaying && this.props.shouldShowControls ? <StopButtonIcon size={64} shadowed={true} /> : null}
+					{!this.state.isPlaying && this.props.shouldShowControls ? <PlayButtonIcon size={64} shadowed={true} /> : null}
 				</div>
-				<div styleName={'toolbar' + (this.state.shouldShowControls ? '' : ' isHidden')}>
+				<div styleName={'toolbar' + (this.props.shouldShowControls ? '' : ' isHidden')}>
 					<Toolbar rightChildren={fscreen.fullscreenEnabled &&
 						<ExpandIcon size={22} isExpanded={this.state.isFullScreen} onClick={this.handleFullScreenClick} />} />
 				</div>
@@ -146,7 +192,15 @@ export class VideoPlayer extends React.Component {
 				<div styleName="video">
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
 					{this.props.posterUrl && !this.state.hasPlayedOnce &&
-						<object styleName="poster" data={this.props.posterUrl} type="image/jpg" />}
+					<object styleName="poster" data={this.props.posterUrl} type="image/jpg" />}
+					<div
+						styleName={'motionAreaOverlay'}
+						style={this.props.motionArea ?	{
+							left: this.props.motionArea.p1[0] * this.getVideoWidth(),
+							top: this.props.motionArea.p1[1] * this.getVideoHeight(),
+							width: this.getMotionWidth(),
+							height: this.getMotionHeight()
+						} : {display: 'none'}} />
 					<VideoStream
 						styleName="canvas"
 						{...this.props}
@@ -162,11 +216,16 @@ VideoPlayer.propTypes = {
 	// NOTE: The VideoPlayer component should always be called with a key
 	// property set to the ID of the recording or camera that is being streamed.
 	cameraServiceId: PropTypes.string.isRequired,
+	motionArea: PropTypes.object,
+	firstLoad: PropTypes.bool,
+	firstPointSet: PropTypes.bool,
+	secondPointSet: PropTypes.bool,
 	recording: PropTypes.object,
 	streamingToken: PropTypes.string,
 	posterUrl: PropTypes.string,
 	autoplay: PropTypes.bool,
 	showControlsWhenStopped: PropTypes.bool,
+	shouldShowControls: PropTypes.bool,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	onPlay: PropTypes.func,

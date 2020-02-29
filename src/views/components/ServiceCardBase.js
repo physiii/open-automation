@@ -11,7 +11,7 @@ export const ServiceCardBase = (props) => {
 
 	return (
 		<section styleName="card" onClick={props.onCardClick || (() => props.history.push(detailsPath))}>
-			<div styleName={props.hideToolbars ? 'topBarHidden' : 'topBar'}>
+			<div styleName={props.removePadding ? 'topBarNone' : props.hideToolbars ? 'topBarHidden' : 'topBar'}>
 				<ServiceHeader
 					service={props.service}
 					name={props.name}
@@ -21,7 +21,7 @@ export const ServiceCardBase = (props) => {
 			<div styleName={props.toolbarsOverlayContent ? 'contentBehindToolbars' : 'content'}>
 				{props.children}
 			</div>
-			<div styleName={props.hideToolbars ? 'bottomBarHidden' : 'bottomBar'}>
+			<div styleName={props.removePadding ? 'topBarNone' : props.hideToolbars ? 'bottomBarHidden' : 'bottomBar'}>
 				<Toolbar
 					leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>}
 					rightChildren={<div onClick={(event) => event.stopPropagation()}>
@@ -41,6 +41,7 @@ ServiceCardBase.propTypes = {
 	toolbarsOverlayContent: PropTypes.bool,
 	secondaryAction: PropTypes.node,
 	hideToolbars: PropTypes.bool,
+	removePadding: PropTypes.bool,
 	onCardClick: PropTypes.func,
 	match: PropTypes.object,
 	history: PropTypes.object

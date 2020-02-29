@@ -23,6 +23,15 @@
 	right: 8px;
 }
 
+.motionAreaOverlay {
+	composes: fillContext from "../styles/helpers.css";
+	z-index: 2;
+	background: blue;
+	border-radius: 2px;
+	border: 4px solid rgba(255, 0, 0, 1);
+	opacity: 0.50;
+	transition: background 0.15s, opacity 0.15s;
+}
 .overlay {
 	composes: fillContext from "../styles/helpers.css";
 	display: flex;
