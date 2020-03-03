@@ -1,0 +1,12 @@
+export const FETCH_AUTOMATIONS = 'open-automation/automations-list/FETCH_AUTOMATIONS';
+export const FETCH_AUTOMATIONS_SUCCESS = 'open-automation/automations-list/FETCH_AUTOMATIONS_SUCCESS';
+export const FETCH_AUTOMATIONS_ERROR = 'open-automation/automations-list/FETCH_AUTOMATIONS_ERROR';
+export const SORT_AUTOMATIONS = 'open-automation/automations-list/SORT_AUTOMATIONS';
+export const SORT_AUTOMATIONS_ERROR = 'open-automation/automations-list/SORT_AUTOMATIONS_ERROR';
+export const ADD_AUTOMATION = 'open-automation/automations-list/ADD_AUTOMATION';
+export const ADD_AUTOMATION_SUCCESS = 'open-automation/automations-list/ADD_AUTOMATION_SUCCESS';
+export const ADD_AUTOMATION_ERROR = 'open-automation/automations-list/ADD_AUTOMATION_ERROR';
+export const SAVE_AUTOMATION = 'open-automation/automations-list/SAVE_AUTOMATION';
+export const SAVE_AUTOMATION_ERROR = 'open-automation/automations-list/SAVE_AUTOMATION_ERROR';
+export const DELETE_AUTOMATION = 'open-automation/automations-list/DELETE_AUTOMATION';
+export const DELETE_AUTOMATION_ERROR = 'open-automation/automations-list/DELETE_AUTOMATION_ERROR';

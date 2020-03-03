@@ -1,0 +1,22 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 100%;
+}
+
+.title {
+	height: 56px;
+	padding: 16px;
+	font-size: 14px;
+	line-height: 24px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.listWrapper {
+	flex: 1 1 auto;
+	overflow: auto;
+}
+
+.list {
+	padding: 8px 16px;
+}

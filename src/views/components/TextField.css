@@ -1,0 +1,112 @@
+@value error from "../styles/colors.css";
+
+.container {
+	margin: 8px 0 0 0;
+	animation: finishedRendering 1ms;
+}
+/* A utility animation that enables the component to detect when the styling
+   has been rendered to the DOM. */
+@keyframes finishedRendering {
+	from { transform: none; }
+}
+
+.field {
+	display: flex;
+	position: relative;
+	border-radius: 4px;
+	cursor: text;
+
+	/* Show a box shadow as a temporary outline until the notched outline is initiated. */
+	box-shadow: inset 0 0 0 1px #7e7e7e;
+}
+.hasNotchedOutline {
+	box-shadow: none;
+}
+.isDisabled,
+.isDisabled:hover {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.outlineWrapper {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.outline {
+	fill: none;
+	stroke-width: 2px;
+	stroke: #7e7e7e;
+	transition: stroke 0.15s, stroke-width 0.15s;
+}
+.field:hover .outline {
+	stroke: #a2a2a2;
+}
+.isFocused .outline,
+.isFocused:hover .outline {
+	stroke-width: 4px;
+	stroke: #a2a2a2;
+}
+.hasError .outline,
+.hasError:hover .outline {
+	stroke-width: 4px;
+	stroke: error;
+}
+.isDisabled .outline,
+.isDisabled:hover .outline {
+	stroke: #7e7e7e;
+}
+
+.label,
+.mask {
+	position: absolute;
+	left: 14px;
+	top: 18px;
+	pointer-events: none;
+	transform-origin: 0 0;
+	transition: all 0.15s;
+}
+.hasError > .label {
+	color: error;
+}
+.isFocused > .label,
+.isPopulated > .label {
+	top: -5px;
+	transform: scale(0.75); /* Scale 16px font size down to 12px. */
+}
+
+.mask {
+	opacity: 0.6;
+}
+
+.input {
+	width: 100%;
+	height: 54px;
+	padding: 14px;
+	background: none;
+	border: none;
+	outline: none;
+
+	color: inherit;
+	font-size: 1rem;
+	line-height: 1.75rem;
+
+	cursor: inherit !important;
+}
+.textarea {
+	composes: input;
+	height: 108px;
+	resize: none;
+}
+
+.bottom {
+	height: 16px;
+	margin: 0 14px;
+	padding-top: 3px;
+}
+
+.errorMessage {
+	color: error;
+	font-size: 12px;
+	line-height: 16px;
+}

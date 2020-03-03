@@ -1,0 +1,7 @@
+.container {
+	max-width: 500px;
+}
+.containerWithPadding {
+	composes: container;
+	padding: 8px 16px;
+}

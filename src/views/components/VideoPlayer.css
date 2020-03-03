@@ -1,0 +1,120 @@
+@value toolbarHeight from "./AppToolbar.css";
+@value tabBarHeight from "../layouts/App.css";
+@value liveRed: #bd2100;
+
+.player {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	width: 100%;
+	background-color: #000000;
+	overflow: hidden;
+	cursor: pointer;
+}
+.isFullScreen {
+	height: 100%;
+}
+
+.closeButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+}
+
+.motionAreaOverlay {
+	composes: fillContext from "../styles/helpers.css";
+	z-index: 2;
+	background: blue;
+	border-radius: 2px;
+	border: 4px solid rgba(255, 0, 0, 1);
+	opacity: 0.50;
+	transition: background 0.15s, opacity 0.15s;
+}
+.overlay {
+	composes: fillContext from "../styles/helpers.css";
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	z-index: 2;
+	transition: background 0.15s, opacity 0.15s;
+}
+.overlay:hover {
+	background-color: rgba(0, 0, 0, 0.15);
+}
+.isPlaying > .overlay {
+	opacity: 0;
+}
+/* Hide the stop button icon in fullscreen. */
+.isPlaying:not(.isFullScreen) > .overlay:hover {
+	opacity: 1;
+}
+
+.toolbar {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 3;
+	padding: 8px;
+	background-color: rgba(0, 0, 0, 0.5);
+	opacity: 1;
+	transition: opacity 0.15s;
+}
+.toolbar.isHidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.live {
+	display: inline-block;
+	padding: 7px 9px 5px 9px;
+	background-color: liveRed;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.85);
+	border-radius: 100px;
+	position: absolute;
+	left: 8px;
+	bottom: 8px;
+	z-index: 4;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	animation: liveTransitionIn 0.5s ease 0.75s backwards;
+}
+@keyframes liveTransitionIn {
+	from { bottom: -100px; }
+}
+
+.video {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	max-width: calc((100vh - toolbarHeight - tabBarHeight) * (4 / 3));
+	max-height: 100%;
+}
+.isFullScreen .video {
+	max-width: calc(100vh * (4 / 3));
+}
+
+.aspectRatio {
+	/* Default aspect ratio of 4:3. This may be overridden in DOM at run-time. */
+	composes: aspectRatio43 from "../styles/helpers.css";
+}
+
+.poster {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+}
+
+.canvas {
+	composes: fillContext from "../styles/helpers.css";
+	display: block;
+	width: 100%;
+}

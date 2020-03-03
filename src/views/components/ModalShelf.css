@@ -1,0 +1,31 @@
+@value background from "../styles/colors.css";
+
+.modal {
+	width: 300px;
+	background-color: background;
+	box-shadow: 0 0 24px rgba(0, 0, 0, 0.32);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1001;
+}
+
+.header {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-end;
+	align-items: center;
+	height: 56px;
+	padding: 0 16px;
+}
+
+.scrim {
+	background-color: rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1000;
+}

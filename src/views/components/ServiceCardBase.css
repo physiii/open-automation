@@ -1,0 +1,64 @@
+@value topBarHeight: 72px;
+@value bottomBarHeight: 48px;
+
+.card {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 100%;
+	flex: 1 1 auto;
+	background-color: #444444;
+	border: 1px solid #888888;
+	border-radius: 4px;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.topBar {
+	display: flex;
+	flex-flow: row nowrap;
+	height: topBarHeight;
+	padding: 0 16px;
+	position: relative;
+	z-index: 10;
+	opacity: 1;
+	background-color: rgba(56, 56, 56, 0.9);
+	font-size: 14px;
+	transition: opacity 0.2s;
+}
+.topBarHidden {
+	composes: topBar;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.bottomBar {
+	composes: topBar;
+	height: bottomBarHeight;
+	padding: 0 8px;
+}
+.bottomBarHidden {
+	composes: bottomBar;
+	composes: topBarHidden;
+}
+
+.topBarNone {
+	composes: topBar;
+	display: none;
+	pointer-events: none;
+}
+
+.bottomBarNone {
+	composes: bottomBar;
+	composes: topBarHidden;
+	display: none;
+}
+
+.content {
+	flex: 1 1 auto;
+	position: relative;
+}
+
+.contentBehindToolbars {
+	composes: content;
+	margin: calc(0px - topBarHeight) 0 calc(0px - bottomBarHeight) 0;
+}

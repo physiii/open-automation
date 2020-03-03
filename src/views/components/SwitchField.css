@@ -1,0 +1,23 @@
+.container {
+	margin: 8px 0 0 0;
+}
+
+.field {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	width: 100%;
+	height: 54px;
+	padding: 14px 0;
+}
+.isFocused {}
+.isDisabled {
+	cursor: not-allowed;
+}
+
+.label {}
+.isDisabled > .label {
+	opacity: 0.5;
+}
