@@ -23,6 +23,32 @@ class CameraService extends Service {
 		});
 	}
 
+	streamLiveAudio () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('audio/stream/live', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
+	}
+
+	stopLiveStreamAudio () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('audio/stream/stop', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
 	stopLiveStream () {
 		return new Promise((resolve, reject) => {
 			this.deviceEmit('stream/stop', {}, (error, data) => {

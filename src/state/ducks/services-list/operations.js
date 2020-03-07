@@ -35,6 +35,14 @@ const recordingsWorker = new RecordingsWorker(),
 			dispatch(actions.fetchServiceLogError(serviceId, error));
 		});
 	},
+	audioStartStream = (audioServiceId) => (dispatch) => {
+		Api.audioStartLiveStream(audioServiceId).then((data) => {
+			dispatch(actions.audioStreamLive(audioServiceId, data.stream_token));
+		});
+	},
+	audioStopStream = (audioServiceId) => () => {
+		Api.audioStopLiveStream(audioServiceId);
+	},
 	cameraStartStream = (cameraServiceId) => (dispatch) => {
 		Api.cameraStartLiveStream(cameraServiceId).then((data) => {
 			dispatch(actions.cameraStreamLive(cameraServiceId, data.stream_token));
@@ -100,6 +108,8 @@ export {
 	setServiceSettings,
 	fetchServiceLog,
 	fetchDeviceLog,
+	audioStartStream,
+	audioStopStream,
 	cameraStartStream,
 	cameraStopStream,
 	cameraFetchRecordings,

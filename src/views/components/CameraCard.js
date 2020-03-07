@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import VideoPlayer from './VideoPlayer.js';
+import AudioPlayer from './AudioPlayer.js';
 
 export class CameraCard extends React.Component {
 	constructor (props) {
@@ -15,6 +16,7 @@ export class CameraCard extends React.Component {
 		};
 
 		this.videoPlayer = React.createRef();
+		this.audioPlayer = React.createRef();
 
 		this.onStreamStart = this.onStreamStart.bind(this);
 		this.onStreamStop = this.onStreamStop.bind(this);
@@ -32,8 +34,10 @@ export class CameraCard extends React.Component {
 	onCardClick () {
 		if (this.state.isStreaming) {
 			this.videoPlayer.current.stop();
+			this.audioPlayer.current.stop();
 		} else {
 			this.videoPlayer.current.play();
+			this.audioPlayer.current.play();
 		}
 	}
 
@@ -51,6 +55,14 @@ export class CameraCard extends React.Component {
 				secondaryAction={<Button to={`${this.props.match.url}/recordings/${this.props.service.id}`}>View Recordings</Button>}
 				hideToolbars={this.state.isStreaming}
 				{...this.props}>
+				<AudioPlayer
+					audioServiceId={this.props.service.id}
+					shouldShowControls={false}
+					streamingToken={this.props.service.streaming_token}
+					showControlsWhenStopped={false}
+					onPlay={this.onStreamStart}
+					onStop={this.onStreamStop}
+					ref={this.audioPlayer} />
 				<VideoPlayer
 					key={this.props.service.id}
 					cameraServiceId={this.props.service.id}

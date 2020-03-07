@@ -123,6 +123,14 @@ class Api {
 
 	// Camera Service
 
+	audioStartLiveStream (audioServiceId) {
+		return Api.apiCall('audio/stream/live', {service_id: audioServiceId});
+	}
+
+	audioStopLiveStream (audioServiceId) {
+		return Api.apiCall('audio/stream/stop', {service_id: audioServiceId});
+	}
+
 	cameraStartLiveStream (cameraServiceId) {
 		return Api.apiCall('camera/stream/live', {service_id: cameraServiceId});
 	}

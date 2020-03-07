@@ -127,6 +127,11 @@ const initialState = Immutable.Map({
 					['services', action.payload.cameraId, 'streaming_token'],
 					action.payload.streamToken
 				);
+			case types.STREAM_AUDIO_LIVE:
+				return state.setIn(
+					['services', action.payload.audioId, 'streaming_token'],
+					action.payload.streamToken
+				);
 			case sessionTypes.LOGOUT:
 				return initialState;
 			default:

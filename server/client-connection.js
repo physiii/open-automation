@@ -342,6 +342,22 @@ class ClientConnection {
 
 		// Camera Service API
 
+		this.clientEndpoint('audio/stream/live', function (data, callback) {
+			data.service.streamLiveAudio()
+				.then((stream_token) => callback(null, {stream_token}))
+				.catch((error) => {
+					console.error(TAG, 'Stream error', error);
+
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('audio/stream/stop', function (data, callback) {
+			data.service.stopLiveStreamAudio()
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
 		this.clientEndpoint('camera/stream/live', function (data, callback) {
 			data.service.streamLive()
 				.then((stream_token) => callback(null, {stream_token}))
