@@ -143,6 +143,14 @@ class Api {
 		return Api.apiCall('camera/recordings/get', {service_id: cameraServiceId});
 	}
 
+	cameraStartAudioRecordingStream (cameraServiceId, recordingId) {
+		return Api.apiCall('camera/recording/stream/audio', {service_id: cameraServiceId, recording_id: recordingId});
+	}
+
+	cameraStopAudioRecordingStream (cameraServiceId, recordingId) {
+		return Api.apiCall('camera/recording/stream/audio/stop', {service_id: cameraServiceId, recording_id: recordingId});
+	}
+
 	cameraStartRecordingStream (cameraServiceId, recordingId) {
 		return Api.apiCall('camera/recording/stream', {service_id: cameraServiceId, recording_id: recordingId});
 	}

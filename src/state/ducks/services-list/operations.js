@@ -76,6 +76,14 @@ const recordingsWorker = new RecordingsWorker(),
 		});
 	},
 	cameraStopRecordingStream = (recording) => () => {
+		Api.cameraStopAudioRecordingStream(recording.camera_id, recording.id);
+	},
+	cameraStartAudioRecordingStream = (recording) => (dispatch) => {
+		Api.cameraStartAudioRecordingStream(recording.camera_id, recording.id).then((data) => {
+			dispatch(actions.cameraStreamAudioRecording(recording.camera_id, recording.id, data.audio_stream_token));
+		});
+	},
+	cameraStopAudioRecordingStream = (recording) => () => {
 		Api.cameraStopRecordingStream(recording.camera_id, recording.id);
 	},
 	lockLock = (lockServiceId) => () => {
@@ -115,6 +123,8 @@ export {
 	cameraFetchRecordings,
 	cameraStartRecordingStream,
 	cameraStopRecordingStream,
+	cameraStartAudioRecordingStream,
+	cameraStopAudioRecordingStream,
 	lockLock,
 	lockUnlock,
 	thermostatSetTemp,

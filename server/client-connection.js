@@ -380,6 +380,18 @@ class ClientConnection {
 				.catch((error) => callback(error));
 		});
 
+		this.clientEndpoint('camera/recording/stream/audio', function (data, callback) {
+			data.service.streamAudioRecording(data.recording_id)
+				.then((stream_token) => callback(null, {audio_stream_token: stream_token}))
+				.catch((error) => callback(error));
+		});
+
+		this.clientEndpoint('camera/recording/stream/audio/stop', function (data, callback) {
+			data.service.stopAudioRecordingStream(data.recording_id)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
 		this.clientEndpoint('camera/recording/stream', function (data, callback) {
 			data.service.streamRecording(data.recording_id)
 				.then((stream_token) => callback(null, {stream_token}))

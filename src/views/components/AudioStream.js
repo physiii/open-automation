@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import JSMpeg from '../../lib/jsmpeg/jsmpeg.min.js';
 import {connect} from 'react-redux';
-import {audioStartStream, audioStopStream} from '../../state/ducks/services-list/operations.js';
+import {audioStartStream, audioStopStream, cameraStartAudioRecordingStream, cameraStopAudioRecordingStream} from '../../state/ducks/services-list/operations.js';
 import './AudioStream.css';
 
 export class AudioStream extends React.Component {
@@ -154,10 +154,18 @@ export const mapStateToProps = (state) => {
 	mapDispatchToProps = (dispatch, ownProps) => {
 		return {
 			startStreaming: () => {
-				dispatch(audioStartStream(ownProps.audioServiceId));
+				if (ownProps.recording) {
+					dispatch(cameraStartAudioRecordingStream(ownProps.recording));
+				} else {
+					dispatch(audioStartStream(ownProps.audioServiceId));
+				}
 			},
 			stopStreaming: () => {
-				dispatch(audioStopStream(ownProps.audioServiceId));
+				if (ownProps.recording) {
+					dispatch(cameraStopAudioRecordingStream(ownProps.recording));
+				} else {
+					dispatch(audioStopStream(ownProps.audioServiceId));
+				}
 			}
 		};
 	};

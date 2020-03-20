@@ -88,6 +88,32 @@ class CameraService extends Service {
 		});
 	}
 
+	streamAudioRecording (recording_id) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/stream/audio', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
+	}
+
+	stopAudioRecordingStream (recording_id) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/stream/audio/stop', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
 	streamRecording (recording_id) {
 		return new Promise((resolve, reject) => {
 			this.deviceEmit('recording/stream', {recording_id}, (error, data) => {

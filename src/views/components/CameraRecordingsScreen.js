@@ -4,6 +4,7 @@ import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
+import AudioPlayer from './AudioPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
@@ -92,6 +93,16 @@ export class CameraRecordingsScreen extends React.Component {
 					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
 						{this.props.selectedRecording
 							? <div styleName="videoContainer">
+								<AudioPlayer
+									audioServiceId={this.props.cameraService.id}
+									recording={this.props.selectedRecording}
+									shouldShowControls={false}
+									streamingToken={this.props.selectedRecording.audio_streaming_token}
+									showControlsWhenStopped={false}
+									onPlay={this.onStreamStart}
+									onStop={this.onStreamStop}
+									ref={this.audioPlayer}
+									autoplay={true} />
 								<VideoPlayer
 									cameraServiceId={this.props.cameraService.id}
 									recording={this.props.selectedRecording}
