@@ -6,6 +6,7 @@ const listeners = [],
 	relaySocketQueue = [],
 	SOCKET_CONNECT_TIMEOUT = 20000,
 	ONE_HOUR_IN_MILLISECONDS = 3600000,
+	TAG = '[API]',
 	GENERIC_LOGIN_ERROR = 'An error occurred while trying to log in.';
 
 class Api {
@@ -81,6 +82,12 @@ class Api {
 
 	addDevice (device) {
 		return Api.apiCall('device/add', {device});
+	}
+
+	updateDevice (device) {
+		console.log(TAG, 'updateDevice');
+
+		return Api.apiCall('device/update', {device});
 	}
 
 	setDeviceSettings (deviceId, settings) {

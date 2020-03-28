@@ -191,13 +191,11 @@ const initialState = Immutable.Map({
 					error: action.payload.error.message
 				});
 			case types.STREAM_CAMERA_RECORDING:
-				console.log("STREAM_CAMERA_RECORDING", action.payload.streamToken);
 				return state.setIn(
 					['recordings', action.payload.recordingId, 'streaming_token'],
 					action.payload.streamToken
 				);
 			case types.STREAM_CAMERA_AUDIO_RECORDING:
-				console.log("STREAM_CAMERA_AUDIO_RECORDING", action.payload.streamToken);
 				return state.setIn(
 					['recordings', action.payload.recordingId, 'audio_streaming_token'],
 					action.payload.streamToken

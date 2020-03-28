@@ -128,8 +128,24 @@ class DevicesManager extends EventEmitter {
 		});
 	}
 
+	updateDevice (deviceId, accountId) {
+		return new Promise((resolve, reject) => {
+			const device = this.getDeviceById(deviceId, accountId);
+
+			if (!device) {
+				reject('No device belonging to that account was found with that ID.');
+				return;
+			}
+
+			device.driver.socket.emit('update', {perform: "software-update"}, () => {
+				console.log(TAG, 'Emitted update to device.')
+			});
+		});
+	}
+
 	handleDeviceConnection (deviceId, deviceToken, deviceType, socket) {
 		const device = this.getDeviceById(deviceId, null, true),
+
 			ready_to_add = deviceToken === deviceId;
 
 		// If the device doesn't exist, store the socket in escrow to be used

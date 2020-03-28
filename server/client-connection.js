@@ -280,6 +280,15 @@ class ClientConnection {
 				});
 		});
 
+		this.clientEndpoint('device/update', (data, callback) => {
+			DevicesManager.updateDevice(data.device.id, this.account.id)
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Update device error:', error);
+					callback('There was an error updating the device.');
+				});
+		});
+
 		this.clientEndpoint('device/log/get', (data, callback) => {
 			DevicesManager.getDeviceLog(data.service_id, this.account.id)
 			.then((log) => callback(null, {log}))

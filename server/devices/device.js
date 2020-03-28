@@ -116,8 +116,10 @@ class Device {
 		});
 	}
 
-	setInfo ({manufacturer, model, firmware_version, hardware_version, serial} = {}) {
+	setInfo ({manufacturer, model, firmware_version, hardware_version, serial, local_ip, public_ip} = {}) {
 		this.info = {
+			local_ip,
+			public_ip,
 			manufacturer,
 			model,
 			firmware_version,
