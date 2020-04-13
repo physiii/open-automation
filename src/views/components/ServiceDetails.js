@@ -17,14 +17,8 @@ export class ServiceDetails extends React.Component {
 					<SettingsScreenContainer section={true}>
 						{this.props.service.error && <p>The device settings could not be updated because of an error.</p>}
 						<header styleName="header">
-							<div styleName="nameContainer">
-								<ServiceHeader
-									service={this.props.service}
-									isConnected={this.props.service.state.get('connected')} />
-							</div>
 							{this.props.shouldShowSettingsButton && <Button to={this.props.match.url + ServiceDetails.settingsPath}>Settings</Button>}
 						</header>
-						{this.props.shouldShowRoomField && <DeviceRoomField deviceId={this.props.service.device_id} />}
 						{this.props.children}
 					</SettingsScreenContainer>
 				)} />

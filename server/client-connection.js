@@ -435,8 +435,8 @@ class ClientConnection {
 
 		// Thermostat Service API
 
-		this.clientEndpoint('thermostat/temp/set', function (data, callback) {
-			data.service.setTemp(data.temp)
+		this.clientEndpoint('thermostat/hold-temp/set', function (data, callback) {
+			data.service.setHoldTemp(data.hold_temp)
 				.then(() => callback())
 				.catch((error) => callback(error));
 		});

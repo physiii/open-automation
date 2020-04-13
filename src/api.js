@@ -174,8 +174,8 @@ class Api {
 
 	// Thermostat Service
 
-	thermostatSetTemp (thermostatServiceId, temp) {
-		return Api.apiCall('thermostat/temp/set', {service_id: thermostatServiceId, temp});
+	thermostatSetHoldTemp (thermostatServiceId, temp) {
+		return Api.apiCall('thermostat/hold-temp/set', {service_id: thermostatServiceId, hold_temp: temp});
 	}
 
 	thermostatSetMode (thermostatServiceId, mode) {

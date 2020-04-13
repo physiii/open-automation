@@ -3,88 +3,109 @@ import PropTypes from 'prop-types';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
-import {thermostatSetTemp, thermostatSetMode, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
+import {thermostatSetHoldTemp, thermostatSetMode, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
+import './ThermostatCard.css';
+import downCarrotIcon from '../icons/downCarrotIcon.js';
 
-export const ThermostatCard = (props) => {
-	const currentMode = props.service.state.get('mode'),
-		currentTemp = props.service.state.get('current_temp'),
-		targetTemp = props.service.state.get('target_temp'),
-		fanMode = props.service.state.get('fan_mode'),
-		holdMode = props.service.state.get('hold_mode'),
-		toggleMode = () => {
-			if (currentMode === 'off') {
-				props.setMode(props.service.id, 'cool');
-			} else if (currentMode === 'cool') {
-				props.setMode(props.service.id, 'heat');
-			} else if (currentMode === 'heat') {
-				props.setMode(props.service.id, 'auto');
-			} else if (currentMode === 'auto') {
-				props.setMode(props.service.id, 'off');
-			} else {
-				console.log('Mode is not defined as off, heat, cool, auto...');
-			}
-		},
-		toggleFan = () => {
-			if (fanMode === 'on') {
-				props.fanAuto(props.service.id);
-			} else if (fanMode === 'auto') {
-				props.fanOn(props.service.id);
-			} else {
-				console.log('Fan is not defined as on or auto...');
-			}
-		},
-		toggleHold = () => {
-			if (holdMode === 'off') {
-				props.setHold(props.service.id, 'on');
-			} else {
-				props.setHold(props.service.id, 'off');
-			}
-		},
-		tempUp = () => {
-			props.setTemp(props.service.id, targetTemp + 1);
-		},
-		tempDown = () => {
-			props.setTemp(props.service.id, targetTemp - 1);
+export class ThermostatCard extends React.Component {
+	constructor (props) {
+		super(props);
+
+		let temp = this.props.service.state.get('current_temp') ? this.props.service.state.get('current_temp') : 0,
+			targetTemp = this.props.service.state.get('target_temp') ? this.props.service.state.get('target_temp') : 0,
+			fanMode = this.props.service.state.get('fan_mode') ? this.props.service.state.get('fan_mode') : 'off',
+			mode = this.props.service.state.get('mode') ? this.props.service.state.get('mode') : 'off';
+
+		this.state = {
+			is_changing: false,
+			temp,
+			targetTemp,
+			fanMode,
+			mode
 		};
 
+		this.setState(this.state);
+	}
+
+	getTemp () {
+		return (
+			this.props.service.state.get('current_temp') ? this.props.service.state.get('current_temp') : 'Loading'
+		);
+	}
+
+	getTargetTemp () {
+		return (
+			this.props.service.state.get('target_temp') ? this.props.service.state.get('target_temp') : 'Loading'
+		);
+	}
+
+	getFanMode () {
+		return (
+			this.props.service.state.get('fan_mode') ? this.props.service.state.get('fan_mode') : 'Loading'
+		);
+	}
+
+	getMode () {
+		return (
+			this.props.service.state.get('mode') ? this.props.service.state.get('mode') : 'Loading'
+		);
+	}
+
+	isOutOfRange () {
+		let mode = this.getMode(),
+			temp = this.getTemp(),
+			targetTemp = this.getTargetTemp();
+
+			if (mode == 'cool' && temp <= targetTemp) {
+				return true;
+			}
+
+			if (mode == 'heat' && temp >= targetTemp) {
+				return true;
+			}
+
+			if (targetTemp == 0) {
+				return true;
+			}
+
+			return false;
+	}
+
+render () {
 	return (
 		<ServiceCardBase
-			name={props.service.settings.get('name') || 'Thermostat'}
-			status={'Thermostat mode: ' + currentMode + ' ||| Current Temp: ' + currentTemp + ' ||| Target Temp: ' + targetTemp + ' ||| Fan mode: ' + fanMode + ' ||| Hold Mode: ' + holdMode}
-			isConnected={props.service.state.get('connected')}
-			{...props}>
+			name={this.props.service.settings.get('name') || 'Thermostat'}
+			status={ 'Fan ' + this.getFanMode() }
+			isConnected={this.props.service.state.get('connected')}
+			{...this.props}>
 			<center>
-				<Button onClick={toggleMode}>{'Thermostat Mode => ' + props.service.state.get('mode')}</Button>
-				<br />
-				<Button onClick={tempUp}>{'Temp Up'}</Button>
-				<br />
-				<Button onClick={tempDown}>{'Temp down'}</Button>
-				<br />
-				<Button onClick={toggleFan}>{'Fan Mode => ' + props.service.state.get('fan_mode')}</Button>
-				<br />
-				<Button onClick={toggleHold}>{'Hold Mode => ' + props.service.state.get('hold_mode')}</Button>
+				<span styleName="sensorTitle">
+					{this.getTemp()} &#8457;
+				</span>
+				<span styleName={this.getMode() == 'off' || this.isOutOfRange() ? 'hidden' : 'sensorValues'}>
+					<span styleName="coolValue">
+					{this.getMode() == 'cool' ? 'Cooling' : ''}
+					</span>
+					<span styleName="heatValue">
+						{this.getMode() == 'heat' ? 'Heating' : ''}
+					</span>
+					<span styleName="sensorValue">
+						&nbsp;to {this.getTargetTemp()}
+					</span>
+				</span>
 			</center>
 		</ServiceCardBase>
 	);
 };
+}
 
 ThermostatCard.propTypes = {
-	service: PropTypes.object,
-	setTemp: PropTypes.func,
-	setHold: PropTypes.func,
-	fanOn: PropTypes.func,
-	fanAuto: PropTypes.func,
-	setMode: PropTypes.func
+	service: PropTypes.object
 };
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		setTemp: (serviceId, temp) => dispatch(thermostatSetTemp(serviceId, temp)),
-		setHold: (serviceId, mode) => dispatch(thermostatSetHold(serviceId, mode)),
-		fanOn: (serviceId) => dispatch(thermostatFanOn(serviceId)),
-		fanAuto: (serviceId) => dispatch(thermostatFanAuto(serviceId)),
-		setMode: (serviceId, mode) => dispatch(thermostatSetMode(serviceId, mode))
-	};
-};
+const mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({
+	...ownProps,
+	...stateProps
+});
 
-export default connect(null, mapDispatchToProps)(ThermostatCard);
+export default connect(null, null, mapDispatchToProps)(ThermostatCard);

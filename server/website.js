@@ -259,7 +259,7 @@ module.exports = function (jwt_secret) {
 			referrer = request.get('Referrer');
 
 		if (referrer && url.parse(referrer).hostname !== process.env.OA_DOMAIN_NAME) {
-			console.log(TAG, 'URL does not match OA_DOMAIN_NAME in .env file!');
+			// console.log(TAG, 'URL does not match OA_DOMAIN_NAME in .env file!');
 			// response.sendStatus(401);
 			// return;
 		}

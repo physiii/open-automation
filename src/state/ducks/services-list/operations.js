@@ -92,8 +92,8 @@ const recordingsWorker = new RecordingsWorker(),
 	lockUnlock = (lockServiceId) => () => {
 		Api.lockSetLocked(lockServiceId, false);
 	},
-	thermostatSetTemp = (thermostatServiceId, temp) => () => {
-		Api.thermostatSetTemp(thermostatServiceId, temp);
+	thermostatSetHoldTemp = (thermostatServiceId, temp) => () => {
+		Api.thermostatSetHoldTemp(thermostatServiceId, temp);
 	},
 	thermostatSetMode = (thermostatServiceId, mode) => () => {
 		Api.thermostatSetMode(thermostatServiceId, mode);
@@ -127,7 +127,7 @@ export {
 	cameraStopAudioRecordingStream,
 	lockLock,
 	lockUnlock,
-	thermostatSetTemp,
+	thermostatSetHoldTemp,
 	thermostatSetMode,
 	thermostatSetHold,
 	thermostatFanOn,
