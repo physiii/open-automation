@@ -3,16 +3,12 @@ import PropTypes from 'prop-types';
 import {Switch, Redirect, withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
-import {withRoute} from './Route.js';
-import {thermostatSetHoldTemp, thermostatSetMode, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
+import {thermostatSetHoldTemp, thermostatSetPower, thermostatSetSchedule, thermostatSetMode, thermostatSetHold, thermostatFanOn, thermostatFanAuto} from '../../state/ducks/services-list/operations.js';
 import Toggle from './Switch.js';
 import {Route} from './Route.js';
-import Button from './Button.js';
-import Form from './Form.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
-import ServiceHeader from './ServiceHeader.js';
-import DeviceRoomField from './DeviceRoomField.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
+import RangeControl from './RangeControl.js';
 import './ServiceDetails.css';
 
 export class ThermostatServiceDetails extends React.Component {
@@ -20,20 +16,20 @@ export class ThermostatServiceDetails extends React.Component {
 	constructor (props) {
 		super(props);
 
-		console.log('!!! hold_mode !!! ', props.service.state.get('hold_mode'));
 		const mode = props.service.state.get('mode') ? props.service.state.get('mode') : 'off',
-			isPowerOn = props.service.state.get('mode') == 'off' ? false : true,
-			isHoldOn = props.service.state.get('hold_mode') == 'on' ? true : false,
+			isPowerOn = props.service.state.get('power') ? props.service.state.get('power') : false,
+			isHoldOn = props.service.state.get('hold_mode') === 'on',
 			temp = props.service.state.get('current_temp') ? props.service.state.get('current_temp') : 0,
 			targetTemp = props.service.state.get('target_temp') ? props.service.state.get('target_temp') : 0,
 			holdTemp = props.service.state.get('hold_temp') ? props.service.state.get('hold_temp') : {min: 0, max: 0},
 			schedule = props.service.state.get('schedule') ? props.service.state.get('schedule') : {},
-			tempValues = this.props.service.state.get('temp_values') ? this.props.service.state.get('temp_values') : [],
-			hours = this.props.service.state.get('hours') ? this.props.service.state.get('hours') : [];
+			tempValues = this.props.service.state.get('temp_values') ? this.props.service.state.get('temp_values') : [];
 
 		this.state = {
 			is_changing: false,
 			shouldShowSchedule: false,
+			selectedHour: 1,
+			selectedHourTemp: {min: schedule[1].minTemp, max: schedule[1].maxTemp},
 			isPowerOn,
 			isHoldOn,
 			temp,
@@ -41,11 +37,9 @@ export class ThermostatServiceDetails extends React.Component {
 			mode,
 			holdTemp,
 			schedule,
-			tempValues,
-			hours
+			tempValues
 		};
 
-		console.log('ThermostatServiceDetails', props.service.state);
 		this.setState(this.state);
 	}
 
@@ -61,32 +55,83 @@ export class ThermostatServiceDetails extends React.Component {
 	}
 
 	togglePower () {
-		let onMode = this.state.temp >= this.state.targetTemp ? 'cool' : 'heat';
 		this.state.isPowerOn = !this.state.isPowerOn;
 		this.setState({isPowerOn: this.state.isPowerOn});
-		this.props.setMode(this.props.service.id, this.state.isPowerOn ? onMode : 'off');
+		this.props.setPower(this.props.service.id, this.state.isPowerOn ? 'on' : 'off');
+	}
+
+	toggleSchedulePower (value) {
+		this.state.schedule[value - 1].power = !this.state.schedule[value - 1].power;
+		this.setState(this.state);
+		this.props.setSchedule(this.props.service.id, this.state.schedule);
 	}
 
 	setHoldTemp (data) {
+		if (data.maxTemp) {
+			this.state.holdTemp.max = data.maxTemp;
+		}
 
-		console.log('!! setHoldTemp !!', this.state);
-		if (data.maxTemp) this.state.holdTemp.max = data.maxTemp;
-		if (data.minTemp) this.state.holdTemp.min = data.minTemp;
+		if (data.minTemp) {
+			this.state.holdTemp.min = data.minTemp;
+		}
 
 		this.setState({holdTemp: this.state.holdTemp});
 		this.props.setHoldTemp(this.props.service.id, this.state.holdTemp);
 	}
 
 	setScheduleHour (data) {
-		console.log('!! setScheduleHour !!', data);
+		const schedule = this.state.schedule,
+			hour = data.hour - 1;
+
+		this.state.selectedHour = hour;
+		this.state.selectedHourTemp = {min: schedule[hour].minTemp, max: schedule[hour].maxTemp};
+		this.setState(this.state);
 	}
 
-	setScheduleMinTemp (data) {
-		console.log('!! setScheduleMinTemp !!', data);
+	setSchedule (data) {
+		const schedule = this.state.schedule,
+			hour = this.state.selectedHour - 1;
+
+		if (data.minTemp) {
+			schedule[hour].minTemp = data[0];
+		}
+
+		if (data.maxTemp) {
+			schedule[hour].maxTemp = data[1];
+		}
+
+		this.setState(this.state);
+		this.props.setSchedule(this.props.service.id, schedule);
 	}
 
-	setScheduleMaxTemp (data) {
-		console.log('!! setScheduleMaxTemp !!', data);
+	handleHoldRangeInput (value) {
+		this.state.holdTemp.min = value[0];
+		this.state.holdTemp.max = value[1];
+
+		this.setState(this.state);
+	}
+
+	handleHoldRangeChange (value) {
+		this.state.holdTemp.min = value[0];
+		this.state.holdTemp.max = value[1];
+
+		this.setState(this.state);
+		this.props.setHoldTemp(this.props.service.id, this.state.holdTemp);
+	}
+
+	handleRangeInput (value, event) {
+		this.state.schedule[value - 1].minTemp = event[0];
+		this.state.schedule[value - 1].maxTemp = event[1];
+
+		this.setState(this.state);
+	}
+
+	handleRangeChange (value, event) {
+		this.state.schedule[value - 1].minTemp = event[0];
+		this.state.schedule[value - 1].maxTemp = event[1];
+
+		this.setState(this.state);
+		this.props.setSchedule(this.props.service.id, this.state.schedule);
 	}
 
 	render () {
@@ -97,100 +142,73 @@ export class ThermostatServiceDetails extends React.Component {
 						<span styleName="field">
 							<label styleName="label">Power</label>
 							<Toggle
-									isOn={this.state.isPowerOn}
-									onClick={this.togglePower.bind(this)}
-									showLabels={true}
-									disabled={false} />
+								isOn={this.state.isPowerOn}
+								onClick={this.togglePower.bind(this)}
+								showLabels={true}
+								disabled={false} />
 						</span>
 
 						{!this.state.isPowerOn
-							? <div styleName="field">Thermostat is currently powered off.</div> :
-						<div>
-						<span styleName="field">
-							<label styleName="label">Hold</label>
-							<Toggle
-									isOn={this.state.isHoldOn}
-									showLabels={true}
-									onClick={this.toggleHold.bind(this)}
-									disabled={false} />
-						</span>
+							? <div styleName="field">Thermostat is currently powered off.</div>
+							:	<div>
+								<span styleName="field">
+									<label styleName="label">Hold</label>
+									<Toggle
+										isOn={this.state.isHoldOn}
+										showLabels={true}
+										onClick={this.toggleHold.bind(this)}
+										disabled={false} />
+								</span>
 
-						<span styleName={this.state.isHoldOn ? 'sensorValues' : 'hidden'}>
-							<Form
-								onSaveableChange={this.setHoldTemp.bind(this)}
-								fields={{minTemp: {
-									type: 'one-of',
-									label: 'Minimum',
-									value_options: this.state.tempValues.map((temp) => ({
-										value: temp.value,
-										label: temp.id
-									}))
-								}}}
-								values={{minTemp: this.state.holdTemp.min}}
-								disabled={false} />
-							<Form
-								fields={{maxTemp: {
-									type: 'one-of',
-									label: 'Maximum',
-									value_options: this.state.tempValues.map((temp) => ({
-										value: temp.value,
-										label: temp.name
-									}))
-								}}}
-								onSaveableChange={this.setHoldTemp.bind(this)}
-								values={{maxTemp: this.state.holdTemp.max}}
-								disabled={false} />
-						</span>
+								<div styleName={this.state.isHoldOn ? 'tempSchedule' : 'hidden'}>
+									<span>
+										<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
+									</span>
+									<span styleName="tempSlider">
+										<RangeControl
+											onInput={this.handleHoldRangeInput.bind(this)}
+											onChange={this.handleHoldRangeChange.bind(this)}
+											min={this.state.holdTemp.min}
+											max={this.state.holdTemp.max} />
+									</span>
+								</div>
 
-						<span styleName="divider" />
+								<span styleName={this.state.isHoldOn ? 'hidden' : 'scheduleTitle'}>
+									Schedule
+								</span>
 
-						<span styleName={this.state.isHoldOn ? 'field' : 'hidden'}>
-							Schedule is not active because hold is on.
-						</span>
+								<span styleName="divider" />
 
-						<div styleName={!this.state.isHoldOn  ? '' : 'hidden'}>
-							<span styleName='scheduleTitle'>
-								Schedule
-							</span>
-							<span styleName='sensorValues'>
-								<Form
-									fields={{room: {
-										type: 'one-of',
-										label: 'Hour',
-										value_options: this.state.hours.map((hour) => ({
-											value: hour.value,
-											label: hour.label
-										}))
-									}}}
-									values={{room: '1 AM'}}
-									disabled={false} />
-							</span>
-							<span styleName='sensorValues'>
-								<Form
-									fields={{room: {
-										type: 'one-of',
-										label: 'Minimum',
-										value_options: this.state.tempValues.map((temp) => ({
-											value: temp.value,
-											label: temp.id
-										}))
-									}}}
-									values={{room: '65'}}
-									disabled={false} />
-								<Form
-									fields={{room: {
-										type: 'one-of',
-										label: 'Maximum',
-										value_options: this.state.tempValues.map((temp) => ({
-											value: temp.value,
-											label: temp.name
-										}))
-									}}}
-									values={{room: '72'}}
-									disabled={false} />
-							</span>
-						</div>
-						</div>
+								<span styleName={this.state.isHoldOn ? 'field' : 'hidden'}>
+									Schedule is not active because hold is on.
+								</span>
+
+								<div styleName={!this.state.isHoldOn ? '' : 'hidden'}>
+									{this.state.schedule.map((hour) => (
+										<div styleName="tempSchedule">
+											<span>
+												<div styleName="tempScheduleLabel">{hour.label}</div>
+												<div styleName="tempScheduleLabel">
+													<Toggle
+														isOn={hour.power}
+														onClick={(event) => this.toggleSchedulePower(hour.value, event)}
+														showLabels={false}
+														disabled={false} />
+												</div>
+												<div styleName="tempScheduleLabel">{hour.minTemp}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hour.maxTemp}&#8457;</div>
+											</span>
+											<span styleName="tempSlider">
+												<RangeControl
+													onInput={(event) => this.handleRangeInput(hour.value, event)}
+													onChange={(event) => this.handleRangeChange(hour.value, event)}
+													min={hour.minTemp}
+													max={hour.maxTemp}
+													disabled={!hour.power} />
+											</span>
+										</div>
+									))}
+								</div>
+							</div>
 						}
 					</SettingsScreenContainer>
 				)} />
@@ -207,7 +225,9 @@ ThermostatServiceDetails.propTypes = {
 	service: PropTypes.object.isRequired,
 	children: PropTypes.node,
 	setHoldTemp: PropTypes.func,
+	setSchedule: PropTypes.func,
 	setHold: PropTypes.func,
+	setPower: PropTypes.func,
 	fanOn: PropTypes.func,
 	fanAuto: PropTypes.func,
 	setMode: PropTypes.func,
@@ -221,7 +241,9 @@ const mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
 	setHoldTemp: (serviceId, temp) => dispatch(thermostatSetHoldTemp(serviceId, temp)),
+	setSchedule: (serviceId, schedule) => dispatch(thermostatSetSchedule(serviceId, schedule)),
 	setHold: (serviceId, mode) => dispatch(thermostatSetHold(serviceId, mode)),
+	setPower: (serviceId, mode) => dispatch(thermostatSetPower(serviceId, mode)),
 	fanOn: (serviceId) => dispatch(thermostatFanOn(serviceId)),
 	fanAuto: (serviceId) => dispatch(thermostatFanAuto(serviceId)),
 	setMode: (serviceId, mode) => dispatch(thermostatSetMode(serviceId, mode))

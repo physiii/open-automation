@@ -4,8 +4,6 @@ import {Switch, Redirect, withRouter} from 'react-router-dom';
 import {Route} from './Route.js';
 import Button from './Button.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
-import ServiceHeader from './ServiceHeader.js';
-import DeviceRoomField from './DeviceRoomField.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
 import './ServiceDetails.css';
 

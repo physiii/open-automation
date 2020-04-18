@@ -22,7 +22,7 @@ export const ServiceDetailsScreen = (props) => {
 			title={props.service.settings.get('name') || props.service.strings.get('friendly_type')}
 			url={props.match.urlWithoutOptionalParams}
 			toolbarActions={<Button to={props.match.url + ServiceDetails.settingsPath}>Settings</Button>}>
-			{props.service.get('type') == 'thermostat' ? <ThermostatServiceDetails service={service} /> : ''}
+			{props.service.get('type') === 'thermostat' ? <ThermostatServiceDetails service={service} /> : ''}
 			<ServiceDetails
 				service={service}
 				shouldShowRoomField={props.shouldShowRoomField} />

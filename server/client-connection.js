@@ -441,6 +441,12 @@ class ClientConnection {
 				.catch((error) => callback(error));
 		});
 
+		this.clientEndpoint('thermostat/schedule/set', function (data, callback) {
+			data.service.setSchedule(data.schedule)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
 		this.clientEndpoint('thermostat/mode/set', function (data, callback) {
 			data.service.setThermostatMode(data.mode)
 				.then(() => callback())
@@ -449,6 +455,12 @@ class ClientConnection {
 
 		this.clientEndpoint('thermostat/hold-mode/set', function (data, callback) {
 			data.service.setHoldMode(data.hold_mode)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
+		this.clientEndpoint('thermostat/power/set', function (data, callback) {
+			data.service.setPower(data.mode)
 				.then(() => callback())
 				.catch((error) => callback(error));
 		});

@@ -40,9 +40,35 @@ class ThermostatService extends Service {
 		});
 	}
 
+	setSchedule (temp) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('schedule/set', {temp}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
 	setHoldMode (mode) {
 		return new Promise((resolve, reject) => {
 			this.deviceEmit('holdMode/set', {mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
+	setPower (mode) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('power/set', {mode}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;

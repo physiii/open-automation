@@ -178,12 +178,20 @@ class Api {
 		return Api.apiCall('thermostat/hold-temp/set', {service_id: thermostatServiceId, hold_temp: temp});
 	}
 
+	thermostatSetSchedule (thermostatServiceId, schedule) {
+		return Api.apiCall('thermostat/schedule/set', {service_id: thermostatServiceId, schedule});
+	}
+
 	thermostatSetMode (thermostatServiceId, mode) {
 		return Api.apiCall('thermostat/mode/set', {service_id: thermostatServiceId, mode});
 	}
 
 	thermostatSetHold (thermostatServiceId, holdMode) {
 		return Api.apiCall('thermostat/hold-mode/set', {service_id: thermostatServiceId, hold_mode: holdMode});
+	}
+
+	thermostatSetPower (thermostatServiceId, mode) {
+		return Api.apiCall('thermostat/power/set', {service_id: thermostatServiceId, mode});
 	}
 
 	thermostatSetFan (thermostatServiceId, fanMode) {

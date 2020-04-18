@@ -95,11 +95,17 @@ const recordingsWorker = new RecordingsWorker(),
 	thermostatSetHoldTemp = (thermostatServiceId, temp) => () => {
 		Api.thermostatSetHoldTemp(thermostatServiceId, temp);
 	},
+	thermostatSetSchedule = (thermostatServiceId, schedule) => () => {
+		Api.thermostatSetSchedule(thermostatServiceId, schedule);
+	},
 	thermostatSetMode = (thermostatServiceId, mode) => () => {
 		Api.thermostatSetMode(thermostatServiceId, mode);
 	},
 	thermostatSetHold = (thermostatServiceId, mode) => () => {
 		Api.thermostatSetHold(thermostatServiceId, mode);
+	},
+	thermostatSetPower = (thermostatServiceId, mode) => () => {
+		Api.thermostatSetPower(thermostatServiceId, mode);
 	},
 	thermostatFanOn = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'on');
@@ -128,6 +134,8 @@ export {
 	lockLock,
 	lockUnlock,
 	thermostatSetHoldTemp,
+	thermostatSetPower,
+	thermostatSetSchedule,
 	thermostatSetMode,
 	thermostatSetHold,
 	thermostatFanOn,
