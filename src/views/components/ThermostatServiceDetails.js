@@ -39,8 +39,6 @@ export class ThermostatServiceDetails extends React.Component {
 			schedule,
 			tempValues
 		};
-
-		this.setState(this.state);
 	}
 
 	showSchedule () {
@@ -143,7 +141,7 @@ export class ThermostatServiceDetails extends React.Component {
 							<label styleName="label">Power</label>
 							<Toggle
 								isOn={this.state.isPowerOn}
-								onClick={this.togglePower.bind(this)}
+								onChange={this.togglePower.bind(this)}
 								showLabels={true}
 								disabled={false} />
 						</span>
@@ -156,7 +154,7 @@ export class ThermostatServiceDetails extends React.Component {
 									<Toggle
 										isOn={this.state.isHoldOn}
 										showLabels={true}
-										onClick={this.toggleHold.bind(this)}
+										onChange={this.toggleHold.bind(this)}
 										disabled={false} />
 								</span>
 
@@ -184,14 +182,14 @@ export class ThermostatServiceDetails extends React.Component {
 								</span>
 
 								<div styleName={!this.state.isHoldOn ? '' : 'hidden'}>
-									{this.state.schedule.map((hour) => (
-										<div styleName="tempSchedule">
+									{this.state.schedule.map((hour, i) => (
+										<div styleName="tempSchedule" key={i}>
 											<span>
 												<div styleName="tempScheduleLabel">{hour.label}</div>
 												<div styleName="tempScheduleLabel">
 													<Toggle
 														isOn={hour.power}
-														onClick={(event) => this.toggleSchedulePower(hour.value, event)}
+														onChange={(event) => this.toggleSchedulePower(hour.value, event)}
 														showLabels={false}
 														disabled={false} />
 												</div>

@@ -28,8 +28,6 @@ export class ThermostatCard extends React.Component {
 			currentHour,
 			mode
 		};
-
-		this.setState(this.state);
 	}
 
 	getTemp () {
