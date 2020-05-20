@@ -182,8 +182,8 @@ export class ThermostatServiceDetails extends React.Component {
 								</span>
 
 								<div styleName={!this.state.isHoldOn ? '' : 'hidden'}>
-									{this.state.schedule.map((hour, i) => (
-										<div styleName="tempSchedule" key={i}>
+									{this.state.schedule.map((hour, idKey) => (
+										<div styleName="tempSchedule" key={idKey}>
 											<span>
 												<div styleName="tempScheduleLabel">{hour.label}</div>
 												<div styleName="tempScheduleLabel">
