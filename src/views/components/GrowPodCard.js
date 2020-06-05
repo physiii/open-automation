@@ -42,6 +42,40 @@ export class GrowPodCard extends React.Component {
 		return (number < 10 ? '0' : '') + number;
 	}
 
+	convertCelsiusToFahrenheit (temp) {
+		return temp * 9 / 5 + 32;
+	}
+
+	getAtmTemp() {
+		if (this.props.service.state.get('atm_temp')) return this.props.service.state.get('atm_temp');
+
+		return 'Unknown';
+	}
+
+	getHumidity() {
+		if (this.props.service.state.get('humidity')) return this.props.service.state.get('humidity');
+
+		return 'Unknown';
+	}
+
+	getWaterTemp() {
+		if (this.props.service.state.get('water_temp')) return this.props.service.state.get('water_temp');
+
+		return 'Unknown';
+	}
+
+	getWaterEc() {
+		if (this.props.service.state.get('ec')) return this.props.service.state.get('ec');
+
+		return 'Unknown';
+	}
+
+	getWaterPh() {
+		if (this.props.service.state.get('ph')) return this.props.service.state.get('ph');
+
+		return 'Unknown';
+	}
+
 	render () {
 		const isConnected = this.props.service.state.get('connected');
 
@@ -66,17 +100,10 @@ export class GrowPodCard extends React.Component {
 						<br />
 						<span styleName="sensorValues">
 							<span styleName="sensorValue">
-								{this.props.service.state.get('connected') ? this.props.service.state.get('atm_temp').toFixed(1) : 'Unknown'} &#8451;
+								{this.convertCelsiusToFahrenheit(this.getAtmTemp()).toFixed(0)} &#8457;
 							</span>
 							<span styleName="sensorValue">
-								{this.props.service.state.get('connected') ? this.props.service.state.get('humidity').toFixed(1) : 'Unknown'} RH
-							</span>
-							<span styleName="sensorValue">
-								Light <Switch
-									isOn={this.props.service.state.get('light_level') > 0}
-									onClick={this.setLevel.bind(this)}
-									showLabels={false}
-									disabled={!isConnected} />
+								{this.getHumidity().toFixed(0)} RH
 							</span>
 						</span>
 					</section>
@@ -87,13 +114,13 @@ export class GrowPodCard extends React.Component {
 						<br />
 						<span styleName="sensorValues">
 							<span styleName="sensorValue">
-								{this.props.service.state.get('water_temp') ? this.props.service.state.get('water_temp').toFixed(1) : 'Unknown'} &#8451;
+								{this.convertCelsiusToFahrenheit(this.getWaterTemp()).toFixed(0)} &#8457;
 							</span>
 							<span styleName="sensorValue">
-								{this.props.service.state.get('ph') ? this.props.service.state.get('ph').toFixed(1) : 'Unknown'} pH
+								{this.getWaterPh().toFixed(1)} pH
 							</span>
 							<span styleName="sensorValue">
-								{this.props.service.state.get('connected') ? ' ' + this.props.service.state.get('ec').toFixed(3) : 'Unknown'} mS/cm
+								{this.getWaterEc()} uS/cm
 							</span>
 						</span>
 					</section>
