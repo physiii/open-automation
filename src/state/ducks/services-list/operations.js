@@ -92,6 +92,9 @@ const recordingsWorker = new RecordingsWorker(),
 	lockUnlock = (lockServiceId) => () => {
 		Api.lockSetLocked(lockServiceId, false);
 	},
+	lightSetTheme = (lightServiceId, theme) => () => {
+		Api.lightSetTheme(lightServiceId, theme);
+	},
 	thermostatSetHoldTemp = (thermostatServiceId, temp) => () => {
 		Api.thermostatSetHoldTemp(thermostatServiceId, temp);
 	},
@@ -133,6 +136,7 @@ export {
 	cameraStopAudioRecordingStream,
 	lockLock,
 	lockUnlock,
+	lightSetTheme,
 	thermostatSetHoldTemp,
 	thermostatSetPower,
 	thermostatSetSchedule,

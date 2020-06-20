@@ -473,6 +473,12 @@ class ClientConnection {
 
 		// Light Service API
 
+		this.clientEndpoint('light/theme/set', function (data, callback) {
+			data.service.setTheme(data.theme)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
 		this.clientEndpoint('light/on', function (data, callback) {
 			data.service.setPower(true)
 				.then(() => callback())

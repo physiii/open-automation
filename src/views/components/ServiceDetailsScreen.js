@@ -5,6 +5,7 @@ import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import ServiceDetails from './ServiceDetails.js';
 import ThermostatServiceDetails from './ThermostatServiceDetails.js';
+import LightServiceDetails from './LightServiceDetails.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -22,7 +23,10 @@ export const ServiceDetailsScreen = (props) => {
 			title={props.service.settings.get('name') || props.service.strings.get('friendly_type')}
 			url={props.match.urlWithoutOptionalParams}
 			toolbarActions={<Button to={props.match.url + ServiceDetails.settingsPath}>Settings</Button>}>
+
 			{props.service.get('type') === 'thermostat' ? <ThermostatServiceDetails service={service} /> : ''}
+			{props.service.get('type') === 'light' ? <LightServiceDetails service={service} /> : ''}
+
 			<ServiceDetails
 				service={service}
 				shouldShowRoomField={props.shouldShowRoomField} />

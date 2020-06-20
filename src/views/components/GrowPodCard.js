@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
-import Switch from './Switch.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import './GrowPodCard.css';
 
@@ -46,31 +45,31 @@ export class GrowPodCard extends React.Component {
 		return temp * 9 / 5 + 32;
 	}
 
-	getAtmTemp() {
+	getAtmTemp () {
 		if (this.props.service.state.get('atm_temp')) return this.props.service.state.get('atm_temp');
 
 		return 'Unknown';
 	}
 
-	getHumidity() {
+	getHumidity () {
 		if (this.props.service.state.get('humidity')) return this.props.service.state.get('humidity');
 
 		return 'Unknown';
 	}
 
-	getWaterTemp() {
+	getWaterTemp () {
 		if (this.props.service.state.get('water_temp')) return this.props.service.state.get('water_temp');
 
 		return 'Unknown';
 	}
 
-	getWaterEc() {
+	getWaterEc () {
 		if (this.props.service.state.get('ec')) return this.props.service.state.get('ec');
 
 		return 'Unknown';
 	}
 
-	getWaterPh() {
+	getWaterPh () {
 		if (this.props.service.state.get('ph')) return this.props.service.state.get('ph');
 
 		return 'Unknown';
@@ -103,7 +102,7 @@ export class GrowPodCard extends React.Component {
 								{this.convertCelsiusToFahrenheit(this.getAtmTemp()).toFixed(0)} &#8457;
 							</span>
 							<span styleName="sensorValue">
-								{this.getHumidity().toFixed(0)} RH
+								{this.getHumidity()} RH
 							</span>
 						</span>
 					</section>
@@ -117,7 +116,7 @@ export class GrowPodCard extends React.Component {
 								{this.convertCelsiusToFahrenheit(this.getWaterTemp()).toFixed(0)} &#8457;
 							</span>
 							<span styleName="sensorValue">
-								{this.getWaterPh().toFixed(1)} pH
+								{this.getWaterPh()} pH
 							</span>
 							<span styleName="sensorValue">
 								{this.getWaterEc()} uS/cm

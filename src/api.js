@@ -6,7 +6,7 @@ const listeners = [],
 	relaySocketQueue = [],
 	SOCKET_CONNECT_TIMEOUT = 20000,
 	ONE_HOUR_IN_MILLISECONDS = 3600000,
-	TAG = '[API]',
+	// TAG = '[API]',
 	GENERIC_LOGIN_ERROR = 'An error occurred while trying to log in.';
 
 class Api {
@@ -85,8 +85,6 @@ class Api {
 	}
 
 	updateDevice (device) {
-		console.log(TAG, 'updateDevice');
-
 		return Api.apiCall('device/update', {device});
 	}
 
@@ -170,6 +168,12 @@ class Api {
 
 	lockSetLocked (lockServiceId, locked) {
 		return Api.apiCall('lock/locked/set', {service_id: lockServiceId, locked});
+	}
+
+	// Light Service
+
+	lightSetTheme (lightServiceId, theme) {
+		return Api.apiCall('light/theme/set', {service_id: lightServiceId, theme});
 	}
 
 	// Thermostat Service
