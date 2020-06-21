@@ -10,6 +10,7 @@ import GlobalAlarmCard from './AlarmCardGlobal.js';
 import GameMachineCard from './GameMachineCard.js';
 import LockCard from './LockCard.js';
 import ThermostatCard from './ThermostatCard.js';
+import MediaCard from './MediaCard.js';
 
 export const ServiceCard = (props) => {
 	const Card = ServiceCard.cardComponents[props.service.type];
@@ -33,7 +34,8 @@ ServiceCard.cardComponents = {
 	'button': ButtonCard,
 	'game-machine': GameMachineCard,
 	'lock': LockCard,
-	'thermostat': ThermostatCard
+	'thermostat': ThermostatCard,
+	'media': MediaCard
 };
 
 export default ServiceCard;

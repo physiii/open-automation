@@ -11,10 +11,10 @@ export class ThermostatCard extends React.Component {
 		const temp = this.props.service.state.get('current_temp') ? this.props.service.state.get('current_temp') : 0,
 			targetTemp = this.props.service.state.get('target_temp') ? this.props.service.state.get('target_temp') : 0,
 			fanMode = this.props.service.state.get('fan_mode') ? this.props.service.state.get('fan_mode') : 'off',
-			schedule = props.service.state.get('schedule') ? props.service.state.get('schedule') : {},
-			isPowerOn = props.service.state.get('power') ? props.service.state.get('power') : false,
-			isHoldOn = props.service.state.get('hold_mode') === 'on',
-			currentHour = props.service.state.get('current_hour') ? props.service.state.get('current_hour') : 0,
+			schedule = this.props.service.state.get('schedule') ? this.props.service.state.get('schedule') : {},
+			isPowerOn = this.props.service.state.get('power') ? this.props.service.state.get('power') : false,
+			isHoldOn = this.props.service.state.get('hold_mode') === 'on',
+			currentHour = this.props.service.state.get('current_hour') ? this.props.service.state.get('current_hour') : 0,
 			mode = this.props.service.state.get('mode') ? this.props.service.state.get('mode') : 'off';
 
 		this.state = {

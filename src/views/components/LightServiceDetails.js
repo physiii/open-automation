@@ -45,7 +45,6 @@ export class LightServiceDetails extends React.Component {
 	}
 
 	setTheme(theme) {
-		console.log("setTheme:", theme);
 		this.props.doAction(this.props.service.id, {
 			property: 'setTheme',
 			value: theme
@@ -75,8 +74,8 @@ export class LightServiceDetails extends React.Component {
 	getTheme (num) {
 		if (!this.props.service.state.get('themes')) return;
 
-		let theme = this.props.service.state.get('themes')[num];
-		let string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';
+		const theme = this.props.service.state.get('themes')[num],
+			string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';
 
 		return string;
 	}
@@ -88,13 +87,13 @@ export class LightServiceDetails extends React.Component {
 					<SettingsScreenContainer section={true}>
 						<br />
 
-						{this.state.selected_theme == 0
+						{this.state.selected_theme === 0
 							?	<span styleName="sensorTitle">
 									Select a theme to change
-								</span>
+							</span>
 							: <span styleName="sensorTitle">
 									Theme {this.state.selected_theme}
-								</span>
+							</span>
 						}
 
 						<br />
@@ -109,13 +108,13 @@ export class LightServiceDetails extends React.Component {
 						<br />
 						{this.state.selected_theme
 							?	<div styleName="pickerContainer">
-									<ChromePicker
-										width="94%"
-										color={ this.state.background }
-										onChange={ this.handleChange.bind(this) }
-										onChangeComplete={ this.handleChangeComplete.bind(this) }
-									/>
-								</div>
+								<ChromePicker
+									width="94%"
+									color={ this.state.background }
+									onChange={ this.handleChange.bind(this) }
+									onChangeComplete={ this.handleChangeComplete.bind(this) }
+								/>
+							</div>
 							: ''}
 
 					</SettingsScreenContainer>

@@ -58,6 +58,21 @@
 	color: #c80000;
 }
 
+.mousePad {
+	width: 95%;
+	height: 500px;
+	background: #444;
+	margin: 5px;
+	border: 3px solid #222;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-size: 30px;
+	color: #c8c8c8;
+}
+
 .scheduleTitle {
 	display: flex;
 	flex-flow: column nowrap;
@@ -194,6 +209,11 @@
 	/* padding: 0 16px; */
 	text-align: center;
 	/* align-items: center; */
+}
+
+.sliderMediaDetailsWrapper {
+	padding :16px;
+	width: 95%;
 }
 
 .hidden {

@@ -127,7 +127,8 @@ ServicesManager.classes = {
 	'light': require('./light-service.js'),
 	'lock': require('./lock-service.js'),
 	'siren': require('./siren-service.js'),
-	'thermostat': require('./thermostat-service.js')
+	'thermostat': require('./thermostat-service.js'),
+	'media': require('./media-service.js')
 };
 
 module.exports = ServicesManager;

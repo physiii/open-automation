@@ -5,6 +5,7 @@ import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
 import ServiceDetails from './ServiceDetails.js';
 import ThermostatServiceDetails from './ThermostatServiceDetails.js';
+import MediaServiceDetails from './MediaServiceDetails.js';
 import LightServiceDetails from './LightServiceDetails.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
@@ -25,6 +26,7 @@ export const ServiceDetailsScreen = (props) => {
 			toolbarActions={<Button to={props.match.url + ServiceDetails.settingsPath}>Settings</Button>}>
 
 			{props.service.get('type') === 'thermostat' ? <ThermostatServiceDetails service={service} /> : ''}
+			{props.service.get('type') === 'media' ? <MediaServiceDetails service={service} /> : ''}
 			{props.service.get('type') === 'light' ? <LightServiceDetails service={service} /> : ''}
 
 			<ServiceDetails

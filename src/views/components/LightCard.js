@@ -11,18 +11,14 @@ export class LightCard extends React.Component {
 	constructor (props) {
 		super(props);
 
-		const brightness = props.service.state.get('brightness') ? props.service.state.get('brightness') : 50,
-			theme = props.service.state.get('theme') ? props.service.state.get('theme') : 0,
-			themes = props.service.state.get('themes') ? props.service.state.get('themes') : [],
+		const brightness = props.service.state.get('brightness') ? props.service.state.get('brightness') : 0,
 			isPowerOn = props.service.state.get('power') ? props.service.state.get('power') : false;
-
-		console.log('THEME', props.service.state.get('themes')[0].r);
 
 		this.onClick = this.handleClick.bind(this);
 
 		this.state = {
 			slider_value: brightness,
-			brightness: brightness,
+			brightness,
 			power_on: isPowerOn,
 			is_changing: false
 		};
@@ -96,7 +92,7 @@ export class LightCard extends React.Component {
 		this.state.power_on = event.target.checked;
 		this.setState(this.state);
 
-		this.setPower(this.state.power_on ? true : false);
+		this.setPower(this.state.power_on);
 	}
 
 	convertCelsiusToFahrenheit (temp) {
@@ -128,8 +124,8 @@ export class LightCard extends React.Component {
 	getTheme (num) {
 		if (!this.props.service.state.get('themes')) return;
 
-		let theme = this.props.service.state.get('themes')[num];
-		let string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';
+		const theme = this.props.service.state.get('themes')[num],
+			string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';
 
 		return string;
 	}
@@ -171,16 +167,16 @@ export class LightCard extends React.Component {
 					/>
 				</span>
 				<span styleName="themeContainer">
-				<div
-					styleName="theme_3"
-					style={{backgroundColor: this.getTheme(2)}}
-					onClick={this.handleThemeThreeSelect.bind(this)}
-				/>
-				<div
-					styleName="theme_4"
-					style={{backgroundColor: this.getTheme(3)}}
-					onClick={this.handleThemeFourSelect.bind(this)}
-				/>
+					<div
+						styleName="theme_3"
+						style={{backgroundColor: this.getTheme(2)}}
+						onClick={this.handleThemeThreeSelect.bind(this)}
+					/>
+					<div
+						styleName="theme_4"
+						style={{backgroundColor: this.getTheme(3)}}
+						onClick={this.handleThemeFourSelect.bind(this)}
+					/>
 				</span>
 				<div styleName="sliderWrapper">
 					<SliderControl
