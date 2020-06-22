@@ -221,9 +221,9 @@ function convertRoomIdsToObjectIds (rooms = []) {
 function convertRoomObjectIdsToStrings (rooms = []) {
 	return rooms.map((room) => ({
 		...room,
-		id: room.id.toHexString
+		id: room.id && room.id.toHexString
 			? room.id.toHexString()
-			: room.id
+			: (room.id ? room.id : ObjectId(room.id))
 	}));
 }
 
