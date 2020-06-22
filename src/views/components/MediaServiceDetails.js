@@ -1,16 +1,13 @@
 import React from 'react';
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import {Switch, Redirect, withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
-import Toggle from './Switch.js';
 import SliderControl from './SliderControl.js';
 import {Route} from './Route.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-import RangeControl from './RangeControl.js';
 import './ServiceDetails.css';
 
 export class MediaServiceDetails extends React.Component {
@@ -18,16 +15,15 @@ export class MediaServiceDetails extends React.Component {
 	constructor (props) {
 		super(props);
 
-		const mode = props.service.state.get('mode') ? props.service.state.get('mode') : 'off',
-			volume = this.props.service.state.get('volumeLevel') ? this.props.service.state.get('volumeLevel') : 0;
+		const volume = this.props.service.state.get('volumeLevel') ? this.props.service.state.get('volumeLevel') : 0;
 
 		this.state = {
-			coords: [0,0],
-			diffCoords: [0,0],
-			prevCoords: [0,0],
-			startCoords: [0,0],
-			clickCoords: [0,0],
-			slider_value: volume,
+			coords: [0, 0],
+			diffCoords: [0, 0],
+			prevCoords: [0, 0],
+			startCoords: [0, 0],
+			clickCoords: [0, 0],
+			slider_value: volume
 		};
 
 		this.setState(this.state);
@@ -44,18 +40,14 @@ export class MediaServiceDetails extends React.Component {
 
 	setLevel (value) {
 		if (!this.props.service.state.get('connected')) return;
-		
+
 		this.props.doAction(this.props.service.id, {
 			property: 'setLevel',
 			value
 		});
 	}
 
-	handlePress (event) {
-		const xCoord = event.clientX,
-			yCoord = event.clientY;
-
-		console.log('handlePress', event);
+	handlePress () {
 		this.state.clickCoords = [this.state.clickCoords[0], this.state.clickCoords[1]];
 		this.setState(this.state);
 		this.sendClickCoordinates(this.state.clickCoords);

@@ -108,17 +108,17 @@ export class MediaCard extends React.Component {
 					<div
 						styleName="pausePlayIcon"
 						onClick={this.pause.bind(this)}>
-							<PlayMediaButtonIcon size={64} shadowed={true} />
+						<PlayMediaButtonIcon size={64} shadowed={true} />
 					</div>
 					<div
 						styleName="iconMute"
 						onClick={this.mute.bind(this)}>
-							{
-								this.getMute() ?
-								<MuteButtonIcon size={64} shadowed={true} />
+						{
+							this.getMute()
+								?	<MuteButtonIcon size={64} shadowed={true} />
 								: <UnMuteButtonIcon size={64} shadowed={true} />
-							}
-						</div>
+						}
+					</div>
 				</span>
 				<span styleName="themeContainerBottom">
 					<div
