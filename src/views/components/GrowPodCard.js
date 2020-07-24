@@ -41,10 +41,6 @@ export class GrowPodCard extends React.Component {
 		return (number < 10 ? '0' : '') + number;
 	}
 
-	convertCelsiusToFahrenheit (temp) {
-		return temp * 9 / 5 + 32;
-	}
-
 	getAtmTemp () {
 		if (this.props.service.state.get('atm_temp')) return this.props.service.state.get('atm_temp');
 
@@ -99,7 +95,7 @@ export class GrowPodCard extends React.Component {
 						<br />
 						<span styleName="sensorValues">
 							<span styleName="sensorValue">
-								{this.convertCelsiusToFahrenheit(this.getAtmTemp()).toFixed(0)} &#8457;
+								{this.getAtmTemp()} &#8457;
 							</span>
 							<span styleName="sensorValue">
 								{this.getHumidity()} RH
@@ -113,7 +109,7 @@ export class GrowPodCard extends React.Component {
 						<br />
 						<span styleName="sensorValues">
 							<span styleName="sensorValue">
-								{this.convertCelsiusToFahrenheit(this.getWaterTemp()).toFixed(0)} &#8457;
+								{this.getWaterTemp()} &#8457;
 							</span>
 							<span styleName="sensorValue">
 								{this.getWaterPh()} pH

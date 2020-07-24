@@ -36,6 +36,7 @@ class GenericDeviceDriver extends DeviceDriver {
 			this._emitLoadToRelay(device);
 		});
 		this._socketOn('log', (log) => {
+			console.log(TAG, "Incoming log:", log);
 			return new Promise((resolve, reject) => {
 				database.saveLog(
 					{

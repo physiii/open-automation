@@ -7,6 +7,7 @@ import ServiceDetails from './ServiceDetails.js';
 import ThermostatServiceDetails from './ThermostatServiceDetails.js';
 import MediaServiceDetails from './MediaServiceDetails.js';
 import LightServiceDetails from './LightServiceDetails.js';
+import GrowServiceDetails from './GrowServiceDetails.js';
 import Button from './Button.js';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -28,6 +29,7 @@ export const ServiceDetailsScreen = (props) => {
 			{props.service.get('type') === 'thermostat' ? <ThermostatServiceDetails service={service} /> : ''}
 			{props.service.get('type') === 'media' ? <MediaServiceDetails service={service} /> : ''}
 			{props.service.get('type') === 'light' ? <LightServiceDetails service={service} /> : ''}
+			{props.service.get('type') === 'grow-pod' ? <GrowServiceDetails service={service} /> : ''}
 
 			<ServiceDetails
 				service={service}

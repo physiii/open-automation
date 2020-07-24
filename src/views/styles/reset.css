@@ -26,11 +26,6 @@ button {
 	border: 0;
 }
 
-svg {
-	display: inline-block;
-	pointer-events: none;
-}
-
 iframe { border: 0; }
 
 img {

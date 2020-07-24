@@ -176,16 +176,17 @@
 	align-items: center;
 	justify-content: center;
 	flex: 1 0;
-	/* margin: 24px 0; */
+	margin: 12px;
 	/* padding: 0 8px; */
 	text-align: center;
 	/* display: block; */
-	font-size: 68px;
+	font-size: 24px;
 	color: #969696;
 }
 
 .sensorPanelA {
 	display: flex;
+	font-size: 18px;
 	flex-flow: column nowrap;
 	align-items: center;
 	justify-content: center;
@@ -218,4 +219,28 @@
 
 .hidden {
 	display: none;
+}
+
+.graphContainer {
+	position: relative;
+	border: 1px solid #7e7e7e;
+	box-shadow: 0 22px 20px -16px rgba(50, 50, 50, 0.71);
+	/* max-width: 850px; */
+	margin: 12px;
+	padding: 12px;
+}
+
+.graphContainerExpanded {
+	text-align: center;
+	position: relative;
+	border: 1px solid #7e7e7e;
+	box-shadow: 0 22px 20px -16px rgba(50, 50, 50, 0.71);
+	/* max-width: 850px; */
+	margin: 12px;
+	padding: 12px;
+}
+
+.chart-bar {
+	position: relative;
+	margin-top: -38px;
 }
