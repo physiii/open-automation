@@ -53,8 +53,8 @@ export class RangeControl extends React.Component {
 				step={1}
 				allowCross={false}
 				defaultValue={[this.props.min, this.props.max]}
-				min={60}
-				max={80}
+				min={this.props.minRange}
+				max={this.props.maxRange}
 				onAfterChange={this.handleChange.bind(this)}
 				disabled={this.props.disabled}/>
 		);
@@ -68,7 +68,9 @@ RangeControl.propTypes = {
 	onInput: PropTypes.func,
 	disabled: PropTypes.bool,
 	min: PropTypes.number,
-	max: PropTypes.number
+	max: PropTypes.number,
+	minRange: PropTypes.number,
+	maxRange: PropTypes.number
 };
 
 RangeControl.defaultProps = {

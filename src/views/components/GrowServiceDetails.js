@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import {Switch, Redirect, withRouter} from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import List from './List.js';
+import ToggleSwitch from './Switch.js';
+import SliderControl from './SliderControl.js';
 import moment from 'moment';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
@@ -13,31 +15,71 @@ import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
 import './ServiceDetails.css';
 import RangeControl from './RangeControl.js';
+import Form from './Form.js';
 
 const ONE_SECOND_IN_MILLISECONDS = 1000,
 			ONE_MINUTE_IN_SECONDS = 60,
 			ONE_HOUR_IN_MINUTES = 60,
-			OVERVIEW_WINDOW_HOURS = 6;
+			OVERVIEW_WINDOW_HOURS = 1;
 
 const GRAPH_TITLES = {
 	atm_temp: 'Atmospheric Temperature',
 	humidity: 'Humidity',
 	water_temp: 'Water Temperature',
 	ph: 'Water pH',
-	ec: 'Water Electric Conductivity'
+	ec: 'Water Electric Conductivity',
+	water_level: 'Water Level',
+	feed_pump: 'Feed Pump',
+	air_pump: 'Air Pump'
 };
+
+const TIMES = [
+	{id: 0, name: '12:00 AM'},
+	{id: 1, name: '1:00 AM'},
+	{id: 2, name: '2:00 AM'},
+	{id: 3, name: '3:00 AM'},
+	{id: 4, name: '4:00 AM'},
+	{id: 5, name: '5:00 AM'},
+	{id: 6, name: '6:00 AM'},
+	{id: 7, name: '7:00 AM'},
+	{id: 8, name: '8:00 AM'},
+	{id: 9, name: '9:00 AM'},
+	{id: 10, name: '10:00 AM'},
+	{id: 11, name: '11:00 AM'},
+	{id: 12, name: '12:00 PM'},
+	{id: 13, name: '1:00 PM'},
+	{id: 14, name: '2:00 PM'},
+	{id: 15, name: '3:00 PM'},
+	{id: 16, name: '4:00 PM'},
+	{id: 17, name: '5:00 PM'},
+	{id: 18, name: '6:00 PM'},
+	{id: 19, name: '7:00 PM'},
+	{id: 20, name: '8:00 PM'},
+	{id: 21, name: '9:00 PM'},
+	{id: 22, name: '10:00 PM'},
+	{id: 23, name: '11:00 PM'}
+];
 
 export class GrowServiceDetails extends React.Component {
 
 	constructor (props) {
 		super(props);
 
+		const feedPump = props.service.state.get('feed_pump') ? props.service.state.get('feed_pump') : {interval: 0, duration: 0, hold: false},
+			airPump = props.service.state.get('air_pump') ? props.service.state.get('air_pump') : {interval: 0, duration: 0},
+			waterTempRange = props.service.state.get('water_temp_range') ? props.service.state.get('water_temp_range') : {min: 60, max: 90},
+			waterLevel = props.service.state.get('water_level') ? props.service.state.get('water_level') : 0,
+			light = props.service.state.get('light') ? props.service.state.get('light') : {on: 0, off: 23, bloom: false, hold: false, grow: false},
+			phCal = props.service.state.get('ph_cal') ? props.service.state.get('ph_cal') : {ph4: 0, ph7: 0, ph10: 0};
 
-		const holdTemp = props.service.state.get('hold_temp') ? props.service.state.get('hold_temp') : {min: 0, max: 100};
-
+		console.log("!! LIGHT RANGE !!", light);
 		this.state = {
 			logsReady: false,
-			holdTemp,
+			feedPump,
+			airPump,
+			phCal,
+			waterTempRange,
+			light,
 			sensorGraphs: [],
 			didMount: false,
 			receivedTempValues: false,
@@ -149,14 +191,17 @@ export class GrowServiceDetails extends React.Component {
 	  if (prevProps.logs !== this.props.logs) {
 			if (!this.props.logs[0]) return;
 
-			let logs = this.props.logs;
-			let keyArray = Object.keys(logs[0].services[0].state);
+			if (!this.state.logsReady) {
+				let logs = this.props.logs;
+				let keyArray = Object.keys(logs[0].services[0].state);
 
-			keyArray.forEach(key => {
-				if (GRAPH_TITLES[key]) this.createGraph(logs, key, GRAPH_TITLES[key]);
-			})
+				keyArray.forEach(key => {
+					if (GRAPH_TITLES[key]) this.createGraph(logs, key, GRAPH_TITLES[key]);
+				})
 
-			this.setState({logsReady: true})
+			  this.setState({logsReady: true})
+			}
+
 	  }
 	}
 
@@ -178,10 +223,15 @@ export class GrowServiceDetails extends React.Component {
 	}
 
 	createGraph (logs, key, title) {
-		let series = logs.map((item) => {
+		let filteredLogs = logs.filter((item, index) => {
+				if (index === 0 || index === logs.length - 1) return true;
+				if (logs[index - 1].services[0].state[key] !== item.services[0].state[key]) return true;
+				if (logs[index + 1].services[0].state[key] !== item.services[0].state[key]) return true;
+			}),
+			series = filteredLogs.map((item, index) => {
 				return [new Date(item.date).getTime(), item.services[0].state[key]];
 			}),
-			values = this.props.logs.map((item) => {
+			values = filteredLogs.map((item, index) => {
 				return item.services[0].state[key];
 			}),
 			minMax = [Math.min.apply(null, values), Math.max.apply(null, values)];
@@ -202,13 +252,12 @@ export class GrowServiceDetails extends React.Component {
 		newOptionsOverview.yaxis.min = minMax[0] - 1;
 		newOptionsOverview.yaxis.max = minMax[1] + 1;
 
-		let newGraphs = this.state.sensorGraphs.map(graph => graph);
 		let newGraph = {key, title, options: newOptions, optionsOverview: newOptionsOverview, display: false};
+		const index = this.state.sensorGraphs.findIndex(graph => graph.key==key);
 
-		const index = newGraphs.findIndex(graph => graph.key==key);
 		if (index < 0) {
-			this.setState({sensorGraphs: newGraphs})
-			newGraphs.unshift(newGraph);
+			this.state.sensorGraphs.unshift(newGraph);
+			this.setState({sensorGraphs: this.state.sensorGraphs});
 		}
 	}
 
@@ -221,29 +270,98 @@ export class GrowServiceDetails extends React.Component {
     }));
   };
 
-	handleHoldRangeInput (value) {
-		this.state.holdTemp.min = value[0];
-		this.state.holdTemp.max = value[1];
+	handleLightToggleInput (key, value) {
+		this.state.light[key] = !this.state.light[key];
+		this.setState({light: this.state.light});
+		this.props.doAction(this.props.service.id, {
+			property: 'setLight',
+			value: this.state.light
+		});
+		console.log("handleLightToggleInput", this.state.light);
+	}
+
+	handleLightTimeChange (key, value) {
+		this.state.light[key] = value.time;
+		this.setState({light: this.state.light});
+		this.props.doAction(this.props.service.id, {
+			property: 'setLight',
+			value: this.state.light
+		});
+		console.log("handleLightTimeChange", this.state.light);
+	}
+
+	handleTempRangeInput (value) {
+		this.state.waterTempRange.min = value[0];
+		this.state.waterTempRange.max = value[1];
 
 		this.setState(this.state);
 	}
 
-	handleHoldRangeChange (value) {
-		this.state.holdTemp.min = value[0];
-		this.state.holdTemp.max = value[1];
+	handleTempRangeChange (value) {
+		this.state.waterTempRange.min = value[0];
+		this.state.waterTempRange.max = value[1];
 
 		this.setState(this.state);
 		this.props.doAction(this.props.service.id, {
-			property: 'setHoldTemp',
+			property: 'setTemp',
 			value
 		});
 	}
 
-	setPhPoint () {
+	setPhPoint (key) {
 		this.props.doAction(this.props.service.id, {
 			property: 'setPhPoint',
-			value: 1
+			value: key
 		});
+	}
+
+	handleFeedPumpSliderInput (key, shouldSend, value) {
+		let state = this.state;
+		state.feedPump[key] = value;
+		this.setState(state);
+		if (shouldSend) {
+			this.props.doAction(this.props.service.id, {
+				property: 'setFeedPump',
+				value: this.state.feedPump
+			});
+		}
+	}
+
+	handleFeedPumpToggleInput (key, value) {
+		this.state.feedPump[key] = !this.state.feedPump[key];
+		// this.setState({feedPump: this.state.feedPump});
+		this.setState({feedPump: this.state.feedPump});
+		this.props.doAction(this.props.service.id, {
+			property: 'setFeedPump',
+			value: this.state.feedPump
+		});
+	}
+
+	handleAirPumpSliderInput (key, shouldSend, value) {
+		let state = this.state;
+		state.airPump[key] = value;
+		this.setState(state);
+		if (shouldSend) {
+			console.log('handleAirPumpSliderInput', value);
+			this.props.doAction(this.props.service.id, {
+				property: 'setAirPump',
+				value: this.state.airPump
+			});
+		}
+	}
+
+	handleAirPumpToggleInput (key, value) {
+		this.state.airPump[key] = !this.state.airPump[key];
+		this.setState({airPump: this.state.airPump});
+		this.props.doAction(this.props.service.id, {
+			property: 'setAirPump',
+			value: this.state.airPump
+		});
+	}
+
+	show (key) {
+		this.state[key] = !this.state[key];
+		this.setState(this.state);
 	}
 
 	render () {
@@ -251,36 +369,268 @@ export class GrowServiceDetails extends React.Component {
 			<Switch>
 				<Route exact path={this.props.match.url} render={() => (
 					<div>
-							<div styleName='graphContainerExpanded'>Water Temperature Range
-								<span>
-									<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
-								</span>
-								<span styleName="tempSlider">
-									<RangeControl
-										onInput={this.handleHoldRangeInput.bind(this)}
-										onChange={this.handleHoldRangeChange.bind(this)}
-										min={this.state.holdTemp.min}
-										max={this.state.holdTemp.max} />
-								</span>
+
+							<div styleName='sensorTitle'>Controllers</div>
+
+							<div styleName={ this.state.showFeedPump ? 'graphContainerExpanded' : 'graphContainer'}>
+								{ this.state.showFeedPump
+									?
+									<div>
+										<div onClick={this.show.bind(this, 'showFeedPump')}>Feed Pump</div>
+										<div styleName="switchWrapper">
+											<div styleName="label">Timer</div>
+											<ToggleSwitch
+												isOn={this.state.feedPump.timer}
+												// onClick={this.handleFeedPumpSliderInput.bind(this, 'hold', true)}
+												onChange={this.handleFeedPumpToggleInput.bind(this, 'timer')}
+												showLabels={true}/>
+										</div>
+										{this.state.feedPump.timer
+											?
+											<div>
+												<div styleName="sliderWrapper">
+													<div styleName="label">Interval</div>
+													{ this.state.feedPump.interval } Hours
+													<SliderControl
+														value={this.state.feedPump.interval}
+														min={1}
+														max={24}
+														onChange={this.handleFeedPumpSliderInput.bind(this, 'interval', true)}
+														onInput={this.handleFeedPumpSliderInput.bind(this, 'interval', false)} />
+												</div>
+												<div styleName="sliderWrapper">
+													<div styleName="label">Duration</div>
+													{ this.state.feedPump.duration } Minutes
+													<SliderControl
+														value={this.state.feedPump.duration}
+														min={1}
+														max={60}
+														onChange={this.handleFeedPumpSliderInput.bind(this, 'duration', true)}
+														onInput={this.handleFeedPumpSliderInput.bind(this, 'duration', false)} />
+												</div>
+											</div>
+											:
+											<div styleName="switchWrapper">
+												<div styleName="label">Power</div>
+												<ToggleSwitch
+													isOn={this.state.feedPump.power}
+													// onClick={this.handleFeedPumpSliderInput.bind(this, 'hold', true)}
+													onChange={this.handleFeedPumpToggleInput.bind(this, 'power')}
+													showLabels={true}/>
+											</div>
+										}
+
+									</div>
+									:
+									<div>
+										<div onClick={this.show.bind(this, 'showFeedPump')}>Feed Pump</div>
+									</div>
+								}
 							</div>
-							<div styleName='graphContainerExpanded'>pH Calibration
-								<span styleName="themeContainer">
-									<div
-										styleName="theme_1"
-										onClick={this.setPhPoint.bind(this)}
-									/>
-									<div
-										styleName="theme_2"
-										onClick={this.setPhPoint.bind(this)}
-									/>
-								</span>
-								<span>
-									<div>Set 4.0 Point</div><div>Set 7.0 Point</div><div>Set 10.0 Point</div>
-								</span>
+
+							<div styleName={ this.state.showAirPump ? 'graphContainerExpanded' : 'graphContainer'}>
+								{ this.state.showAirPump
+									?
+									<div>
+										<div onClick={this.show.bind(this, 'showAirPump')}>Air Pump</div>
+										<div styleName="switchWrapper">
+											<div styleName="label">Timer</div>
+											<ToggleSwitch
+												isOn={this.state.airPump.timer}
+												onChange={this.handleAirPumpToggleInput.bind(this, 'timer')}
+												showLabels={true}/>
+										</div>
+										{this.state.airPump.timer
+											?
+											<div>
+												<div styleName="sliderWrapper">
+													<div styleName="label">Interval</div>
+													{ this.state.airPump.interval } Hours
+													<SliderControl
+														value={this.state.airPump.interval}
+														min={1}
+														max={24}
+														onChange={this.handleAirPumpSliderInput.bind(this, 'interval', true)}
+														onInput={this.handleAirPumpSliderInput.bind(this, 'interval', false)} />
+												</div>
+												<div styleName="sliderWrapper">
+													<div styleName="label">Duration</div>
+													{ this.state.airPump.duration } Minutes
+													<SliderControl
+														value={this.state.airPump.duration}
+														min={1}
+														max={60}
+														onChange={this.handleAirPumpSliderInput.bind(this, 'duration', true)}
+														onInput={this.handleAirPumpSliderInput.bind(this, 'duration', false)} />
+												</div>
+											</div>
+											:
+											<div styleName="switchWrapper">
+												<div styleName="label">Power</div>
+												<ToggleSwitch
+													isOn={this.state.airPump.power}
+													// onClick={this.handleFeedPumpSliderInput.bind(this, 'hold', true)}
+													onChange={this.handleAirPumpToggleInput.bind(this, 'power')}
+													showLabels={true}/>
+											</div>
+										}
+
+									</div>
+									:
+									<div>
+										<div onClick={this.show.bind(this, 'showAirPump')}>Air Pump</div>
+									</div>
+								}
 							</div>
+
+							<div styleName={ this.state.showWaterThermostat ? 'graphContainerExpanded' : 'graphContainer'}>
+								{ this.state.showWaterThermostat
+									?
+									<div>
+										<div onClick={this.show.bind(this, 'showWaterThermostat')}>Water Thermostat</div>
+										<div styleName="sliderWrapper">
+											<span>
+												<div styleName="tempScheduleLabel">{this.state.waterTempRange.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.waterTempRange.max}&#8457;</div>
+											</span>
+											<span styleName="tempSlider">
+												<RangeControl
+													onInput={this.handleTempRangeInput.bind(this)}
+													onChange={this.handleTempRangeChange.bind(this)}
+													min={this.state.waterTempRange.min}
+													max={this.state.waterTempRange.max}
+													minRange={60}
+													maxRange={90} />
+											</span>
+										</div>
+									</div>
+									:
+									<div>
+										<div onClick={this.show.bind(this, 'showWaterThermostat')}>Water Thermostat</div>
+									</div>
+								}
+							</div>
+
+							<div styleName={ this.state.showPhCal ? 'graphContainerExpanded' : 'graphContainer'}>
+								{ this.state.showPhCal
+									?
+									<div>
+										<div onClick={this.show.bind(this, 'showPhCal')}>pH Calibration</div>
+										<span styleName="setThemeContainer">
+											<div
+												styleName="phLow"
+												onClick={this.setPhPoint.bind(this, 'ph4')}
+											>
+												<b>4.0</b>
+											</div>
+											<div
+												styleName="phNeutral"
+												onClick={this.setPhPoint.bind(this, 'ph7')}
+											>
+												<b>7.0</b>
+											</div>
+											<div
+												styleName="phHigh"
+												onClick={this.setPhPoint.bind(this, 'ph10')}
+											>
+												<b>10.0</b>
+											</div>
+										</span>
+									</div>
+									:
+									<div>
+										<div onClick={this.show.bind(this, 'showPhCal')}>pH Calibration</div>
+									</div>
+								}
+							</div>
+
+							<div styleName={ this.state.showLight ? 'graphContainerExpanded' : 'graphContainer'}>
+								{ this.state.showLight
+									?
+									<div>
+										<div onClick={this.show.bind(this, 'showLight')}>Light</div>
+											{ this.state.light.timer
+												?
+												<div>
+												<span styleName="sensorValues">
+													<div styleName="switchWrapper">
+														<div styleName="label">Timer</div>
+														<ToggleSwitch
+															isOn={this.state.light.timer}
+															onChange={this.handleLightToggleInput.bind(this, 'timer')}
+															showLabels={false}/>
+													</div>
+													<div styleName="switchWrapper">
+														<div styleName="label">Bloom</div>
+														<ToggleSwitch
+															isOn={this.state.light['bloom']}
+															onChange={this.handleLightToggleInput.bind(this, 'bloom')}
+															showLabels={false}/>
+													</div>
+												</span>
+												<span styleName="sensorValues">
+													<Form
+														fields={{time: {
+															type: 'one-of',
+															label: 'On Time',
+															value_options: TIMES.map((time) => ({
+																value: time.id,
+																label: time.name
+															}))
+														}}}
+														values={{time: this.state.light.on}}
+														onSaveableChange={this.handleLightTimeChange.bind(this, 'on')} />
+													<Form
+														fields={{time: {
+															type: 'one-of',
+															label: 'Off Time',
+															value_options: TIMES.map((time) => ({
+																value: time.id,
+																label: time.name
+															}))
+														}}}
+														values={{time: this.state.light.off}}
+														onSaveableChange={this.handleLightTimeChange.bind(this, 'off')} />
+												</span>
+												</div>
+												:
+												<span styleName="sensorValues">
+													<div styleName="switchWrapper">
+														<div styleName="label">Timer</div>
+														<ToggleSwitch
+															isOn={this.state.light.timer}
+															onChange={this.handleLightToggleInput.bind(this, 'timer')}
+															showLabels={false}/>
+													</div>
+													<div styleName="switchWrapper">
+														<div styleName="label">Grow</div>
+														<ToggleSwitch
+															isOn={this.state.light['grow']}
+															onChange={this.handleLightToggleInput.bind(this, 'grow')}
+															showLabels={false}/>
+													</div>
+													<div styleName="switchWrapper">
+														<div styleName="label">Bloom</div>
+														<ToggleSwitch
+															isOn={this.state.light['bloom']}
+															onChange={this.handleLightToggleInput.bind(this, 'bloom')}
+															showLabels={false}/>
+													</div>
+												</span>
+
+											}
+									</div>
+									:
+									<div>
+										<div onClick={this.show.bind(this, 'showLight')}>Light</div>
+									</div>
+								}
+							</div>
+
 							{this.state.logsReady ?
 								<div>
+
 									<div styleName='sensorTitle'>Sensor Graphs</div>
+
 									{this.state.sensorGraphs.map((item, index) => (
 										<div
 											styleName={ item.display ? 'graphContainerExpanded' : 'graphContainer'}
@@ -316,7 +666,6 @@ GrowServiceDetails.propTypes = {
 	service: PropTypes.object.isRequired,
 	children: PropTypes.node,
 	doAction: PropTypes.func,
-	setHoldTemp: PropTypes.func,
 	shouldShowSettingsButton: PropTypes.bool,
 	shouldShowRoomField: PropTypes.bool,
 	serviceType: PropTypes.string,
@@ -342,7 +691,6 @@ const mapStateToProps = ({servicesList}, {match}) => {
 const mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
-	setHoldTemp: (serviceId, temp) => dispatch(thermostatSetHoldTemp(serviceId, temp)),
 	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
 	fetchLog: (serviceId) => dispatch(fetchDeviceLog(serviceId))
 });
