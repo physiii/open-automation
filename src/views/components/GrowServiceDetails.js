@@ -2,30 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Switch, Redirect, withRouter} from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
-import List from './List.js';
-import moment from 'moment';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {doServiceAction, fetchDeviceLog} from '../../state/ducks/services-list/operations.js';
 import {getDeviceLog, getServiceById} from '../../state/ducks/services-list/selectors.js';
 import {Route} from './Route.js';
-import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
 import './ServiceDetails.css';
 import RangeControl from './RangeControl.js';
 
 const ONE_SECOND_IN_MILLISECONDS = 1000,
-			ONE_MINUTE_IN_SECONDS = 60,
-			ONE_HOUR_IN_MINUTES = 60,
-			OVERVIEW_WINDOW_HOURS = 6;
-
-const GRAPH_TITLES = {
-	atm_temp: 'Atmospheric Temperature',
-	humidity: 'Humidity',
-	water_temp: 'Water Temperature',
-	ph: 'Water pH',
-	ec: 'Water Electric Conductivity'
-};
+	ONE_MINUTE_IN_SECONDS = 60,
+	ONE_HOUR_IN_MINUTES = 60,
+	OVERVIEW_WINDOW_HOURS = 6,
+	GRAPH_TITLES = {
+		atm_temp: 'Atmospheric Temperature',
+		humidity: 'Humidity',
+		water_temp: 'Water Temperature',
+		ph: 'Water pH',
+		ec: 'Water Electric Conductivity'
+	};
 
 export class GrowServiceDetails extends React.Component {
 
@@ -43,22 +39,22 @@ export class GrowServiceDetails extends React.Component {
 			receivedTempValues: false,
 			Options: {
 				chart: {
-					id: "chart2",
-					type: "line",
+					id: 'chart2',
+					type: 'line',
 					height: 100,
-					foreColor: "#ccc",
+					foreColor: '#ccc',
 					toolbar: {
-						autoSelected: "pan",
+						autoSelected: 'pan',
 						show: false
 					}
 				},
-				colors: ["#00BAEC"],
+				colors: ['#00BAEC'],
 				stroke: {
 					width: 5,
 					curve: 'smooth'
 				},
 				grid: {
-					borderColor: "#555",
+					borderColor: '#555',
 					clipMarkers: false,
 					yaxis: {
 						lines: {
@@ -70,21 +66,21 @@ export class GrowServiceDetails extends React.Component {
 					enabled: false
 				},
 				markers: {
-			    size: 4,
-			    colors: ["#000524"],
-			    strokeColor: "#00BAEC",
-			    strokeWidth: 2
-			  },
+					size: 4,
+					colors: ['#000524'],
+					strokeColor: '#00BAEC',
+					strokeWidth: 2
+				},
 				series: [
 					{
 						data: []
 					}
 				],
 				tooltip: {
-					theme: "dark"
+					theme: 'dark'
 				},
 				xaxis: {
-					type: "datetime"
+					type: 'datetime'
 				},
 				yaxis: {
 					min: 22,
@@ -93,18 +89,18 @@ export class GrowServiceDetails extends React.Component {
 			},
 			OptionsOverview: {
 				chart: {
-					id: "chart1",
+					id: 'chart1',
 					height: 100,
-					type: "bar",
-					foreColor: "#ccc",
+					type: 'bar',
+					foreColor: '#ccc',
 					brush: {
-						target: "chart2",
+						target: 'chart2',
 						enabled: true
 					},
 					selection: {
 						enabled: true,
 						fill: {
-							color: "#fff",
+							color: '#fff',
 							opacity: 0.4
 						},
 						xaxis: {
@@ -113,7 +109,7 @@ export class GrowServiceDetails extends React.Component {
 						}
 					}
 				},
-				colors: ["#FF0080"],
+				colors: ['#FF0080'],
 				series: [
 					{
 						data: []
@@ -123,13 +119,13 @@ export class GrowServiceDetails extends React.Component {
 					width: 2
 				},
 				grid: {
-					borderColor: "#444"
+					borderColor: '#444'
 				},
 				markers: {
 					size: 0
 				},
 				xaxis: {
-					type: "datetime",
+					type: 'datetime',
 					tooltip: {
 						enabled: false
 					}
@@ -137,7 +133,7 @@ export class GrowServiceDetails extends React.Component {
 				yaxis: {
 					tickAmount: 2
 				}
-			},
+			}
 		};
 	}
 
@@ -146,54 +142,53 @@ export class GrowServiceDetails extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-	  if (prevProps.logs !== this.props.logs) {
+		if (prevProps.logs !== this.props.logs) {
 			if (!this.props.logs[0]) return;
 
-			let logs = this.props.logs;
-			let keyArray = Object.keys(logs[0].services[0].state);
+			const logs = this.props.logs,
+				keyArray = Object.keys(logs[0].services[0].state);
 
-			keyArray.forEach(key => {
+			keyArray.forEach((key) => {
 				if (GRAPH_TITLES[key]) this.createGraph(logs, key, GRAPH_TITLES[key]);
-			})
-
-			this.setState({logsReady: true})
-	  }
+			});
+		}
 	}
 
 	getTimeMax () {
 		if (!this.props.logs[0]) return;
-		let logs = this.props.logs,
+		const logs = this.props.logs,
 			date = logs[logs.length - 1].date;
 
 		return new Date(date).getTime();
 	}
 
 	getTimeMin () {
-		let time = this.getTimeMax()
+		const time = this.getTimeMax()
 			- OVERVIEW_WINDOW_HOURS
 			* ONE_HOUR_IN_MINUTES
 			* ONE_MINUTE_IN_SECONDS
 			* ONE_SECOND_IN_MILLISECONDS;
+
 		return time;
 	}
 
 	createGraph (logs, key, title) {
-		let series = logs.map((item) => {
+		const series = logs.map((item) => {
 				return [new Date(item.date).getTime(), item.services[0].state[key]];
 			}),
 			values = this.props.logs.map((item) => {
 				return item.services[0].state[key];
 			}),
-			minMax = [Math.min.apply(null, values), Math.max.apply(null, values)];
+			minMax = [Math.min.apply(null, values), Math.max.apply(null, values)],
+			newOptions = JSON.parse(JSON.stringify(this.state.Options)),
+			newOptionsOverview = JSON.parse(JSON.stringify(this.state.OptionsOverview));
 
-		let newOptions = JSON.parse(JSON.stringify(this.state.Options));
 		newOptions.chart.id = key + 'Options';
 		newOptions.series[0].data = series;
 		newOptions.series[0].name = title;
 		newOptions.yaxis.min = minMax[0] - 1;
 		newOptions.yaxis.max = minMax[1] + 1;
 
-		let newOptionsOverview = JSON.parse(JSON.stringify(this.state.OptionsOverview));
 		newOptionsOverview.chart.id = key + 'OptionsOverview';
 		newOptionsOverview.chart.brush.target = key + 'Options';
 		newOptionsOverview.chart.selection.xaxis.max = this.getTimeMax();
@@ -202,24 +197,21 @@ export class GrowServiceDetails extends React.Component {
 		newOptionsOverview.yaxis.min = minMax[0] - 1;
 		newOptionsOverview.yaxis.max = minMax[1] + 1;
 
-		let newGraphs = this.state.sensorGraphs.map(graph => graph);
-		let newGraph = {key, title, options: newOptions, optionsOverview: newOptionsOverview, display: false};
+		const newGraphs = this.state.sensorGraphs.map((graph) => graph),
+			newGraph = {key, title, options: newOptions, optionsOverview: newOptionsOverview, display: false},
+			index = newGraphs.findIndex((graph) => graph.key === key);
 
-		const index = newGraphs.findIndex(graph => graph.key==key);
 		if (index < 0) {
-			this.setState({sensorGraphs: newGraphs})
+			this.setState({sensorGraphs: newGraphs});
 			newGraphs.unshift(newGraph);
 		}
 	}
 
 	plot (index, key) {
-		this.setState(state => ({
-			sensorGraphs: state.sensorGraphs.map(el => (
-				el.key === key
-				? {...el, display: !el.display} : el
-			))
-    }));
-  };
+		this.setState((state) => ({
+			sensorGraphs: state.sensorGraphs.map((el) => el.key === key ? {...el, display: !el.display} : el)
+		}));
+	}
 
 	handleHoldRangeInput (value) {
 		this.state.holdTemp.min = value[0];
@@ -251,57 +243,57 @@ export class GrowServiceDetails extends React.Component {
 			<Switch>
 				<Route exact path={this.props.match.url} render={() => (
 					<div>
-							<div styleName='graphContainerExpanded'>Water Temperature Range
-								<span>
-									<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
-								</span>
-								<span styleName="tempSlider">
-									<RangeControl
-										onInput={this.handleHoldRangeInput.bind(this)}
-										onChange={this.handleHoldRangeChange.bind(this)}
-										min={this.state.holdTemp.min}
-										max={this.state.holdTemp.max} />
-								</span>
-							</div>
-							<div styleName='graphContainerExpanded'>pH Calibration
-								<span styleName="themeContainer">
-									<div
-										styleName="theme_1"
-										onClick={this.setPhPoint.bind(this)}
-									/>
-									<div
-										styleName="theme_2"
-										onClick={this.setPhPoint.bind(this)}
-									/>
-								</span>
-								<span>
-									<div>Set 4.0 Point</div><div>Set 7.0 Point</div><div>Set 10.0 Point</div>
-								</span>
-							</div>
-							{this.state.logsReady ?
-								<div>
-									<div styleName='sensorTitle'>Sensor Graphs</div>
-									{this.state.sensorGraphs.map((item, index) => (
-										<div
-											styleName={ item.display ? 'graphContainerExpanded' : 'graphContainer'}
-											key={item.key}>
-											{ this.state.sensorGraphs[index].display
-												?
-												<div>
-													<div onClick={() => this.plot(index, item.key)}>{item.title}</div>
-													<ReactApexChart options={item.options} series={item.options.series} type="line" height={200} />
-													<ReactApexChart options={item.optionsOverview} series={item.optionsOverview.series} type="bar" height={100} />
-												</div>
-												:
-												<div>
-													<div onClick={() => this.plot(index, item.key)}>{item.title}</div>
-												</div>
-											}
-										</div>
-									))}
-								</div>
-								: 'Getting logs...'}
+						<div styleName="graphContainerExpanded">Water Temperature Range
+							<span>
+								<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
+							</span>
+							<span styleName="tempSlider">
+								<RangeControl
+									onInput={this.handleHoldRangeInput.bind(this)}
+									onChange={this.handleHoldRangeChange.bind(this)}
+									min={this.state.holdTemp.min}
+									max={this.state.holdTemp.max} />
+							</span>
 						</div>
+						<div styleName="graphContainerExpanded">pH Calibration
+							<span styleName="themeContainer">
+								<div
+									styleName="theme_1"
+									onClick={this.setPhPoint.bind(this)}
+								/>
+								<div
+									styleName="theme_2"
+									onClick={this.setPhPoint.bind(this)}
+								/>
+							</span>
+							<span>
+								<div>Set 4.0 Point</div><div>Set 7.0 Point</div><div>Set 10.0 Point</div>
+							</span>
+						</div>
+						{this.state.logsReady ?
+							<div>
+								<div styleName="sensorTitle">Sensor Graphs</div>
+								{this.state.sensorGraphs.map((item, index) => (
+									<div
+										styleName={ item.display ? 'graphContainerExpanded' : 'graphContainer'}
+										key={item.key}>
+										{ this.state.sensorGraphs[index].display
+											?
+											<div>
+												<div onClick={() => this.plot(index, item.key)}>{item.title}</div>
+												<ReactApexChart options={item.options} series={item.options.series} type="line" height={200} />
+												<ReactApexChart options={item.optionsOverview} series={item.optionsOverview.series} type="bar" height={100} />
+											</div>
+											:
+											<div>
+												<div onClick={() => this.plot(index, item.key)}>{item.title}</div>
+											</div>
+										}
+									</div>
+								))}
+							</div>
+							: 'Getting logs...'}
+					</div>
 				)} />
 				<ServiceSettingsScreen service={this.props.service} path={this.props.match.path + GrowServiceDetails.settingsPath} />
 				<Route render={() => <Redirect to={this.props.match.url} />} />
@@ -337,15 +329,13 @@ const mapStateToProps = ({servicesList}, {match}) => {
 			service,
 			logs: getDeviceLog(servicesList, service && service.id)
 		};
-	}
-
-const mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({
-	...ownProps,
-	...stateProps,
-	setHoldTemp: (serviceId, temp) => dispatch(thermostatSetHoldTemp(serviceId, temp)),
-	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
-	fetchLog: (serviceId) => dispatch(fetchDeviceLog(serviceId))
-});
+	},
+	mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({
+		...ownProps,
+		...stateProps,
+		doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
+		fetchLog: (serviceId) => dispatch(fetchDeviceLog(serviceId))
+	});
 
 export default compose(
 	withRouter,
