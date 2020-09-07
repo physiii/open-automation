@@ -2,12 +2,32 @@ const moment = require('moment'),
 	Service = require('./service.js');
 
 class CameraService extends Service {
+	action (data) {
+		switch (data.property) {
+			case 'setCurrentPlayLocation':
+				return this.setCurrentPlayLocation(data.value);
+		}
+	}
+
 	subscribeToDevice () {
 		Service.prototype.subscribeToDevice.apply(this, arguments);
 
 		this.deviceOn('motion-started', (event_data) => this._emit('motion-started', event_data));
 		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
 		this.deviceOn('motion-recorded', (event_data) => this._emit('motion-recorded', event_data));
+	}
+
+	setCurrentPlayLocation (time) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('location/set', {time}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	streamLive () {

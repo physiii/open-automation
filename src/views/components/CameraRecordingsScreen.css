@@ -64,6 +64,26 @@
 	}
 }
 
+.overlayTransport {
+	composes: fillContext from "../styles/helpers.css";
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-end;
+	align-items: center;
+	z-index: 2;
+	transition: background 0.15s, opacity 0.15s;
+}
+.overlayTransport:hover {
+	background-color: rgba(0, 0, 0, 0.15);
+}
+.isPlaying > .overlayTransport {
+	opacity: 0;
+}
+/* Hide the stop button icon in fullscreen. */
+.isPlaying:not(.isFullScreen) > .overlayTransport:hover {
+	opacity: 1;
+}
+
 .bottom {
 	display: flex;
 	flex-flow: row nowrap;
