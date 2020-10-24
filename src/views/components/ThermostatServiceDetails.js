@@ -18,12 +18,19 @@ export class ThermostatServiceDetails extends React.Component {
 
 		const mode = props.service.state.get('mode') ? props.service.state.get('mode') : 'off',
 			isPowerOn = props.service.state.get('power') ? props.service.state.get('power') : false,
-			isHoldOn = props.service.state.get('hold_mode') === 'on',
+			isHoldOn = props.service.state.get('hold').mode === 'on',
 			temp = props.service.state.get('current_temp') ? props.service.state.get('current_temp') : 0,
 			targetTemp = props.service.state.get('target_temp') ? props.service.state.get('target_temp') : 0,
-			holdTemp = props.service.state.get('hold_temp') ? props.service.state.get('hold_temp') : {min: 0, max: 0},
+			holdMinTemp = props.service.state.get('hold').minTemp ? props.service.state.get('hold').minTemp : 65,
+			holdMaxTemp = props.service.state.get('hold').maxTemp ? props.service.state.get('hold').maxTemp : 75,
+			holdTemp = {
+				min: holdMinTemp,
+				max: holdMaxTemp
+			},
 			schedule = props.service.state.get('schedule') ? props.service.state.get('schedule') : {},
-			tempValues = this.props.service.state.get('temp_values') ? this.props.service.state.get('temp_values') : [];
+			tempValues = props.service.state.get('temp_values') ? props.service.state.get('temp_values') : [];
+
+		console.log("ThermostatServiceDetails", props.service.settings);
 
 		this.state = {
 			is_changing: false,
@@ -166,6 +173,8 @@ export class ThermostatServiceDetails extends React.Component {
 										<RangeControl
 											onInput={this.handleHoldRangeInput.bind(this)}
 											onChange={this.handleHoldRangeChange.bind(this)}
+											minRange={65}
+											maxRange={75}
 											min={this.state.holdTemp.min}
 											max={this.state.holdTemp.max} />
 									</span>
@@ -186,7 +195,7 @@ export class ThermostatServiceDetails extends React.Component {
 										<div styleName="tempSchedule" key={idKey}>
 											<span>
 												<div styleName="tempScheduleLabel">{hour.label}</div>
-												<div styleName="tempScheduleLabel">
+												<div styleName="tempScheduleToggle">
 													<Toggle
 														isOn={hour.power}
 														onChange={(event) => this.toggleSchedulePower(hour.value, event)}
@@ -199,6 +208,8 @@ export class ThermostatServiceDetails extends React.Component {
 												<RangeControl
 													onInput={(event) => this.handleRangeInput(hour.value, event)}
 													onChange={(event) => this.handleRangeChange(hour.value, event)}
+													minRange={65}
+													maxRange={75}
 													min={hour.minTemp}
 													max={hour.maxTemp}
 													disabled={!hour.power} />
