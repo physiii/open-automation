@@ -1,0 +1,9 @@
+@value toolbarHeight from "./AppToolbar.css";
+@value tabBarHeight from "../layouts/App.css";
+@value liveRed: #bd2100;
+
+.canvas {
+	composes: fillContext from "../styles/helpers.css";
+	display: none;
+	width: 100%;
+}

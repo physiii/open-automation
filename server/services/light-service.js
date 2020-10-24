@@ -14,6 +14,19 @@ class LightService extends Service {
 		});
 	}
 
+	setTheme (theme) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('theme/set', {temp}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
 	setBrightness (brightness) {
 		return new Promise((resolve, reject) => {
 			if (brightness > 0) {

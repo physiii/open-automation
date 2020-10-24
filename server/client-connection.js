@@ -280,6 +280,15 @@ class ClientConnection {
 				});
 		});
 
+		this.clientEndpoint('device/update', (data, callback) => {
+			DevicesManager.updateDevice(data.device.id, this.account.id)
+				.then(() => callback())
+				.catch((error) => {
+					console.error(TAG, 'Update device error:', error);
+					callback('There was an error updating the device.');
+				});
+		});
+
 		this.clientEndpoint('device/log/get', (data, callback) => {
 			DevicesManager.getDeviceLog(data.service_id, this.account.id)
 			.then((log) => callback(null, {log}))
@@ -342,6 +351,22 @@ class ClientConnection {
 
 		// Camera Service API
 
+		this.clientEndpoint('audio/stream/live', function (data, callback) {
+			data.service.streamLiveAudio()
+				.then((stream_token) => callback(null, {stream_token}))
+				.catch((error) => {
+					console.error(TAG, 'Stream error', error);
+
+					callback(error);
+				});
+		});
+
+		this.clientEndpoint('audio/stream/stop', function (data, callback) {
+			data.service.stopLiveStreamAudio()
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
 		this.clientEndpoint('camera/stream/live', function (data, callback) {
 			data.service.streamLive()
 				.then((stream_token) => callback(null, {stream_token}))
@@ -361,6 +386,18 @@ class ClientConnection {
 		this.clientEndpoint('camera/recordings/get', function (data, callback) {
 			data.service.getRecordings()
 				.then((recordings) => callback(null, {recordings}))
+				.catch((error) => callback(error));
+		});
+
+		this.clientEndpoint('camera/recording/stream/audio', function (data, callback) {
+			data.service.streamAudioRecording(data.recording_id)
+				.then((stream_token) => callback(null, {audio_stream_token: stream_token}))
+				.catch((error) => callback(error));
+		});
+
+		this.clientEndpoint('camera/recording/stream/audio/stop', function (data, callback) {
+			data.service.stopAudioRecordingStream(data.recording_id)
+				.then(() => callback())
 				.catch((error) => callback(error));
 		});
 
@@ -398,8 +435,14 @@ class ClientConnection {
 
 		// Thermostat Service API
 
-		this.clientEndpoint('thermostat/temp/set', function (data, callback) {
-			data.service.setTemp(data.temp)
+		this.clientEndpoint('thermostat/hold-temp/set', function (data, callback) {
+			data.service.setHoldTemp(data.hold_temp)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
+		this.clientEndpoint('thermostat/schedule/set', function (data, callback) {
+			data.service.setSchedule(data.schedule)
 				.then(() => callback())
 				.catch((error) => callback(error));
 		});
@@ -416,6 +459,12 @@ class ClientConnection {
 				.catch((error) => callback(error));
 		});
 
+		this.clientEndpoint('thermostat/power/set', function (data, callback) {
+			data.service.setPower(data.mode)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
+
 		this.clientEndpoint('thermostat/fan-mode/set', function (data, callback) {
 			data.service.setFanMode(data.fan_mode)
 				.then(() => callback())
@@ -423,6 +472,12 @@ class ClientConnection {
 		});
 
 		// Light Service API
+
+		this.clientEndpoint('light/theme/set', function (data, callback) {
+			data.service.setTheme(data.theme)
+				.then(() => callback())
+				.catch((error) => callback(error));
+		});
 
 		this.clientEndpoint('light/on', function (data, callback) {
 			data.service.setPower(true)

@@ -2,15 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import SliderControl from './SliderControl.js';
 import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
+import AudioPlayer from './AudioPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getServiceById, getServiceNameById, cameraGetRecordingsByDate, cameraGetRecordingById, cameraGetDatesOfRecordings, cameraIsRecordingsListLoading, cameraGetRecordingsListError} from '../../state/ducks/services-list/selectors.js';
-import {cameraFetchRecordings} from '../../state/ducks/services-list/operations.js';
+import {cameraFetchRecordings, doServiceAction} from '../../state/ducks/services-list/operations.js';
 import './CameraRecordingsScreen.css';
 
 const playButtonIcon = <PlayButtonIcon size={24} />;
@@ -22,16 +24,19 @@ export class CameraRecordingsScreen extends React.Component {
 		this.handleDateSelected = this.handleDateSelected.bind(this);
 		this.handleCloseClick = this.handleCloseClick.bind(this);
 
-		this.state = {selectedMonth: this.props.selectedDate.startOf('month')};
+		this.state = {
+			selectedMonth: this.props.selectedDate.startOf('month'),
+			currentPlayLocation: 0
+		};
 	}
 
 	componentDidMount () {
-		this.props.fetchRecordings(this.props.cameraService);
+		this.props.fetchRecordings(this.props.service);
 	}
 
 	componentDidUpdate (previousProps) {
-		if (this.props.cameraService.state.get('connected') && !previousProps.cameraService.state.get('connected')) {
-			this.props.fetchRecordings(this.props.cameraService);
+		if (this.props.service.state.get('connected') && !previousProps.service.state.get('connected')) {
+			this.props.fetchRecordings(this.props.service);
 		}
 	}
 
@@ -56,6 +61,14 @@ export class CameraRecordingsScreen extends React.Component {
 		event.preventDefault();
 
 		this.goToDate(this.props.selectedDate);
+	}
+
+	transportVideo (time) {
+		this.setState({currentPlayLocation: time});
+		this.props.doAction(this.props.service.id, {
+			property: 'setCurrentPlayLocation',
+			value: time
+		});
 	}
 
 	render () {
@@ -91,15 +104,35 @@ export class CameraRecordingsScreen extends React.Component {
 				<div styleName="screen">
 					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
 						{this.props.selectedRecording
-							? <div styleName="videoContainer">
-								<VideoPlayer
-									cameraServiceId={this.props.cameraService.id}
-									recording={this.props.selectedRecording}
-									key={this.props.selectedRecording.id}
-									streamingToken={this.props.selectedRecording.streaming_token}
-									width={this.props.selectedRecording.width}
-									height={this.props.selectedRecording.height}
-									autoplay={true} />
+							? <div>
+								<div styleName="videoContainer">
+									<AudioPlayer
+										audioServiceId={this.props.service.id}
+										recording={this.props.selectedRecording}
+										shouldShowControls={false}
+										streamingToken={this.props.selectedRecording.audio_streaming_token}
+										showControlsWhenStopped={false}
+										onPlay={this.onStreamStart}
+										onStop={this.onStreamStop}
+										ref={this.audioPlayer}
+										autoplay={true} />
+									<VideoPlayer
+										cameraServiceId={this.props.service.id}
+										recording={this.props.selectedRecording}
+										key={this.props.selectedRecording.id}
+										streamingToken={this.props.selectedRecording.streaming_token}
+										width={this.props.selectedRecording.width}
+										height={this.props.selectedRecording.height}
+										videoLength={this.props.selectedRecording.duration}
+										autoplay={true} />
+									<div styleName="overlayTransport">
+										<SliderControl
+											value={this.state.currentPlayLocation}
+											max={this.props.selectedRecording.duration}
+											onChange={this.transportVideo.bind(this)}
+										/>
+									</div>
+								</div>
 							</div>
 							: <div styleName="datePickerContainer">
 								<DatePicker
@@ -120,7 +153,8 @@ export class CameraRecordingsScreen extends React.Component {
 }
 
 CameraRecordingsScreen.propTypes = {
-	cameraService: PropTypes.object,
+	videoLength: PropTypes.number,
+	service: PropTypes.object,
 	cameraName: PropTypes.string,
 	selectedDate: PropTypes.object.isRequired,
 	selectedDateRecordings: PropTypes.array,
@@ -130,7 +164,8 @@ CameraRecordingsScreen.propTypes = {
 	isLoading: PropTypes.bool,
 	fetchRecordings: PropTypes.func,
 	getDatesOfRecordings: PropTypes.func,
-	error: PropTypes.string
+	error: PropTypes.string,
+	doAction: PropTypes.func
 };
 
 CameraRecordingsScreen.defaultProps = {
@@ -138,7 +173,7 @@ CameraRecordingsScreen.defaultProps = {
 };
 
 const mapStateToProps = ({servicesList}, {match}) => {
-		const cameraService = getServiceById(servicesList, match.params.cameraServiceId, false),
+		const service = getServiceById(servicesList, match.params.cameraServiceId, false),
 			recordingsError = cameraGetRecordingsListError(servicesList, match.params.cameraServiceId);
 
 		let selectedDate = moment([
@@ -152,9 +187,9 @@ const mapStateToProps = ({servicesList}, {match}) => {
 			selectedDate = moment();
 		}
 
-		if (!cameraService) {
+		if (!service) {
 			error = 'There was a problem loading the camera’s recordings.';
-		} else if (!cameraService.state.get('connected')) {
+		} else if (!service.state.get('connected')) {
 			error = 'Recordings cannot be viewed when the camera is not connected.';
 		} else if (recordingsError) {
 			error = recordingsError;
@@ -162,18 +197,19 @@ const mapStateToProps = ({servicesList}, {match}) => {
 
 		return {
 			error,
-			cameraService,
-			cameraName: getServiceNameById(servicesList, cameraService.id),
+			service,
+			cameraName: getServiceNameById(servicesList, service.id),
 			selectedDate,
-			selectedDateRecordings: cameraService && cameraGetRecordingsByDate(servicesList, cameraService.id, selectedDate),
-			selectedRecording: cameraGetRecordingById(servicesList, cameraService.id, match.params.recordingId),
-			isLoading: cameraIsRecordingsListLoading(servicesList, cameraService.id),
-			getDatesOfRecordings: (month) => cameraGetDatesOfRecordings(servicesList, cameraService.id, month.format('YYYY-M')) || []
+			selectedDateRecordings: service && cameraGetRecordingsByDate(servicesList, service.id, selectedDate),
+			selectedRecording: cameraGetRecordingById(servicesList, service.id, match.params.recordingId),
+			isLoading: cameraIsRecordingsListLoading(servicesList, service.id),
+			getDatesOfRecordings: (month) => cameraGetDatesOfRecordings(servicesList, service.id, month.format('YYYY-M')) || []
 		};
 	},
 	mapDispatchToProps = (dispatch) => {
 		return {
-			fetchRecordings: (cameraService) => cameraService && cameraService.state.get('connected') && dispatch(cameraFetchRecordings(cameraService.id))
+			doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action)),
+			fetchRecordings: (service) => service && service.state.get('connected') && dispatch(cameraFetchRecordings(service.id))
 		};
 	};
 

@@ -20,6 +20,7 @@ export class VideoPlayer extends React.Component {
 			isPlaying: this.props.autoplay,
 			isFullScreen: false,
 			hasPlayedOnce: false,
+			currentPlayLocation: 0,
 			shouldShowControls: this.props.showControlsWhenStopped || this.props.autoplay
 		};
 

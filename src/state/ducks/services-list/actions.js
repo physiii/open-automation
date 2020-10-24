@@ -84,6 +84,16 @@ export const cameraStreamLive = (cameraId, streamToken) => ({
 	payload: {cameraId, streamToken}
 });
 
+export const audioStreamLive = (audioId, streamToken) => ({
+	type: types.STREAM_AUDIO_LIVE,
+	payload: {audioId, streamToken}
+});
+
+export const cameraStreamAudioRecording = (cameraId, recordingId, streamToken) => ({
+	type: types.STREAM_CAMERA_AUDIO_RECORDING,
+	payload: {cameraId, recordingId, streamToken}
+});
+
 export const cameraStreamRecording = (cameraId, recordingId, streamToken) => ({
 	type: types.STREAM_CAMERA_RECORDING,
 	payload: {cameraId, recordingId, streamToken}

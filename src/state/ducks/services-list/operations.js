@@ -35,6 +35,14 @@ const recordingsWorker = new RecordingsWorker(),
 			dispatch(actions.fetchServiceLogError(serviceId, error));
 		});
 	},
+	audioStartStream = (audioServiceId) => (dispatch) => {
+		Api.audioStartLiveStream(audioServiceId).then((data) => {
+			dispatch(actions.audioStreamLive(audioServiceId, data.stream_token));
+		});
+	},
+	audioStopStream = (audioServiceId) => () => {
+		Api.audioStopLiveStream(audioServiceId);
+	},
 	cameraStartStream = (cameraServiceId) => (dispatch) => {
 		Api.cameraStartLiveStream(cameraServiceId).then((data) => {
 			dispatch(actions.cameraStreamLive(cameraServiceId, data.stream_token));
@@ -68,6 +76,14 @@ const recordingsWorker = new RecordingsWorker(),
 		});
 	},
 	cameraStopRecordingStream = (recording) => () => {
+		Api.cameraStopAudioRecordingStream(recording.camera_id, recording.id);
+	},
+	cameraStartAudioRecordingStream = (recording) => (dispatch) => {
+		Api.cameraStartAudioRecordingStream(recording.camera_id, recording.id).then((data) => {
+			dispatch(actions.cameraStreamAudioRecording(recording.camera_id, recording.id, data.audio_stream_token));
+		});
+	},
+	cameraStopAudioRecordingStream = (recording) => () => {
 		Api.cameraStopRecordingStream(recording.camera_id, recording.id);
 	},
 	lockLock = (lockServiceId) => () => {
@@ -76,14 +92,23 @@ const recordingsWorker = new RecordingsWorker(),
 	lockUnlock = (lockServiceId) => () => {
 		Api.lockSetLocked(lockServiceId, false);
 	},
-	thermostatSetTemp = (thermostatServiceId, temp) => () => {
-		Api.thermostatSetTemp(thermostatServiceId, temp);
+	lightSetTheme = (lightServiceId, theme) => () => {
+		Api.lightSetTheme(lightServiceId, theme);
+	},
+	thermostatSetHoldTemp = (thermostatServiceId, temp) => () => {
+		Api.thermostatSetHoldTemp(thermostatServiceId, temp);
+	},
+	thermostatSetSchedule = (thermostatServiceId, schedule) => () => {
+		Api.thermostatSetSchedule(thermostatServiceId, schedule);
 	},
 	thermostatSetMode = (thermostatServiceId, mode) => () => {
 		Api.thermostatSetMode(thermostatServiceId, mode);
 	},
 	thermostatSetHold = (thermostatServiceId, mode) => () => {
 		Api.thermostatSetHold(thermostatServiceId, mode);
+	},
+	thermostatSetPower = (thermostatServiceId, mode) => () => {
+		Api.thermostatSetPower(thermostatServiceId, mode);
 	},
 	thermostatFanOn = (thermostatServiceId) => () => {
 		Api.thermostatSetFan(thermostatServiceId, 'on');
@@ -100,14 +125,21 @@ export {
 	setServiceSettings,
 	fetchServiceLog,
 	fetchDeviceLog,
+	audioStartStream,
+	audioStopStream,
 	cameraStartStream,
 	cameraStopStream,
 	cameraFetchRecordings,
 	cameraStartRecordingStream,
 	cameraStopRecordingStream,
+	cameraStartAudioRecordingStream,
+	cameraStopAudioRecordingStream,
 	lockLock,
 	lockUnlock,
-	thermostatSetTemp,
+	lightSetTheme,
+	thermostatSetHoldTemp,
+	thermostatSetPower,
+	thermostatSetSchedule,
 	thermostatSetMode,
 	thermostatSetHold,
 	thermostatFanOn,

@@ -57,6 +57,8 @@ export class SliderControl extends React.Component {
 				onBeforeChange={this.onBeforeChange.bind(this)}
 				onChange={this.handleInput.bind(this)}
 				onAfterChange={this.handleChange.bind(this)}
+				max={this.props.max}
+				min={this.props.min}
 				disabled={this.props.disabled} />
 		);
 	}
@@ -64,6 +66,8 @@ export class SliderControl extends React.Component {
 
 SliderControl.propTypes = {
 	value: PropTypes.number,
+	max: PropTypes.number,
+	min: PropTypes.number,
 	tooltip: PropTypes.bool,
 	onChange: PropTypes.func,
 	onInput: PropTypes.func,

@@ -9,4 +9,6 @@ export const FETCH_CAMERA_RECORDINGS = 'open-automation/services-list/FETCH_CAME
 export const FETCH_CAMERA_RECORDINGS_SUCCESS = 'open-automation/services-list/FETCH_CAMERA_RECORDINGS_SUCCESS';
 export const FETCH_CAMERA_RECORDINGS_ERROR = 'open-automation/services-list/FETCH_CAMERA_RECORDINGS_ERROR';
 export const STREAM_CAMERA_LIVE = 'open-automation/services-list/STREAM_CAMERA_LIVE';
+export const STREAM_AUDIO_LIVE = 'open-automation/services-list/STREAM_AUDIO_LIVE';
 export const STREAM_CAMERA_RECORDING = 'open-automation/services-list/STREAM_CAMERA_RECORDING';
+export const STREAM_CAMERA_AUDIO_RECORDING = 'open-automation/services-list/STREAM_CAMERA_AUDIO_RECORDING';

@@ -19,12 +19,14 @@ import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import {setDeviceSettings, deleteDevice} from '../../state/ducks/devices-list/operations.js';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
 import './DeviceDetailsScreen.css';
+import Api from '../../api.js';
 
 export class DeviceDetailsScreen extends React.Component {
 	constructor (props) {
 		super(props);
 
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handleUpdateClick = this.handleUpdateClick.bind(this);
 	}
 
 	handleDeleteClick () {
@@ -33,6 +35,11 @@ export class DeviceDetailsScreen extends React.Component {
 			: 'this device') + '?')) {
 			this.props.deleteDevice();
 		}
+	}
+
+	handleUpdateClick () {
+		console.log('handleUpdateClick', this.props.device);
+		Api.updateDevice(this.props.device);
 	}
 
 	render () {
@@ -81,12 +88,15 @@ export class DeviceDetailsScreen extends React.Component {
 								{[
 									{label: 'Manufacturer', value: device.info.manufacturer},
 									{label: 'Model', value: device.info.model},
-									{label: 'Firmware', value: device.info.firmware_version},
+									{label: 'Local IP', value: device.info.local_ip},
+									{label: 'Public IP', value: device.info.public_ip},
 									{label: 'Hardware', value: device.info.hardware_version},
 									{label: 'Serial', value: device.info.serial},
-									{label: 'ID', value: device.id, long: true}
+									{label: 'ID', value: device.id, long: true},
+									{label: 'Firmware', value: device.info.firmware_version}
 								].filter((item) => Boolean(item.value))}
 							</MetaList>
+							<Button onClick={this.handleUpdateClick}>Update Software</Button>
 						</SettingsScreenContainer>
 					)} />
 					<ServiceSettingsScreen path={this.props.match.path + '/service-settings'} />

@@ -44,10 +44,7 @@ export class DeviceAddScreen extends React.Component {
 	}
 
 	handleSaveClick () {
-
 		const device = this.state.device;
-
-		console.log('!! adding divice !!', device);
 
 		Api.addDevice(device);
 

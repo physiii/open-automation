@@ -2,12 +2,32 @@ const moment = require('moment'),
 	Service = require('./service.js');
 
 class CameraService extends Service {
+	action (data) {
+		switch (data.property) {
+			case 'setCurrentPlayLocation':
+				return this.setCurrentPlayLocation(data.value);
+		}
+	}
+
 	subscribeToDevice () {
 		Service.prototype.subscribeToDevice.apply(this, arguments);
 
 		this.deviceOn('motion-started', (event_data) => this._emit('motion-started', event_data));
 		this.deviceOn('motion-stopped', (event_data) => this._emit('motion-stopped', event_data));
 		this.deviceOn('motion-recorded', (event_data) => this._emit('motion-recorded', event_data));
+	}
+
+	setCurrentPlayLocation (time) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('location/set', {time}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	streamLive () {
@@ -19,6 +39,32 @@ class CameraService extends Service {
 				}
 
 				resolve(data.stream_token);
+			});
+		});
+	}
+
+	streamLiveAudio () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('audio/stream/live', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
+	}
+
+	stopLiveStreamAudio () {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('audio/stream/stop', {}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
 			});
 		});
 	}
@@ -58,6 +104,32 @@ class CameraService extends Service {
 				}
 
 				resolve(data.recordings);
+			});
+		});
+	}
+
+	streamAudioRecording (recording_id) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/stream/audio', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve(data.stream_token);
+			});
+		});
+	}
+
+	stopAudioRecordingStream (recording_id) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/stream/audio/stop', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
 			});
 		});
 	}

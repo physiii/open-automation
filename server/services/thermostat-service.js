@@ -4,7 +4,7 @@ class ThermostatService extends Service {
 	action (data) {
 		switch (data.property) {
 			case 'target_temp':
-				return this.setTemp(data.value);
+				return this.setHoldTemp(data.value);
 			case 'mode':
 				return this.setThermostatMode(data.value);
 			case 'hold_mode':
@@ -27,9 +27,22 @@ class ThermostatService extends Service {
 		});
 	}
 
-	setTemp (temp) {
+	setHoldTemp (temp) {
 		return new Promise((resolve, reject) => {
-			this.deviceEmit('temp/set', {temp}, (error, data) => {
+			this.deviceEmit('hold-temp/set', {temp}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
+	setSchedule (temp) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('schedule/set', {temp}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;
@@ -43,6 +56,19 @@ class ThermostatService extends Service {
 	setHoldMode (mode) {
 		return new Promise((resolve, reject) => {
 			this.deviceEmit('holdMode/set', {mode}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
+	setPower (mode) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('power/set', {mode}, (error, data) => {
 				if (error) {
 					reject(error);
 					return;

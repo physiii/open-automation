@@ -37,7 +37,14 @@ class Service {
 
 	subscribeToDevice () {
 		this.deviceOn('state', ({state}) => this.setState(state));
+		this.deviceOn('state', ({state}) => {
+			this.setState(state);
+			this._emit('load', state);
+		});
 		this.deviceOn('settings/get', (data, callback = noOp) => callback(null, {settings: this.settings.getAll()}));
+		this.deviceOn('device/update', (data, callback = noOp) => {
+			console.log(TAG, 'Received device/update event.');
+		});
 	}
 
 	on (event, listener) {

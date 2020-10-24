@@ -209,7 +209,8 @@ export class ServiceSettingsScreen extends React.Component {
 								key={service.error} /> {/* Re-create component when there's an error to make sure the latest service settings state is rendered. */}
 						</div>
 					</header>
-					{this.props.shouldShowRoomField && <DeviceRoomField deviceId={service.device_id} />}
+
+					{<DeviceRoomField deviceId={service.device_id} />}
 					<Form
 						fields={{show_on_dashboard: dashboardField}}
 						values={{show_on_dashboard: service.settings.get('show_on_dashboard')}}

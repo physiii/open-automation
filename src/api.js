@@ -6,6 +6,7 @@ const listeners = [],
 	relaySocketQueue = [],
 	SOCKET_CONNECT_TIMEOUT = 20000,
 	ONE_HOUR_IN_MILLISECONDS = 3600000,
+	// TAG = '[API]',
 	GENERIC_LOGIN_ERROR = 'An error occurred while trying to log in.';
 
 class Api {
@@ -83,6 +84,10 @@ class Api {
 		return Api.apiCall('device/add', {device});
 	}
 
+	updateDevice (device) {
+		return Api.apiCall('device/update', {device});
+	}
+
 	setDeviceSettings (deviceId, settings) {
 		return Api.apiCall('device/settings/set', {device_id: deviceId, settings});
 	}
@@ -123,6 +128,14 @@ class Api {
 
 	// Camera Service
 
+	audioStartLiveStream (audioServiceId) {
+		return Api.apiCall('audio/stream/live', {service_id: audioServiceId});
+	}
+
+	audioStopLiveStream (audioServiceId) {
+		return Api.apiCall('audio/stream/stop', {service_id: audioServiceId});
+	}
+
 	cameraStartLiveStream (cameraServiceId) {
 		return Api.apiCall('camera/stream/live', {service_id: cameraServiceId});
 	}
@@ -133,6 +146,14 @@ class Api {
 
 	cameraGetRecordings (cameraServiceId) {
 		return Api.apiCall('camera/recordings/get', {service_id: cameraServiceId});
+	}
+
+	cameraStartAudioRecordingStream (cameraServiceId, recordingId) {
+		return Api.apiCall('camera/recording/stream/audio', {service_id: cameraServiceId, recording_id: recordingId});
+	}
+
+	cameraStopAudioRecordingStream (cameraServiceId, recordingId) {
+		return Api.apiCall('camera/recording/stream/audio/stop', {service_id: cameraServiceId, recording_id: recordingId});
 	}
 
 	cameraStartRecordingStream (cameraServiceId, recordingId) {
@@ -149,10 +170,20 @@ class Api {
 		return Api.apiCall('lock/locked/set', {service_id: lockServiceId, locked});
 	}
 
+	// Light Service
+
+	lightSetTheme (lightServiceId, theme) {
+		return Api.apiCall('light/theme/set', {service_id: lightServiceId, theme});
+	}
+
 	// Thermostat Service
 
-	thermostatSetTemp (thermostatServiceId, temp) {
-		return Api.apiCall('thermostat/temp/set', {service_id: thermostatServiceId, temp});
+	thermostatSetHoldTemp (thermostatServiceId, temp) {
+		return Api.apiCall('thermostat/hold-temp/set', {service_id: thermostatServiceId, hold_temp: temp});
+	}
+
+	thermostatSetSchedule (thermostatServiceId, schedule) {
+		return Api.apiCall('thermostat/schedule/set', {service_id: thermostatServiceId, schedule});
 	}
 
 	thermostatSetMode (thermostatServiceId, mode) {
@@ -161,6 +192,10 @@ class Api {
 
 	thermostatSetHold (thermostatServiceId, holdMode) {
 		return Api.apiCall('thermostat/hold-mode/set', {service_id: thermostatServiceId, hold_mode: holdMode});
+	}
+
+	thermostatSetPower (thermostatServiceId, mode) {
+		return Api.apiCall('thermostat/power/set', {service_id: thermostatServiceId, mode});
 	}
 
 	thermostatSetFan (thermostatServiceId, fanMode) {

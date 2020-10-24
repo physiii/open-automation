@@ -122,9 +122,22 @@ const initialState = Immutable.Map({
 						action
 					)
 				);
+			case types.STREAM_CAMERA_AUDIO_RECORDING:
+				return state.setIn(
+					['services', action.payload.cameraId, 'recordingsList'],
+					recordingsReducer(
+						state.getIn(['services', action.payload.cameraId, 'recordingsList']),
+						action
+					)
+				);
 			case types.STREAM_CAMERA_LIVE:
 				return state.setIn(
 					['services', action.payload.cameraId, 'streaming_token'],
+					action.payload.streamToken
+				);
+			case types.STREAM_AUDIO_LIVE:
+				return state.setIn(
+					['services', action.payload.audioId, 'streaming_token'],
 					action.payload.streamToken
 				);
 			case sessionTypes.LOGOUT:
@@ -180,6 +193,11 @@ const initialState = Immutable.Map({
 			case types.STREAM_CAMERA_RECORDING:
 				return state.setIn(
 					['recordings', action.payload.recordingId, 'streaming_token'],
+					action.payload.streamToken
+				);
+			case types.STREAM_CAMERA_AUDIO_RECORDING:
+				return state.setIn(
+					['recordings', action.payload.recordingId, 'audio_streaming_token'],
 					action.payload.streamToken
 				);
 			default:
