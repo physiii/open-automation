@@ -1,0 +1,32 @@
+# Configuration
+.env*
+!.env.example
+config.json
+
+# Dependencies
+/node_modules
+
+# Logs
+*.log
+logs
+npm-debug.log*
+
+# Testing
+/coverage
+
+# Build
+/public
+
+# Keys
+*.key
+*.pem
+*.csr
+
+# Misc
+.DS_Store
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
