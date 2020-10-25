@@ -16,15 +16,6 @@ export class LightServiceDetails extends React.Component {
 	constructor (props) {
 		super(props);
 
-		// const brightness = props.service.state.get('brightness') ? props.service.state.get('brightness') : 50,
-		// 	isPowerOn = props.service.state.get('power') ? props.service.state.get('power') : false;
-		// 	isHoldOn = props.service.state.get('hold_mode') === 'on',
-		// 	temp = props.service.state.get('current_temp') ? props.service.state.get('current_temp') : 0,
-		// 	targetTemp = props.service.state.get('target_temp') ? props.service.state.get('target_temp') : 0,
-		// 	holdTemp = props.service.state.get('hold_temp') ? props.service.state.get('hold_temp') : {min: 0, max: 0},
-		// 	schedule = props.service.state.get('schedule') ? props.service.state.get('schedule') : {},
-		// 	tempValues = this.props.service.state.get('temp_values') ? this.props.service.state.get('temp_values') : [];
-
 		this.state = {
 			selected_theme: 0,
 			is_changing: false,
@@ -32,7 +23,6 @@ export class LightServiceDetails extends React.Component {
 			background: '#fff'
 		};
 
-		this.setState(this.state);
 	}
 
 	handleChange (color) {
@@ -72,7 +62,7 @@ export class LightServiceDetails extends React.Component {
 	}
 
 	getTheme (num) {
-		if (!this.props.service.state.get('themes')) return;
+		if (!this.props.service.state.get('themes')[num]) return;
 
 		const theme = this.props.service.state.get('themes')[num],
 			string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';

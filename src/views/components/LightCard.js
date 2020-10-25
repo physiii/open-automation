@@ -11,19 +11,14 @@ export class LightCard extends React.Component {
 	constructor (props) {
 		super(props);
 
-		const brightness = props.service.state.get('brightness') ? props.service.state.get('brightness') : 0,
-			isPowerOn = props.service.state.get('power') ? props.service.state.get('power') : false;
-
 		this.onClick = this.handleClick.bind(this);
 
 		this.state = {
-			slider_value: brightness,
-			brightness,
-			power_on: isPowerOn,
+			slider_value: this.getBrightness(),
+			brightness: this.getBrightness(),
+			power_on: this.getPower(),
 			is_changing: false
 		};
-
-		this.setState(this.state);
 	}
 
 	handleSliderInput (value) {
@@ -122,9 +117,10 @@ export class LightCard extends React.Component {
 	}
 
 	getTheme (num) {
-		if (!this.props.service.state.get('themes')) return;
-
-		const theme = this.props.service.state.get('themes')[num],
+		if (!this.props.service.state.get('themes')[num]) return;
+		
+		const theme = this.props.service.state.get('themes')[num]
+				? this.props.service.state.get('themes')[num] : { r: 255, g: 255, b: 255},
 			string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';
 
 		return string;
@@ -134,6 +130,14 @@ export class LightCard extends React.Component {
 		if (this.props.service.state.get('themes')) return this.props.service.state.get('themes');
 
 		return 'Unknown';
+	}
+
+	getPower () {
+		return this.props.service.state.get('power') ? true : false;
+	}
+
+	getBrightness () {
+		return this.props.service.state.get('brightness') ? this.props.service.state.get('brightness') : false;
 	}
 
 	render () {
@@ -149,8 +153,8 @@ export class LightCard extends React.Component {
 				{...this.props}>
 				<div styleName="switchWrapper">
 					<Switch
-						isOn={powerOn}
-						onClick={this.onClick}
+						isOn={this.getPower()}
+						onChange={this.onClick}
 						showLabels={false}
 						disabled={!isConnected} />
 				</div>

@@ -30,8 +30,6 @@ export class ThermostatServiceDetails extends React.Component {
 			schedule = props.service.state.get('schedule') ? props.service.state.get('schedule') : {},
 			tempValues = props.service.state.get('temp_values') ? props.service.state.get('temp_values') : [];
 
-		console.log("ThermostatServiceDetails", props.service.settings);
-
 		this.state = {
 			is_changing: false,
 			shouldShowSchedule: false,
@@ -195,7 +193,7 @@ export class ThermostatServiceDetails extends React.Component {
 										<div styleName="tempSchedule" key={idKey}>
 											<span>
 												<div styleName="tempScheduleLabel">{hour.label}</div>
-												<div styleName="tempScheduleToggle">
+												<div styleName="tempToggle">
 													<Toggle
 														isOn={hour.power}
 														onChange={(event) => this.toggleSchedulePower(hour.value, event)}
