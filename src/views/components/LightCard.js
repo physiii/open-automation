@@ -117,8 +117,9 @@ export class LightCard extends React.Component {
 	}
 
 	getTheme (num) {
-		if (!this.props.service.state.get('themes')[num]) return;
-		
+		if (!this.props.service.state.get('themes')
+			|| !this.props.service.state.get('themes')[num]) return;
+
 		const theme = this.props.service.state.get('themes')[num]
 				? this.props.service.state.get('themes')[num] : { r: 255, g: 255, b: 255},
 			string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';

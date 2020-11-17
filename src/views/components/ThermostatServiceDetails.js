@@ -193,7 +193,7 @@ export class ThermostatServiceDetails extends React.Component {
 										<div styleName="tempSchedule" key={idKey}>
 											<span>
 												<div styleName="tempScheduleLabel">{hour.label}</div>
-												<div styleName="tempToggle">
+												<div styleName="tempScheduleToggle">
 													<Toggle
 														isOn={hour.power}
 														onChange={(event) => this.toggleSchedulePower(hour.value, event)}
