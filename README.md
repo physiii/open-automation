@@ -16,8 +16,8 @@
 9. android - https://github.com/physiii/beacon
 
 # Installation
-	git clone -b dev https://github.com/physiii/open-automation
-	cd open-automation
+    git clone https://github.com/physiii/open-automation
+    cd open-automation
     cp .env.example .env
     nano .env
     echo "export NODE_ENV=development" >> ~/.bashrc
