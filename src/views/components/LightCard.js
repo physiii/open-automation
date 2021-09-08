@@ -121,7 +121,7 @@ export class LightCard extends React.Component {
 			|| !this.props.service.state.get('themes')[num]) return;
 
 		const theme = this.props.service.state.get('themes')[num]
-				? this.props.service.state.get('themes')[num] : { r: 255, g: 255, b: 255},
+				? this.props.service.state.get('themes')[num] : {r: 255, g: 255, b: 255},
 			string = 'rgb(' + theme.r + ',' + theme.g + ',' + theme.b + ')';
 
 		return string;
@@ -134,17 +134,12 @@ export class LightCard extends React.Component {
 	}
 
 	getPower () {
-		return this.props.service.state.get('power') ? true : false;
-	}
-
-	getBrightness () {
-		return this.props.service.state.get('brightness') ? this.props.service.state.get('brightness') : false;
+		return this.props.service.state.get('power');
 	}
 
 	render () {
 		const isConnected = this.props.service.state.get('connected'),
-			currentLevel = this.state.slider_value,
-			powerOn = this.state.power_on;
+			currentLevel = this.state.slider_value;
 
 		return (
 			<ServiceCardBase
