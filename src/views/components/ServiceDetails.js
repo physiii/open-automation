@@ -5,16 +5,10 @@ import {Route} from './Route.js';
 import Button from './Button.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import './ServiceDetails.css';
 import MetaList from './MetaList.js';
 
 export class ServiceDetails extends React.Component {
-	constructor (props) {
-		super(props);
-
-	}
-
 	getDevice (property) {
 		return (
 			this.props.service.state.get('device' + property) ? this.props.service.state.get('device' + property) : '...'

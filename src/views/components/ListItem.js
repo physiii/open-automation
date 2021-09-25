@@ -35,6 +35,13 @@ export const ListItem = (props) => {
 		<ItemElement
 			className={styles.row + (props.isDraggable ? ' ' + styles.isDraggable : '') + (props.isBeingDragged ? ' ' + styles.isBeingDragged : '')}
 			style={props.style}>
+			{props.secondaryIcon &&
+				<LinkComponent>
+					<a href={props.secondaryLink} className={styles.rowIcon}>{typeof props.secondaryIcon === 'function'
+				? props.icon()
+				: props.secondaryIcon}</a>
+				</LinkComponent>
+			}
 			{props.link || props.onClick
 				? <LinkComponent href="#" className={styles.rowContent} to={props.link} onClick={(event) => {
 					if (!props.link) {
@@ -66,8 +73,10 @@ ListItem.propTypes = {
 	secondaryText: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	tertiaryText: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+	secondaryIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	meta: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	link: PropTypes.string,
+	secondaryLink: PropTypes.string,
 	secondaryAction: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 	isDraggable: PropTypes.bool,
 	isBeingDragged: PropTypes.bool,

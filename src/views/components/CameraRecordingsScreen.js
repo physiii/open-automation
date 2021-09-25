@@ -7,6 +7,7 @@ import DatePicker from './DatePicker.js';
 import VideoPlayer from './VideoPlayer.js';
 import AudioPlayer from './AudioPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
+import DownloadIcon from '../icons/DownloadIcon.js';
 import List from './List.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
@@ -16,6 +17,7 @@ import {cameraFetchRecordings, doServiceAction} from '../../state/ducks/services
 import './CameraRecordingsScreen.css';
 
 const playButtonIcon = <PlayButtonIcon size={24} />;
+const downloadIcon = <DownloadIcon size={24} />;
 
 export class CameraRecordingsScreen extends React.Component {
 	constructor (props) {
@@ -88,6 +90,8 @@ export class CameraRecordingsScreen extends React.Component {
 						key: recording.id,
 						label: () => moment(recording.date).format('h:mm A'),
 						icon: playButtonIcon,
+						secondaryLink: '/service-content/' + moment(recording.date).format('LLLL') + '.avi?service_id=' + this.props.service.id + '&recordingId=' + recording.id,
+						secondaryIcon: downloadIcon,
 						meta: () => 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
 						onClick: () => this.playRecording(recording.id)
 					}))}

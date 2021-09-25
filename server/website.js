@@ -2,6 +2,7 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
+	busboy = require('connect-busboy'),
 	cookie = require('cookie'),
 	path = require('path'),
 	fs = require('fs'),
@@ -109,6 +110,11 @@ module.exports = function (jwt_secret) {
 		helmet_options.contentSecurityPolicy.directives.styleSrc.push('blob:');
 		helmet_options.hsts = false;
 	}
+
+	app.use(busboy());
+
+	app.use(bodyParser.json({ limit: "500mb" }))
+	app.use(express.urlencoded({limit: '500mb', extended: true, parameterLimit: 50000}));
 
 	// Set security HTTP headers.
 	app.use(helmet(helmet_options));
@@ -284,6 +290,52 @@ module.exports = function (jwt_secret) {
 			console.log(TAG, 'Error validating access token (' + error + ').');
 			response.sendStatus(401);
 		});
+	});
+
+	app.get('/service-content/*.avi', (request, response) => {
+		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {},
+			referrer = request.get('Referrer');
+
+		if (referrer && url.parse(referrer).hostname !== process.env.OA_DOMAIN_NAME) {
+			// console.log(TAG, 'URL does not match OA_DOMAIN_NAME in .env file!');
+			// response.sendStatus(401);
+			// return;
+		}
+
+		verifyAccessToken(cookies.access_token, request.headers['x-xsrf-token'], true).then(({account}) => {
+			const service = DevicesManager.getServiceById(request.query.service_id, account.id);
+
+			if (!service) {
+				response.sendStatus(204);
+				return;
+			}
+
+			service.getRecording(request.query.recordingId).then((recording) => {
+				if (!recording) {
+					response.sendStatus(204);
+					return;
+				}
+
+				response.download(recording);
+			}).catch((error) => response.sendStatus(500));
+		}).catch((error) => {
+			console.log(TAG, 'Error validating access token (' + error + ').');
+			response.sendStatus(401);
+		});
+	});
+
+	app.post('/service-content/upload-recording', (req, res) => {
+    var fstream;
+    req.busboy.on('file', (fieldname, file, filename) => {
+        console.log("Uploading:", fieldname, filename);
+        fstream = fs.createWriteStream('/tmp/' + fieldname + '_' + filename);
+        file.pipe(fstream);
+        fstream.on('close', () => {
+		        console.log("Done Uploading " + filename);
+            res.redirect('back');
+        });
+    });
+    req.pipe(req.busboy);
 	});
 
 	app.get('/js/config.js', (request, response) => {

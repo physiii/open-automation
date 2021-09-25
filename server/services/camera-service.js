@@ -1,5 +1,7 @@
 const moment = require('moment'),
-	Service = require('./service.js');
+	Service = require('./service.js'),
+	fs = require('fs'),
+	TAG = "[camera-service.js]";
 
 class CameraService extends Service {
 	action (data) {
@@ -91,6 +93,19 @@ class CameraService extends Service {
 				}
 
 				resolve(data.preview);
+			});
+		});
+	}
+
+	getRecording (recording_id) {
+		return new Promise((resolve, reject) => {
+			this.deviceEmit('recording/get', {recording_id}, (error, data) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
+				resolve('/tmp/' + recording_id + '_' + data.video.file);
 			});
 		});
 	}

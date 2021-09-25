@@ -193,7 +193,8 @@ export class VideoPlayer extends React.Component {
 				<div styleName="video">
 					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
 					{this.props.posterUrl && !this.state.hasPlayedOnce &&
-					<object styleName="poster" data={this.props.posterUrl} type="image/jpg" />}
+					<img styleName="poster" src={this.props.posterUrl}/>}
+
 					<div
 						styleName={'motionAreaOverlay'}
 						style={this.props.motionArea ?	{
