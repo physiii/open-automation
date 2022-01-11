@@ -23,6 +23,7 @@ class Account extends EventEmitter {
 		this.phone_number = data.phone_number;
 		this.phone_provider = data.phone_provider;
 		this.armed = data.armed || 0;
+		this.numOfApiClients = 0;
 
 		if (data.registration_date) {
 			this.registration_date = new Date(data.registration_date);
@@ -30,6 +31,28 @@ class Account extends EventEmitter {
 
 		this.rooms = new RoomsList(data.rooms, this._saveRooms.bind(this));
 		this.rooms.on('rooms-updated', (data) => this.emit('rooms-updated', data));
+	}
+
+	getApiClient () {
+			return this.numOfApiClients;
+	}
+
+	addApiClient () {
+			if (this.numOfApiClients == 0) {
+				console.log(TAG, "Telling devices a client has connected.");
+				DevicesManager.emitEventToAccountDevices(this.id, 'client-connected', true);
+			}
+			this.numOfApiClients++;
+			return this.numOfApiClients;
+	}
+
+	removeApiClient () {
+			this.numOfApiClients--;
+			if (this.numOfApiClients == 0) {
+				console.log(TAG, "Telling devices no clients are connected.");
+				DevicesManager.emitEventToAccountDevices(this.id, 'client-connected', false);
+			}
+			return this.numOfApiClients;
 	}
 
 	setPassword (password) {

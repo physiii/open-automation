@@ -8,6 +8,7 @@ class AutomationRecord extends Immutable.Record({
 	source: {web: true},
 	user_editable: true,
 	triggers: Immutable.List(),
+	actions: Immutable.List(),
 	conditions: Immutable.List(),
 	scenes: Immutable.List(),
 	notifications: Immutable.List(),
@@ -18,6 +19,7 @@ class AutomationRecord extends Immutable.Record({
 		super({
 			...values,
 			triggers: Immutable.List(values.triggers),
+			actions: Immutable.List(values.actions),
 			conditions: Immutable.List(values.conditions),
 			scenes: Immutable.List(values.scenes),
 			notifications: Immutable.List(values.notifications)
@@ -29,6 +31,7 @@ class AutomationRecord extends Immutable.Record({
 
 		switch (key) {
 			case 'triggers':
+			case 'actions':
 			case 'conditions':
 			case 'scenes':
 			case 'notifications':

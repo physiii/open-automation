@@ -16,8 +16,8 @@ import {getServiceById, getServiceNameById, cameraGetRecordingsByDate, cameraGet
 import {cameraFetchRecordings, doServiceAction} from '../../state/ducks/services-list/operations.js';
 import './CameraRecordingsScreen.css';
 
-const playButtonIcon = <PlayButtonIcon size={24} />;
-const downloadIcon = <DownloadIcon size={24} />;
+const playButtonIcon = <PlayButtonIcon size={24} />,
+	downloadIcon = <DownloadIcon size={24} />;
 
 export class CameraRecordingsScreen extends React.Component {
 	constructor (props) {

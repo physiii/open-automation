@@ -1,4 +1,5 @@
-const AccountsManager = require('./accounts/accounts-manager.js'),
+const
+	AccountsManager = require('./accounts/accounts-manager.js'),
 	DevicesManager = require('./devices/devices-manager.js'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
@@ -6,6 +7,9 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	cookie = require('cookie'),
 	path = require('path'),
 	fs = require('fs'),
+	Exec = require('child_process').exec,
+	ExecSync = require('child_process').execSync,
+	streamDir = '/usr/local/lib/open-automation/stream/',
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	compression = require('compression'),
@@ -20,7 +24,7 @@ const AccountsManager = require('./accounts/accounts-manager.js'),
 	TAG = '[website.js]';
 
 module.exports = function (jwt_secret) {
-	const app = express(),
+	const app = express();
 		do_hot_module_replacement = process.env.OA_HOT_MODULE_REPLACEMENT && process.env.NODE_ENV === 'development',
 		helmet_options = {
 			contentSecurityPolicy: {
@@ -117,7 +121,7 @@ module.exports = function (jwt_secret) {
 	app.use(express.urlencoded({limit: '500mb', extended: true, parameterLimit: 50000}));
 
 	// Set security HTTP headers.
-	app.use(helmet(helmet_options));
+	// app.use(helmet(helmet_options));
 
 	// Support JSON encoded bodies.
 	app.use(bodyParser.json());
@@ -156,6 +160,13 @@ module.exports = function (jwt_secret) {
 	}));
 
 	app.use('/', express.static(__dirname + '/../public'));
+	app.use('/stream', express.static('/usr/local/lib/open-automation/stream', {
+		setHeaders: function(res, path, stat) {
+			if (path.indexOf(".ts") > -1) {
+					res.set("cache-control", "public, max-age=300");
+			}
+		}
+	}));
 
 	app.get('/get_ip', (request, response) => {
 		let ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
@@ -338,11 +349,79 @@ module.exports = function (jwt_secret) {
     req.pipe(req.busboy);
 	});
 
+	app.post('/stream/upload', (req, res) => {
+		const METHOD_TAG = TAG + '[/stream/upload]'
+    var fstream;
+    req.busboy.on('file', (fieldname, file, filename) => {
+				let cameraStreamDir = streamDir + fieldname + '/',
+					path = cameraStreamDir + filename;
+				// console.log('/stream/upload', path);
+        fstream = fs.createWriteStream(path);
+        file.pipe(fstream);
+        fstream.on('close', () => {
+						Exec('cat ' + cameraStreamDir + 'playlist.m3u8 | grep .ts', (error, stdout, stderr) => {
+							let playlistFiles = stdout.toString().split('\n');
+							playlistFiles.push('playlist.m3u8');
+							playlistFiles.push(filename);
+							Exec('ls ' + cameraStreamDir, (error, stdout, stderr) => {
+								dirFiles = stdout.toString().split('\n');
+								dirFiles.forEach((item) => {
+									if (playlistFiles.indexOf(item) > -1) return;
+									let cmd = 'rm ' + cameraStreamDir + item;
+									Exec(cmd);
+								});
+							});
+						});
+
+		        // console.log(METHOD_TAG, '[' + fieldname + '] Uploaded:', filename);
+            res.redirect('back');
+        });
+    });
+    req.pipe(req.busboy);
+	});
+
 	app.get('/js/config.js', (request, response) => {
 		response.type('.js').send('window.OpenAutomation = {config: ' + JSON.stringify({
 			app_name: process.env.OA_APP_NAME || 'Open Automation',
 			logo_path: logo_file_path
 		}) + '};');
+	});
+
+	app.get('/hls/video', function(req, res) {
+			const
+				stream_id = req.query.stream_id,
+	    	cameraStreamDir = '/usr/local/lib/open-automation/stream/' + stream_id + '/',
+		    playlistPath = cameraStreamDir + 'playlist.m3u8',
+		    playlistUrl = '/stream/' + stream_id + '/' + 'playlist.m3u8',
+				makeCameraStreamDir = "mkdir -p " + cameraStreamDir;
+
+			let
+				stats = null;
+
+			ExecSync(makeCameraStreamDir);
+
+	    try {
+	        stats = fs.statSync(playlistPath);
+	    } catch (e) {
+					// console.log('/hls/video', e);
+	    }
+	    if (stats) {
+					console.log(TAG, '/hls/video file exists, redirecting', playlistUrl);
+	        return res.redirect(playlistUrl);
+	    }
+
+	    var redirected = false;
+	    let watcher = fs.watch(cameraStreamDir, (e, f) => {
+	        if (e === "change" && f === "playlist.m3u8") {
+	            if (!res.writableEnded) {
+									// console.log(TAG, 'returning ', playlistUrl, req.query.stream_id, e, f);
+	                res.redirect(playlistUrl);
+	                redirected = true;
+									console.log(TAG, 'redirected to', playlistUrl);
+	            }
+							watcher.close();
+	        }
+	    });
 	});
 
 	app.get('*', (request, response) => {

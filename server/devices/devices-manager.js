@@ -191,7 +191,9 @@ class DevicesManager extends EventEmitter {
 	emitEventToAccountDevices (accountId, event, data) {
 		const accountDevices = this.getDevicesByAccountId(accountId);
 
-		accountDevices.forEach((device) => device.emit(event, data));
+		accountDevices.forEach((device) => {
+			device.emit(event, data);
+		});
 	}
 
 	doesDeviceExist (deviceId) {

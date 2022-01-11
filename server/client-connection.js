@@ -40,10 +40,13 @@ class ClientConnection {
 			this.destroy = this.destroy.bind(this, this.account.id);
 
 			this.socket.on('disconnect', (reason) => {
+				this.account.removeApiClient();
 				if (reason === 'transport close') {
 					this.destroy();
 				}
 			});
+
+			this.account.addApiClient();
 		});
 	}
 
@@ -142,6 +145,11 @@ class ClientConnection {
 
 			if (automation.user_editable.triggers === false && JSON.stringify(data.automation.triggers) !== JSON.stringify(automation.triggers)) {
 				callback('This automation’s triggers cannot be modified.');
+				return;
+			}
+
+			if (automation.user_editable.actions === false && JSON.stringify(data.automation.actions) !== JSON.stringify(automation.actions)) {
+				callback('This automation’s actions cannot be modified.');
 				return;
 			}
 

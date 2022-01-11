@@ -7,6 +7,7 @@ class Camera extends ServiceRecord({
 	settings: {
 		resolution_w: 640,
 		resolution_h: 480,
+		network_path: '',
 		rotation: 0
 	},
 	state: {

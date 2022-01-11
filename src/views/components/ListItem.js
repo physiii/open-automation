@@ -38,8 +38,8 @@ export const ListItem = (props) => {
 			{props.secondaryIcon &&
 				<LinkComponent>
 					<a href={props.secondaryLink} className={styles.rowIcon}>{typeof props.secondaryIcon === 'function'
-				? props.icon()
-				: props.secondaryIcon}</a>
+						? props.icon()
+						: props.secondaryIcon}</a>
 				</LinkComponent>
 			}
 			{props.link || props.onClick

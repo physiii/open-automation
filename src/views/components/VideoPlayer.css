@@ -13,6 +13,12 @@
 	overflow: hidden;
 	cursor: pointer;
 }
+
+.hlsPlayer {
+	width: 100%;
+	margin: 0px 0px 40px 0px;
+}
+
 .isFullScreen {
 	height: 100%;
 }

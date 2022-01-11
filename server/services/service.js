@@ -291,7 +291,11 @@ class Service {
 				event,
 				{label: definition.label}
 			])),
-			automator_supported: this.constructor.event_definitions.size > 0
+			action_definitions: [...this.constructor.action_definitions.entries()].map(([action, definition]) => ([
+				action,
+				{label: definition.label}
+			])),
+			automator_supported: this.constructor.event_definitions.size > 0 || this.constructor.action_definitions.size > 0
 		};
 	}
 
@@ -316,5 +320,6 @@ Service.settings_definitions = new Map()
 		validation: {is_required: false}
 	});
 Service.event_definitions = new Map();
+Service.action_definitions = new Map();
 
 module.exports = Service;

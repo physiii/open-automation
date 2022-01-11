@@ -1,39 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import NavigationScreen from './NavigationScreen.js';
-import SettingsScreenContainer from './SettingsScreenContainer.js';
-import AutomationNotificationScreen from './AutomationNotificationScreen.js';
-import Button from './Button.js';
+import AutomationChooseServiceActionScreen from './AutomationChooseServiceActionScreen.js';
+import ChooseDeviceScreen from './ChooseDeviceScreen.js';
+import {getDevicesWithAutomatorSupport} from '../../state/ducks/devices-list/selectors.js';
 
 export const AutomationEditAction = (props) => {
 	return (
 		<React.Fragment>
-			{props.isNew && <NavigationScreen
-				title={'Add Action'}
-				url={props.match.url}>
-				<SettingsScreenContainer withPadding={true}>
-					<h1>Send a Notification</h1>
-					<Button to={props.match.url + '/notification/email'}>Email</Button>
-					<Button to={props.match.url + '/notification/sms'}>SMS</Button>
-				</SettingsScreenContainer>
-			</NavigationScreen>}
-			<AutomationNotificationScreen
-				path={props.match.path + '/notification'}
+			{props.isNew && <ChooseDeviceScreen
+				path={props.match.path}
+				title="Add Action"
+				instructions={<p>Choose Device Action.</p>}
+				devices={props.devices}
+				blankstateBody={'There are no devices that can trigger automations.'} />}
+			<AutomationChooseServiceActionScreen
 				isNew={props.isNew}
-				notifications={props.notifications}
-				saveNotification={props.saveNotification}
-				deleteNotification={props.deleteNotification} />
+				path={props.match.path}
+				actions={props.actions}
+				saveAction={props.saveAction}
+				deleteAction={props.deleteAction} />
 		</React.Fragment>
 	);
 };
 
 AutomationEditAction.propTypes = {
 	isNew: PropTypes.bool,
-	notifications: PropTypes.object,
-	saveNotification: PropTypes.func.isRequired,
-	deleteNotification: PropTypes.func,
+	actions: PropTypes.object,
+	devices: PropTypes.array.isRequired,
+	saveAction: PropTypes.func.isRequired,
+	deleteAction: PropTypes.func,
 	match: PropTypes.object.isRequired
 };
 
-export default withRouter(AutomationEditAction);
+const mapStateToProps = ({devicesList}) => ({
+	devices: getDevicesWithAutomatorSupport(devicesList)
+});
+
+export default withRouter(connect(mapStateToProps)(AutomationEditAction));

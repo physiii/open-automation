@@ -33,9 +33,11 @@ export class AutomationEditScreen extends React.Component {
 		this.handleSettingsErrors = this.handleSettingsErrors.bind(this);
 		this.handleNoSettingsErrors = this.handleNoSettingsErrors.bind(this);
 		this.saveTrigger = this.saveElement.bind(this, 'triggers');
+		this.saveAction = this.saveElement.bind(this, 'actions');
 		this.saveCondition = this.saveElement.bind(this, 'conditions');
 		this.saveNotification = this.saveElement.bind(this, 'notifications');
 		this.deleteTrigger = this.deleteElement.bind(this, 'triggers');
+		this.deleteAction = this.deleteElement.bind(this, 'actions');
 		this.deleteCondition = this.deleteElement.bind(this, 'conditions');
 		this.deleteNotification = this.deleteElement.bind(this, 'notifications');
 
@@ -104,12 +106,14 @@ export class AutomationEditScreen extends React.Component {
 		}
 
 		const triggers = this.state.automation.triggers.toArray(),
+			actions = this.state.automation.actions.toArray(),
 			conditions = this.state.automation.conditions.toArray(),
 			notifications = this.state.automation.notifications.toArray(),
 			userEditable = this.state.automation.user_editable,
 			areTriggersEditable = userEditable && (userEditable.triggers !== false),
 			areConditionsEditable = userEditable && (userEditable.conditions !== false),
-			areNotificationsEditable = userEditable && (userEditable.notifications !== false);
+			areNotificationsEditable = userEditable && (userEditable.notifications !== false),
+			areActionsEditable = userEditable && (userEditable.actions !== false);
 
 		return (
 			<NavigationScreen
@@ -167,7 +171,7 @@ export class AutomationEditScreen extends React.Component {
 											})}
 										</ul> : null}
 										{areTriggersEditable
-											? <span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
+											? <span styleName={triggers.length ? 'addButhton' : 'primaryAddButton'}>
 												<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
 													<Button to={this.props.match.url + '/add-trigger'}>
 														<span styleName={triggers.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
@@ -205,7 +209,7 @@ export class AutomationEditScreen extends React.Component {
 								<section styleName="section">
 									<h1 styleName="sectionHeading">Perform these actions</h1>
 									<div styleName="sectionContent">
-										{notifications.length ? <ul styleName="elementList">
+										{notifications.length || actions.length ? <ul styleName="elementList">
 											{notifications.map((notification, index) => (
 												<li styleName="elementListItem" key={index}>
 													<Link styleName="elementListLink" to={areNotificationsEditable ? this.props.match.url + '/edit-action/notification/' + notification.type + '/' + index : '#'}>
@@ -215,8 +219,25 @@ export class AutomationEditScreen extends React.Component {
 													</Link>
 												</li>
 											))}
+											{actions.map((action, index) => {
+												const service = this.props.services.get(action.service_id);
+
+												// {service.action_definitions.toArray().map(([action, definition]) => (
+												// 	<Button key={action} onClick={() => this.handleActionClick(action, service)}>
+												// 		{definition.label}
+												// 	</Button>
+												// ))}
+
+												return (
+													<li styleName="elementListItem" key={index}>
+														<Link styleName="elementListLink" to={areActionsEditable ? this.props.match.url + '/edit-action/' + service.device_id + '/' + index : '#'}>
+															{service.settings.get('name') + ' ' + action.action}
+														</Link>
+													</li>
+												);
+											})}
 										</ul> : null}
-										{triggers.length && areNotificationsEditable
+										{triggers.length && (areNotificationsEditable || areActionsEditable)
 											? <span styleName={notifications.length ? 'addButton' : 'primaryAddButton'}>
 												<span styleName={notifications.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
 													<Button to={this.props.match.url + '/add-action'}>
@@ -257,10 +278,14 @@ export class AutomationEditScreen extends React.Component {
 						<AutomationEditAction
 							isNew={true}
 							notifications={this.state.automation.notifications}
+							saveAction={this.saveAction}
 							saveNotification={this.saveNotification} />
 					)} />
 					<Route path={this.props.match.path + '/edit-action'} render={() => (
 						<AutomationEditAction
+							actions={this.state.automation.actions}
+							saveAction={this.saveAction}
+							deleteAction={this.deleteAction}
 							notifications={this.state.automation.notifications}
 							saveNotification={this.saveNotification}
 							deleteNotification={this.deleteNotification} />

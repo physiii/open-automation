@@ -161,6 +161,13 @@ class Automator {
 				content.attachments
 			);
 		});
+
+		automation.actions.forEach((action) => {
+			console.log("!!!! ---- runAutomation ---- !!!!", action);
+			const service = DevicesManager.getServiceById(action.service_id, automation.account_id);
+			service._deviceEmitAction('action', {property: action.action, value:true});
+				// this.deviceEmit('action', {property, value}, (error, data) => {
+		});
 	}
 
 	generateNotificationContent (trigger_data, notification, automation) {

@@ -12,6 +12,7 @@ class Automation {
 		this.name = data.name || '';
 		this.account_id = data.account_id;
 		this.triggers = data.triggers || [];
+		this.actions = data.actions || [];
 		this.conditions = data.conditions || [];
 		this.scenes = data.scenes || [];
 		this.notifications = data.notifications || [];
@@ -44,6 +45,7 @@ class Automation {
 			name: this.name,
 			account_id: this.account_id,
 			triggers: this.triggers,
+			actions: this.actions,
 			conditions: this.conditions,
 			scenes: this.scenes,
 			notifications: this.notifications

@@ -13,6 +13,7 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 		logList: null,
 		strings: null,
 		event_definitions: null,
+		action_definitions: null,
 		automator_supported: false,
 		...defaultValues
 	}) {
@@ -45,6 +46,9 @@ const ServiceRecord = (defaultValues = {}) => class extends Immutable.Record({
 					_value = Immutable.Map(value);
 					break;
 				case 'event_definitions':
+					_value = Immutable.OrderedMap(value);
+					break;
+				case 'action_definitions':
 					_value = Immutable.OrderedMap(value);
 					break;
 				default:

@@ -65,6 +65,16 @@ class LightService extends Service {
 LightService.type = 'light';
 LightService.friendly_type = 'Light';
 LightService.indefinite_article = 'A';
+LightService.action_definitions = new Map([...Service.action_definitions])
+	.set('turn-on-lights', {
+		label: 'Turn on lights'
+	})
+	.set('turn-off-lights', {
+		label: 'Turn off lights'
+	})
+	.set('alert', {
+		label: 'Alert'
+	});
 LightService.state_definitions = new Map()
 	.set('power', {
 		type: 'boolean',
