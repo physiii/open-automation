@@ -4,7 +4,7 @@ import moment from 'moment';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {cameraStartStream, cameraStopStream, cameraStartRecordingStream, cameraStopRecordingStream} from '../../state/ducks/services-list/operations.js';
+import {cameraStartStream, cameraStopStream} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
 import HlsPlayer from './HlsPlayer.js';
@@ -26,9 +26,7 @@ export class CameraCard extends React.Component {
 		this.onStreamStop = this.onStreamStop.bind(this);
 		this.onCardClick = this.onCardClick.bind(this);
 
-		console.log('network_path', this.props.service.settings.get('network_path'));
-
-		if (this.props.service.settings.get('network_path') != '') this.props.cameraStartStream();
+		if (this.props.service.settings.get('network_path') !== '') this.props.cameraStartStream();
 	}
 
 	onStreamStart () {
@@ -49,12 +47,11 @@ export class CameraCard extends React.Component {
 		}
 
 		this.setState({isStreaming: !this.state.isStreaming});
-		console.log("onCardClick", this.state.isStreaming);
 	}
 
 	getVideoUrl () {
 		// 'http://192.168.1.42:5050/hls/video?stream_id=abc123&token_id=tkn123'
-		let	url = window.location.protocol + '//' + window.location.hostname +  ':' + window.location.port + '/'
+		const	url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/'
 			+ 'hls/video?'
 			+ 'stream_id=' + this.props.service.id
 			+ '&stream_token=' + this.props.service.streaming_token;
@@ -76,7 +73,7 @@ export class CameraCard extends React.Component {
 				secondaryAction={<Button to={`${this.props.match.url}/recordings/${this.props.service.id}`}>View Recordings</Button>}
 				hideToolbars={this.state.isStreaming}
 				{...this.props}>
-				{ this.props.service.settings.get('network_path') == '' ?
+				{ this.props.service.settings.get('network_path') === '' ?
 					<div>
 						<AudioPlayer
 							audioServiceId={this.props.service.id}
@@ -99,7 +96,7 @@ export class CameraCard extends React.Component {
 							onStop={this.onStreamStop}
 							ref={this.videoPlayer} />
 					</div> : '' }
-					{ this.props.service.settings.get('network_path') != '' && this.props.service.streaming_token != null ?
+				{ this.props.service.settings.get('network_path') !== '' && this.props.service.streaming_token !== null ?
 					<HlsPlayer
 						key={this.props.service.id}
 						cameraServiceId={this.props.service.id}
@@ -121,6 +118,8 @@ export class CameraCard extends React.Component {
 CameraCard.propTypes = {
 	service: PropTypes.object,
 	match: PropTypes.object,
+	cameraStartStream: PropTypes.func,
+	cameraStopStream: PropTypes.func,
 	startStreaming: PropTypes.func,
 	stopStreaming: PropTypes.func
 };
@@ -129,7 +128,7 @@ const mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({
 	...ownProps,
 	...stateProps,
 	cameraStartStream: () => dispatch(cameraStartStream(ownProps.service.id)),
-	cameraStopStream: () => dispatch(cameraStopStream(ownProps.service.id)),
+	cameraStopStream: () => dispatch(cameraStopStream(ownProps.service.id))
 });
 
 export default compose(

@@ -4,8 +4,6 @@ import Hls from '../../lib/hls/hls.js';
 import fscreen from 'fscreen';
 import './VideoPlayer.css';
 
-const controlsHideDelay = 3000;
-
 export class HlsPlayer extends React.Component {
 	constructor (props) {
 		super(props);
@@ -23,10 +21,10 @@ export class HlsPlayer extends React.Component {
 		this.element = React.createRef();
 
 		this.hls = new Hls({
-  		enableWorker: false,
+			enableWorker: false,
 			autoPlay: false,
-		  maxStarvationDelay: 60,
-		  maxLoadingDelay: 60
+			maxStarvationDelay: 60,
+			maxLoadingDelay: 60
 		});
 	}
 
@@ -87,11 +85,11 @@ export class HlsPlayer extends React.Component {
 
 	bootstrapPlayer () {
 		if (Hls.isSupported()) {
-			let video = document.getElementById(this.props.cameraServiceId);
+			const video = document.getElementById(this.props.cameraServiceId);
+
 			this.hls.attachMedia(video);
 			this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-				this.hls.loadSource("/hls/video?stream_id=" + this.props.cameraServiceId);
-				console.log('video and hls.js are now bound together!', this.props.cameraServiceId);
+				this.hls.loadSource('/hls/video?stream_id=' + this.props.cameraServiceId);
 			});
 			this.hls.on(Hls.Events.MANIFEST_PARSED, () => video.stop());
 		}
@@ -100,7 +98,12 @@ export class HlsPlayer extends React.Component {
 	render () {
 		return (
 			<div>
-					<video id={this.props.cameraServiceId} styleName="hlsPlayer" autoPlay="true" controls="controls" type="application/x-mpegURL" />
+				<video
+					id={this.props.cameraServiceId}
+					styleName="hlsPlayer"
+					autoPlay="true"
+					controls="controls"
+					type="application/x-mpegURL" />
 			</div>
 		);
 	}

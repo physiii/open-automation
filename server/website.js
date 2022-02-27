@@ -349,6 +349,20 @@ module.exports = function (jwt_secret) {
     req.pipe(req.busboy);
 	});
 
+	app.post('/service-content/upload-hls-recording', (req, res) => {
+    var fstream;
+    req.busboy.on('file', (fieldname, file, filename) => {
+        console.log("Uploading:", fieldname, filename);
+        fstream = fs.createWriteStream('/tmp/' + fieldname + '_' + filename);
+        file.pipe(fstream);
+        fstream.on('close', () => {
+		        console.log("Done Uploading " + filename);
+            res.redirect('back');
+        });
+    });
+    req.pipe(req.busboy);
+	});
+
 	app.post('/stream/upload', (req, res) => {
 		const METHOD_TAG = TAG + '[/stream/upload]'
     var fstream;

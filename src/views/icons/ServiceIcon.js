@@ -21,6 +21,7 @@ ServiceIcon.propTypes = {
 
 ServiceIcon.iconComponents = {
 	'camera': CameraIcon,
+	'network-camera': CameraIcon,
 	'game-machine': GameControllerIcon
 };
 

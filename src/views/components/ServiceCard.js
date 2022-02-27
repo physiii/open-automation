@@ -26,6 +26,7 @@ ServiceCard.propTypes = {
 
 ServiceCard.cardComponents = {
 	'camera': CameraCard,
+	'network-camera': CameraCard,
 	'dimmer': DimmerCard,
 	'grow-pod': GrowPodCard,
 	'light': LightCard,

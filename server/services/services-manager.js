@@ -114,6 +114,7 @@ ServicesManager.classes = {
 	'bill-acceptor': require('./bill-acceptor-service.js'),
 	'button': require('./button-service.js'),
 	'camera': require('./camera-service.js'),
+	'network-camera': require('./network-camera-service.js'),
 	'contact-sensor': require('./contact-sensor-service.js'),
 	'dimmer': require('./dimmer-service.js'),
 	'grow-pod': require('./grow-pod-service.js'),
