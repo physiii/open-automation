@@ -46,7 +46,7 @@
 		"immutable": "^4.0.0-rc.9",
 		"jsonwebtoken": "^8.5.1",
 		"mini-css-extract-plugin": "^0.4.5",
-		"moment": "^2.27.0",
+		"moment": "^2.29.2",
 		"moment-duration-format": "^2.3.2",
 		"mongodb": "^3.5.9",
 		"nodemailer": "^4.7.0",
