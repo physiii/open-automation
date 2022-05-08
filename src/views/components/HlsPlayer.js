@@ -22,7 +22,7 @@ export class HlsPlayer extends React.Component {
 
 		this.hls = new Hls({
 			enableWorker: false,
-			autoPlay: false,
+			// autoPlay: false,
 			maxStarvationDelay: 60,
 			maxLoadingDelay: 60
 		});
@@ -33,7 +33,7 @@ export class HlsPlayer extends React.Component {
 
 		// For autoplay, hide controls after delay.
 		if (this.state.shouldShowControls) {
-			this.showHideControls();
+			// this.showHideControls();
 		}
 		this.bootstrapPlayer();
 	}
@@ -84,12 +84,14 @@ export class HlsPlayer extends React.Component {
 	}
 
 	bootstrapPlayer () {
+		console.log('!! HLSPlayer videoUrl !!', this.props.videoUrl);
 		if (Hls.isSupported()) {
 			const video = document.getElementById(this.props.cameraServiceId);
 
 			this.hls.attachMedia(video);
 			this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-				this.hls.loadSource('/hls/video?stream_id=' + this.props.cameraServiceId);
+				// this.hls.loadSource('/hls/video?stream_id=' + this.props.cameraServiceId);
+				this.hls.loadSource(this.props.videoUrl);
 			});
 			this.hls.on(Hls.Events.MANIFEST_PARSED, () => video.stop());
 		}
@@ -103,6 +105,7 @@ export class HlsPlayer extends React.Component {
 					styleName="hlsPlayer"
 					autoPlay="true"
 					controls="controls"
+					loop="loop"
 					type="application/x-mpegURL" />
 			</div>
 		);
@@ -112,7 +115,7 @@ export class HlsPlayer extends React.Component {
 HlsPlayer.propTypes = {
 	// NOTE: The HlsPlayer component should always be called with a key
 	// property set to the ID of the recording or camera that is being streamed.
-	cameraServiceId: PropTypes.string.isRequired,
+	cameraServiceId: PropTypes.string,
 	motionArea: PropTypes.object,
 	firstLoad: PropTypes.bool,
 	firstPointSet: PropTypes.bool,
@@ -124,8 +127,8 @@ HlsPlayer.propTypes = {
 	autoplay: PropTypes.bool,
 	showControlsWhenStopped: PropTypes.bool,
 	shouldShowControls: PropTypes.bool,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
+	width: PropTypes.number,
+	height: PropTypes.number,
 	onPlay: PropTypes.func,
 	onStop: PropTypes.func
 };

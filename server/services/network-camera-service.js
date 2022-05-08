@@ -1,6 +1,7 @@
 const moment = require('moment'),
 	Service = require('./service.js'),
 	fs = require('fs'),
+	database = require('../database'),
 	TAG = "[network-camera-service.js]";
 
 class NetworkCameraService extends Service {
@@ -112,13 +113,21 @@ class NetworkCameraService extends Service {
 
 	getRecordings () {
 		return new Promise((resolve, reject) => {
-			this.deviceEmit('recordings/get', {}, (error, data) => {
-				if (error) {
-					reject(error);
-					return;
-				}
-
-				resolve(data.recordings);
+			database.get_camera_recordings(this.id).then((recordings) => {
+				resolve(recordings);
+				// resolve(recordings.map((recording) => {
+				// 	return {
+				// 		id: recording.id,
+				// 		camera_id: recording.camera_id,
+				// 		date: recording.date.toISOString(),
+				// 		duration: recording.duration,
+				// 		width: recording.width,
+				// 		height: recording.height
+				// 	};
+				// }));
+			}).catch((error) => {
+				console.error(TAG, error);
+				reject(error);
 			});
 		});
 	}

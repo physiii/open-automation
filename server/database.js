@@ -4,24 +4,8 @@ const mongodb = require('mongodb'),
 	DATABASE_NAME = process.env.OA_DATABASE_COLLECTION_NAME || 'relay',
 	TAG = '[database.js]';
 
-module.exports = {
-	getDevices,
-	getDevice,
-	saveLog,
-	getDeviceLog,
-	saveDevice,
-	deleteDevice,
-	getAccounts,
-	saveAccount,
-	saveRooms,
-	getAutomations,
-	saveAutomation,
-	deleteAutomation,
-	getScenes,
-	saveScene
-};
-
-function connect (callback, errorHandler) {
+class Database {
+connect (callback, errorHandler) {
 	MongoClient.connect('mongodb://localhost:27017/', (error, client) => {
 		if (error) {
 			console.error(TAG, 'Unable to connect to the mongoDB server.', error);
@@ -38,9 +22,9 @@ function connect (callback, errorHandler) {
 	});
 }
 
-function getDevices () {
+getDevices () {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			// Find only devices that have an "id" property to filter out any leftover OA1 devices.
 			client.db(DATABASE_NAME).collection('devices').find({id: {$exists: true}}).toArray((error, result) => {
 				client.close();
@@ -58,9 +42,9 @@ function getDevices () {
 	});
 }
 
-function getDevice (device_id) {
+getDevice (device_id) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('devices').find({id: device_id}).toArray((error, result) => {
 				client.close();
 
@@ -77,9 +61,9 @@ function getDevice (device_id) {
 	});
 }
 
-function getDeviceLog (device_id) {
+getDeviceLog (device_id) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('logs').find({id: device_id}).toArray((error, result) => {
 				client.close();
 
@@ -96,9 +80,9 @@ function getDeviceLog (device_id) {
 	});
 }
 
-function saveLog (log) {
+saveLog (log) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('logs').insertOne(log, (error, record) => {
 				client.close();
 
@@ -114,9 +98,9 @@ function saveLog (log) {
 	});
 }
 
-function saveDevice (device) {
+saveDevice (device) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('devices').update(
 				{id: device.id},
 				{$set: device},
@@ -137,9 +121,9 @@ function saveDevice (device) {
 	});
 }
 
-function deleteDevice (device_id) {
+deleteDevice (device_id) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('devices').remove({id: device_id}, (error) => {
 				client.close();
 
@@ -156,9 +140,9 @@ function deleteDevice (device_id) {
 	});
 }
 
-function getAccounts () {
+getAccounts () {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('accounts').find().toArray((error, result = []) => {
 				client.close();
 
@@ -174,7 +158,7 @@ function getAccounts () {
 					account.id = account._id.toHexString();
 
 					if (Array.isArray(account.rooms)) {
-						account.rooms = convertRoomObjectIdsToStrings(account.rooms);
+						account.rooms = this.convertRoomObjectIdsToStrings(account.rooms);
 					}
 
 					delete account._id;
@@ -186,13 +170,13 @@ function getAccounts () {
 	});
 }
 
-function saveAccount (account) {
+saveAccount (account) {
 	const account_id = account.id;
 
 	delete account.id;
 
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('accounts').updateOne(
 				{_id: ObjectId(account_id)},
 				{$set: account},
@@ -213,14 +197,14 @@ function saveAccount (account) {
 	});
 }
 
-function convertRoomIdsToObjectIds (rooms = []) {
+convertRoomIdsToObjectIds (rooms = []) {
 	return rooms.map((room) => ({
 		...room,
 		id: ObjectId(room.id)
 	}));
 }
 
-function convertRoomObjectIdsToStrings (rooms = []) {
+convertRoomObjectIdsToStrings (rooms = []) {
 	return rooms.map((room) => ({
 		...room,
 		id: room.id && room.id.toHexString
@@ -229,7 +213,7 @@ function convertRoomObjectIdsToStrings (rooms = []) {
 	}));
 }
 
-function saveRooms (account_id, rooms = []) {
+saveRooms (account_id, rooms = []) {
 	return new Promise((resolve, reject) => {
 		if (!Array.isArray(rooms)) {
 			reject('Rooms must be an array.');
@@ -238,7 +222,7 @@ function saveRooms (account_id, rooms = []) {
 
 		// TODO: Atomically remove the room ID from devices for rooms that were deleted.
 
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('accounts').updateOne(
 				{_id: ObjectId(account_id)},
 				{$set: {rooms: convertRoomIdsToObjectIds(rooms)}},
@@ -253,15 +237,15 @@ function saveRooms (account_id, rooms = []) {
 						return;
 					}
 
-					resolve(convertRoomObjectIdsToStrings(rooms));
+					resolve(this.convertRoomObjectIdsToStrings(rooms));
 				}, reject);
 		});
 	});
 }
 
-function getAutomations () {
+getAutomations () {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('automations').find().toArray((error, result) => {
 				client.close();
 
@@ -278,9 +262,9 @@ function getAutomations () {
 	});
 }
 
-function saveAutomation (automation) {
+saveAutomation (automation) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('automations').update(
 				{id: automation.id},
 				{$set: automation},
@@ -301,9 +285,9 @@ function saveAutomation (automation) {
 	});
 }
 
-function deleteAutomation (automation_id) {
+deleteAutomation (automation_id) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('automations').remove({id: automation_id}, (error) => {
 				client.close();
 
@@ -320,9 +304,9 @@ function deleteAutomation (automation_id) {
 	});
 }
 
-function getScenes () {
+getScenes () {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('scenes').find().toArray((error, result) => {
 				client.close();
 
@@ -339,9 +323,9 @@ function getScenes () {
 	});
 }
 
-function saveScene (scene) {
+saveScene (scene) {
 	return new Promise((resolve, reject) => {
-		connect((client) => {
+		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('scenes').update(
 				{id: scene.id},
 				{$set: scene},
@@ -361,3 +345,101 @@ function saveScene (scene) {
 		});
 	});
 }
+
+get_camera_recordings (camera_id) {
+	return new Promise((resolve, reject) => {
+		this.connect((client) => {
+			let query = {};
+
+			if (camera_id) {
+				query = {camera_id: camera_id};
+			}
+
+			client.db(DATABASE_NAME).collection('camera_recordings').find(query).toArray(
+				(error, recordings) => {
+					client.close();
+
+					if (error) {
+						console.error(TAG, 'set_camera_recording', error);
+						reject(error);
+						return;
+					}
+
+					resolve(recordings);
+				}, reject);
+		});
+	});
+}
+
+get_camera_recording_DEL (recording_id) {
+	return this.connect((db, resolve, reject) => {
+		client.db(DATABASE_NAME).collection('camera_recordings').find({id: recording_id}).toArray((error, result) => {
+			client.close();
+
+			if (error) {
+				console.error(TAG, 'get_camera_recording', error);
+				reject('Database error');
+				return;
+			}
+
+			resolve(result[0]);
+		});
+	});
+}
+
+get_camera_recording (recording_id) {
+	return new Promise((resolve, reject) => {
+		this.connect((client) => {
+			client.db(DATABASE_NAME).collection('camera_recordings').find({id: recording_id}).toArray((error, result) => {
+					client.close();
+
+					if (error) {
+						console.error(TAG, 'get_camera_recording', error);
+						reject(error);
+						return;
+					}
+
+					resolve(result[0]);
+				}, reject);
+		});
+	});
+}
+
+set_camera_recording (data) {
+	return new Promise((resolve, reject) => {
+		this.connect((client) => {
+			client.db(DATABASE_NAME).collection('camera_recordings').insertOne(
+				data,
+				(error, record) => {
+					client.close();
+
+					if (error) {
+						console.error(TAG, 'set_camera_recording', error);
+						reject(error);
+						return;
+					}
+
+					resolve(record);
+				}, reject);
+		});
+	});
+}
+
+delete_camera_recording (recording_id) {
+	return this.connect((db, resolve, reject) => {
+		db.collection('camera_recordings').remove({id: recording_id}, (error, result) => {
+			db.close();
+
+			if (error) {
+				console.error(TAG, 'delete_camera_recording', error);
+				reject('Database error');
+				return;
+			}
+
+			resolve(result);
+		});
+	});
+}
+}
+
+module.exports = new Database();

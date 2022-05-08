@@ -111,8 +111,11 @@ class CameraService extends Service {
 	}
 
 	getRecordings () {
+		console.log("!!!! camera-service getRecordings 0 !!!!");
 		return new Promise((resolve, reject) => {
+			console.log("!!!! camera-service getRecordings 1 !!!!");
 			this.deviceEmit('recordings/get', {}, (error, data) => {
+				console.log("!!!! camera-service getRecordings 2 !!!!");
 				if (error) {
 					reject(error);
 					return;

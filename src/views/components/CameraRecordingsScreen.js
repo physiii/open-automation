@@ -9,6 +9,7 @@ import AudioPlayer from './AudioPlayer.js';
 import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import DownloadIcon from '../icons/DownloadIcon.js';
 import List from './List.js';
+import HlsPlayer from './HlsPlayer.js';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -30,6 +31,8 @@ export class CameraRecordingsScreen extends React.Component {
 			selectedMonth: this.props.selectedDate.startOf('month'),
 			currentPlayLocation: 0
 		};
+
+		this.videoPlayer = React.createRef();
 	}
 
 	componentDidMount () {
@@ -63,6 +66,14 @@ export class CameraRecordingsScreen extends React.Component {
 		event.preventDefault();
 
 		this.goToDate(this.props.selectedDate);
+	}
+
+	getVideoUrlRel () {
+		// 'http://192.168.1.42:5050/hls/video?stream_id=abc123&token_id=tkn123'
+		const	url = '/hls/video_recording?'
+			+ 'recording_id=' + this.props.selectedRecording.id;
+
+		return url;
 	}
 
 	transportVideo (time) {
@@ -109,34 +120,46 @@ export class CameraRecordingsScreen extends React.Component {
 					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
 						{this.props.selectedRecording
 							? <div>
-								<div styleName="videoContainer">
-									<AudioPlayer
-										audioServiceId={this.props.service.id}
-										recording={this.props.selectedRecording}
-										shouldShowControls={false}
-										streamingToken={this.props.selectedRecording.audio_streaming_token}
-										showControlsWhenStopped={false}
-										onPlay={this.onStreamStart}
-										onStop={this.onStreamStop}
-										ref={this.audioPlayer}
-										autoplay={true} />
-									<VideoPlayer
-										cameraServiceId={this.props.service.id}
-										recording={this.props.selectedRecording}
-										key={this.props.selectedRecording.id}
-										streamingToken={this.props.selectedRecording.streaming_token}
-										width={this.props.selectedRecording.width}
-										height={this.props.selectedRecording.height}
-										videoLength={this.props.selectedRecording.duration}
-										autoplay={true} />
-									<div styleName="overlayTransport">
-										<SliderControl
-											value={this.state.currentPlayLocation}
-											max={this.props.selectedRecording.duration}
-											onChange={this.transportVideo.bind(this)}
-										/>
+								{ this.props.service.settings.get('network_path')
+									?
+									<div styleName="videoContainer">
+										<HlsPlayer
+											cameraServiceId={this.props.service.id}
+											videoUrl={this.getVideoUrlRel()}
+											autoplay={true}
+											ref={this.videoPlayer} />
 									</div>
-								</div>
+									: <div>
+										<div styleName="videoContainer">
+											<AudioPlayer
+												audioServiceId={this.props.service.id}
+												recording={this.props.selectedRecording}
+												shouldShowControls={false}
+												streamingToken={this.props.selectedRecording.audio_streaming_token}
+												showControlsWhenStopped={false}
+												onPlay={this.onStreamStart}
+												onStop={this.onStreamStop}
+												ref={this.audioPlayer}
+												autoplay={true} />
+											<VideoPlayer
+												cameraServiceId={this.props.service.id}
+												recording={this.props.selectedRecording}
+												key={this.props.selectedRecording.id}
+												streamingToken={this.props.selectedRecording.streaming_token}
+												width={this.props.selectedRecording.width}
+												height={this.props.selectedRecording.height}
+												videoLength={this.props.selectedRecording.duration}
+												autoplay={true} />
+											<div styleName="overlayTransport">
+												<SliderControl
+													value={this.state.currentPlayLocation}
+													max={this.props.selectedRecording.duration}
+													onChange={this.transportVideo.bind(this)}
+												/>
+											</div>
+										</div>
+									</div>
+								}
 							</div>
 							: <div styleName="datePickerContainer">
 								<DatePicker

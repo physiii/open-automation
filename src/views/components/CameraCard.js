@@ -59,6 +59,15 @@ export class CameraCard extends React.Component {
 		return url;
 	}
 
+	getVideoUrlRel () {
+		// 'http://192.168.1.42:5050/hls/video?stream_id=abc123&token_id=tkn123'
+		const	url = '/hls/video?'
+			+ 'stream_id=' + this.props.service.id
+			+ '&stream_token=' + this.props.service.streaming_token;
+
+		return url;
+	}
+
 	render () {
 		const motionDetectedDate = this.props.service.state.get('motion_detected_date');
 
@@ -103,7 +112,7 @@ export class CameraCard extends React.Component {
 						shouldShowControls={true}
 						streamingToken={this.props.service.streaming_token}
 						posterUrl={'/service-content/camera-preview?service_id=' + this.props.service.id + '&date=' + motionDetectedDate}
-						videoUrl={this.getVideoUrl()}
+						videoUrl={this.getVideoUrlRel()}
 						showControlsWhenStopped={false}
 						width={this.props.service.settings.get('resolution_w')}
 						height={this.props.service.settings.get('resolution_h')}
