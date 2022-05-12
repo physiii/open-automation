@@ -21,10 +21,10 @@ export class HlsPlayer extends React.Component {
 		this.element = React.createRef();
 
 		this.hls = new Hls({
-			enableWorker: false,
+			// enableWorker: false,
 			// autoPlay: false,
-			maxStarvationDelay: 60,
-			maxLoadingDelay: 60
+			// maxStarvationDelay: 60,
+			// maxLoadingDelay: 60
 		});
 	}
 
@@ -103,9 +103,7 @@ export class HlsPlayer extends React.Component {
 				<video
 					id={this.props.cameraServiceId}
 					styleName="hlsPlayer"
-					autoPlay="true"
 					controls="controls"
-					loop="loop"
 					type="application/x-mpegURL" />
 			</div>
 		);

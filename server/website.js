@@ -12,7 +12,8 @@ const
 	Exec = require('child_process').exec,
 	ExecSync = require('child_process').execSync,
 	SpawnSync = require('child_process').spawnSync,
-	streamDir = '/usr/local/lib/open-automation/stream/',
+	// streamDir = '/usr/local/lib/open-automation/stream/',
+	streamDir = '/tmp/open-automation/stream/',
 	recordingsDir = '/usr/local/lib/open-automation/recording/',
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
@@ -172,7 +173,7 @@ module.exports = function (jwt_secret) {
 
 	app.use('/', express.static(__dirname + '/../public'));
 
-	app.use('/stream', express.static('/usr/local/lib/open-automation/stream', {
+	app.use('/stream', express.static(streamDir, {
 		setHeaders: function(res, path, stat) {
 			if (path.indexOf(".ts") > -1) {
 					res.set("cache-control", "public, max-age=300");
@@ -426,20 +427,10 @@ module.exports = function (jwt_secret) {
 							length = '',
 							lengthCmd = 'ffmpeg -i ' + clipPath + ' 2>&1 | grep \"Duration\"| cut -d \' \' -f 4 | sed s/,//';
 
-						// console.log("Getting clip length.", clipPath);
-						// ffmpeg -i playlist1082.ts 2>&1 | grep "Duration"| cut -d ' ' -f 4 | sed s/,//
-						// var clipInfo = cp.spawnSync('ffmpeg', ['-i', clipPath], { encoding : 'utf8' });
-						// uncomment the following if you want to see everything returned by the spawnSync command
-						// console.log('ls: ' , ls);
-						// console.log('stdout here: \n' + clipInfo.stdout);
-
-						// ffmpeg -i playlist1082.ts 2>&1 | grep "Duration"| cut -d ' ' -f 4 | sed s/,//
 						length = ExecSync(lengthCmd);
 						length = length.toString().split(':');
 						length = length[length.length - 1];
 						length = length.replace("\n","");
-
-						// console.log("Length:", clipPath, length);
 
 						file += "#EXTINF:" + length + ",\n";
 						file += "playlist" + playlistFiles[i] + ".ts\n";
@@ -487,13 +478,17 @@ module.exports = function (jwt_secret) {
       .on('end', () => {
 				info.path = info.cameraStreamDir + info.filename;
 
-				// fs.exists(info.cameraStreamDir, exists => {
 					try {
 							fs.mkdirSync(info.cameraStreamDir, { recursive: true });
 			    } catch (e) {
 							// console.error(METHOD_TAG, 'ERROR: ', e);
 			    }
-					fs.copyFileSync(info.tmp, info.path);
+
+					if (fs.existsSync(info.tmp)) {
+						fs.copyFileSync(info.tmp, info.path);
+						fs.rmSync(info.tmp, { force: true, recusive: true });
+					}
+
 					recordMotion(info);
 
 					Exec('cat ' + info.cameraStreamDir + 'playlist.m3u8 | grep .ts', (error, stdout, stderr) => {
@@ -509,113 +504,10 @@ module.exports = function (jwt_secret) {
 							});
 						});
 					});
-				// });
       });
 
     form.parse(req);
 
-	});
-
-	app.post('/stream/upload_OLD', (req, res) => {
-		const METHOD_TAG = TAG + '[/stream/upload]'
-    var fstream;
-    req.busboy.on('file', (infoStr, file, fileInfo) => {
-				console.log(METHOD_TAG, infoStr);
-				let
-					info = JSON.parse(infoStr),
-					cameraStreamDir = streamDir + info.cameraId + '/',
-					filename = fileInfo.filename,
-					path = cameraStreamDir + filename;
-
-        fstream = fs.createWriteStream(path);
-        file.pipe(fstream);
-        fstream.on('close', () => {
-						// console.log("!! Uploaded file: !!", info, filename)
-						if (info.motionTime.start > 0) {
-							const
-								timeStamp = new Date(info.motionTime.start),
-								fileDir = timeStamp.toISOString().split('.')[0].replace('T','_'),
-								cameraRecordingDir = recordingsDir
-									+ info.cameraId + '/'
-									+ timeStamp.getFullYear() + '/'
-									+ timeStamp.getMonth() + '/'
-									+ timeStamp.getDate() + '/'
-									+ fileDir + '/',
-								playlistPath = cameraRecordingDir + 'playlist.m3u8',
-								makeCameraRecordingDir = "mkdir -p " + cameraRecordingDir,
-								copyCmd = "cp " + path + " " + cameraRecordingDir;
-
-							if (filename.indexOf('playlist.m3u8') > -1) return;
-
-							ExecSync(makeCameraRecordingDir);
-							ExecSync(copyCmd);
-
-							if (info.motionTime.stop > 0) {
-								let findCmd = 'find ' + cameraRecordingDir + ' -name \"*.ts\" -exec basename {} \\;';
-
-								Exec(findCmd, (error, stdout, stderr) => {
-
-									let
-										playlistFiles = stdout.toString().split('\n');
-
-									for (let i=0; i < playlistFiles.length; i++) {
-										playlistFiles[i] = playlistFiles[i].replace('playlist', '').replace('.ts','')
-										playlistFiles[i] = parseInt(playlistFiles[i])
-									}
-
-									playlistFiles.sort((a,b) => a-b);
-									playlistFiles.pop();
-
-									file = ""
-										+ "#EXTM3U\n"
-										+ "#EXT-X-VERSION:3\n"
-										+ "#EXT-X-TARGETDURATION:10\n"
-										+ "#EXT-X-MEDIA-SEQUENCE:" + playlistFiles[0] + "\n";
-
-									for (let i=0; i < playlistFiles.length; i++) {
-										file += "#EXTINF:10.000000,\n"
-										file += "playlist" + playlistFiles[i] + ".ts\n"
-									}
-
-									// console.log("!! Motion stopped, creating motion playlist. !!", file)
-									fs.writeFileSync(playlistPath, file, function(err) {
-										if(err) return console.error(TAG, err);
-									});
-
-									let recordingInfo = {
-										id: uuid(),
-										camera_id: info.cameraId,
-										file: playlistPath,
-										date: timeStamp.toISOString(),
-										duration: Math.floor((info.motionTime.stop - info.motionTime.start) / 1000)
-									}
-
-									database.set_camera_recording(recordingInfo).then((record) => {
-										// console.log(TAG, "!! set_camera_recording !!",record);
-									});
-								});
-
-							}
-						}
-						Exec('cat ' + cameraStreamDir + 'playlist.m3u8 | grep .ts', (error, stdout, stderr) => {
-							let playlistFiles = stdout.toString().split('\n');
-							playlistFiles.push('playlist.m3u8');
-							playlistFiles.push(filename);
-							Exec('ls ' + cameraStreamDir, (error, stdout, stderr) => {
-								dirFiles = stdout.toString().split('\n');
-								dirFiles.forEach((item) => {
-									if (playlistFiles.indexOf(item) > -1) return;
-									let cmd = 'rm ' + cameraStreamDir + item;
-									Exec(cmd);
-								});
-							});
-						});
-
-		        // console.log(METHOD_TAG, '[' + info + '] Uploaded:', filename);
-            res.redirect('back');
-        });
-    });
-    req.pipe(req.busboy);
 	});
 
 	app.get('/js/config.js', (request, response) => {
@@ -628,7 +520,7 @@ module.exports = function (jwt_secret) {
 	app.get('/hls/video', function(req, res) {
 			const
 				stream_id = req.query.stream_id,
-	    	cameraStreamDir = '/usr/local/lib/open-automation/stream/' + stream_id + '/',
+	    	cameraStreamDir = streamDir + stream_id + '/',
 		    playlistPath = cameraStreamDir + 'playlist.m3u8',
 		    playlistUrl = '/stream/' + stream_id + '/' + 'playlist.m3u8',
 				makeCameraStreamDir = "mkdir -p " + cameraStreamDir;
