@@ -98,6 +98,89 @@ const isEmpty = (value) => {
 		'max_length': (max_length) => (value, label) => value.length <= max_length ? null : label + ' must be no more than ' + max_length + ' characters long.'
 	};
 
+const
+	loop_delay = 60 * 1000,
+	TAG = '[utils]',
+	MINIMUM_FREE_SPACE = 5,
+	rimraf = require('rimraf'),
+	exec = require('child_process').exec,
+  diskUsage = require('diskusage');
+
+function removeOldCameraRecordings () {
+	return new Promise((resolve, reject) => {
+		// Return only base file name without dir
+		exec('find /usr/local/lib/open-automation/recording/ -type f -printf \'%T+ %p\n\' | sort | head -n 1', (error, stdout, stderr) => {
+			if (error) {
+				console.error(TAG, `Remove old recordings: error: ${error}`);
+				reject(error);
+
+				return;
+			}
+
+			if (!stdout) {
+				console.log(TAG, 'Remove old recordings: no motion files found to remove.');
+				resolve();
+
+				return;
+			}
+
+			var temp_arr = stdout.split(' ')[1].split('/'),
+				oldest_dir = '';
+
+			temp_arr[temp_arr.length - 1] = '';
+
+			for (var i = 0; i < temp_arr.length; i++) {
+				if (temp_arr[i] === '') {
+					continue;
+				}
+
+				oldest_dir += '/' + temp_arr[i];
+			}
+
+			try {
+				rimraf(oldest_dir, function (error) {
+					if (error) {
+						console.log(TAG, 'Remove old recordings: error:', error);
+						reject(error);
+
+						return;
+					}
+
+					console.log(TAG, 'Remove old recordings: directory deleted:', oldest_dir);
+					resolve(oldest_dir);
+				});
+			} catch (error) {
+				console.log(TAG, 'Remove old recordings: error deleting files:', error);
+				reject(error);
+			};
+		});
+	});
+}
+
+function checkDiskSpace () {
+	return new Promise(function(resolve, reject) {
+		diskUsage.check('/', function (error, info) {
+			if (error) {
+				return console.log(TAG, error);
+			}
+			resolve(info);
+		});
+	})
+}
+
+function loop () {
+	setInterval(() => {
+		checkDiskSpace().then((info) => {
+	    let ratio = info.free / info.total;
+	    if (ratio < MINIMUM_FREE_SPACE/100) {
+	      removeOldCameraRecordings();
+	    }
+	  });
+	}, loop_delay);
+}
+
+loop();
+
 module.exports = {
 	isEmpty,
 	onChange,

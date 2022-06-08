@@ -50,7 +50,10 @@ AccountsManager.init()
 		const jwt_secret = process.env.OA_JWT_SECRET || key || uuidV4(),
 			website = setUpWebsite(jwt_secret),
 			http_server = startHttpServer(website, key, cert),
-			socket_io_server = io.listen(http_server);
+			socket_io_server = io.listen(http_server, {
+													  pingTimeout: 60000,
+														pingInterval: 60000
+													});
 
 		startClientApi(socket_io_server, jwt_secret);
 		startDeviceRelay(http_server, socket_io_server);

@@ -13,7 +13,8 @@ const
 	ExecSync = require('child_process').execSync,
 	SpawnSync = require('child_process').spawnSync,
 	// streamDir = '/usr/local/lib/open-automation/stream/',
-	streamDir = '/tmp/open-automation/stream/',
+	tmpDir = '/tmp/open-automation',
+	streamDir = tmpDir + '/stream/',
 	recordingsDir = '/usr/local/lib/open-automation/recording/',
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
@@ -29,10 +30,11 @@ const
 	util = require('node:util'),
 	os = require('node:os'),
 	formidable = require('formidable'),
+	HLS_TIME = 10,
 	TAG = '[website.js]';
 
 module.exports = function (jwt_secret) {
-	fs.rmSync(streamDir, { recursive: true, force: true }, (err) => {});
+	fs.rmSync(tmpDir, { recursive: true, force: true }, (err) => {});
 	fs.mkdirSync(streamDir, { recursive: true });
 
 	const app = express();
@@ -370,8 +372,33 @@ module.exports = function (jwt_secret) {
     req.pipe(req.busboy);
 	});
 
+	function getClipLength(cameraRecordingDir, playlistFiles) {
+		let promises = [];
+		for (let i=0; i < playlistFiles.length; i++) {
+			let clipDir = cameraRecordingDir,
+				clip = 'playlist' + playlistFiles[i] + '.ts',
+				// lengthCmd = 'mediainfo --Inform="Video;%Duration%" ' + clipPath;
+				lengthCmd = 'cd ' + clipDir + ' && mediainfo --Inform="Video;%Duration%" ' + clip;
+
+			promises.push(
+				new Promise((resolve, reject) => {
+					Exec(lengthCmd, (error, stdout, stderr) => {
+						let clipLength = parseInt(stdout.replace("\n","")) / 1000;
+						console.log(TAG, lengthCmd, stdout, clipLength)
+						resolve(clipLength);
+					})
+				})
+			);
+		}
+		return Promise.all(promises);
+	}
+
+
 	function recordMotion (info) {
 		let METHOD_TAG = TAG + "[recordMotion]";
+
+		if (info.filename.indexOf('playlist.m3u8') > -1) return;
+
 		if (info.motionTime.start > 0) {
 			const
 				timeStamp = new Date(info.motionTime.start),
@@ -384,75 +411,66 @@ module.exports = function (jwt_secret) {
 					+ fileDir + '/',
 				filePath = cameraRecordingDir + '/' + info.filename,
 				playlistPath = cameraRecordingDir + 'playlist.m3u8';
-				// makeCameraRecordingDir = "mkdir -p " + cameraRecordingDir,
-				// copyCmd = "cp " + info.path + " " + cameraRecordingDir;
-
-			if (info.filename.indexOf('playlist.m3u8') > -1) return;
-
-			// ExecSync(makeCameraRecordingDir);
-			// ExecSync(copyCmd);
 
 			try {
-					fs.mkdirSync(cameraRecordingDir,  { recursive: true });
+					fs.mkdir(cameraRecordingDir,  { recursive: true }, (err)=>{
+						if (err) console.log(METHOD_TAG, 'mkdir', cameraRecordingDir, err);
+						fs.copyFile(info.path, filePath, (err)=>{
+							if (err) console.log(METHOD_TAG, 'copyFile', info.path, filePath, err);
+
+								if (info.motionTime.stop > 0) {
+									let findCmd = 'find ' + cameraRecordingDir + ' -name \"*.ts\" -exec basename {} \\;';
+
+									Exec(findCmd, (error, stdout, stderr) => {
+										let
+											playlistFiles = stdout.toString().split('\n');
+
+										for (let i=0; i < playlistFiles.length; i++) {
+											playlistFiles[i] = playlistFiles[i].replace('playlist', '').replace('.ts','')
+											playlistFiles[i] = parseInt(playlistFiles[i])
+										}
+
+										playlistFiles.sort((a,b) => a-b);
+										playlistFiles.pop();
+
+										file = ""
+											+ "#EXTM3U\n"
+											+ "#EXT-X-VERSION:3\n"
+											+ "#EXT-X-TARGETDURATION:" + String(HLS_TIME) + "\n"
+											+ "#EXT-X-MEDIA-SEQUENCE:" + playlistFiles[0] + "\n";
+
+										getClipLength(cameraRecordingDir, playlistFiles).then(results => {
+											for (let i=0; i < results.length; i++) {
+												file += "#EXTINF:" + results[i] + ",\n";
+												file += "playlist" + playlistFiles[i] + ".ts\n";
+											}
+
+											fs.writeFileSync(playlistPath, file, function(err) {
+												if(err) return console.error(TAG, err);
+											});
+
+									  }).catch(err => {
+									      console.log(METHOD_TAG, err);
+									  });
+
+										let recordingInfo = {
+											id: uuid(),
+											camera_id: info.cameraId,
+											file: playlistPath,
+											date: timeStamp.toISOString(),
+											duration: Math.floor((info.motionTime.stop - info.motionTime.start) / 1000)
+										}
+
+										database.set_camera_recording(recordingInfo).then((record) => {
+											// console.log(METHOD_TAG, "!! set_camera_recording !!",recordingInfo);
+										});
+									});
+								}
+
+						});
+					});
 			} catch (e) {
-					// console.log(TAG, 'ERROR: ', e);
-			}
-
-			fs.copyFileSync(info.path, filePath);
-
-			if (info.motionTime.stop > 0) {
-				let findCmd = 'find ' + cameraRecordingDir + ' -name \"*.ts\" -exec basename {} \\;';
-
-				Exec(findCmd, (error, stdout, stderr) => {
-					let
-						playlistFiles = stdout.toString().split('\n');
-
-					for (let i=0; i < playlistFiles.length; i++) {
-						playlistFiles[i] = playlistFiles[i].replace('playlist', '').replace('.ts','')
-						playlistFiles[i] = parseInt(playlistFiles[i])
-					}
-
-					playlistFiles.sort((a,b) => a-b);
-					playlistFiles.pop();
-
-					file = ""
-						+ "#EXTM3U\n"
-						+ "#EXT-X-VERSION:3\n"
-						+ "#EXT-X-TARGETDURATION:20\n"
-						+ "#EXT-X-MEDIA-SEQUENCE:" + playlistFiles[0] + "\n";
-
-					for (let i=0; i < playlistFiles.length; i++) {
-						let
-							clipPath = cameraRecordingDir + 'playlist' + playlistFiles[i] + '.ts',
-							length = '',
-							lengthCmd = 'ffmpeg -i ' + clipPath + ' 2>&1 | grep \"Duration\"| cut -d \' \' -f 4 | sed s/,//';
-
-						length = ExecSync(lengthCmd);
-						length = length.toString().split(':');
-						length = length[length.length - 1];
-						length = length.replace("\n","");
-
-						file += "#EXTINF:" + length + ",\n";
-						file += "playlist" + playlistFiles[i] + ".ts\n";
-					}
-
-					fs.writeFileSync(playlistPath, file, function(err) {
-						if(err) return console.error(TAG, err);
-					});
-
-					let recordingInfo = {
-						id: uuid(),
-						camera_id: info.cameraId,
-						file: playlistPath,
-						date: timeStamp.toISOString(),
-						duration: Math.floor((info.motionTime.stop - info.motionTime.start) / 1000)
-					}
-
-					database.set_camera_recording(recordingInfo).then((record) => {
-						// console.log(TAG, "!! set_camera_recording !!",record);
-					});
-				});
-
+					console.log(METHOD_TAG, 'ERROR: ', e);
 			}
 		}
 	}
@@ -461,7 +479,7 @@ module.exports = function (jwt_secret) {
 	app.post('/stream/upload', (req, res) => {
 		const
 			METHOD_TAG = TAG + '[/stream/upload]',
-			form = formidable({ uploadDir: os.tmpdir() });
+			form = formidable({ uploadDir: tmpDir });
 
 		let info = {};
 
@@ -473,37 +491,42 @@ module.exports = function (jwt_secret) {
       .on('file', (fieldName, file) => {
 				info.filename = file.originalFilename;
 				info.tmp = file.filepath
-				res.redirect('back');
+				// res.redirect('back');
+				res.send({
+					'received': file.originalFilename
+				});
       })
       .on('end', () => {
+				if (typeof(info.tmp) != 'string') return;
 				info.path = info.cameraStreamDir + info.filename;
 
-					try {
-							fs.mkdirSync(info.cameraStreamDir, { recursive: true });
-			    } catch (e) {
-							// console.error(METHOD_TAG, 'ERROR: ', e);
-			    }
+				fs.mkdir(info.cameraStreamDir, { recursive: true }, (err)=>{
+					if (err) console.log(TAG, 'mkdir', info.cameraStreamDir, err);
+					fs.exists(info.tmp, (exists) => {
+						if (err) console.log(TAG, 'exists', info.tmp, exists);
+						fs.copyFile(info.tmp, info.path, (err)=>{
+								if (err) console.log(TAG, 'copy', info.tmp, err);
+								fs.rm(info.tmp, { force: true, recusive: true }, (err)=>{
+									if (err) console.log(TAG, 'rm', info.tmp, err);
+									recordMotion(info);
+								});
+						});
+					})
+				});
 
-					if (fs.existsSync(info.tmp)) {
-						fs.copyFileSync(info.tmp, info.path);
-						fs.rmSync(info.tmp, { force: true, recusive: true });
-					}
-
-					recordMotion(info);
-
-					Exec('cat ' + info.cameraStreamDir + 'playlist.m3u8 | grep .ts', (error, stdout, stderr) => {
-						let playlistFiles = stdout.toString().split('\n');
-						playlistFiles.push('playlist.m3u8');
-						playlistFiles.push(info.filename);
-						Exec('ls ' + info.cameraStreamDir, (error, stdout, stderr) => {
-							dirFiles = stdout.toString().split('\n');
-							dirFiles.forEach((item) => {
-								if (playlistFiles.indexOf(item) > -1) return;
-								let cmd = 'rm ' + info.cameraStreamDir + item;
-								Exec(cmd);
-							});
+				Exec('cat ' + info.cameraStreamDir + 'playlist.m3u8 | grep .ts', (error, stdout, stderr) => {
+					let playlistFiles = stdout.toString().split('\n');
+					playlistFiles.push('playlist.m3u8');
+					playlistFiles.push(info.filename);
+					Exec('ls ' + info.cameraStreamDir, (error, stdout, stderr) => {
+						dirFiles = stdout.toString().split('\n');
+						dirFiles.forEach((item) => {
+							if (playlistFiles.indexOf(item) > -1) return;
+							let cmd = 'rm ' + info.cameraStreamDir + item;
+							Exec(cmd);
 						});
 					});
+				});
       });
 
     form.parse(req);
@@ -534,23 +557,13 @@ module.exports = function (jwt_secret) {
 					// console.log(TAG, 'ERROR: ', e);
 	    }
 
-			// fs.existsSync(cameraStreamDir, exists => {
-			// 	if (!exists) {
-			// 		fs.mkdirSync(cameraStreamDir);
-			// 		console.log(TAG, cameraStreamDir, "The directory already exists");
-			// 	} else {
-			// 		console.log(TAG, cameraStreamDir, "Not found!");
-			// 	}
-			// });
-			// ExecSync(makeCameraStreamDir);
-
 	    try {
 	        stats = fs.statSync(playlistPath);
 	    } catch (e) {
 					// console.log('/hls/video', e);
 	    }
 	    if (stats) {
-					console.log(TAG, '/hls/video file exists, redirecting', playlistUrl);
+					// console.log(TAG, '/hls/video file exists, redirecting', playlistUrl);
 	        return res.redirect(playlistUrl);
 	    }
 
@@ -596,6 +609,7 @@ module.exports = function (jwt_secret) {
 	});
 
 	app.get('*', (request, response) => {
+		// console.log(TAG, "Sending index.html");
 		if (do_hot_module_replacement) {
 			webpack_compiler.outputFileSystem.readFile(path.join(webpack_compiler.outputPath, 'index.html'), (error, result) => {
 				if (error) {

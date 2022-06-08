@@ -13,6 +13,7 @@ class AutomationsManager extends EventEmitter {
 	constructor () {
 		super();
 
+		this.setMaxListeners(0);
 		this.init = this.init.bind(this);
 		this.handleAutomationUpdate = this.handleAutomationUpdate.bind(this);
 	}

@@ -14,6 +14,7 @@ class Account extends EventEmitter {
 	constructor (data) {
 		super();
 
+		this.setMaxListeners(0);
 		this.id = data.id;
 		this.username = data.username;
 		this.password = data.password;

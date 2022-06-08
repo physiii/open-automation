@@ -15,16 +15,17 @@ export class HlsPlayer extends React.Component {
 			isFullScreen: false,
 			hasPlayedOnce: false,
 			currentPlayLocation: 0,
+			currentPlayLocation: 0,
+			hlsSupported: true,
 			shouldShowControls: this.props.showControlsWhenStopped || this.props.autoplay
 		};
 
 		this.element = React.createRef();
 
 		this.hls = new Hls({
-			// enableWorker: false,
-			// autoPlay: false,
-			// maxStarvationDelay: 60,
-			// maxLoadingDelay: 60
+			liveDurationInfinity: this.props.live,
+			startPosition: this.props.startPosition ? this.props.startPosition  : -1,
+			autoStartLoad: true
 		});
 	}
 
@@ -53,6 +54,7 @@ export class HlsPlayer extends React.Component {
 	}
 
 	componentWillUnmount () {
+		this.hls.detachMedia();
 		fscreen.removeEventListener('fullscreenchange', this.updateFullScreenState);
 		clearTimeout(this.controlsTimeout);
 	}
@@ -85,16 +87,24 @@ export class HlsPlayer extends React.Component {
 
 	bootstrapPlayer () {
 		console.log('!! HLSPlayer videoUrl !!', this.props.videoUrl);
+		this.state.hlsSupported = false;
 		if (Hls.isSupported()) {
+			this.state.hlsSupported = true;
+			this.setState(this.state);
 			const video = document.getElementById(this.props.cameraServiceId);
 
 			this.hls.attachMedia(video);
 			this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-				// this.hls.loadSource('/hls/video?stream_id=' + this.props.cameraServiceId);
 				this.hls.loadSource(this.props.videoUrl);
 			});
-			this.hls.on(Hls.Events.MANIFEST_PARSED, () => video.stop());
+			this.hls.on(Hls.Events.MANIFEST_PARSED, () => this.props.autoPlay ? video.play() : video.stop());
 		}
+
+		this.setState(this.state);
+	}
+
+	getVideoUrl () {
+		console.log('!! getVideoUrl videoUrl !!', this.props.videoUrl);
 	}
 
 	render () {
@@ -104,6 +114,7 @@ export class HlsPlayer extends React.Component {
 					id={this.props.cameraServiceId}
 					styleName="hlsPlayer"
 					controls="controls"
+					src={this.state.hlsSupported ? '' : this.props.videoUrl}
 					type="application/x-mpegURL" />
 			</div>
 		);
@@ -122,7 +133,8 @@ HlsPlayer.propTypes = {
 	streamingToken: PropTypes.string,
 	videoUrl: PropTypes.string,
 	posterUrl: PropTypes.string,
-	autoplay: PropTypes.bool,
+	autoPlay: PropTypes.bool,
+	live: PropTypes.bool,
 	showControlsWhenStopped: PropTypes.bool,
 	shouldShowControls: PropTypes.bool,
 	width: PropTypes.number,

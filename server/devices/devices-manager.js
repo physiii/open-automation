@@ -13,6 +13,7 @@ class DevicesManager extends EventEmitter {
 	constructor () {
 		super();
 
+		this.setMaxListeners(0);
 		this.init = this.init.bind(this);
 		this.handleDeviceConnection = this.handleDeviceConnection.bind(this);
 		this.handleDeviceUpdate = this.handleDeviceUpdate.bind(this);

@@ -35,7 +35,7 @@ class ClientConnection {
 			// Push changes to client.
 			this.account.on('rooms-updated', this.handleRoomsUpdate);
 			DevicesManager.on('devices-update/account/' + this.account.id, this.handleAccountDevicesUpdate);
-			AutomationsManager.on('automations-update/account/' + this.account.id, this.handleAccountAutomationsUpdate);
+			// AutomationsManager.on('automations-update/account/' + this.account.id, this.handleAccountAutomationsUpdate);
 
 			this.destroy = this.destroy.bind(this, this.account.id);
 

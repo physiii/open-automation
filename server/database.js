@@ -5,7 +5,17 @@ const mongodb = require('mongodb'),
 	TAG = '[database.js]';
 
 class Database {
+
+constructor () {
+		this.client = null;
+		this.client = this.connect((client) => {
+			this.client = client;
+		});
+}
+
 connect (callback, errorHandler) {
+	if (this.client) return callback(this.client);
+
 	MongoClient.connect('mongodb://localhost:27017/', (error, client) => {
 		if (error) {
 			console.error(TAG, 'Unable to connect to the mongoDB server.', error);
@@ -27,7 +37,7 @@ getDevices () {
 		this.connect((client) => {
 			// Find only devices that have an "id" property to filter out any leftover OA1 devices.
 			client.db(DATABASE_NAME).collection('devices').find({id: {$exists: true}}).toArray((error, result) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'getDevices', error);
@@ -46,7 +56,7 @@ getDevice (device_id) {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('devices').find({id: device_id}).toArray((error, result) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'getDevice', error);
@@ -65,7 +75,7 @@ getDeviceLog (device_id) {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('logs').find({id: device_id}).toArray((error, result) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'getDevice', error);
@@ -84,7 +94,7 @@ saveLog (log) {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('logs').insertOne(log, (error, record) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'saveLog', error);
@@ -106,7 +116,7 @@ saveDevice (device) {
 				{$set: device},
 				{upsert: true},
 				(error, record) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.error(TAG, 'saveDevice', error);
@@ -125,7 +135,7 @@ deleteDevice (device_id) {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('devices').remove({id: device_id}, (error) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'deleteDevice', error);
@@ -144,7 +154,7 @@ getAccounts () {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('accounts').find().toArray((error, result = []) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'getAccounts', error);
@@ -182,7 +192,7 @@ saveAccount (account) {
 				{$set: account},
 				{upsert: true},
 				(error, data) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.error(TAG, 'saveAccount', error);
@@ -228,7 +238,7 @@ saveRooms (account_id, rooms = []) {
 				{$set: {rooms: convertRoomIdsToObjectIds(rooms)}},
 				// {upsert: true},
 				(error, data) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.error(TAG, 'saveRooms', error);
@@ -247,7 +257,7 @@ getAutomations () {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('automations').find().toArray((error, result) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'getAutomations', error);
@@ -270,7 +280,7 @@ saveAutomation (automation) {
 				{$set: automation},
 				{upsert: true},
 				(error, record) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.log(TAG, 'saveAutomation', error);
@@ -289,7 +299,7 @@ deleteAutomation (automation_id) {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('automations').remove({id: automation_id}, (error) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'deleteAutomation', error);
@@ -308,7 +318,7 @@ getScenes () {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('scenes').find().toArray((error, result) => {
-				client.close();
+				// client.close();
 
 				if (error) {
 					console.error(TAG, 'getScenes', error);
@@ -331,7 +341,7 @@ saveScene (scene) {
 				{$set: scene},
 				{upsert: true},
 				(error, record) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.log(TAG, 'saveScene', error);
@@ -357,7 +367,7 @@ get_camera_recordings (camera_id) {
 
 			client.db(DATABASE_NAME).collection('camera_recordings').find(query).toArray(
 				(error, recordings) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.error(TAG, 'set_camera_recording', error);
@@ -374,7 +384,7 @@ get_camera_recordings (camera_id) {
 get_camera_recording_DEL (recording_id) {
 	return this.connect((db, resolve, reject) => {
 		client.db(DATABASE_NAME).collection('camera_recordings').find({id: recording_id}).toArray((error, result) => {
-			client.close();
+			// client.close();
 
 			if (error) {
 				console.error(TAG, 'get_camera_recording', error);
@@ -391,7 +401,7 @@ get_camera_recording (recording_id) {
 	return new Promise((resolve, reject) => {
 		this.connect((client) => {
 			client.db(DATABASE_NAME).collection('camera_recordings').find({id: recording_id}).toArray((error, result) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.error(TAG, 'get_camera_recording', error);
@@ -411,7 +421,7 @@ set_camera_recording (data) {
 			client.db(DATABASE_NAME).collection('camera_recordings').insertOne(
 				data,
 				(error, record) => {
-					client.close();
+					// client.close();
 
 					if (error) {
 						console.error(TAG, 'set_camera_recording', error);

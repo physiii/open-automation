@@ -29,7 +29,8 @@ export class CameraRecordingsScreen extends React.Component {
 
 		this.state = {
 			selectedMonth: this.props.selectedDate.startOf('month'),
-			currentPlayLocation: 0
+			currentPlayLocation: 0,
+			showRecording: false
 		};
 
 		this.videoPlayer = React.createRef();
@@ -54,8 +55,15 @@ export class CameraRecordingsScreen extends React.Component {
 		this.props.history.replace(this.getPathForDate(date));
 	}
 
-	playRecording (recordingId) {
+	playRecording (recordingId, event) {
+
+		this.setState(({showRecording: false}), ()=>{
+			this.setState(({showRecording: true}));
+		});
+
 		this.props.history.replace(this.getPathForDate(this.props.selectedDate) + '/' + recordingId);
+
+		console.log("playRecording");
 	}
 
 	handleDateSelected (date) {
@@ -65,11 +73,13 @@ export class CameraRecordingsScreen extends React.Component {
 	handleCloseClick (event) {
 		event.preventDefault();
 
+		this.setState(({showRecording: false}));
 		this.goToDate(this.props.selectedDate);
 	}
 
 	getVideoUrlRel () {
-		// 'http://192.168.1.42:5050/hls/video?stream_id=abc123&token_id=tkn123'
+		if (!this.props.selectedRecording) return;
+		
 		const	url = '/hls/video_recording?'
 			+ 'recording_id=' + this.props.selectedRecording.id;
 
@@ -104,7 +114,7 @@ export class CameraRecordingsScreen extends React.Component {
 						secondaryLink: '/service-content/' + moment(recording.date).format('LLLL') + '.avi?service_id=' + this.props.service.id + '&recordingId=' + recording.id,
 						secondaryIcon: downloadIcon,
 						meta: () => 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
-						onClick: () => this.playRecording(recording.id)
+						onClick: (event) => this.playRecording(recording.id, event)
 					}))}
 				</List>
 			);
@@ -118,15 +128,17 @@ export class CameraRecordingsScreen extends React.Component {
 				url={this.props.match.urlWithoutOptionalParams}>
 				<div styleName="screen">
 					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
-						{this.props.selectedRecording
+						{this.state.showRecording
 							? <div>
 								{ this.props.service.settings.get('network_path')
 									?
 									<div styleName="videoContainer">
 										<HlsPlayer
 											cameraServiceId={this.props.service.id}
+											live={false}
 											videoUrl={this.getVideoUrlRel()}
-											autoplay={true}
+											autoPlay={true}
+											startPosition={-100}
 											ref={this.videoPlayer} />
 									</div>
 									: <div>
@@ -168,7 +180,7 @@ export class CameraRecordingsScreen extends React.Component {
 									onSelect={this.handleDateSelected}
 									onMonthChange={(selectedMonth) => this.setState({selectedMonth})} />
 							</div>}
-						{this.props.selectedRecording && <a href="#" styleName="closeButton" onClick={this.handleCloseClick}>Close</a>}
+						{this.state.showRecording && <a href="#" styleName="closeButton" onClick={this.handleCloseClick}>Close</a>}
 					</div>
 					<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
 						{bottomContent}
