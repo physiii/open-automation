@@ -4,12 +4,6 @@ This repository contains the front facing and backend portions of __open-automat
 #### Dashboard
 ![Alt text](/images/dashboard.png?raw=true "Dashboard")
 
-#### Server
-![Alt text](/images/server-graph.svg?raw=true "Server Graph")
-
-#### Client
-![Alt text](/images/website-graph.svg?raw=true "Server Graph")
-
 ## Technologies
 ReactJS  
 NodeJS  
@@ -43,6 +37,14 @@ General purpose relay board for attaching sirens and various sensors.
 
 ### Beacon (https://github.com/physiii/beacon)
 Android app for location tracking
+
+## Graphs
+
+#### Server
+![Alt text](/images/server-graph.svg?raw=true "Server Graph")
+
+#### Client
+![Alt text](/images/website-graph.svg?raw=true "Server Graph")
 
 
 # Installation
