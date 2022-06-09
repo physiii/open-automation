@@ -12,6 +12,7 @@ Websockets
 Z-Wave  
 Hls  
 FFmpeg  
+FreeRTOS  
 
 ## Supported Devices
 
