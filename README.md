@@ -1,19 +1,46 @@
-## This repository contains the relay server portion of __open-automation__. Its main function is to route and process device and user data.
+# Objective
+This repository contains the front facing and backend portions of __open-automation__. Its function is to route, process, and display data from devices and users. It provides a user interface for controlling devices, setting schedules, and has customizable text/email alert system.
 
-### open-automation is made from a cohesive set of web languages.
+### Dashboard
+![Alt text](/images/dashboard.png?raw=true "Dashboard")
 
-### Used for controlling cameras, dead bolts, garage openers, lights, thermostats, media, glass break, and a customizable alert system.
+### Server
+![Alt text](/images/server-graph.svg?raw=true "Server Graph")
 
+## Technologies
+ReactJS  
+NodeJS  
+MongoDB  
+Websockets  
+Z-Wave  
+Hls  
+FFmpeg  
 
-1. React frontend - http://open-automation.org
-2. NodeJS and MongoDB for tokens, authentication, general processing
-3. websocket relay server to communicate behind firewalls and routers - https://github.com/physiii/node-relay
-4. z-wave compatible - https://github.com/OpenZWave
-5. text alerts
-6. motion - http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome
-7. files - https://github.com/efeiefei/node-file-manager
-8. thermostat - http://www.radiothermostat.com/
-9. android - https://github.com/physiii/beacon
+## Supported Devices
+
+### Gateway (https://github.com/physiii/open-automation-gateway)
+This is used to interface devices like cameras, thermostats, and various z-wave devices from other ecosystems into open-automation. Allows devices to operate while disconnected from the front end server.
+
+### Cameras (https://github.com/physiii/open-automation-gateway)
+Handled by gateway which performs computer vision tasks, motion detection, and supports 4K live streaming. Recordings can be stored remotely and played from video player component.
+
+### Access Control (https://github.com/physiii/access-controller)
+Can be interfaced with commercial strike/magnetic locks through my open-source controllers or third-party Z-wave deadbolts through the gateway software.
+
+### Thermostat
+Supports wifi thermostats through the gateway with scheduling and energy efficient features.
+
+### Lights (https://github.com/physiii/led-controller)
+Can use my open-source LED controller or Philips Hue lights through the gateway.
+
+### Liger (https://github.com/physiii/liger)
+General purpose relay board for attaching sirens and various sensors.
+
+### Garage Opener (https://github.com/physiii/garage-opener)
+
+### Beacon (https://github.com/physiii/beacon)
+Android app for location tracking
+
 
 # Installation
     git clone https://github.com/physiii/open-automation
