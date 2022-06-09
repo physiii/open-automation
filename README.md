@@ -1,11 +1,14 @@
-# Objective
+## Objective
 This repository contains the front facing and backend portions of __open-automation__. Its function is to route, process, and display data from devices and users. It provides a user interface for controlling devices, setting schedules, and has customizable text/email alert system.
 
-### Dashboard
+#### Dashboard
 ![Alt text](/images/dashboard.png?raw=true "Dashboard")
 
-### Server
+#### Server
 ![Alt text](/images/server-graph.svg?raw=true "Server Graph")
+
+#### Client
+![Alt text](/images/website-graph.svg?raw=true "Server Graph")
 
 ## Technologies
 ReactJS  
