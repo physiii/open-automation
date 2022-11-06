@@ -49,6 +49,7 @@ Android app for location tracking
 
 
 # Installation
+	sudo apt install -y mediainfo
     git clone https://github.com/physiii/open-automation
     cd open-automation
     cp .env.example .env
