@@ -22,6 +22,7 @@ class GenericServiceAdapter {
 	}
 
 	_handleState (data) {
+		console.log(TAG, "!! ----- _handleState", data);
 		if (data.service_id !== this.generic_id) {
 			return;
 		}
@@ -37,6 +38,7 @@ class GenericServiceAdapter {
 
 	// This gets called when a relay service listens for an event from the device.
 	on (event, callback) {
+		console.log(TAG, "on event", event);
 		this._events.on(this._getPrefixedEvent(event), callback);
 	}
 
@@ -50,6 +52,7 @@ class GenericServiceAdapter {
 	}
 
 	_adaptSocketEmit (event, data, callback, should_emit = true) {
+		console.log("[_adaptSocketEmit] event", event);
 		return [
 			event,
 			{

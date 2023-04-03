@@ -11,20 +11,19 @@ export class HlsPlayer extends React.Component {
 		// Copying props to state here because we specifically only care about
 		// the autoplay prop during the first render.
 		this.state = {
-			isPlaying: this.props.autoplay,
 			isFullScreen: false,
 			hasPlayedOnce: false,
 			currentPlayLocation: 0,
-			currentPlayLocation: 0,
-			hlsSupported: true,
-			shouldShowControls: this.props.showControlsWhenStopped || this.props.autoplay
+			hlsSupported: true
+			// isPlaying: this.props.autoplay,
+			// shouldShowControls: this.props.showControlsWhenStopped || this.props.autoplay
 		};
 
 		this.element = React.createRef();
 
 		this.hls = new Hls({
 			liveDurationInfinity: this.props.live,
-			startPosition: this.props.startPosition ? this.props.startPosition  : -1,
+			// startPosition: this.props.startPosition ? this.props.startPosition  : -1,
 			autoStartLoad: true
 		});
 	}

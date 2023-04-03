@@ -118,6 +118,7 @@ ServicesManager.classes = {
 	'contact-sensor': require('./contact-sensor-service.js'),
 	'dimmer': require('./dimmer-service.js'),
 	'grow-pod': require('./grow-pod-service.js'),
+	'access-control': require('./access-control-service.js'),
 	'scale': require('./scale-service.js'),
 	'motion': require('./motion-service.js'),
 	'microphone': require('./microphone-service.js'),

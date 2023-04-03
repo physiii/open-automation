@@ -54,6 +54,7 @@ class DeviceWebSocketWrapper extends EventEmitter {
 	}
 
 	handleEvent (message) {
+		// console.log("!! handleEvent !!", message.event_type, message.payload);
 		EventEmitter.prototype.emit.call(this, message.event_type, message.payload);
 	}
 

@@ -55,15 +55,15 @@ export class CameraRecordingsScreen extends React.Component {
 		this.props.history.replace(this.getPathForDate(date));
 	}
 
-	playRecording (recordingId, event) {
+	playRecording (recordingId) {
 
-		this.setState(({showRecording: false}), ()=>{
-			this.setState(({showRecording: true}));
+		this.setState({showRecording: false}, () => {
+			this.setState({showRecording: true});
 		});
 
 		this.props.history.replace(this.getPathForDate(this.props.selectedDate) + '/' + recordingId);
 
-		console.log("playRecording");
+		console.log('playRecording');
 	}
 
 	handleDateSelected (date) {
@@ -73,13 +73,13 @@ export class CameraRecordingsScreen extends React.Component {
 	handleCloseClick (event) {
 		event.preventDefault();
 
-		this.setState(({showRecording: false}));
+		this.setState({showRecording: false});
 		this.goToDate(this.props.selectedDate);
 	}
 
 	getVideoUrlRel () {
 		if (!this.props.selectedRecording) return;
-		
+
 		const	url = '/hls/video_recording?'
 			+ 'recording_id=' + this.props.selectedRecording.id;
 

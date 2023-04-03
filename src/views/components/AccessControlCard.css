@@ -1,0 +1,63 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: space-around;
+	align-items: center;
+	height: 100%;
+	min-height: 128px;
+}
+
+.sensorValue {
+	margin: 0px 8px 8px 8px;
+	font-size: 13px;
+	color: #c8c8c8;
+}
+
+.sensorValues {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: center;
+	flex: 1 0;
+}
+
+.sensorTitle {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	flex: 1 0;
+	/* margin: 24px 0; */
+	/* padding: 0 8px; */
+	text-align: center;
+	/* display: block; */
+	font-size: 24px;
+	color: #969696;
+}
+
+.sensorPanelA {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	flex: 1 0;
+	padding: 12px 12px 12px 12px;
+	/* margin: 24px 0; */
+	/* padding: 0 16px; */
+	text-align: center;
+	/* align-items: center; */
+	border-bottom: 1px solid #7e7e7e;
+}
+
+.sensorPanelB {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	flex: 1 0;
+	padding: 12px 12px 12px 12px;
+	/* margin: 24px 0; */
+	/* padding: 0 16px; */
+	text-align: center;
+	/* align-items: center; */
+}

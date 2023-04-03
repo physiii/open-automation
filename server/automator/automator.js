@@ -37,11 +37,13 @@ class Automator {
 	setUpAutomation (automation) {
 		const services_subscribed_to_for_automation = services_subscribed_to.get(automation.id) || new Set();
 
+		console.log(TAG, "setUpAutomation:", automation);
 		// Make sure the list of services subscribed to for this automation is saved to services_subscribed_to (in case it was newly created).
 		services_subscribed_to.set(automation.id, services_subscribed_to_for_automation);
 
 		automation.triggers.forEach((trigger) => {
 			const run = (event_data = {}, trigger_data = {}) => {
+					console.log(TAG, "triggers:", trigger, trigger_data);
 					const triggered_date = moment(event_data.date).utc();
 
 					this.runAutomation(automation, {
@@ -56,6 +58,8 @@ class Automator {
 
 			switch (trigger.type) {
 				case 'event':
+
+					console.log(TAG, "incoming event:", trigger);
 					const service = DevicesManager.getServiceById(trigger.service_id, automation.account_id);
 
 					if (!service) {
@@ -133,6 +137,7 @@ class Automator {
 	}
 
 	runAutomation (automation, trigger_data) {
+		console.log(TAG, "runAutomation:", automation, trigger_data);
 		const account = AccountsManager.getAccountById(automation.account_id);
 
 		if (!automation.is_enabled || !this.checkConditions(automation.conditions, trigger_data, account)) {

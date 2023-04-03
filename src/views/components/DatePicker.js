@@ -4,8 +4,6 @@ import Button from './Button.js';
 import moment from 'moment';
 import './DatePicker.css';
 
-const TAG = "[DatePicker]";
-
 export class DatePicker extends React.Component {
 	constructor (props) {
 		super(props);
@@ -78,12 +76,11 @@ export class DatePicker extends React.Component {
 	isDateEnabled (date) {
 		if (this.props.enabledDates) {
 			return this.props.enabledDates.find((enabledDate) => {
-				let
-					month = parseInt(date._i[1]) + 1,
-					_date = date._i[0] + "-" + month + "-" + date._i[2];
+				const month = parseInt(date._i[1]) + 1,
+					_date = date._i[0] + '-' + month + '-' + date._i[2];
 
 				return enabledDate._i === _date;
-			})
+			});
 		}
 
 		return true;

@@ -103,8 +103,8 @@ const
 	TAG = '[utils]',
 	MINIMUM_FREE_SPACE = 5,
 	rimraf = require('rimraf'),
-	exec = require('child_process').exec,
-  diskUsage = require('diskusage');
+	exec = require('child_process').exec;
+//   diskUsage = require('diskusage');
 
 function removeOldCameraRecordings () {
 	return new Promise((resolve, reject) => {
@@ -159,12 +159,12 @@ function removeOldCameraRecordings () {
 
 function checkDiskSpace () {
 	return new Promise(function(resolve, reject) {
-		diskUsage.check('/', function (error, info) {
-			if (error) {
-				return console.log(TAG, error);
-			}
-			resolve(info);
-		});
+		// diskUsage.check('/', function (error, info) {
+		// 	if (error) {
+		// 		return console.log(TAG, error);
+		// 	}
+		// 	resolve(info);
+		// });
 	})
 }
 

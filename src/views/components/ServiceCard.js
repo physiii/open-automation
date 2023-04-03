@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import CameraCard from './CameraCard.js';
 import DimmerCard from './DimmerCard.js';
 import GrowPodCard from './GrowPodCard.js';
+import AccessControlCard from './AccessControlCard.js';
 import LightCard from './LightCard.js';
 import ScaleCard from './ScaleCard.js';
 import ButtonCard from './ButtonCard.js';
@@ -29,6 +30,7 @@ ServiceCard.cardComponents = {
 	'network-camera': CameraCard,
 	'dimmer': DimmerCard,
 	'grow-pod': GrowPodCard,
+	'access-control': AccessControlCard,
 	'light': LightCard,
 	'scale': ScaleCard,
 	'global-alarm': GlobalAlarmCard,
