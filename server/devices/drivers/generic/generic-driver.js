@@ -6,6 +6,7 @@ const EventEmitter = require('events'),
 		'dimmer': require('./service-adapters/dimmer-adapter.js'),
 		'light': require('./service-adapters/light-adapter.js'),
 		'grow-pod': require('./service-adapters/grow-pod-adapter.js'),
+		'access-control': require('./service-adapters/access-control-adapter.js'),
 		'scale': require('./service-adapters/scale-adapter.js'),
 		'microphone': require('./service-adapters/microphone-adapter.js'),
 		'motion': require('./service-adapters/motion-adapter.js'),
@@ -145,6 +146,7 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_emitLoadToRelay (device) {
+		console.log(TAG, "!! ---- EMITTING LOAD TO RELAY ---- !!", device);
 		this._events.emit('load', {
 			device: {
 				services: Array.from(this.service_adapters.values()).map((adapter) => adapter.relaySerialize()),

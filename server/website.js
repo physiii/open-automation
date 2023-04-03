@@ -384,7 +384,7 @@ module.exports = function (jwt_secret) {
 				new Promise((resolve, reject) => {
 					Exec(lengthCmd, (error, stdout, stderr) => {
 						let clipLength = parseInt(stdout.replace("\n","")) / 1000;
-						console.log(TAG, lengthCmd, stdout, clipLength)
+						// console.log(TAG, lengthCmd, stdout, clipLength)
 						resolve(clipLength);
 					})
 				})
@@ -543,9 +543,9 @@ module.exports = function (jwt_secret) {
 	app.get('/hls/video', function(req, res) {
 			const
 				stream_id = req.query.stream_id,
-	    	cameraStreamDir = streamDir + stream_id + '/',
-		    playlistPath = cameraStreamDir + 'playlist.m3u8',
-		    playlistUrl = '/stream/' + stream_id + '/' + 'playlist.m3u8',
+				cameraStreamDir = streamDir + stream_id + '/',
+				playlistPath = cameraStreamDir + 'playlist.m3u8',
+				playlistUrl = '/stream/' + stream_id + '/' + 'playlist.m3u8',
 				makeCameraStreamDir = "mkdir -p " + cameraStreamDir;
 
 			let

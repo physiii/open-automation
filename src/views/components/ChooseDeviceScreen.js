@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {withRoute} from './Route.js';
+import Button from './Button.js';
+import {Link} from 'react-router-dom';
 import NavigationScreen from './NavigationScreen.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
+import AutomationNotificationScreen from './AutomationNotificationScreen.js';
 import DevicesList from './DevicesList.js';
 import BlankState from './BlankState.js';
 import {getDevices} from '../../state/ducks/devices-list/selectors.js';
@@ -48,12 +51,17 @@ export const ChooseDeviceScreen = (props) => {
 					{props.devicesWithoutRoom.length
 						? <DevicesList devices={props.devicesWithoutRoom} deviceLinkBase={props.match.url} />
 						: null}
-				</SettingsScreenContainer>}
+				</SettingsScreenContainer>
+			}
 		</NavigationScreen>
 	);
 };
 
 ChooseDeviceScreen.propTypes = {
+	isNew: PropTypes.bool,
+	notifications: PropTypes.object,
+	saveNotification: PropTypes.func.isRequired,
+	deleteNotification: PropTypes.func,
 	title: PropTypes.string,
 	toolbarActions: PropTypes.node,
 	toolbarBackAction: PropTypes.node,

@@ -36,14 +36,21 @@ class Service {
 	}
 
 	subscribeToDevice () {
-		this.deviceOn('state', ({state}) => this.setState(state));
+		// this.deviceOn('state', ({state}) => this.setState(state));
 		this.deviceOn('state', ({state}) => {
+			console.log(TAG, "!! ---- STATE", state);
 			this.setState(state);
 			this._emit('load', state);
+		});
+		this.deviceOn('load', ({state}) => {
+			console.log(TAG, "!! ---- load ---- !!", state);
 		});
 		this.deviceOn('settings/get', (data, callback = noOp) => callback(null, {settings: this.settings.getAll()}));
 		this.deviceOn('device/update', (data, callback = noOp) => {
 			console.log(TAG, 'Received device/update event.');
+		});
+		this.deviceOn('access-control/presence', (data, callback = noOp) => {
+			console.log(TAG, "!! ---- presence", data);
 		});
 	}
 
@@ -60,6 +67,7 @@ class Service {
 	}
 
 	_emit (event, data) {
+		console.log(TAG, "!! ---- emit ---- !!", event, data);
 		this.events.emit(event, data);
 
 		// Re-emit the event with a wildcard for listeners using wildcard
@@ -68,6 +76,13 @@ class Service {
 	}
 
 	update ({state, settings_definitions}) {
+		console.log(TAG, "!! ---- update ---- !!", state, settings_definitions);
+
+		Object.keys(state).forEach(key => {
+			if (state[key]) this._emit(key, state[key]);
+			console.log(TAG, "!! ---- emit ---- !!", key, state[key]);
+		});
+	
 		if (state) {
 			this.setState(state);
 		}

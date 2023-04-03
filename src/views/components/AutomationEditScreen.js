@@ -155,6 +155,8 @@ export class AutomationEditScreen extends React.Component {
 									<div styleName="sectionContent">
 										{triggers.length ? <ul styleName="elementList">
 											{triggers.map((trigger, index) => {
+												console.log("trigger:", trigger);
+												console.log("services:", this.props.services);
 												const service = this.props.services.get(trigger.service_id);
 
 												if (!service) {
@@ -171,7 +173,7 @@ export class AutomationEditScreen extends React.Component {
 											})}
 										</ul> : null}
 										{areTriggersEditable
-											? <span styleName={triggers.length ? 'addButhton' : 'primaryAddButton'}>
+											? <span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
 												<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
 													<Button to={this.props.match.url + '/add-trigger'}>
 														<span styleName={triggers.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
@@ -221,6 +223,10 @@ export class AutomationEditScreen extends React.Component {
 											))}
 											{actions.map((action, index) => {
 												const service = this.props.services.get(action.service_id);
+
+												if (!service) {
+													return null;
+												}
 
 												// {service.action_definitions.toArray().map(([action, definition]) => (
 												// 	<Button key={action} onClick={() => this.handleActionClick(action, service)}>

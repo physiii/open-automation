@@ -64,6 +64,8 @@ class Device {
 		this.driver.on('connect', () => this.state.connected = true);
 		this.driver.on('disconnect', () => this.state.connected = false);
 		this.driver.on('load', (data, callback = noOp) => {
+			// this.emit('load', data, callback);
+
 			if (!data.device) {
 				callback('No device data provided.');
 				return;
@@ -226,6 +228,7 @@ class Device {
 			return;
 		}
 
+		// console.log(TAG, "Emitting event '" + event + "' to device '" + this.id + "'.", data);
 		this.driver.emit(event, data);
 	}
 

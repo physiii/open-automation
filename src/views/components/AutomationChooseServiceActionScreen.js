@@ -5,6 +5,7 @@ import {compose} from 'redux';
 import {Redirect} from 'react-router-dom';
 import {withRoute} from './Route.js';
 import NavigationScreen from './NavigationScreen.js';
+import AutomationNotificationScreen from './AutomationNotificationScreen.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceHeader from './ServiceHeader.js';
 import Button from './Button.js';
@@ -35,7 +36,8 @@ export class AutomationChooseServiceActionScreen extends React.Component {
 	}
 
 	render () {
-		const device = this.props.device;
+		const device = this.props.device,
+			props = this.props;
 
 		if (!device || (!this.props.isNew && !(this.props.actions && this.props.actions.get(Number.parseInt(this.props.match.params.actionIndex))))) {
 			return <Redirect to={this.props.match.parentMatch.url} />;
@@ -69,7 +71,7 @@ export class AutomationChooseServiceActionScreen extends React.Component {
 
 AutomationChooseServiceActionScreen.propTypes = {
 	title: PropTypes.string,
-	device: PropTypes.object.isRequired,
+	device: PropTypes.object,
 	actions: PropTypes.object,
 	isNew: PropTypes.bool,
 	actionIndex: PropTypes.number,
