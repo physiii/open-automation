@@ -38,12 +38,20 @@ class Service {
 	subscribeToDevice () {
 		// this.deviceOn('state', ({state}) => this.setState(state));
 		this.deviceOn('state', ({state}) => {
+<<<<<<< HEAD
 			// console.log(TAG, "!! ---- STATE", state);
+=======
+			console.log(TAG, "!! ---- STATE", state);
+>>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 			this.setState(state);
 			this._emit('load', state);
 		});
 		this.deviceOn('load', ({state}) => {
+<<<<<<< HEAD
 			// console.log(TAG, "!! ---- load ---- !!", state);
+=======
+			console.log(TAG, "!! ---- load ---- !!", state);
+>>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 		});
 		this.deviceOn('settings/get', (data, callback = noOp) => callback(null, {settings: this.settings.getAll()}));
 		this.deviceOn('device/update', (data, callback = noOp) => {
@@ -67,7 +75,11 @@ class Service {
 	}
 
 	_emit (event, data) {
+<<<<<<< HEAD
 		// console.log(TAG, "!! ---- emit ---- !!", event, data);
+=======
+		console.log(TAG, "!! ---- emit ---- !!", event, data);
+>>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 		this.events.emit(event, data);
 
 		// Re-emit the event with a wildcard for listeners using wildcard
@@ -76,11 +88,19 @@ class Service {
 	}
 
 	update ({state, settings_definitions}) {
+<<<<<<< HEAD
 		// console.log(TAG, "!! ---- update ---- !!", state, settings_definitions);
 
 		Object.keys(state).forEach(key => {
 			if (state[key]) this._emit(key, state[key]);
 			// console.log(TAG, "!! ---- emit ---- !!", key, state[key]);
+=======
+		console.log(TAG, "!! ---- update ---- !!", state, settings_definitions);
+
+		Object.keys(state).forEach(key => {
+			if (state[key]) this._emit(key, state[key]);
+			console.log(TAG, "!! ---- emit ---- !!", key, state[key]);
+>>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 		});
 	
 		if (state) {

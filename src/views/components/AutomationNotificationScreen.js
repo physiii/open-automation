@@ -27,6 +27,9 @@ export class AutomationNotificationScreen extends React.Component {
 			forms_with_errors_count: 0,
 			is_saveable: false
 		};
+
+
+		console.log("!!! ------ HIT ------- !!! AutomationNotificationScreen", this.props.match.params.type)
 	}
 
 	handleSettingsErrors () {
@@ -88,4 +91,5 @@ AutomationNotificationScreen.propTypes = {
 	match: PropTypes.object.isRequired
 };
 
+// export default withRoute({params: '/notification/email'})(AutomationNotificationScreen);
 export default withRoute({params: '/:type/:notificationIndex?'})(AutomationNotificationScreen);
