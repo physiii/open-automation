@@ -43,11 +43,7 @@ class Automator {
 
 		automation.triggers.forEach((trigger) => {
 			const run = (event_data = {}, trigger_data = {}) => {
-<<<<<<< HEAD
 					// console.log(TAG, "triggers:", trigger, trigger_data);
-=======
-					console.log(TAG, "triggers:", trigger, trigger_data);
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 					const triggered_date = moment(event_data.date).utc();
 
 					this.runAutomation(automation, {
@@ -141,11 +137,7 @@ class Automator {
 	}
 
 	runAutomation (automation, trigger_data) {
-<<<<<<< HEAD
 		// console.log(TAG, "runAutomation:", automation, trigger_data);
-=======
-		console.log(TAG, "runAutomation:", automation, trigger_data);
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 		const account = AccountsManager.getAccountById(automation.account_id);
 
 		if (!automation.is_enabled || !this.checkConditions(automation.conditions, trigger_data, account)) {
