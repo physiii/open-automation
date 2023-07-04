@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
-import './Button.css';
+import styles from './Button.css';
 
 export class Button extends React.Component {
 	constructor (props) {
@@ -13,8 +13,8 @@ export class Button extends React.Component {
 	render () {
 		const children = (
 			<React.Fragment>
-				{this.props.icon && <span styleName="icon">{this.props.icon}</span>}
-				<span styleName="label">{this.props.children}</span>
+				{this.props.icon && <span className={styles.icon}>{this.props.icon}</span>}
+				<span className={styles.label}>{this.props.children}</span>
 			</React.Fragment>
 		);
 
@@ -37,7 +37,7 @@ export class Button extends React.Component {
 		}
 
 		if (this.props.to && !this.props.disabled) {
-			return <Link styleName={className} to={this.props.to} onClick={this.props.onClick}>{children}</Link>;
+			return <Link className={styles[className]} to={this.props.to} onClick={this.props.onClick}>{children}</Link>;
 		}
 
 		return [
@@ -51,8 +51,8 @@ export class Button extends React.Component {
 				if (typeof this.props.onClick === 'function') {
 					this.props.onClick(event);
 				}
-			}} styleName={className} disabled={this.props.disabled}>{children}</button>,
-			this.props.submitForm && <input styleName="submit" type="submit" key="submit" ref={this.submitInput} />
+			}} className={styles[className]} disabled={this.props.disabled}>{children}</button>,
+			this.props.submitForm && <input className={styles.submit} type="submit" key="submit" ref={this.submitInput} />
 		];
 	}
 }

@@ -5,7 +5,7 @@ import {Route} from './Route.js';
 import Button from './Button.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-import './ServiceDetails.css';
+import styles from './ServiceDetails.css';
 import MetaList from './MetaList.js';
 
 export class ServiceDetails extends React.Component {
@@ -21,7 +21,7 @@ export class ServiceDetails extends React.Component {
 				<Route exact path={this.props.match.url} render={() => (
 					<SettingsScreenContainer section={true}>
 						{this.props.service.error && <p>The device settings could not be updated because of an error.</p>}
-						<header styleName="header">
+						<header className={styles.header}>
 							{this.props.shouldShowSettingsButton && <Button to={this.props.match.url + ServiceDetails.settingsPath}>Settings</Button>}
 						</header>
 						{this.props.children}

@@ -5,7 +5,7 @@ import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import Switch from './Switch.js';
 import SliderControl from './SliderControl.js';
-import './DimmerCard.css';
+import styles from './DimmerCard.css';
 
 export class DimmerCard extends React.Component {
 	constructor (props) {
@@ -71,12 +71,12 @@ export class DimmerCard extends React.Component {
 				isConnected={isConnected}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
-				<div styleName="container">
+				<div className={styles.container}>
 					<Switch
 						isOn={this.props.service.state.get('level') > 0}
 						showLabels={true}
 						disabled={!isConnected} />
-					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
+					<div className={styles.sliderWrapper} onClick={(event) => event.stopPropagation()}>
 						<SliderControl
 							value={currentLevel}
 							onInput={this.handleSliderInput.bind(this)}

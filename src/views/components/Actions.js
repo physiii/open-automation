@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Actions.css';
+import styles from './Actions.css';
 
 export const Actions = (props) => {
 	return (
-		<div styleName="actions">
+		<div className={styles.actions}>
 			{props.children}
 		</div>
 	);

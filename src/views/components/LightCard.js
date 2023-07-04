@@ -5,7 +5,7 @@ import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import Switch from './Switch.js';
 import SliderControl from './SliderControl.js';
 import ServiceCardBase from './ServiceCardBase.js';
-import './LightCard.css';
+import styles from './LightCard.css';
 
 export class LightCard extends React.Component {
 	constructor (props) {
@@ -147,38 +147,38 @@ export class LightCard extends React.Component {
 				isConnected={isConnected}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
-				<div styleName="switchWrapper">
+				<div className={styles.switchWrapper}>
 					<Switch
 						isOn={this.getPower()}
 						onChange={this.onClick}
 						showLabels={false}
 						disabled={!isConnected} />
 				</div>
-				<span styleName="themeContainer">
+				<span className={styles.themeContainer}>
 					<div
-						styleName="theme_1"
+						className={styles.theme_1}
 						style={{backgroundColor: this.getTheme(0)}}
 						onClick={this.handleThemeOneSelect.bind(this)}
 					/>
 					<div
-						styleName="theme_2"
+						className={styles.theme_2}
 						style={{backgroundColor: this.getTheme(1)}}
 						onClick={this.handleThemeTwoSelect.bind(this)}
 					/>
 				</span>
-				<span styleName="themeContainer">
+				<span className={styles.themeContainer}>
 					<div
-						styleName="theme_3"
+						className={styles.theme_3}
 						style={{backgroundColor: this.getTheme(2)}}
 						onClick={this.handleThemeThreeSelect.bind(this)}
 					/>
 					<div
-						styleName="theme_4"
+						className={styles.theme_4}
 						style={{backgroundColor: this.getTheme(3)}}
 						onClick={this.handleThemeFourSelect.bind(this)}
 					/>
 				</span>
-				<div styleName="sliderWrapper">
+				<div className={styles.sliderWrapper}>
 					<SliderControl
 						value={currentLevel}
 						onInput={this.handleSliderInput.bind(this)}

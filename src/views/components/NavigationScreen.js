@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {loadContext, loadScreen, unloadContext, unloadScreen} from '../../state/ducks/navigation/operations.js';
-import './NavigationScreen.css';
+import styles from './NavigationScreen.css';
 
 const Context = React.createContext();
 
@@ -59,7 +59,7 @@ export class NavigationScreen extends React.Component {
 				depth: this.props.contextDepth + 1,
 				childContainer: this.childScreenContainer
 			}}>
-				<div styleName="screen">
+				<div className={styles.screen}>
 					{this.props.children}
 				</div>
 				<div ref={this.childScreenContainer} />

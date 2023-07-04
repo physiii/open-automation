@@ -10,7 +10,7 @@ import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {getServiceByTypeAndDeviceId, getSettingsOptionLabelByValue} from '../../state/ducks/services-list/selectors.js';
 import {gameMachineAddCredit} from '../../state/ducks/services-list/operations.js';
-import './GameMachineCard.css';
+import styles from './GameMachineCard.css';
 
 const ONE_DOLLAR = 1,
 	FIVE_DOLLARS = 5,
@@ -49,14 +49,14 @@ export class GameMachineCard extends React.Component {
 				isConnected={this.props.service.state.get('connected')}
 				secondaryAction={<Button to={`${this.props.match.url}/service-log/${this.props.billAcceptorService.id}`}>{this.props.billAcceptorService.settings.get('name') || 'Bill Acceptor'} Log</Button>}
 				{...this.props}>
-				<div styleName="container">
-					<section styleName="main">
-						<span styleName="hopperTotal">{this.props.service.state.get('connected') ? formatUsd(this.props.billAcceptorService.state.get('hopper_total') || 0) : 'Unknown'}</span>
-						<span styleName="hopperTotalDescription">collected since hopper was emptied.</span>
+				<div className={styles.container}>
+					<section className={styles.main}>
+						<span className={styles.hopperTotal}>{this.props.service.state.get('connected') ? formatUsd(this.props.billAcceptorService.state.get('hopper_total') || 0) : 'Unknown'}</span>
+						<span className={styles.hopperTotalDescription}>collected since hopper was emptied.</span>
 					</section>
-					<section styleName="addCredit">
-						<h2 styleName="addCreditTitle">Add Credit</h2>
-						<div styleName="addCreditButtons">
+					<section className={styles.addCredit}>
+						<h2 className={styles.addCreditTitle}>Add Credit</h2>
+						<div className={styles.addCreditButtons}>
 							<Button type="link" onClick={this.handleAddCreditClick.bind(this, ONE_DOLLAR)}>$1</Button>
 							<Button type="link" onClick={this.handleAddCreditClick.bind(this, FIVE_DOLLARS)}>$5</Button>
 							<Button type="link" onClick={this.handleAddCreditClick.bind(this, TEN_DOLLARS)}>$10</Button>

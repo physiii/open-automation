@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button.js';
-import './TabBar.css';
+import styles from './TabBar.css';
 
 export const TabBar = (props) => (
-	<div styleName="bar">
-		<ul styleName="tabs">
+	<div className={styles.bar}>
+		<ul className={styles.tabs}>
 			{props.buttons.map((button, index) => (
-				<li styleName={'tab' + (button.isActive ? ' active' : '')} key={index}>
+				<li className={styles.tab + (button.isActive ? ' active' : '')} key={index}>
 					<Button type="tab" to={button.to} icon={button.icon} onClick={(event) => event.target.blur()}>{button.label}</Button>
 				</li>
 			))}

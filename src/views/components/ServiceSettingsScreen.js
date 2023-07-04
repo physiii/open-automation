@@ -15,7 +15,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
 import {setServiceSettings} from '../../state/ducks/services-list/operations.js';
-import './ServiceSettingsScreen.css';
+import styles from './ServiceSettingsScreen.css';
 import moment from 'moment';
 
 export class ServiceSettingsScreen extends React.Component {
@@ -193,12 +193,12 @@ export class ServiceSettingsScreen extends React.Component {
 							]}
 						</List>
 					)}
-					<header styleName="header">
+					<header className={styles.header}>
 						{ServiceIcon.willRenderIcon(service) &&
-							<div styleName="iconContainer">
+							<div className={styles.iconContainer}>
 								<ServiceIcon service={service} size={32} />
 							</div>}
-						<div styleName="nameContainer">
+						<div className={styles.nameContainer}>
 							<Form
 								fields={{name: nameField}}
 								values={{name: service.settings.get('name')}}
@@ -222,7 +222,7 @@ export class ServiceSettingsScreen extends React.Component {
 					{this.props.children}
 					{Form.willAnyFieldsRender(restOfSettingsFields) && (
 						<React.Fragment>
-							<h1 styleName="settingsHeading">{service.strings.get('friendly_type')} Settings</h1>
+							<h1 className={styles.settingsHeading}>{service.strings.get('friendly_type')} Settings</h1>
 							<Form
 								fields={restOfSettingsFields}
 								values={service.settings.toObject()}
@@ -237,7 +237,7 @@ export class ServiceSettingsScreen extends React.Component {
 						{margin: '20px 20px 40px 20px',
 							display: this.props.service.settings.get('motion_detection_enabled') ? 'show' : 'none'}}
 					onMouseMove={this.onMouseMove}>
-						<h1 styleName="">Click to set motion detection region.</h1>
+						<h1 className="">Click to set motion detection region.</h1>
 						<ServiceCardBase
 							service={this.props.service}
 							name={this.props.service.settings.get('name') || 'Camera'}

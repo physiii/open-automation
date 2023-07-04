@@ -5,7 +5,7 @@ import {doServiceAction, setServiceSettings} from '../../state/ducks/services-li
 import ServiceCardBase from './ServiceCardBase.js';
 import Switch from './Switch.js';
 import SliderControl from './SliderControl.js';
-import './ButtonCard.css';
+import styles from './ButtonCard.css';
 
 export class ButtonCard extends React.Component {
 	constructor (props) {
@@ -75,12 +75,12 @@ export class ButtonCard extends React.Component {
 				isConnected={isConnected}
 				onCardClick={this.toggleMode.bind(this)}
 				{...this.props}>
-				<div styleName="container">
+				<div className={styles.container}>
 					<Switch
 						isOn={this.settings.sensitivity > 0}
 						showLabels={true}
 						disabled={!isConnected} />
-					<div styleName="sliderWrapper" onClick={(event) => event.stopPropagation()}>
+					<div className={styles.sliderWrapper} onClick={(event) => event.stopPropagation()}>
 						<SliderControl
 							value={currentMode}
 							onInput={this.handleInput.bind(this)}

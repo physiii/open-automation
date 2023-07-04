@@ -9,7 +9,7 @@ import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import {Route} from './Route.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-import './LightServiceDetails.css';
+import styles from './LightServiceDetails.css';
 
 export class LightServiceDetails extends React.Component {
 
@@ -78,26 +78,26 @@ export class LightServiceDetails extends React.Component {
 						<br />
 
 						{this.state.selected_theme === 0
-							?	<span styleName="sensorTitle">
+							?	<span className={styles.sensorTitle}>
 									Select a theme to change
 							</span>
-							: <span styleName="sensorTitle">
+							: <span className={styles.sensorTitle}>
 									Theme {this.state.selected_theme}
 							</span>
 						}
 
 						<br />
-						<span styleName="setThemeContainer">
-							<div styleName="setTheme_1" style={{backgroundColor: this.getTheme(0)}} onClick={this.handleThemeOneSelect.bind(this)} />
-							<div styleName="setTheme_2" style={{backgroundColor: this.getTheme(1)}} onClick={this.handleThemeTwoSelect.bind(this)} />
+						<span className={styles.setThemeContainer}>
+							<div className={styles.setTheme_1} style={{backgroundColor: this.getTheme(0)}} onClick={this.handleThemeOneSelect.bind(this)} />
+							<div className={styles.setTheme_2} style={{backgroundColor: this.getTheme(1)}} onClick={this.handleThemeTwoSelect.bind(this)} />
 						</span>
-						<span styleName="setThemeContainer">
-							<div styleName="setTheme_3" style={{backgroundColor: this.getTheme(2)}} onClick={this.handleThemeThreeSelect.bind(this)} />
-							<div styleName="setTheme_4" style={{backgroundColor: this.getTheme(3)}} onClick={this.handleThemeFourSelect.bind(this)} />
+						<span className={styles.setThemeContainer}>
+							<div className={styles.setTheme_3} style={{backgroundColor: this.getTheme(2)}} onClick={this.handleThemeThreeSelect.bind(this)} />
+							<div className={styles.setTheme_4} style={{backgroundColor: this.getTheme(3)}} onClick={this.handleThemeFourSelect.bind(this)} />
 						</span>
 						<br />
 						{this.state.selected_theme
-							?	<div styleName="pickerContainer">
+							?	<div className={styles.pickerContainer}>
 								<ChromePicker
 									width="94%"
 									color={ this.state.background }

@@ -1,21 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Switch.css';
+import styles from './Switch.css';
 
 export const Switch = (props) => {
 	const {isOn, showLabels, offLabel, onLabel, ...inputProps} = {...props};
 
 	return (
-		<div styleName={'container' + (props.disabled ? ' isDisabled' : '')}>
-			{showLabels && <span styleName="offLabel">{offLabel}</span>}
-			<span styleName={'switch' + (isOn ? ' isOn' : '')}>
+		<div className={styles.container + (props.disabled ? ' isDisabled' : '')}>
+			{showLabels && <span className={styles.offLabel}>{offLabel}</span>}
+			<span className={styles.switch + (isOn ? ' ' + styles.isOn : '')}>
 				<input
 					{...inputProps}
-					styleName="input"
+					className={styles.input}
 					type="checkbox"
 					checked={isOn} />
 			</span>
-			{showLabels && <span styleName="onLabel">{onLabel}</span>}
+			{showLabels && <span className={styles.onLabel}>{onLabel}</span>}
 		</div>
 	);
 };

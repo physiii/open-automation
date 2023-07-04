@@ -18,7 +18,7 @@ import {compose} from 'redux';
 import {getDeviceById} from '../../state/ducks/devices-list/selectors.js';
 import {setDeviceSettings, deleteDevice} from '../../state/ducks/devices-list/operations.js';
 import {getServiceById} from '../../state/ducks/services-list/selectors.js';
-import './DeviceDetailsScreen.css';
+import styles from './DeviceDetailsScreen.css';
 import Api from '../../api.js';
 
 export class DeviceDetailsScreen extends React.Component {
@@ -83,7 +83,7 @@ export class DeviceDetailsScreen extends React.Component {
 									</List>
 								</React.Fragment>}
 							<DeviceRoomField deviceId={device.id} />
-							<h1 styleName="infoHeading">Device Info</h1>
+							<h1 className={styles.infoHeading}>Device Info</h1>
 							<MetaList layout="vertical" alignLabels="left">
 								{[
 									{label: 'Manufacturer', value: device.info.manufacturer},

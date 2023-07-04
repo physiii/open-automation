@@ -6,7 +6,7 @@ import {compose} from 'redux';
 import {withRouter} from 'react-router-dom';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
-import './ScaleCard.css';
+import styles from './ScaleCard.css';
 
 export class ScaleCard extends React.Component {
 	constructor (props) {
@@ -62,9 +62,9 @@ export class ScaleCard extends React.Component {
 				secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Device Log</Button>}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
-				<div styleName="container">
+				<div className={styles.container}>
 					<section>
-						<span styleName="sensorTitle">
+						<span className={styles.sensorTitle}>
 							{this.props.service.state.get('weight') ? this.props.service.state.get('weight').toFixed(1) : '0'} lbs
 						</span>
 						<br />

@@ -8,7 +8,8 @@ import {doServiceAction, fetchDeviceLog} from '../../state/ducks/services-list/o
 import {getDeviceLog, getServiceById} from '../../state/ducks/services-list/selectors.js';
 import {Route} from './Route.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-import './ServiceDetails.css';
+import styles from './ServiceDetails.css';
+
 import RangeControl from './RangeControl.js';
 
 const ONE_SECOND_IN_MILLISECONDS = 1000,
@@ -243,11 +244,11 @@ export class AccessControlServiceDetails extends React.Component {
 			<Switch>
 				<Route exact path={this.props.match.url} render={() => (
 					<div>
-						<div styleName="graphContainerExpanded">Water Temperature Range
+						<div className={styles.graphContainerExpanded}>Water Temperature Range
 							<span>
-								<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
+								<div className={styles.tempScheduleLabel}>{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
 							</span>
-							<span styleName="tempSlider">
+							<span className={styles.tempSlider}>
 								<RangeControl
 									onInput={this.handleHoldRangeInput.bind(this)}
 									onChange={this.handleHoldRangeChange.bind(this)}
@@ -255,14 +256,14 @@ export class AccessControlServiceDetails extends React.Component {
 									max={this.state.holdTemp.max} />
 							</span>
 						</div>
-						<div styleName="graphContainerExpanded">pH Calibration
-							<span styleName="themeContainer">
+						<div className={styles.graphContainerExpanded}>pH Calibration
+							<span className={styles.themeContainer}>
 								<div
-									styleName="theme_1"
+									className={styles.theme_1}
 									onClick={this.setPhPoint.bind(this)}
 								/>
 								<div
-									styleName="theme_2"
+									className={styles.theme_2}
 									onClick={this.setPhPoint.bind(this)}
 								/>
 							</span>
@@ -272,10 +273,10 @@ export class AccessControlServiceDetails extends React.Component {
 						</div>
 						{this.state.logsReady ?
 							<div>
-								<div styleName="sensorTitle">Sensor Graphs</div>
+								<div className={styles.sensorTitle}>Sensor Graphs</div>
 								{this.state.sensorGraphs.map((item, index) => (
 									<div
-										styleName={ item.display ? 'graphContainerExpanded' : 'graphContainer'}
+										className={ item.display ? styles.graphContainerExpanded : styles.graphContainer}
 										key={item.key}>
 										{ this.state.sensorGraphs[index].display
 											?

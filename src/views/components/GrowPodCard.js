@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
-import './GrowPodCard.css';
+import styles from './GrowPodCard.css';
 
 export class GrowPodCard extends React.Component {
 	constructor (props) {
@@ -87,34 +87,34 @@ export class GrowPodCard extends React.Component {
 				isConnected={isConnected}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
-				<div styleName="container">
-					<section styleName="sensorPanelA">
-						<span styleName="sensorTitle">
+				<div className={styles.container}>
+					<section className={styles.sensorPanelA}>
+						<span className={styles.sensorTitle}>
 							Atmosphere
 						</span>
 						<br />
-						<span styleName="sensorValues">
-							<span styleName="sensorValue">
+						<span className={styles.sensorValues}>
+							<span className={styles.sensorValue}>
 								{this.getAtmTemp()} &#8457;
 							</span>
-							<span styleName="sensorValue">
+							<span className={styles.sensorValue}>
 								{this.getHumidity()} RH
 							</span>
 						</span>
 					</section>
-					<section styleName="sensorPanelB">
-						<span styleName="sensorTitle">
+					<section className={styles.sensorPanelB}>
+						<span className={styles.sensorTitle}>
 							Water
 						</span>
 						<br />
-						<span styleName="sensorValues">
-							<span styleName="sensorValue">
+						<span className={styles.sensorValues}>
+							<span className={styles.sensorValue}>
 								{this.getWaterTemp()} &#8457;
 							</span>
-							<span styleName="sensorValue">
+							<span className={styles.sensorValue}>
 								{this.getWaterPh()} pH
 							</span>
-							<span styleName="sensorValue">
+							<span className={styles.sensorValue}>
 								{this.getWaterEc()} uS/cm
 							</span>
 						</span>

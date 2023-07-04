@@ -1,12 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GridColumn.css';
+import styles from './GridColumn.css';
 
-export const GridColumn = (props) => (
-	<div styleName={'column' + (props.columns || '')}>
-		{props.children}
-	</div>
-);
+export const GridColumn = (props) => {
+	const numberOfColumns = props.columns || '',
+		columnClass = numberOfColumns ? styles[`column${numberOfColumns}`] : '',
+		combinedClasses = `${styles.column} ${columnClass}`;
+
+	return (
+		<div className={combinedClasses}>
+			{props.children}
+		</div>
+	);
+};
 
 GridColumn.propTypes = {
 	children: PropTypes.node,

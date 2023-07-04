@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Hls from '../../lib/hls/hls.js';
 import fscreen from 'fscreen';
-import './VideoPlayer.css';
+import styles from './VideoPlayer.css';
 
 export class HlsPlayer extends React.Component {
 	constructor (props) {
@@ -111,7 +111,7 @@ export class HlsPlayer extends React.Component {
 			<div>
 				<video
 					id={this.props.cameraServiceId}
-					styleName="hlsPlayer"
+					className={styles.hlsPlayer}
 					controls="controls"
 					src={this.state.hlsSupported ? '' : this.props.videoUrl}
 					type="application/x-mpegURL" />

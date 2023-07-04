@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button.js';
 import moment from 'moment';
-import './DatePicker.css';
+import styles from './DatePicker.css';
 
 export class DatePicker extends React.Component {
 	constructor (props) {
@@ -104,36 +104,36 @@ export class DatePicker extends React.Component {
 		const month = this.state.selectedMonth;
 
 		return (
-			<div styleName="datePicker">
-				<time styleName="calendar" dateTime={month.format('YYYY')}>
-					<div styleName="monthHeader">
-						<div styleName="previousMonthButton">
+			<div className={styles.datePicker}>
+				<time className={styles.calendar} dateTime={month.format('YYYY')}>
+					<div className={styles.monthHeader}>
+						<div className={styles.previousMonthButton}>
 							<Button onClick={this.selectPreviousMonth}>&lt;</Button>
 						</div>
 						<h2>{month.format('MMMM YYYY')}</h2>
-						<div styleName="nextMonthButton">
+						<div className={styles.nextMonthButton}>
 							<Button onClick={this.selectNextMonth}>&gt;</Button>
 						</div>
 					</div>
-					<div styleName="weekHeader">
-						<div styleName="dayHeading">Sun</div>
-						<div styleName="dayHeading">Mon</div>
-						<div styleName="dayHeading">Tue</div>
-						<div styleName="dayHeading">Wed</div>
-						<div styleName="dayHeading">Thu</div>
-						<div styleName="dayHeading">Fri</div>
-						<div styleName="dayHeading">Sat</div>
+					<div className={styles.weekHeader}>
+						<div className={styles.dayHeading}>Sun</div>
+						<div className={styles.dayHeading}>Mon</div>
+						<div className={styles.dayHeading}>Tue</div>
+						<div className={styles.dayHeading}>Wed</div>
+						<div className={styles.dayHeading}>Thu</div>
+						<div className={styles.dayHeading}>Fri</div>
+						<div className={styles.dayHeading}>Sat</div>
 					</div>
 					{this.getWeeksList(month).map((week, weekIndex) => {
 						const weekDate = moment(month).add(weekIndex, 'weeks'); // Create a new Moment date based on month so we don't mutate month.
 
 						if (!week.length) {
-							return <div styleName="week" key={weekIndex} />;
+							return <div className={styles.week} key={weekIndex} />;
 						}
 
 						return (
 							<time
-								styleName={weekIndex === 0 ? 'firstWeek' : 'week'}
+								className={weekIndex === 0 ? styles.firstWeek : styles.week}
 								dateTime={weekDate.format('YYYY-[W]w')}
 								key={weekIndex}>
 								{week.map((day, dayIndex) => {
@@ -150,11 +150,11 @@ export class DatePicker extends React.Component {
 										};
 
 									return (
-										<time styleName="day" dateTime={day.format('YYYY-MM-DD')} key={dayIndex}>
+										<time className={styles.day} dateTime={day.format('YYYY-MM-DD')} key={dayIndex}>
 											<a
 												href="#"
-												styleName={
-													(isDaySelected ? 'selectedDayLink' : 'dayLink') +
+												className={
+													(isDaySelected ? styles.selectedDayLink : styles.dayLink) +
 													(isDayEnabled ? ' enabledDay' : '')
 												}
 												onClick={onDateClick}>
@@ -167,7 +167,7 @@ export class DatePicker extends React.Component {
 						);
 					})}
 				</time>
-				<div styleName="aspectRatio" />
+				<div className={styles.aspectRatio} />
 			</div>
 		);
 	}

@@ -6,7 +6,7 @@ import PlayButtonIcon from '../icons/PlayButtonIcon.js';
 import StopButtonIcon from '../icons/StopButtonIcon.js';
 import ExpandIcon from '../icons/ExpandIcon.js';
 import fscreen from 'fscreen';
-import './VideoPlayer.css';
+import styles from './VideoPlayer.css';
 
 const controlsHideDelay = 3000;
 
@@ -176,27 +176,27 @@ export class VideoPlayer extends React.Component {
 		return (
 			<div
 				onKeyDown={this.handleKeyPress}
-				styleName={'player' + (this.state.isPlaying ? ' isPlaying' : '') + (this.state.isFullScreen ? ' isFullScreen' : '')}
+				className={styles['player' + (this.state.isPlaying ? ' isPlaying' : '') + (this.state.isFullScreen ? ' isFullScreen' : '')]}
 				ref={this.element}
 				onClick={this.handleClick}
 				onMouseMove={() => this.showHideControls()}>
-				<div styleName="overlay">
+				<div className={styles.overlay}>
 					{this.state.isPlaying && this.props.shouldShowControls ? <StopButtonIcon size={64} shadowed={true} /> : null}
 					{!this.state.isPlaying && this.props.shouldShowControls ? <PlayButtonIcon size={64} shadowed={true} /> : null}
 				</div>
-				<div styleName={'toolbar' + (this.props.shouldShowControls ? '' : ' isHidden')}>
+				<div className={styles['toolbar' + (this.props.shouldShowControls ? '' : ' isHidden')]}>
 					<Toolbar rightChildren={fscreen.fullscreenEnabled &&
 						<ExpandIcon size={22} isExpanded={this.state.isFullScreen} onClick={this.handleFullScreenClick} />} />
 				</div>
 				{this.state.isPlaying && !this.props.recording &&
-					<span styleName="live">Live</span>}
-				<div styleName="video">
-					<span styleName="aspectRatio" style={{paddingTop: this.getAspectRatioPaddingTop()}} />
+					<span className={styles.live}>Live</span>}
+				<div className={styles.video}>
+					<span className={styles.aspectRatio} style={{paddingTop: this.getAspectRatioPaddingTop()}} />
 					{this.props.posterUrl && !this.state.hasPlayedOnce &&
-					<img styleName="poster" src={this.props.posterUrl}/>}
+					<img className={styles.poster} src={this.props.posterUrl}/>}
 
 					<div
-						styleName={'motionAreaOverlay'}
+						className={styles.motionAreaOverlay}
 						style={this.props.motionArea ?	{
 							left: this.props.motionArea.p1[0] * this.getVideoWidth(),
 							top: this.props.motionArea.p1[1] * this.getVideoHeight(),
@@ -204,7 +204,7 @@ export class VideoPlayer extends React.Component {
 							height: this.getMotionHeight()
 						} : {display: 'none'}} />
 					<VideoStream
-						styleName="canvas"
+						className={styles.canvas}
 						{...this.props}
 						shouldStream={this.state.isPlaying}
 						key={(this.props.recording && this.props.recording.id) || this.props.cameraServiceId} />

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
-import './AccessControlCard.css';
+import Button from './Button.js';
+import styles from './AccessControlCard.css';
+
 
 export class AccessControlCard extends React.Component {
 	constructor (props) {
@@ -18,14 +20,6 @@ export class AccessControlCard extends React.Component {
 		this.setLevel(this.props.service.state.get('light_level') > 0 ? 0 : 1);
 	}
 
-	getPercentage1 (value) {
-		return Math.round(value) / 100;
-	}
-
-	getPercentage100 (value) {
-		return Math.round(value * 100);
-	}
-
 	setLevel (value) {
 		if (!this.props.service.state.get('connected')) {
 			return;
@@ -37,38 +31,13 @@ export class AccessControlCard extends React.Component {
 		});
 	}
 
-	minTwoDigits (number) {
-		return (number < 10 ? '0' : '') + number;
-	}
+	pulse () {
+		if (!this.props.service.state.get('connected')) return;
 
-	getAtmTemp () {
-		if (this.props.service.state.get('atm_temp')) return this.props.service.state.get('atm_temp');
-
-		return 'Unknown';
-	}
-
-	getHumidity () {
-		if (this.props.service.state.get('humidity')) return this.props.service.state.get('humidity');
-
-		return 'Unknown';
-	}
-
-	getWaterTemp () {
-		if (this.props.service.state.get('water_temp')) return this.props.service.state.get('water_temp');
-
-		return 'Unknown';
-	}
-
-	getWaterEc () {
-		if (this.props.service.state.get('ec')) return this.props.service.state.get('ec');
-
-		return 'Unknown';
-	}
-
-	getWaterPh () {
-		if (this.props.service.state.get('ph')) return this.props.service.state.get('ph');
-
-		return 'Unknown';
+		this.props.doAction(this.props.service.id, {
+			property: 'pulseLock',
+			value: true
+		});
 	}
 
 	render () {
@@ -78,47 +47,17 @@ export class AccessControlCard extends React.Component {
 			<ServiceCardBase
 				name={this.props.service.settings.get('name') || 'AccessControl'}
 				status={this.props.service.state.get('connected')
-					? Math.trunc(this.props.service.state.get('cycletime') / 604800) + 'w ' +
-						Math.trunc((this.props.service.state.get('cycletime') % 604800) / 86400) + 'd ' +
-						this.minTwoDigits(Math.trunc((this.props.service.state.get('cycletime') % 86400) / 3600)) + ':' +
-						this.minTwoDigits(Math.trunc((this.props.service.state.get('cycletime') % 3600) / 60)) + ':' +
-						this.minTwoDigits(this.props.service.state.get('cycletime') % 60)
-					:	'Unknown'}
+					? 'Opened 5 minutes ago' : 'Unknown'}
 				isConnected={isConnected}
-				onCardClick={this.onCardClick.bind(this)}
+				// secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Device Log</Button>}
+				onCardClick={this.pulse.bind(this)}
 				{...this.props}>
-				<div styleName="container">
-					<section styleName="sensorPanelA">
-						<span styleName="sensorTitle">
-							Atmosphere
-						</span>
-						<br />
-						<span styleName="sensorValues">
-							<span styleName="sensorValue">
-								{this.getAtmTemp()} &#8457;
-							</span>
-							<span styleName="sensorValue">
-								{this.getHumidity()} RH
-							</span>
-						</span>
-					</section>
-					<section styleName="sensorPanelB">
-						<span styleName="sensorTitle">
-							Water
-						</span>
-						<br />
-						<span styleName="sensorValues">
-							<span styleName="sensorValue">
-								{this.getWaterTemp()} &#8457;
-							</span>
-							<span styleName="sensorValue">
-								{this.getWaterPh()} pH
-							</span>
-							<span styleName="sensorValue">
-								{this.getWaterEc()} uS/cm
-							</span>
-						</span>
-					</section>
+				<div className={styles.container}>
+					<div className={styles.switchWrapper}>
+						<Button onClick={this.pulse.bind(this)}>
+							Pulse
+						</Button>
+					</div>
 				</div>
 			</ServiceCardBase>
 		);
@@ -126,6 +65,7 @@ export class AccessControlCard extends React.Component {
 }
 
 AccessControlCard.propTypes = {
+	match: PropTypes.object,
 	service: PropTypes.object,
 	doAction: PropTypes.func
 };

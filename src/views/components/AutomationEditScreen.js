@@ -15,7 +15,7 @@ import {compose} from 'redux';
 import {addAutomation, saveAutomation, deleteAutomation} from '../../state/ducks/automations-list/operations.js';
 import {getAutomationById, getEmptyAutomation} from '../../state/ducks/automations-list/selectors.js';
 import {getServices} from '../../state/ducks/services-list/selectors.js';
-import './AutomationEditScreen.css';
+import styles from './AutomationEditScreen.css';
 
 const ARMED_LABELS = [
 	'Disarmed',
@@ -149,14 +149,14 @@ export class AutomationEditScreen extends React.Component {
 								onSaveableChange={this.handleSettingsChange}
 								onError={this.handleSettingsErrors}
 								onNoError={this.handleNoSettingsErrors} />
-							<div styleName="sections">
-								<section styleName="section">
-									<h1 styleName="sectionHeading">When this happens</h1>
-									<div styleName="sectionContent">
-										{triggers.length ? <ul styleName="elementList">
+							<div className={styles.sections}>
+								<section className={styles.section}>
+									<h1 className={styles.sectionHeading}>When this happens</h1>
+									<div className={styles.sectionContent}>
+										{triggers.length ? <ul className={styles.elementList}>
 											{triggers.map((trigger, index) => {
-												console.log("trigger:", trigger);
-												console.log("services:", this.props.services);
+												console.log('trigger:', trigger);
+												console.log('services:', this.props.services);
 												const service = this.props.services.get(trigger.service_id);
 
 												if (!service) {
@@ -164,8 +164,8 @@ export class AutomationEditScreen extends React.Component {
 												}
 
 												return (
-													<li styleName="elementListItem" key={index}>
-														<Link styleName="elementListLink" to={areTriggersEditable ? this.props.match.url + '/edit-trigger/' + service.device_id + '/' + index : '#'}>
+													<li className={styles.elementListItem} key={index}>
+														<Link className={styles.elementListLink} to={areTriggersEditable ? this.props.match.url + '/edit-trigger/' + service.device_id + '/' + index : '#'}>
 															{service.getEventLabel(trigger.event) + ' on ' + service.settings.get('name')}
 														</Link>
 													</li>
@@ -173,48 +173,48 @@ export class AutomationEditScreen extends React.Component {
 											})}
 										</ul> : null}
 										{areTriggersEditable
-											? <span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
-												<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
+											? <span className={triggers.length ? styles.addButton : styles.primaryAddButton}>
+												<span className={triggers.length ? styles.addButtonLink : styles.primaryAddButtonLink}>
 													<Button to={this.props.match.url + '/add-trigger'}>
-														<span styleName={triggers.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
-														<span styleName={triggers.length ? 'addButtonLabel' : 'primaryAddButtonLabel'}>Add Trigger</span>
+														<span className={triggers.length ? styles.addButtonIcon : styles.primaryAddButtonIcon}><AddIcon size={12} /></span>
+														<span className={triggers.length ? styles.addButtonLabel : styles.primaryAddButtonLabel}>Add Trigger</span>
 													</Button>
 												</span>
 											</span>
-											: !triggers.length && <span styleName="addButtonPlaceholder"><span styleName="addButtonPlaceholderInner" /></span>}
+											: !triggers.length && <span className={styles.addButtonPlaceholder}><span className={styles.addButtonPlaceholderInner} /></span>}
 									</div>
 								</section>
-								<section styleName="section">
-									<h1 styleName="sectionHeading">Under the condition</h1>
-									<div styleName="sectionContent">
-										{conditions.length ? <ul styleName="elementList">
+								<section className={styles.section}>
+									<h1 className={styles.sectionHeading}>Under the condition</h1>
+									<div className={styles.sectionContent}>
+										{conditions.length ? <ul className={styles.elementList}>
 											{conditions.map((condition, index) => (
-												<li styleName="elementListItem" key={index}>
-													<Link styleName="elementListLink" to={areConditionsEditable ? this.props.match.url + '/edit-condition/' + condition.type + '/' + index : '#'}>
+												<li className={styles.elementListItem} key={index}>
+													<Link className={styles.elementListLink} to={areConditionsEditable ? this.props.match.url + '/edit-condition/' + condition.type + '/' + index : '#'}>
 														{ARMED_LABELS[condition.mode]}
 													</Link>
 												</li>
 											))}
 										</ul> : null}
 										{triggers.length && areConditionsEditable
-											? <span styleName="addButton">
-												<span styleName="addButtonLink">
+											? <span className={styles.addButton}>
+												<span className={styles.addButtonLink}>
 													<Button to={this.props.match.url + '/add-condition'}>
-														<span styleName="addButtonIcon"><AddIcon size={12} /></span>
-														<span styleName="addButtonLabel">Add Condition</span>
+														<span className={styles.addButtonIcon}><AddIcon size={12} /></span>
+														<span className={styles.addButtonLabel}>Add Condition</span>
 													</Button>
 												</span>
 											</span>
-											: !conditions.length && <span styleName="addButtonPlaceholder"><span styleName="addButtonPlaceholderInner" /></span>}
+											: !conditions.length && <span className={styles.addButtonPlaceholder}><span className={styles.addButtonPlaceholderInner} /></span>}
 									</div>
 								</section>
-								<section styleName="section">
-									<h1 styleName="sectionHeading">Perform these actions</h1>
-									<div styleName="sectionContent">
-										{notifications.length || actions.length ? <ul styleName="elementList">
+								<section className={styles.section}>
+									<h1 className={styles.sectionHeading}>Perform these actions</h1>
+									<div className={styles.sectionContent}>
+										{notifications.length || actions.length ? <ul className={styles.elementList}>
 											{notifications.map((notification, index) => (
-												<li styleName="elementListItem" key={index}>
-													<Link styleName="elementListLink" to={areNotificationsEditable ? this.props.match.url + '/edit-action/notification/' + notification.type + '/' + index : '#'}>
+												<li className={styles.elementListItem} key={index}>
+													<Link className={styles.elementListLink} to={areNotificationsEditable ? this.props.match.url + '/edit-action/notification/' + notification.type + '/' + index : '#'}>
 														{notification.type === 'email'
 															? 'Email ' + notification.email
 															: 'Send text to ' + notification.phone_number}
@@ -235,8 +235,8 @@ export class AutomationEditScreen extends React.Component {
 												// ))}
 
 												return (
-													<li styleName="elementListItem" key={index}>
-														<Link styleName="elementListLink" to={areActionsEditable ? this.props.match.url + '/edit-action/' + service.device_id + '/' + index : '#'}>
+													<li className={styles.elementListItem} key={index}>
+														<Link className={styles.elementListLink} to={areActionsEditable ? this.props.match.url + '/edit-action/' + service.device_id + '/' + index : '#'}>
 															{service.settings.get('name') + ' ' + action.action}
 														</Link>
 													</li>
@@ -244,15 +244,15 @@ export class AutomationEditScreen extends React.Component {
 											})}
 										</ul> : null}
 										{triggers.length && (areNotificationsEditable || areActionsEditable)
-											? <span styleName={notifications.length ? 'addButton' : 'primaryAddButton'}>
-												<span styleName={notifications.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
+											? <span className={notifications.length ? styles.addButton : styles.primaryAddButton}>
+												<span className={notifications.length ? styles.addButtonLink : styles.primaryAddButtonLink}>
 													<Button to={this.props.match.url + '/add-action'}>
-														<span styleName={notifications.length ? 'addButtonIcon' : 'primaryAddButtonIcon'}><AddIcon size={12} /></span>
-														<span styleName={notifications.length ? 'addButtonLabel' : 'primaryAddButtonLabel'}>Add Action</span>
+														<span className={notifications.length ? styles.addButtonIcon : styles.primaryAddButtonIcon}><AddIcon size={12} /></span>
+														<span className={notifications.length ? styles.addButtonLabel : styles.primaryAddButtonLabel}>Add Action</span>
 													</Button>
 												</span>
 											</span>
-											: !notifications.length && <span styleName="addButtonPlaceholder"><span styleName="addButtonPlaceholderInner" /></span>}
+											: !notifications.length && <span className={styles.addButtonPlaceholder}><span className={styles.addButtonPlaceholderInner} /></span>}
 									</div>
 								</section>
 							</div>

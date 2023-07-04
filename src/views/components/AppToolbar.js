@@ -14,7 +14,7 @@ import {getAppName, getLogoPath} from '../../state/ducks/config/selectors.js';
 import {getCurrentScreenTitle, getCurrentScreenDepth, shouldShowCurrentScreenTitle, getPreviousScreenPath, getPreviousScreenTitle} from '../../state/ducks/navigation/selectors.js';
 import {getUsername, getArmed} from '../../state/ducks/session/selectors.js';
 import {setArmed} from '../../state/ducks/session/operations.js';
-import './AppToolbar.css';
+import styles from './AppToolbar.css';
 
 const ARMED_STAY = 1,
 	ARMED_AWAY = 2;
@@ -58,7 +58,7 @@ export const AppToolbar = (props) => { // eslint-disable-line max-statements, co
 		left = props.backAction;
 	} else if (props.logoPath) {
 		left = (
-			<div styleName="logo">
+			<div className={styles.logo}>
 				<img src={props.logoPath} />
 			</div>
 		);
@@ -67,7 +67,7 @@ export const AppToolbar = (props) => { // eslint-disable-line max-statements, co
 	}
 
 	return (
-		<div styleName="toolbar">
+		<div className={styles.toolbar}>
 			<Toolbar
 				leftChildren={left}
 				middleChildren={props.title && props.shouldShowTitle && <h1>{props.title}</h1>}
@@ -75,23 +75,23 @@ export const AppToolbar = (props) => { // eslint-disable-line max-statements, co
 					<React.Fragment>
 						{props.screenActions}
 						{props.isRootScreen ? <React.Fragment>
-							<button styleName={'armedButton' + (isArmed ? ' isArmed' : '')} onClick={() => setShelfIsShowing(true)}>
+							<button className={styles.armedButton + (isArmed ? ' isArmed' : '')} onClick={() => setShelfIsShowing(true)}>
 								{isArmed
 									? <ShieldIcon shieldChecked={true} size={24} />
 									: <ShieldCrossedIcon size={24} />}
 							</button>
-							<button styleName="userButton" onClick={() => setShelfIsShowing(true)}>
+							<button className={styles.userButton} onClick={() => setShelfIsShowing(true)}>
 								<UserIcon size={24} />
 							</button>
 						</React.Fragment> : null}
 						{shelfIsShowing &&
 							<ModalShelf hide={() => setShelfIsShowing(false)}>
-								<section styleName="user">
-									<h1 styleName="username">{props.username}</h1>
+								<section className={styles.user}>
+									<h1 className={styles.username}>{props.username}</h1>
 									<Button to="/logout">Logout</Button>
 								</section>
-								<section styleName="security">
-									<h1 styleName="securityTitle">Security</h1>
+								<section className={styles.security}>
+									<h1 className={styles.securityTitle}>Security</h1>
 									<ArmMenu mode={props.armed} setArmed={setArmedMode} />
 								</section>
 							</ModalShelf>}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '../components/Button.js';
 import ShieldIcon from '../icons/ShieldIcon.js';
 import ShieldCrossedIcon from '../icons/ShieldCrossedIcon.js';
-import './ArmMenu.css';
+import styles from './ArmMenu.css';
 
 const DISARMED = 0,
 	ARMED_STAY = 1,
@@ -15,8 +15,8 @@ export const ArmMenu = (props) => {
 		isDisarmed = props.mode === DISARMED;
 
 	return (
-		<ul styleName="list">
-			<li styleName={'option' + (isArmedAway ? ' active' : '')}>
+		<ul className={styles.list}>
+			<li className={styles.option + (isArmedAway ? ' active' : '')}>
 				<Button
 					type="tab"
 					icon={<ShieldIcon shieldChecked={isArmedAway} size={24} />}
@@ -24,7 +24,7 @@ export const ArmMenu = (props) => {
 					{isArmedAway || props.labelsAllOn ? 'Armed Away' : 'Arm Away'}
 				</Button>
 			</li>
-			<li styleName={'option' + (isArmedStay ? ' active' : '')}>
+			<li className={styles.option + (isArmedStay ? ' active' : '')}>
 				<Button
 					type="tab"
 					icon={<ShieldIcon shieldChecked={isArmedStay} size={24} />}
@@ -32,7 +32,7 @@ export const ArmMenu = (props) => {
 					{isArmedStay || props.labelsAllOn ? 'Armed Stay' : 'Arm Stay'}
 				</Button>
 			</li>
-			<li styleName={'option' + (isDisarmed ? ' active' : '')}>
+			<li className={styles.option + (isDisarmed ? ' active' : '')}>
 				<Button
 					type="tab"
 					icon={<ShieldCrossedIcon size={24} />}

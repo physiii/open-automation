@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import IconBase from './IconBase.js';
-import './StopButtonIcon.css';
+import styles from './StopButtonIcon.css';
 
 export const StopButtonIcon = ({shadowed, ...props}) => (
 	<IconBase {...props} viewBox="0 0 68 68">
@@ -20,7 +20,7 @@ export const StopButtonIcon = ({shadowed, ...props}) => (
 				<feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0" in="shadowBlurOuter1" />
 			</filter>
 		</defs>
-		<g styleName={shadowed ? 'shadowedFill' : ''} transform="translate(-246 -118)" fillRule="evenodd">
+		<g className={shadowed ? styles.shadowedFill : ''} transform="translate(-246 -118)" fillRule="evenodd">
 			{shadowed &&
 				<use fill="#000" filter="url(#StopButtonIcon-shadowedFilter)" xlinkHref="#StopButtonIcon-main" />}
 			<use xlinkHref="#StopButtonIcon-main"/>

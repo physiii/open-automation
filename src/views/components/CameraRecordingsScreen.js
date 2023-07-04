@@ -15,7 +15,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getServiceById, getServiceNameById, cameraGetRecordingsByDate, cameraGetRecordingById, cameraGetDatesOfRecordings, cameraIsRecordingsListLoading, cameraGetRecordingsListError} from '../../state/ducks/services-list/selectors.js';
 import {cameraFetchRecordings, doServiceAction} from '../../state/ducks/services-list/operations.js';
-import './CameraRecordingsScreen.css';
+import styles from './CameraRecordingsScreen.css';
 
 const playButtonIcon = <PlayButtonIcon size={24} />,
 	downloadIcon = <DownloadIcon size={24} />;
@@ -126,13 +126,13 @@ export class CameraRecordingsScreen extends React.Component {
 			<NavigationScreen
 				title={(this.props.cameraName || 'Camera') + ' Recordings'}
 				url={this.props.match.urlWithoutOptionalParams}>
-				<div styleName="screen">
-					<div styleName={this.props.selectedRecording ? 'topRecordingSelected' : 'top'}>
+				<div className={styles.screen}>
+					<div className={this.props.selectedRecording ? styles.topRecordingSelected : styles.top}>
 						{this.state.showRecording
 							? <div>
 								{ this.props.service.settings.get('network_path')
 									?
-									<div styleName="videoContainer">
+									<div className={styles.videoContainer}>
 										<HlsPlayer
 											cameraServiceId={this.props.service.id}
 											live={false}
@@ -142,7 +142,7 @@ export class CameraRecordingsScreen extends React.Component {
 											ref={this.videoPlayer} />
 									</div>
 									: <div>
-										<div styleName="videoContainer">
+										<div className={styles.videoContainer}>
 											<AudioPlayer
 												audioServiceId={this.props.service.id}
 												recording={this.props.selectedRecording}
@@ -162,7 +162,7 @@ export class CameraRecordingsScreen extends React.Component {
 												height={this.props.selectedRecording.height}
 												videoLength={this.props.selectedRecording.duration}
 												autoplay={true} />
-											<div styleName="overlayTransport">
+											<div className={styles.overlayTransport}>
 												<SliderControl
 													value={this.state.currentPlayLocation}
 													max={this.props.selectedRecording.duration}
@@ -173,16 +173,16 @@ export class CameraRecordingsScreen extends React.Component {
 									</div>
 								}
 							</div>
-							: <div styleName="datePickerContainer">
+							: <div className={styles.datePickerContainer}>
 								<DatePicker
 									selectedDate={this.props.selectedDate}
 									enabledDates={this.props.getDatesOfRecordings(this.state.selectedMonth).map((date) => moment(date))}
 									onSelect={this.handleDateSelected}
 									onMonthChange={(selectedMonth) => this.setState({selectedMonth})} />
 							</div>}
-						{this.state.showRecording && <a href="#" styleName="closeButton" onClick={this.handleCloseClick}>Close</a>}
+						{this.state.showRecording && <a href="#" className={styles.closeButton} onClick={this.handleCloseClick}>Close</a>}
 					</div>
-					<div styleName={this.props.selectedRecording ? 'bottomRecordingSelected' : 'bottom'}>
+					<div className={this.props.selectedRecording ? styles.bottomRecordingSelected : styles.bottom}>
 						{bottomContent}
 					</div>
 				</div>

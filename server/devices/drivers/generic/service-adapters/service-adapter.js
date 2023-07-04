@@ -1,5 +1,5 @@
 const constants = require('../../../../constants.js'),
-	uuidV4 = require('uuid/v4'),
+	uuidV4 = require('uuid').v4,
 	TAG = '[GenericServiceAdapter]';
 
 class GenericServiceAdapter {

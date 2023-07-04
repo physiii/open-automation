@@ -1,80 +1,63 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
-
-const Range = Slider.Range;
+import { Slider } from '@mui/material';
 
 export class RangeControl extends React.Component {
-	constructor (props) {
+	constructor(props) {
 		super(props);
 
 		this.state = {
-			value: props.value,
-			is_changing: false
+			value: props.value || [0, 100],
+			is_changing: false,
 		};
 	}
 
-	onBeforeChange () {
-		if (this.state.is_changing) {
-			return;
-		}
-
-		this.setState({
-			value: this.props.value,
-			is_changing: true
-		});
-	}
-
-	handleInput (value) {
-		this.setState({value});
+	handleInput(event, newValue) {
+		this.setState({ value: newValue });
 
 		if (typeof this.props.onInput === 'function') {
-			this.props.onInput(value);
+			this.props.onInput(newValue);
 		}
 	}
 
-	handleChange (value) {
+	handleChange(event, newValue) {
 		this.setState({
-			value,
-			is_changing: false
+			value: newValue,
+			is_changing: false,
 		});
 
 		if (typeof this.props.onChange === 'function') {
-			this.props.onChange(value);
+			this.props.onChange(newValue);
 		}
 	}
 
-	render () {
+	render() {
 		return (
-			<Range
-				onBeforeChange={this.onBeforeChange.bind(this)}
+			<Slider
+				value={this.state.value}
 				onChange={this.handleInput.bind(this)}
+				onChangeCommitted={this.handleChange.bind(this)}
 				step={1}
-				allowCross={false}
-				defaultValue={[this.props.min, this.props.max]}
+				valueLabelDisplay="auto"
 				min={this.props.minRange}
 				max={this.props.maxRange}
-				onAfterChange={this.handleChange.bind(this)}
-				disabled={this.props.disabled}/>
+				disabled={this.props.disabled}
+			/>
 		);
 	}
 }
 
 RangeControl.propTypes = {
-	value: PropTypes.number,
-	tooltip: PropTypes.bool,
+	value: PropTypes.array,
 	onChange: PropTypes.func,
 	onInput: PropTypes.func,
 	disabled: PropTypes.bool,
-	min: PropTypes.number,
-	max: PropTypes.number,
 	minRange: PropTypes.number,
-	maxRange: PropTypes.number
+	maxRange: PropTypes.number,
 };
 
 RangeControl.defaultProps = {
-	value: 0
+	value: [0, 100],
 };
 
 export default RangeControl;

@@ -4,24 +4,24 @@ import {withRouter} from 'react-router-dom';
 import Toolbar from './Toolbar.js';
 import Button from './Button.js';
 import ServiceHeader from './ServiceHeader.js';
-import './ServiceCardBase.css';
+import styles from './ServiceCardBase.css';
 
 export const ServiceCardBase = (props) => {
 	const detailsPath = `${props.match.url}/service/${props.service.id}`;
 
 	return (
-		<section styleName="card" onClick={props.onCardClick || (() => props.history.push(detailsPath))}>
-			<div styleName={props.removePadding ? 'topBarNone' : props.hideToolbars ? 'topBarHidden' : 'topBar'}>
+		<section className={styles.card} onClick={props.onCardClick || (() => props.history.push(detailsPath))}>
+			<div className={props.removePadding ? styles.topBarNone : props.hideToolbars ? styles.topBarHidden : styles.topBar}>
 				<ServiceHeader
 					service={props.service}
 					name={props.name}
 					status={props.status}
 					isConnected={props.isConnected} />
 			</div>
-			<div styleName={props.toolbarsOverlayContent ? 'contentBehindToolbars' : 'content'}>
+			<div className={props.toolbarsOverlayContent ? styles.contentBehindToolbars : styles.content}>
 				{props.children}
 			</div>
-			<div styleName={props.removePadding ? 'topBarNone' : props.hideToolbars ? 'bottomBarHidden' : 'bottomBar'}>
+			<div className={props.removePadding ? styles.topBarNone : props.hideToolbars ? styles.bottomBarHidden : styles.bottomBar}>
 				<Toolbar
 					leftChildren={<div onClick={(event) => event.stopPropagation()}>{props.secondaryAction}</div>}
 					rightChildren={<div onClick={(event) => event.stopPropagation()}>

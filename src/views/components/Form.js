@@ -4,7 +4,7 @@ import FormField from './FormField.js';
 import FormValidator from '../form-validation.js';
 import {noOp, isEmpty, areValuesTheSame} from '../../utilities.js';
 import {debounce} from 'debounce';
-import './Form.css';
+import styles from './Form.css';
 
 const SAVEABLE_DEBOUNCE_DELAY = 500;
 
@@ -156,7 +156,7 @@ export class Form extends React.Component {
 
 	render () {
 		return (
-			<form styleName="form">
+			<form className={styles.form}>
 				{Object.keys(this.props.fields).filter((fieldName) => this.props.fields[fieldName]).map((fieldName) => (
 					<FormField
 						property={fieldName}

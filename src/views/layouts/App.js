@@ -25,7 +25,7 @@ import {fetchAutomations} from '../../state/ducks/automations-list/operations.js
 import {getCurrentContextPath, getContextCurrentFullPath} from '../../state/ducks/navigation/selectors.js';
 import {compose} from 'redux';
 import {hot} from 'react-hot-loader';
-import './App.css';
+import styles from './App.css';
 
 export class App extends React.Component {
 	componentDidMount () {
@@ -53,22 +53,22 @@ export class App extends React.Component {
 
 	render () {
 		const renderLoginScreen = (routeProps) => (
-			<div styleName="content">
+			<div className={styles.content}>
 				<LoginScreen location={routeProps.location} />
 			</div>
 		);
 
 		return (
-			<div styleName="app">
+			<div className={styles.app}>
 				<Switch>
 					<Route path="/login" render={renderLoginScreen} />
 					<Route path="/register" render={renderLoginScreen} />
 					<PrivateRoute render={() => (
 						<React.Fragment>
-							<div styleName="toolbar">
+							<div className={styles.toolbar}>
 								<AppToolbar />
 							</div>
-							<div styleName="content">
+							<div className={styles.content}>
 								{this.props.isLoading
 									? <div>Loading</div>
 									: <Switch>
@@ -80,7 +80,7 @@ export class App extends React.Component {
 										<Route render={() => <Redirect to="/dashboard" />} />
 									</Switch>}
 							</div>
-							{!this.props.isLoading && <div styleName="tabBar">
+							{!this.props.isLoading && <div className={styles.tabBar}>
 								<TabBar buttons={[
 									{
 										label: 'Dashboard',

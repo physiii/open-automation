@@ -146,7 +146,7 @@ class GenericDeviceDriver extends DeviceDriver {
 	}
 
 	_emitLoadToRelay (device) {
-		console.log(TAG, "!! ---- EMITTING LOAD TO RELAY ---- !!", device);
+		// console.log(TAG, "!! ---- EMITTING LOAD TO RELAY ---- !!", device);
 		this._events.emit('load', {
 			device: {
 				services: Array.from(this.service_adapters.values()).map((adapter) => adapter.relaySerialize()),

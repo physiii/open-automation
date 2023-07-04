@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './BlankState.css';
+import styles from './BlankState.css';
 
 export const BlankState = (props) => (
-	<section styleName="blankState">
-		<h1 styleName="heading">{props.heading}</h1>
-		<p styleName="body">{props.body}</p>
+	<section className={styles.blankState}>
+		<h1 className={styles.heading}>{props.heading}</h1>
+		<p className={styles.body}>{props.body}</p>
 	</section>
 );
 

@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './IconBase.css';
+import styles from './IconBase.css';
 
 export const IconBase = ({size, onClick, onMouseOver, onMouseOut, children, ...props}) => (
 	<span
-		styleName="wrapper"
+		className={styles.wrapper}
 		onMouseOver={onMouseOver}
 		onMouseOut={onMouseOut}
 		onClick={onClick}>
 		<svg
-			styleName="icon"
+			className={styles.icon}
 			width={size}
 			height={size}
 			preserveAspectRatio="xMidYMid meet"

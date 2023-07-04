@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SelectField from './SelectField.js';
 import moment from 'moment';
-import './TimeField.css';
+import styles from './TimeField.css';
 
 const DEFAULT_TIME = '0001-01-01T12:00:00.000Z',
 	HOURS = 12,
@@ -98,10 +98,10 @@ export class TimeField extends React.Component {
 		inputProps.onChange = (event) => this.handleChange(event, currentTime);
 
 		return (
-			<div styleName="container">
+			<div className={styles.container}>
 				<label>{this.props.label}</label>
-				<div styleName="field">
-					<div styleName="hour">
+				<div className={styles.field}>
+					<div className={styles.hour}>
 						<SelectField
 							{...inputProps}
 							name={name + 'hour'}
@@ -110,14 +110,14 @@ export class TimeField extends React.Component {
 								: currentTime.hour() || HOURS}
 							options={this.getHourOptions()} />
 					</div>
-					<div styleName="minute">
+					<div className={styles.minute}>
 						<SelectField
 							{...inputProps}
 							name={name + 'minute'}
 							value={currentTime.minute()}
 							options={this.getMinuteOptions()} />
 					</div>
-					<div styleName="meridiem">
+					<div className={styles.meridiem}>
 						<SelectField
 							{...inputProps}
 							name={name + 'meridiem'}

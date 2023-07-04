@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Switch from './Switch.js';
 import {getUniqueId} from '../../utilities.js';
-import './SwitchField.css';
+import styles from './SwitchField.css';
 
 export class SwitchField extends React.Component {
 	constructor (props) {
@@ -33,9 +33,9 @@ export class SwitchField extends React.Component {
 
 	render () {
 		return (
-			<div styleName="container">
-				<div styleName={'field' + (this.state.is_focused ? ' isFocused' : '') + (this.props.disabled ? ' isDisabled' : '')}>
-					<label htmlFor={this.inputId} styleName="label">{this.props.label}</label>
+			<div className={styles.container}>
+				<div className={styles.field + (this.state.is_focused ? ' isFocused' : '') + (this.props.disabled ? ' isDisabled' : '')}>
+					<label htmlFor={this.inputId} className={styles.label}>{this.props.label}</label>
 					<Switch
 						id={this.inputId}
 						name={this.props.name}

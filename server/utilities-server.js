@@ -1,6 +1,6 @@
 const url = require('url'),
 	WebSocket = require('ws'),
-	uuidV4 = require('uuid/v4'),
+	uuidV4 = require('uuid').v4,
 	UTILITIES_SERVER_PATH = '/utilities',
 	TAG = '[utilities-server.js]',
 	DEFAULT_TIME = '0001-01-01T12:00:00.000Z',

@@ -1,4 +1,4 @@
-const uuidV4 = require('uuid/v4'),
+const uuidV4 = require('uuid').v4,
 	EventEmitter = require('events'),
 	DeviceDriver = require('./device-driver.js'),
 	constants = require('../../constants.js'),

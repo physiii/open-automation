@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TextField from './TextField.js';
 import MenuIndicatorIcon from '../icons/MenuIndicatorIcon.js';
 import {getUniqueId} from '../../utilities.js';
-import './SelectField.css';
+import styles from './SelectField.css';
 
 export class SelectField extends React.Component {
 	constructor (props) {
@@ -23,10 +23,10 @@ export class SelectField extends React.Component {
 				label={label}
 				value={(currentOption && currentOption.label) || inputProps.value}
 				readOnly={true}>
-				<div styleName={'select' + (this.props.disabled ? ' isDisabled' : '')}>
+				<div className={styles['select' + (this.props.disabled ? ' isDisabled' : '')]}>
 					<select
 						{...inputProps}
-						styleName="input"
+						className={styles.input}
 						value={inputProps.value || ''}
 						id={this.inputId}
 						name={name}>
@@ -38,7 +38,7 @@ export class SelectField extends React.Component {
 							);
 						})}
 					</select>
-					<span styleName="icon">
+					<span className={styles.icon}>
 						<MenuIndicatorIcon size={10} />
 					</span>
 				</div>

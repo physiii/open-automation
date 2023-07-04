@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {getServiceById, getServiceLog, isServiceLogLoading} from '../../state/ducks/services-list/selectors.js';
 import {fetchServiceLog} from '../../state/ducks/services-list/operations.js';
-import './ServiceLogScreen.css';
+import styles from './ServiceLogScreen.css';
 
 export class ServiceLogScreen extends React.Component {
 	componentDidMount () {
@@ -29,15 +29,15 @@ export class ServiceLogScreen extends React.Component {
 			content = <span>Loading</span>;
 		} else {
 			content = (
-				<table styleName="table">
-					<tr styleName="headerRow">
-						<th styleName="headerCell">Date</th>
-						<th styleName="headerCell">Description</th>
+				<table className={styles.table}>
+					<tr className={styles.headerRow}>
+						<th className={styles.headerCell}>Date</th>
+						<th className={styles.headerCell}>Description</th>
 					</tr>
 					{this.props.logs.map((item) => (
-						<tr styleName="row">
-							<td styleName="cell">{moment(item.date).format('M-D-YYYY h:mm a')}</td>
-							<td styleName="cell">{item.description}</td>
+						<tr className={styles.row}>
+							<td className={styles.cell}>{moment(item.date).format('M-D-YYYY h:mm a')}</td>
+							<td className={styles.cell}>{item.description}</td>
 						</tr>
 					))}
 				</table>

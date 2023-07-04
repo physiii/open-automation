@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ServiceCardBase from './ServiceCardBase.js';
 import {connect} from 'react-redux';
-import './ThermostatCard.css';
+import styles from './ThermostatCard.css';
 
 export class ThermostatCard extends React.Component {
 	constructor (props) {
@@ -113,17 +113,17 @@ export class ThermostatCard extends React.Component {
 				isConnected={this.props.service.state.get('connected')}
 				{...this.props}>
 				<center>
-					<span styleName="sensorTitle">
+					<span className={styles.sensorTitle}>
 						{this.getTemp()} &#8457;
 					</span>
-					<span styleName={this.getMode() === 'off' || this.isOutOfRange() ? 'hidden' : 'sensorValues'}>
-						<span styleName="coolValue">
+					<span className={this.getMode() === styles.off || this.isOutOfRange() ? styles.hidden : styles.sensorValues}>
+						<span className={styles.coolValue}>
 							{this.getMode() === 'cool' ? 'Cooling' : ''}
 						</span>
-						<span styleName="heatValue">
+						<span className={styles.heatValue}>
 							{this.getMode() === 'heat' ? 'Heating' : ''}
 						</span>
-						<span styleName="sensorValue">
+						<span className={styles.sensorValue}>
 							&nbsp;to {this.getTargetTemp()}
 						</span>
 					</span>

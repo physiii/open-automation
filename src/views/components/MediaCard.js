@@ -9,7 +9,7 @@ import RightCarrotIcon from '../icons/RightCarrotIcon.js';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import SliderControl from './SliderControl.js';
 import ServiceCardBase from './ServiceCardBase.js';
-import './MediaCard.css';
+import styles from './MediaCard.css';
 
 export class MediaCard extends React.Component {
 	constructor (props) {
@@ -104,14 +104,14 @@ export class MediaCard extends React.Component {
 				isConnected={isConnected}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>
-				<span styleName="themeContainerTop">
+				<span className={styles.themeContainerTop}>
 					<div
-						styleName="pausePlayIcon"
+						className={styles.pausePlayIcon}
 						onClick={this.pause.bind(this)}>
 						<PlayMediaButtonIcon size={64} shadowed={true} />
 					</div>
 					<div
-						styleName="iconMute"
+						className={styles.iconMute}
 						onClick={this.mute.bind(this)}>
 						{
 							this.getMute()
@@ -120,19 +120,19 @@ export class MediaCard extends React.Component {
 						}
 					</div>
 				</span>
-				<span styleName="themeContainerBottom">
+				<span className={styles.themeContainerBottom}>
 					<div
-						styleName="prevIcon"
+						className={styles.prevIcon}
 						onClick={this.prev.bind(this)}>
 						<LeftCarrotIcon size={64} shadowed={true} />
 					</div>
 					<div
-						styleName="nextIcon"
+						className={styles.nextIcon}
 						onClick={this.next.bind(this)}>
 						<RightCarrotIcon size={64} shadowed={true} />
 					</div>
 				</span>
-				<div styleName="sliderWrapper">
+				<div className={styles.sliderWrapper}>
 					<SliderControl
 						value={currentLevel}
 						onInput={this.handleSliderInput.bind(this)}

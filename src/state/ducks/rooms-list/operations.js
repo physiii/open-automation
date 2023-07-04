@@ -1,6 +1,6 @@
 import * as actions from './actions';
 import Api from '../../../api.js';
-import uuidV4 from 'uuid/v4';
+const {v4: uuidV4} = require('uuid');
 
 const listenForRoomChanges = () => (dispatch) => {
 		Api.on('rooms', (data) => dispatch(actions.fetchRoomsSuccess(data.rooms)));

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import IconBase from './IconBase.js';
-import './PlayButtonIcon.css';
+import styles from './PlayButtonIcon.css';
 
 export const PlayButtonIcon = ({shadowed, ...props}) => (
 	<IconBase {...props} viewBox="0 0 68 68">
@@ -19,7 +19,7 @@ export const PlayButtonIcon = ({shadowed, ...props}) => (
 				<feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0" in="shadowBlurOuter1"/>
 			</filter>
 		</defs>
-		<g styleName={shadowed ? 'shadowedFill' : ''} transform="translate(-166 -118)" fillRule="evenodd">
+		<g className={shadowed ? styles.shadowedFill : ''} transform="translate(-166 -118)" fillRule="evenodd">
 			{shadowed &&
 				<use filter="url(#PlayButtonIcon-shadowedFilter)" xlinkHref="#PlayButtonIcon-main"/>}
 			<use xlinkHref="#PlayButtonIcon-main"/>

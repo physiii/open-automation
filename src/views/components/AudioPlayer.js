@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AudioStream from './AudioStream.js';
 import fscreen from 'fscreen';
-import './AudioPlayer.css';
+import styles from './AudioPlayer.css';
 
 const controlsHideDelay = 3000;
 
@@ -83,7 +83,7 @@ export class AudioPlayer extends React.Component {
 	render () {
 		return (
 			<AudioStream
-				styleName="canvas"
+				className={styles.canvas}
 				{...this.props}
 				shouldStream={this.state.isPlaying}
 				key={this.props.audioServiceId + '_audio'} />

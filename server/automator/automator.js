@@ -43,7 +43,7 @@ class Automator {
 
 		automation.triggers.forEach((trigger) => {
 			const run = (event_data = {}, trigger_data = {}) => {
-					console.log(TAG, "triggers:", trigger, trigger_data);
+					// console.log(TAG, "triggers:", trigger, trigger_data);
 					const triggered_date = moment(event_data.date).utc();
 
 					this.runAutomation(automation, {
@@ -137,7 +137,7 @@ class Automator {
 	}
 
 	runAutomation (automation, trigger_data) {
-		console.log(TAG, "runAutomation:", automation, trigger_data);
+		// console.log(TAG, "runAutomation:", automation, trigger_data);
 		const account = AccountsManager.getAccountById(automation.account_id);
 
 		if (!automation.is_enabled || !this.checkConditions(automation.conditions, trigger_data, account)) {
@@ -168,7 +168,7 @@ class Automator {
 		});
 
 		automation.actions.forEach((action) => {
-			console.log("!!!! ---- runAutomation ---- !!!!", action);
+			// console.log("!!!! ---- runAutomation ---- !!!!", action);
 			const service = DevicesManager.getServiceById(action.service_id, automation.account_id);
 			service._deviceEmitAction('action', {property: action.action, value:true});
 				// this.deviceEmit('action', {property, value}, (error, data) => {

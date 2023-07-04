@@ -8,7 +8,7 @@ import SliderControl from './SliderControl.js';
 import {Route} from './Route.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-import './ServiceDetails.css';
+import styles from './ServiceDetails.css';
 
 export class MediaServiceDetails extends React.Component {
 
@@ -129,7 +129,7 @@ export class MediaServiceDetails extends React.Component {
 				<Route exact path={this.props.match.url} render={() => (
 					<SettingsScreenContainer section={true}>
 						<div
-							styleName="mousePad"
+							className={styles.mousePad}
 							onClick={this.handlePress.bind(this)}
 							onTouchMove={this.handleTouchMove.bind(this)}
 							onTouchStart={this.handleTouchStart.bind(this)}
@@ -137,7 +137,7 @@ export class MediaServiceDetails extends React.Component {
 						>
 						Mouse Pad
 						</div>
-						<div styleName="sliderMediaDetailsWrapper">
+						<div className={styles.sliderMediaDetailsWrapper}>
 							<SliderControl
 								value={currentLevel}
 								onInput={this.handleSliderInput.bind(this)}

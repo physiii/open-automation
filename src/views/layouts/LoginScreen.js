@@ -5,7 +5,7 @@ import LoginForm from '../components/LoginForm.js';
 import RegisterForm from '../components/RegisterForm.js';
 import {connect} from 'react-redux';
 import {isAuthenticated, isLoading} from '../../state/ducks/session/selectors.js';
-import './LoginScreen.css';
+import styles from './LoginScreen.css';
 
 export class LoginScreen extends React.Component {
 	constructor (props) {
@@ -22,21 +22,21 @@ export class LoginScreen extends React.Component {
 		}
 
 		return (
-			<div styleName="screen">
-				<div styleName="container">
-					<div styleName="branding">
+			<div className={styles.screen}>
+				<div className={styles.container}>
+					<div className="branding">
 						{this.props.logoPath
 							? <img src={this.props.logoPath} />
 							: <h1>{this.props.appName}</h1>}
 					</div>
 					{this.props.error &&
-						<p styleName="errorMessage">{this.props.error}</p>}
+						<p className={styles.errorMessage}>{this.props.error}</p>}
 					<Route path="/login" component={LoginForm} />
 					<Route path="/register" component={RegisterForm} />
 					{this.props.isLoading &&
-						<div styleName="loading">Loading</div>}
+						<div className={styles.loading}>Loading</div>}
 				</div>
-				<div styleName="footer">
+				<div className={styles.footer}>
 					<Route path="/login" render={() => <Link to="/register">Create Account</Link>} />
 					<Route path="/register" render={() => <Link to="/login">Login</Link>} />
 				</div>

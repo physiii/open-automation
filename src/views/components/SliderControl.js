@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
+// import 'rc-slider/assets/index.css';
 
 export class SliderControl extends React.Component {
 	constructor (props) {
 		super(props);
+		const value = props.value || 0;
 
 		this.state = {
-			value: props.value,
+			value,
 			is_changing: false
 		};
 	}
@@ -43,7 +44,7 @@ export class SliderControl extends React.Component {
 		}
 	}
 
-	render () {
+	render() {
 		const SliderComponent = this.props.tooltip
 				? Slider.createSliderWithTooltip(Slider)
 				: Slider,
@@ -53,7 +54,7 @@ export class SliderControl extends React.Component {
 
 		return (
 			<SliderComponent
-				value={Number.isFinite(currentValue) ? currentValue : 0}
+				value={Number.isFinite(parseFloat(currentValue)) ? parseFloat(currentValue) : 0}
 				onBeforeChange={this.onBeforeChange.bind(this)}
 				onChange={this.handleInput.bind(this)}
 				onAfterChange={this.handleChange.bind(this)}

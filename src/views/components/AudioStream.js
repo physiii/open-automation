@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import JSMpeg from '../../lib/jsmpeg/jsmpeg.min.js';
+import {JSMpeg} from '../../lib/jsmpeg/jsmpeg.min.js';
 import {connect} from 'react-redux';
 import {audioStartStream, audioStopStream, cameraStartAudioRecordingStream, cameraStopAudioRecordingStream} from '../../state/ducks/services-list/operations.js';
-import './AudioStream.css';
+// import styles from './AudioStream.css';
 
 export class AudioStream extends React.Component {
 	constructor (props) {
@@ -124,7 +124,6 @@ export class AudioStream extends React.Component {
 		return (
 			<canvas
 				className={this.props.className}
-				styleName="canvas"
 				ref={this.canvas} />
 		);
 	}

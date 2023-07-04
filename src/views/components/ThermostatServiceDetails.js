@@ -9,7 +9,7 @@ import {Route} from './Route.js';
 import SettingsScreenContainer from './SettingsScreenContainer.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
 import RangeControl from './RangeControl.js';
-import './ServiceDetails.css';
+import styles from './ServiceDetails.css';
 
 export class ThermostatServiceDetails extends React.Component {
 
@@ -142,8 +142,8 @@ export class ThermostatServiceDetails extends React.Component {
 			<Switch>
 				<Route exact path={this.props.match.url} render={() => (
 					<SettingsScreenContainer section={true}>
-						<span styleName="field">
-							<label styleName="label">Power</label>
+						<span className={styles.field}>
+							<label className={styles.label}>Power</label>
 							<Toggle
 								isOn={this.state.isPowerOn}
 								onChange={this.togglePower.bind(this)}
@@ -152,10 +152,10 @@ export class ThermostatServiceDetails extends React.Component {
 						</span>
 
 						{!this.state.isPowerOn
-							? <div styleName="field">Thermostat is currently powered off.</div>
+							? <div className={styles.field}>Thermostat is currently powered off.</div>
 							:	<div>
-								<span styleName="field">
-									<label styleName="label">Hold</label>
+								<span className={styles.field}>
+									<label className={styles.label}>Hold</label>
 									<Toggle
 										isOn={this.state.isHoldOn}
 										showLabels={true}
@@ -163,11 +163,11 @@ export class ThermostatServiceDetails extends React.Component {
 										disabled={false} />
 								</span>
 
-								<div styleName={this.state.isHoldOn ? 'tempSchedule' : 'hidden'}>
+								<div className={this.state.isHoldOn ? styles.tempSchedule : styles.hidden}>
 									<span>
-										<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
+										<div className={styles.tempScheduleLabel}>{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
 									</span>
-									<span styleName="tempSlider">
+									<span className={styles.tempSlider}>
 										<RangeControl
 											onInput={this.handleHoldRangeInput.bind(this)}
 											onChange={this.handleHoldRangeChange.bind(this)}
@@ -178,31 +178,31 @@ export class ThermostatServiceDetails extends React.Component {
 									</span>
 								</div>
 
-								<span styleName={this.state.isHoldOn ? 'hidden' : 'scheduleTitle'}>
+								<span className={this.state.isHoldOn ? styles.hidden : styles.scheduleTitle}>
 									Schedule
 								</span>
 
-								<span styleName="divider" />
+								<span className={styles.divider} />
 
-								<span styleName={this.state.isHoldOn ? 'field' : 'hidden'}>
+								<span className={this.state.isHoldOn ? styles.field : styles.hidden}>
 									Schedule is not active because hold is on.
 								</span>
 
-								<div styleName={!this.state.isHoldOn ? '' : 'hidden'}>
+								<div className={!this.state.isHoldOn ? '' : styles.hidden}>
 									{this.state.schedule.map((hour, idKey) => (
-										<div styleName="tempSchedule" key={idKey}>
+										<div className={styles.tempSchedule} key={idKey}>
 											<span>
-												<div styleName="tempScheduleLabel">{hour.label}</div>
-												<div styleName="tempScheduleToggle">
+												<div className={styles.tempScheduleLabel}>{hour.label}</div>
+												<div className={styles.tempScheduleToggle}>
 													<Toggle
 														isOn={hour.power}
 														onChange={(event) => this.toggleSchedulePower(hour.value, event)}
 														showLabels={false}
 														disabled={false} />
 												</div>
-												<div styleName="tempScheduleLabel">{hour.minTemp}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hour.maxTemp}&#8457;</div>
+												<div className={styles.tempScheduleLabel}>{hour.minTemp}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hour.maxTemp}&#8457;</div>
 											</span>
-											<span styleName="tempSlider">
+											<span className={styles.tempSlider}>
 												<RangeControl
 													onInput={(event) => this.handleRangeInput(hour.value, event)}
 													onChange={(event) => this.handleRangeChange(hour.value, event)}

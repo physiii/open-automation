@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import Switch from './Switch.js';
-import './AlarmCardGlobal.css';
+import styles from './AlarmCardGlobal.css';
 
 export class GlobalAlarmCard extends React.Component {
 	constructor (props) {
@@ -30,7 +30,7 @@ export class GlobalAlarmCard extends React.Component {
 				isConnected={true}
 				onCardClick={this.toggleMode}
 				{...this.props}>
-				<div styleName="container">
+				<div className={styles.container}>
 					<Switch
 						isOn={this.props.service.state.get('mode') > 0}
 						showLabels={true}
