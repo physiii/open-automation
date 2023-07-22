@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Slider } from '@mui/material';
+import {Slider} from '@mui/material';
 
 export class RangeControl extends React.Component {
 	constructor(props) {
@@ -8,12 +8,12 @@ export class RangeControl extends React.Component {
 
 		this.state = {
 			value: props.value || [0, 100],
-			is_changing: false,
+			is_changing: false
 		};
 	}
 
 	handleInput(event, newValue) {
-		this.setState({ value: newValue });
+		this.setState({value: newValue});
 
 		if (typeof this.props.onInput === 'function') {
 			this.props.onInput(newValue);
@@ -23,7 +23,7 @@ export class RangeControl extends React.Component {
 	handleChange(event, newValue) {
 		this.setState({
 			value: newValue,
-			is_changing: false,
+			is_changing: false
 		});
 
 		if (typeof this.props.onChange === 'function') {
@@ -53,11 +53,11 @@ RangeControl.propTypes = {
 	onInput: PropTypes.func,
 	disabled: PropTypes.bool,
 	minRange: PropTypes.number,
-	maxRange: PropTypes.number,
+	maxRange: PropTypes.number
 };
 
 RangeControl.defaultProps = {
-	value: [0, 100],
+	value: [0, 100]
 };
 
 export default RangeControl;

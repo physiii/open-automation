@@ -27,9 +27,6 @@ export class AutomationNotificationScreen extends React.Component {
 			forms_with_errors_count: 0,
 			is_saveable: false
 		};
-
-
-		console.log("!!! ------ HIT ------- !!! AutomationNotificationScreen", this.props.match.params.type)
 	}
 
 	handleSettingsErrors () {

@@ -66,19 +66,4 @@ export const withRoute = (routeProps = {}) => (WrappedComponent) => {
 	return withRouter(RouteHOC);
 };
 
-export const AutomationRoute = (props) => {
-	const {match: {url}} = props;
-
-	return (
-		<Switch>
-			<Route exact path={url + '/notification/:type'} component={AutomationNotificationScreen} />
-			<Route {...props} />
-		</Switch>
-	);
-};
-
-AutomationRoute.propTypes = {
-	match: PropTypes.object.isRequired
-};
-
 export default withRouter(Route);

@@ -8,12 +8,7 @@ import {doServiceAction, fetchDeviceLog} from '../../state/ducks/services-list/o
 import {getDeviceLog, getServiceById} from '../../state/ducks/services-list/selectors.js';
 import {Route} from './Route.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
-<<<<<<< HEAD
 import styles from './ServiceDetails.css';
-
-=======
-import './ServiceDetails.css';
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 import RangeControl from './RangeControl.js';
 
 const ONE_SECOND_IN_MILLISECONDS = 1000,
@@ -248,19 +243,11 @@ export class AccessControlServiceDetails extends React.Component {
 			<Switch>
 				<Route exact path={this.props.match.url} render={() => (
 					<div>
-<<<<<<< HEAD
 						<div className={styles.graphContainerExpanded}>Water Temperature Range
 							<span>
 								<div className={styles.tempScheduleLabel}>{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
 							</span>
 							<span className={styles.tempSlider}>
-=======
-						<div styleName="graphContainerExpanded">Water Temperature Range
-							<span>
-								<div styleName="tempScheduleLabel">{this.state.holdTemp.min}&#8457;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.holdTemp.max}&#8457;</div>
-							</span>
-							<span styleName="tempSlider">
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 								<RangeControl
 									onInput={this.handleHoldRangeInput.bind(this)}
 									onChange={this.handleHoldRangeChange.bind(this)}
@@ -268,7 +255,6 @@ export class AccessControlServiceDetails extends React.Component {
 									max={this.state.holdTemp.max} />
 							</span>
 						</div>
-<<<<<<< HEAD
 						<div className={styles.graphContainerExpanded}>pH Calibration
 							<span className={styles.themeContainer}>
 								<div
@@ -277,16 +263,6 @@ export class AccessControlServiceDetails extends React.Component {
 								/>
 								<div
 									className={styles.theme_2}
-=======
-						<div styleName="graphContainerExpanded">pH Calibration
-							<span styleName="themeContainer">
-								<div
-									styleName="theme_1"
-									onClick={this.setPhPoint.bind(this)}
-								/>
-								<div
-									styleName="theme_2"
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 									onClick={this.setPhPoint.bind(this)}
 								/>
 							</span>
@@ -296,17 +272,10 @@ export class AccessControlServiceDetails extends React.Component {
 						</div>
 						{this.state.logsReady ?
 							<div>
-<<<<<<< HEAD
 								<div className={styles.sensorTitle}>Sensor Graphs</div>
 								{this.state.sensorGraphs.map((item, index) => (
 									<div
 										className={ item.display ? styles.graphContainerExpanded : styles.graphContainer}
-=======
-								<div styleName="sensorTitle">Sensor Graphs</div>
-								{this.state.sensorGraphs.map((item, index) => (
-									<div
-										styleName={ item.display ? 'graphContainerExpanded' : 'graphContainer'}
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 										key={item.key}>
 										{ this.state.sensorGraphs[index].display
 											?

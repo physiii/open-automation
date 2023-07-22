@@ -2,11 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button.js';
 import moment from 'moment';
-<<<<<<< HEAD
 import styles from './DatePicker.css';
-=======
-import './DatePicker.css';
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 
 export class DatePicker extends React.Component {
 	constructor (props) {

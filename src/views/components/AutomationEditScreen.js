@@ -155,13 +155,8 @@ export class AutomationEditScreen extends React.Component {
 									<div className={styles.sectionContent}>
 										{triggers.length ? <ul className={styles.elementList}>
 											{triggers.map((trigger, index) => {
-<<<<<<< HEAD
 												console.log('trigger:', trigger);
 												console.log('services:', this.props.services);
-=======
-												console.log("trigger:", trigger);
-												console.log("services:", this.props.services);
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 												const service = this.props.services.get(trigger.service_id);
 
 												if (!service) {
@@ -178,13 +173,8 @@ export class AutomationEditScreen extends React.Component {
 											})}
 										</ul> : null}
 										{areTriggersEditable
-<<<<<<< HEAD
 											? <span className={triggers.length ? styles.addButton : styles.primaryAddButton}>
 												<span className={triggers.length ? styles.addButtonLink : styles.primaryAddButtonLink}>
-=======
-											? <span styleName={triggers.length ? 'addButton' : 'primaryAddButton'}>
-												<span styleName={triggers.length ? 'addButtonLink' : 'primaryAddButtonLink'}>
->>>>>>> 70ee17dbff37ffd959c7a656e7fa5a71e9deefa5
 													<Button to={this.props.match.url + '/add-trigger'}>
 														<span className={triggers.length ? styles.addButtonIcon : styles.primaryAddButtonIcon}><AddIcon size={12} /></span>
 														<span className={triggers.length ? styles.addButtonLabel : styles.primaryAddButtonLabel}>Add Trigger</span>
