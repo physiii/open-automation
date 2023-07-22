@@ -23,7 +23,7 @@ export class HlsPlayer extends React.Component {
 
 		this.hls = new Hls({
 			liveDurationInfinity: this.props.live,
-			// startPosition: this.props.startPosition ? this.props.startPosition  : -1,
+			startPosition: this.props.startPosition ? this.props.startPosition : -1,
 			autoStartLoad: true
 		});
 	}
@@ -138,6 +138,7 @@ HlsPlayer.propTypes = {
 	shouldShowControls: PropTypes.bool,
 	width: PropTypes.number,
 	height: PropTypes.number,
+	startPosition: PropTypes.number,
 	onPlay: PropTypes.func,
 	onStop: PropTypes.func
 };
