@@ -124,7 +124,7 @@ export class ThermostatCard extends React.Component {
 							{this.getMode() === 'heat' ? 'Heating' : ''}
 						</span>
 						<span className={styles.sensorValue}>
-							&nbsp;to {this.getTargetTemp()}
+						&nbsp;{this.getMode() === 'off' ? '' : 'to ' + this.getTargetTemp()}
 						</span>
 					</span>
 				</center>

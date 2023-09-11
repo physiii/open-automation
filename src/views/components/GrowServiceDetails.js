@@ -28,7 +28,6 @@ export class GrowServiceDetails extends React.Component {
 	constructor (props) {
 		super(props);
 
-
 		const holdTemp = props.service.state.get('hold_temp') ? props.service.state.get('hold_temp') : {min: 0, max: 100};
 
 		this.state = {

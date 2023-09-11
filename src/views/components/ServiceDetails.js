@@ -26,12 +26,7 @@ export class ServiceDetails extends React.Component {
 						</header>
 						{this.props.children}
 						<MetaList layout="vertical" alignLabels="left">
-							{[
-								{label: 'Hardware', value: this.getDevice('HardwareVersion')},
-								{label: 'Temperature', value: this.getDevice('Temp')},
-								{label: 'Frequency', value: this.getDevice('Freq')},
-								{label: 'Up Time', value: this.getDevice('UpTime')}
-							].filter((item) => Boolean(item.value))}
+							{[].filter((item) => Boolean(item.value))}
 						</MetaList>
 					</SettingsScreenContainer>
 				)} />

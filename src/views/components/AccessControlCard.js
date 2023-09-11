@@ -15,10 +15,6 @@ export class AccessControlCard extends React.Component {
 		};
 	}
 
-	onCardClick () {
-		this.setLevel(this.props.service.state.get('light_level') > 0 ? 0 : 1);
-	}
-
 	pulse () {
 		if (!this.props.service.state.get('connected')) return;
 
@@ -38,7 +34,7 @@ export class AccessControlCard extends React.Component {
 					? 'Opened 5 minutes ago' : 'Unknown'}
 				isConnected={isConnected}
 				// secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Device Log</Button>}
-				onCardClick={this.pulse.bind(this)}
+				onCardClick={() => {}}
 				{...this.props}>
 				<div className={styles.container}>
 					<div className={styles.switchWrapper}>

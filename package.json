@@ -21,7 +21,7 @@
         "@babel/preset-react": "^7.16.7",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
-        "@mui/material": "^5.13.6",
+        "@mui/material": "^5.14.6",
         "apexcharts": "^3.35.0",
         "autoprefixer": "^10.4.0",
         "axios": "^0.24.0",
