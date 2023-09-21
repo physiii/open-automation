@@ -58,7 +58,6 @@ export class ScaleCard extends React.Component {
 						this.minTwoDigits(this.props.service.state.get('cycletime') % 60)
 					:	'Unknown'}
 				isConnected={isConnected}
-				// secondaryAction={<Button>{this.props.service.settings.get('name') || 'Bill Acceptor'} Log</Button>}
 				secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Device Log</Button>}
 				onCardClick={this.onCardClick.bind(this)}
 				{...this.props}>

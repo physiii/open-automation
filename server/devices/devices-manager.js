@@ -239,6 +239,7 @@ class DevicesManager extends EventEmitter {
 	}
 
 	getDeviceLog (serviceId, accountId) {
+		console.log(TAG, 'Getting device log.', serviceId, accountId);
 		return new Promise((resolve, reject) => {
 			const device = this.getDeviceByServiceId(serviceId, accountId);
 

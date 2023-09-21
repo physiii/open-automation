@@ -30,6 +30,7 @@ const recordingsWorker = new RecordingsWorker(),
 		dispatch(actions.fetchServiceLog(serviceId));
 
 		Api.getDeviceLog(serviceId).then((data) => {
+			console.log('Got device log.', data);
 			dispatch(actions.fetchServiceLogSuccess(serviceId, data.log));
 		}).catch((error) => {
 			dispatch(actions.fetchServiceLogError(serviceId, error));

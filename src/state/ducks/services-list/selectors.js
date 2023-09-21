@@ -65,7 +65,7 @@ const getServices = (servicesList, toJs = true) => {
 		}
 
 		const log = service.logList.get('log');
-
+		console.log('getDeviceLog', log);
 		return toJs ? log.toList().toJS() : log;
 	},
 	getServiceLog = (servicesList, serviceId, toJs = true) => {

@@ -298,6 +298,7 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('device/log/get', (data, callback) => {
+			console.log('Getting device log.', data.service_id, this.account.id);
 			DevicesManager.getDeviceLog(data.service_id, this.account.id)
 			.then((log) => callback(null, {log}))
 			.catch(callback);
@@ -316,6 +317,7 @@ class ClientConnection {
 		});
 
 		this.clientEndpoint('service/log/get', (data, callback) => {
+			console.log('Getting service log.', data.service_id, this.account.id);
 			data.service.getLog()
 				.then((log) => callback(null, {log}))
 				.catch(callback);

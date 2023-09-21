@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {compose} from 'redux';
+import {withRouter} from 'react-router-dom';
 import {doServiceAction} from '../../state/ducks/services-list/operations.js';
 import ServiceCardBase from './ServiceCardBase.js';
 import Button from './Button.js';
@@ -24,7 +26,7 @@ export class AccessControlCard extends React.Component {
 		});
 	}
 
-	render () {
+	render() {
 		const isConnected = this.props.service.state.get('connected');
 
 		return (
@@ -33,7 +35,7 @@ export class AccessControlCard extends React.Component {
 				status={this.props.service.state.get('connected')
 					? 'Opened 5 minutes ago' : 'Unknown'}
 				isConnected={isConnected}
-				// secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Device Log</Button>}
+				secondaryAction={<Button to={`${this.props.match.url}/device-log/${this.props.service.id}`}>Access Log</Button>}
 				onCardClick={() => {}}
 				{...this.props}>
 				<div className={styles.container}>
@@ -60,4 +62,7 @@ const mergeProps = (stateProps, {dispatch}, ownProps) => ({
 	doAction: (serviceId, action) => dispatch(doServiceAction(serviceId, action))
 });
 
-export default connect(null, null, mergeProps)(AccessControlCard);
+export default compose(
+	connect(null, null, mergeProps),
+	withRouter
+)(AccessControlCard);

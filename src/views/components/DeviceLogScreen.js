@@ -26,13 +26,15 @@ export class ServiceLogScreen extends React.Component {
 		if (this.props.isLoading) {
 			content = <span>Loading</span>;
 		} else {
+			const sortedLogs = this.props.logs.sort((a, b) => moment(b.date).valueOf() - moment(a.date).valueOf());
+			
 			content = (
 				<table className={styles.table}>
 					<tr className={styles.headerRow}>
 						<th className={styles.headerCell}>Date</th>
 						<th className={styles.headerCell}>Description</th>
 					</tr>
-					{this.props.logs.map((item) => (
+					{sortedLogs.map((item) => (
 						<tr className={styles.row}>
 							<td className={styles.cell}>{moment(item.date).format('M-D-YYYY h:mm a')}</td>
 							<td className={styles.cell}>{item.description}</td>

@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Button, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, Container, Typography } from '@mui/material';
+import {
+  Button, TextField, List, ListItem,
+  ListItemText, ListItemSecondaryAction, Container, Typography,
+} from '@mui/material';
 import { doServiceAction, fetchDeviceLog } from '../../state/ducks/services-list/operations.js';
 import { getDeviceLog, getServiceById } from '../../state/ducks/services-list/selectors.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
@@ -41,35 +44,78 @@ class AccessControlServiceDetails extends React.Component {
       editIndex: null,
       editName: '',
       editPin: '',
-      users: []  // Initialize local state for users
+      users: [],
+      userCount: null,
     };
   }
 
   componentDidMount() {
-    const initialUsers = this.props.service.state.get('users') || [];
-    this.setState({ users: initialUsers });
+    this.props.doAction(this.props.service.id, {
+      property: 'getUserCount',
+      value: true,
+    });
   }
 
-  componentDidUpdate(prevProps) {
-	const prevUsers = prevProps.service.state.get('users') || [];
-	const currentUsers = this.props.service.state.get('users') || [];
-  
-	if (JSON.stringify(prevUsers) === JSON.stringify(currentUsers)) return;
-  
-	const newUsers = currentUsers.filter(
-	  currentUser => !prevUsers.some(prevUser => prevUser.name === currentUser.name)
-	);
+  componentDidUpdate(prevProps, prevState) {
+    const userCount = this.props.service.state.get('user_count') || null;
+    if (userCount !== null && userCount !== this.state.userCount) {
+      console.log(`User count: ${userCount}`);
+      this.setState({ userCount, nextUserIndexToFetch: 1 }, () => this.getUserByCount(1));
+    }
 
-	const uniqueNewUsers = newUsers.filter(
-	  newUser => !this.state.users.some(existingUser => existingUser.name === newUser.name)
-	);
-  
-	if (uniqueNewUsers.length === 0) return;
-  
-	this.setState(prevState => ({
-	  users: [...prevState.users, ...uniqueNewUsers]
-	}));
+
+    const currentUser = this.props.service.state.get('user') || null;
+    if (currentUser && currentUser !== prevProps.service.state.get('user')) {
+      this.handleNewUser(currentUser);
+    }
   }
+
+  updateUserNames = (users) => {
+    const nameCount = {};
+    return users.map(user => {
+      const originalName = user.name;
+      nameCount[originalName] = (nameCount[originalName] || 0) + 1;
+      return {
+        ...user,
+        name: nameCount[originalName] > 1 ? `${originalName} (${nameCount[originalName]})` : originalName
+      };
+    });
+  };
+
+  handleNewUser = (currentUser) => {
+    console.log(`New user: ${currentUser.name} - ${currentUser.pin}`);
+  
+    this.setState(prevState => {
+      const userExists = prevState.users.some(user => user && user.uuid === currentUser.uuid);
+  
+      if (!userExists) {
+        const nextIndex = prevState.nextUserIndexToFetch + 1;
+        console.log(`Adding user ${nextIndex} to state`);
+        
+        // Moved this outside of setState
+        if (nextIndex <= prevState.userCount) {
+          this.getUserByCount(nextIndex);
+        }
+  
+        return {
+          users: this.updateUserNames([...prevState.users, currentUser]),
+          nextUserIndexToFetch: nextIndex
+        };
+      }
+  
+      return prevState;
+    }, () => {
+      this.sortUsers();
+    });
+  };
+
+  getUserByCount = (count) => {
+    console.log(`Fetching user ${count} from count ${this.state.userCount}`);
+    this.props.doAction(this.props.service.id, {
+      property: 'getUserByCount',
+      value: count,
+    });
+  };
   
   addUser = () => {
     const { newName, newPin } = this.state;
@@ -77,34 +123,59 @@ class AccessControlServiceDetails extends React.Component {
       // Generate a new UUID
       const newUuid = uuidv4();
   
-      this.setState({ newName: '', newPin: '' });
+      // First, update the local state
+      const newUser = { uuid: newUuid, name: newName, pin: newPin };
+      this.setState(prevState => ({
+        newName: '',
+        newPin: '',
+        users: this.updateUserNames([...prevState.users, newUser])
+      }), () => {
+        // The state is guaranteed to be updated here.
+        this.sortUsers();
+      });
+
       this.props.doAction(this.props.service.id, {
         property: 'addUser',
         value: {uuid: newUuid, name: newName, pin: newPin}
       });
     }
+    this.sortUsers();
   }  
 
   removeUser = (index) => {
-	const { users } = this.state;
+    const { users } = this.state;
+    
+    if (users && index >= 0 && index < users.length) {
+      const userToRemove = users[index].uuid;
+    
+      // Remove user from Redux store
+      this.props.doAction(this.props.service.id, {
+        property: 'removeUser',
+        value: userToRemove
+      });
+
+      console.log(`Removing user ${userToRemove} from state`);
+    
+      // Remove user from local state
+      const updatedUsers = users.filter((user, i) => i !== index);
+      this.setState({ users: updatedUsers });
+    
+    } else {
+      console.error(`Invalid index ${index} for users array.`);
+    }
+    this.sortUsers();
+  }
   
-	if (users && index >= 0 && index < users.length) {
-	  const userNameToRemove = users[index].name;
-  
-	  // Remove user from Redux store
-	  this.props.doAction(this.props.service.id, {
-		property: 'removeUser',
-		value: { name: userNameToRemove }
-	  });
-  
-	  // Remove user from local state
-	  const updatedUsers = users.filter((user, i) => i !== index);
-	  this.setState({ users: updatedUsers });
-  
-	} else {
-	  console.error(`Invalid index ${index} for users array.`);
-	}
-  }  
+  sortUsers = () => {
+    this.setState(prevState => {
+      const sortedUsers = [...prevState.users].sort((a, b) => {
+        if (a && b && a.name && b.name) {
+          return a.name.localeCompare(b.name, undefined, { numeric: true });
+        }
+      });
+      return { users: sortedUsers };
+    });
+  }
 
   startModifyUser = (index, name, pin) => {
     this.setState({
@@ -115,37 +186,45 @@ class AccessControlServiceDetails extends React.Component {
   }
 
   saveModifyUser = () => {
-	const { editIndex, editName, editPin, users } = this.state;
+    const { editIndex, editName, editPin, users } = this.state;
   
-	if (users && editIndex >= 0 && editIndex < users.length) {
-	  // First, update the local state
-	  const updatedUsers = [...users];
-	  updatedUsers[editIndex] = { name: editName, pin: editPin };
-	  this.setState({
-		users: updatedUsers,
-		editIndex: null,
-		editName: '',
-		editPin: ''
-	  });
+    if (users && editIndex >= 0 && editIndex < users.length) {
+      const userToModify = users[editIndex];
+      
+      // First, update the local state
+      const updatedUsers = [...users];
+      updatedUsers[editIndex] = { ...userToModify, name: editName, pin: editPin };
+      this.setState({
+        users: updatedUsers,
+        editIndex: null,
+        editName: '',
+        editPin: ''
+      }, () => {
+        // The state is guaranteed to be updated here.
+        this.sortUsers();
+      });
   
-	  // Then, update in Redux store
-	  this.props.doAction(this.props.service.id, {
-		property: 'modifyUser',
-		value: {
-		  name: users[editIndex].name,
-		  newName: editName,
-		  newPin: editPin
-		}
-	  });
-	} else {
-	  console.error(`Invalid index ${editIndex} for users array.`);
-	}
+      // Then, update in Redux store
+      this.props.doAction(this.props.service.id, {
+        property: 'modifyUser',
+        value: {
+          uuid: userToModify.uuid,  // Send uuid to identify the user
+          newName: editName,
+          newPin: editPin
+        }
+      });
+    } else {
+      console.error(`Invalid index ${editIndex} for users array.`);
+    }
   }
+  
 
   render() {
 	const { newName, newPin, editIndex, editName, editPin, users } = this.state;
 	const alphaNumericSort = (a, b) => {
-	  return a.name.localeCompare(b.name, undefined, { numeric: true });
+	  if (a && b && a.name && b.name) {
+      return a.name.localeCompare(b.name, undefined, { numeric: true });
+    }
 	};
 	const sortedUsers = [...users].sort(alphaNumericSort);
   
@@ -176,7 +255,7 @@ class AccessControlServiceDetails extends React.Component {
             </div>
             <Typography variant="h6" style={{ color: darkThemeStyles.textField.color }}>Current Users</Typography>
             <List>
-              {sortedUsers.map((user, index) => (
+              {users.map((user, index) => (
                 <ListItem key={index} style={darkThemeStyles.listItem}>
                   {editIndex === index ? (
                     <>
