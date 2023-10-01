@@ -16,6 +16,7 @@ class Device {
 
 		this.save = this.save.bind(this);
 
+		this.pendingToken = null;
 		this.id = data.id || uuid();
 		this.token = data.token;
 		this.type = data.type;
@@ -25,7 +26,6 @@ class Device {
 		this.gateway = data.gateway;
 		this.gateway_id = data.gateway_id;
 		this.is_saveable = data.is_saveable || false;
-
 		this.onUpdate = debounce(() => onUpdate(this), 100);
 
 		this.driver_data = {...data.driver_data};
@@ -153,55 +153,67 @@ class Device {
 		});
 	}
 
-	setToken (token) {
-		return new Promise((resolve, reject) => {
-			const original_token = this.token,
-				original_is_saveable = this.is_saveable;
 
-			if (!this.state.connected) {
-				console.log(TAG, this.id, 'Cannot set device token when the device is not connected.');
-				reject('Device not connected.');
+setToken(token) {
+    return new Promise((resolve, reject) => {
+        const original_token = this.token,
+            original_is_saveable = this.is_saveable;
 
-				return;
-			}
+        if (!this.state.connected) {
+            console.log(TAG, this.id, 'Cannot set device token when the device is not connected.');
+            reject('Device not connected.');
+            return;
+        }
 
-			// Send new token to device.
-			this.driver.emit('token', {token}, (error) => {
-				if (error) {
-					reject(error);
-					return;
-				}
+        // Debug: Log right before sending the new token to the device.
+        console.log(TAG, this.id, 'Sending new token to device:', token);
+        
+        // Set the token as a pending token
+        this.pendingToken = token; 
 
-				// Save the new token locally.
-				this.token = token;
-				this.is_saveable = true;
-				this.save().then(() => {
-					this.driver.emit('reconnect-to-relay');
+        // Send new token to device.
+        this.driver.emit('token', {token}, (error) => {
+            if (error) {
+                reject(error);
+                return;
+            }
 
-					resolve(this.token);
-				}).catch((error) => {
-					// Undo token change locally.
-					this.token = original_token;
-					this.is_saveable = original_is_saveable;
+            // Debug: Log right after updating this.token.
+            console.log(TAG, this.id, 'Updating local token. Previous:', this.token, 'New:', token);
+            
+            // Save the new token locally.
+            this.token = token;
+            this.is_saveable = true;
 
-					console.error(TAG, this.id, 'Error saving device token to database.', error);
+            this.save().then(() => {
+                // Clear the pending token after successfully saving the new token
+                this.pendingToken = null;
+                resolve(this.token);
+            }).catch((error) => {
+                // Undo token change locally.
+                this.token = original_token;
+                this.is_saveable = original_is_saveable;
+                this.pendingToken = null; // Clear the pending token in case of errors
 
-					// Undo token change on device.
-					this.driver.emit('token', {token: original_token}, (undo_error) => {
-						if (undo_error) {
-							console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
-						}
-					});
+                console.error(TAG, this.id, 'Error saving device token to database.', error);
 
-					reject(error);
-				});
-			});
-		});
-	}
+                // Undo token change on device.
+                this.driver.emit('token', {token: original_token}, (undo_error) => {
+                    if (undo_error) {
+                        console.error(TAG, this.id, 'Could not undo token change on device. Token on device and token on relay are out of sync.', undo_error);
+                    }
+                });
 
-	verifyToken (token) {
-		return token === this.token;
-	}
+                reject(error);
+            });
+        });
+    });
+}
+
+verifyToken(token) {
+    console.log(TAG, this.id, 'Verifying token. Given:', token, 'Expected:', this.token, 'Pending:', this.pendingToken);
+    return token === this.token || token === this.pendingToken;
+}
 
 	setSocket (socket, token) {
 		if (!token || !this.verifyToken(token)) {

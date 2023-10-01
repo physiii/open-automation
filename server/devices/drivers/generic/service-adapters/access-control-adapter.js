@@ -207,16 +207,6 @@ GenericAccessControlAdapter.settings_definitions = new Map([...GenericServiceAda
 		secondary_property: 'level',
 		sort_by: 'time',
 		validation: {is_required: false}
-	})
-	.set('calibrate_ph', {
-		type: 'boolean',
-		label: 'Calibrate pH',
-		validation: {is_required: false}
-	})
-	.set('reset_cycletime', {
-		type: 'boolean',
-		label: 'Reset Grow Cycle Time',
-		validation: {is_required: false}
 	});
 
 module.exports = GenericAccessControlAdapter;

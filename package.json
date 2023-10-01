@@ -64,6 +64,7 @@
         "nodemailer-smtp-transport": "^2.7.4",
         "normalize.css": "^8.0.1",
         "openssl": "^2.0.0",
+        "papaparse": "^5.4.1",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
         "postcss-icss-values": "^2.0.1",

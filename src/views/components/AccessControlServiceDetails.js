@@ -4,13 +4,14 @@ import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Button, TextField, List, ListItem,
+  Button, TextField, List, ListItem, Paper, Input,
   ListItemText, ListItemSecondaryAction, Container, Typography,
 } from '@mui/material';
 import { doServiceAction, fetchDeviceLog } from '../../state/ducks/services-list/operations.js';
-import { getDeviceLog, getServiceById } from '../../state/ducks/services-list/selectors.js';
+import { getServiceById } from '../../state/ducks/services-list/selectors.js';
 import ServiceSettingsScreen from './ServiceSettingsScreen.js';
 import { v4 as uuidv4 } from 'uuid';
+import Papa from 'papaparse';
 
 const darkThemeStyles = {
   container: {
@@ -46,6 +47,7 @@ class AccessControlServiceDetails extends React.Component {
       editPin: '',
       users: [],
       userCount: null,
+      uploadedFile: null
     };
   }
 
@@ -83,14 +85,12 @@ class AccessControlServiceDetails extends React.Component {
   };
 
   handleNewUser = (currentUser) => {
-    console.log(`New user: ${currentUser.name} - ${currentUser.pin}`);
   
     this.setState(prevState => {
       const userExists = prevState.users.some(user => user && user.uuid === currentUser.uuid);
   
       if (!userExists) {
         const nextIndex = prevState.nextUserIndexToFetch + 1;
-        console.log(`Adding user ${nextIndex} to state`);
         
         // Moved this outside of setState
         if (nextIndex <= prevState.userCount) {
@@ -110,7 +110,6 @@ class AccessControlServiceDetails extends React.Component {
   };
 
   getUserByCount = (count) => {
-    console.log(`Fetching user ${count} from count ${this.state.userCount}`);
     this.props.doAction(this.props.service.id, {
       property: 'getUserByCount',
       value: count,
@@ -138,6 +137,7 @@ class AccessControlServiceDetails extends React.Component {
         property: 'addUser',
         value: {uuid: newUuid, name: newName, pin: newPin}
       });
+      console.log(`Adding user ${newName} with pin ${newPin}`);
     }
     this.sortUsers();
   }  
@@ -218,87 +218,140 @@ class AccessControlServiceDetails extends React.Component {
     }
   }
   
+  handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        this.setState({ uploadedFile: file });
+    }
+  }
+
+  processUploadedFile = () => {
+    if (this.state.uploadedFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            this.parseAndAddUsers(content);
+        };
+        reader.readAsText(this.state.uploadedFile);
+    }
+  }
+
+  parseAndAddUsers = (content) => {
+    const lines = content.split("\n");
+    let delayCounter = 0;  // Counter to track delay
+
+    lines.forEach(line => {
+        const matches = line.match(/"([^"]+)",(\d{6})/);
+        if (matches) {
+            const name = matches[1];
+            const pin = matches[2];
+            setTimeout(() => {
+                this.setState(prevState => ({
+                    newName: name,
+                    newPin: pin
+                }), () => {
+                    this.addUser();
+                });
+            }, delayCounter * 2 * 1000);  // Delay by 1 second for each user
+
+            delayCounter++;
+        }
+    });
+  }
 
   render() {
-	const { newName, newPin, editIndex, editName, editPin, users } = this.state;
-	const alphaNumericSort = (a, b) => {
-	  if (a && b && a.name && b.name) {
-      return a.name.localeCompare(b.name, undefined, { numeric: true });
-    }
-	};
-	const sortedUsers = [...users].sort(alphaNumericSort);
-  
+    const { newName, newPin, editIndex, editName, editPin, users } = this.state;
+    const alphaNumericSort = (a, b) => {
+        if (a && b && a.name && b.name) {
+            return a.name.localeCompare(b.name, undefined, { numeric: true });
+        }
+    };
+    const sortedUsers = [...users].sort(alphaNumericSort);
+
     return (
-		<Switch>
-		  <Route exact path={this.props.match.url} render={() => (
-			<Container style={darkThemeStyles.container}>
-			  <Typography variant="h6" style={{ color: darkThemeStyles.textField.color }}>Add New User</Typography>
-            <div style={{ display: 'flex', marginBottom: '20px' }}>
-              <TextField
-                label="Name"
-                variant="outlined"
-                value={newName}
-                onChange={e => this.setState({ newName: e.target.value })}
-                style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
-              />
-              <TextField
-                label="6 Digit Pin"
-                variant="outlined"
-                value={newPin}
-                onChange={e => this.setState({ newPin: e.target.value })}
-                inputProps={{ maxLength: 6 }}
-                style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
-              />
-              <Button variant="contained" style={darkThemeStyles.buttonPrimary} onClick={this.addUser}>
-                Add User
-              </Button>
-            </div>
-            <Typography variant="h6" style={{ color: darkThemeStyles.textField.color }}>Current Users</Typography>
-            <List>
-              {users.map((user, index) => (
-                <ListItem key={index} style={darkThemeStyles.listItem}>
-                  {editIndex === index ? (
-                    <>
-                      <TextField
-                        label="Name"
-                        variant="outlined"
-                        value={editName}
-                        onChange={e => this.setState({ editName: e.target.value })}
-                        style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
-                      />
-                      <TextField
-                        label="6 Digit Pin"
-                        variant="outlined"
-                        value={editPin}
-                        onChange={e => this.setState({ editPin: e.target.value })}
-                        inputProps={{ maxLength: 6 }}
-                        style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
-                      />
-                      <Button variant="contained" style={darkThemeStyles.buttonPrimary} onClick={this.saveModifyUser}>
-                        Save
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <ListItemText primary={`${user.name} - ${user.pin}`} />
-                      <ListItemSecondaryAction>
-                        <Button style={darkThemeStyles.buttonSecondary} onClick={() => this.removeUser(index)}>
-                          Remove
+        <Switch>
+            <Route exact path={this.props.match.url} render={() => (
+                <Container style={darkThemeStyles.container}>
+                    <Typography variant="h6" style={{ color: darkThemeStyles.textField.color }}>Upload Users from File</Typography>
+                    <div style={{ display: 'flex', marginBottom: '20px' }}>
+                        <Input
+                            type="file"
+                            onChange={this.handleFileUpload}
+                            style={{ marginRight: '10px' }}
+                        />
+                        <Button variant="contained" style={darkThemeStyles.buttonPrimary} onClick={this.processUploadedFile}>
+                            Submit
                         </Button>
-                        <Button style={darkThemeStyles.buttonPrimary} onClick={() => this.startModifyUser(index, user.name, user.pin)}>
-                          Modify
+                    </div>
+
+                    <Typography variant="h6" style={{ color: darkThemeStyles.textField.color }}>Add New User</Typography>
+                    <div style={{ display: 'flex', marginBottom: '20px' }}>
+                        <TextField
+                            label="Name"
+                            variant="outlined"
+                            value={newName}
+                            onChange={e => this.setState({ newName: e.target.value })}
+                            style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
+                        />
+                        <TextField
+                            label="6 Digit Pin"
+                            variant="outlined"
+                            value={newPin}
+                            onChange={e => this.setState({ newPin: e.target.value })}
+                            inputProps={{ maxLength: 6 }}
+                            style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
+                        />
+                        <Button variant="contained" style={darkThemeStyles.buttonPrimary} onClick={this.addUser}>
+                            Add User
                         </Button>
-                      </ListItemSecondaryAction>
-                    </>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-          </Container>
-        )} />
-        <ServiceSettingsScreen service={this.props.service} path={this.props.match.path + AccessControlServiceDetails.settingsPath} />
-        <Route render={() => <Redirect to={this.props.match.url} />} />
-      </Switch>
+                    </div>
+
+                    <Typography variant="h6" style={{ color: darkThemeStyles.textField.color }}>Current Users</Typography>
+                    <List>
+                        {sortedUsers.map((user, index) => (
+                            <ListItem key={index} style={darkThemeStyles.listItem}>
+                                {editIndex === index ? (
+                                    <>
+                                        <TextField
+                                            label="Name"
+                                            variant="outlined"
+                                            value={editName}
+                                            onChange={e => this.setState({ editName: e.target.value })}
+                                            style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
+                                        />
+                                        <TextField
+                                            label="6 Digit Pin"
+                                            variant="outlined"
+                                            value={editPin}
+                                            onChange={e => this.setState({ editPin: e.target.value })}
+                                            inputProps={{ maxLength: 6 }}
+                                            style={{ ...darkThemeStyles.textField, marginRight: '10px' }}
+                                        />
+                                        <Button variant="contained" style={darkThemeStyles.buttonPrimary} onClick={this.saveModifyUser}>
+                                            Save
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <ListItemText primary={`${user.name} - ${user.pin}`} />
+                                        <ListItemSecondaryAction>
+                                            <Button style={darkThemeStyles.buttonSecondary} onClick={() => this.removeUser(index)}>
+                                                Remove
+                                            </Button>
+                                            <Button style={darkThemeStyles.buttonPrimary} onClick={() => this.startModifyUser(index, user.name, user.pin)}>
+                                                Modify
+                                            </Button>
+                                        </ListItemSecondaryAction>
+                                    </>
+                                )}
+                            </ListItem>
+                        ))}
+                    </List>
+                </Container>
+            )} />
+            <ServiceSettingsScreen service={this.props.service} path={this.props.match.path + AccessControlServiceDetails.settingsPath} />
+            <Route render={() => <Redirect to={this.props.match.url} />} />
+        </Switch>
     );
   }
 }
@@ -309,7 +362,6 @@ AccessControlServiceDetails.propTypes = {
   service: PropTypes.object.isRequired,
   children: PropTypes.node,
   doAction: PropTypes.func,
-  setHoldTemp: PropTypes.func,
   shouldShowSettingsButton: PropTypes.bool,
   shouldShowRoomField: PropTypes.bool,
   serviceType: PropTypes.string,
@@ -327,8 +379,7 @@ const mapStateToProps = ({servicesList}, {match}) => {
 		const service = getServiceById(servicesList, match.params.serviceId, false);
 
 		return {
-			service,
-			logs: getDeviceLog(servicesList, service && service.id)
+			service
 		};
 	},
 	mapDispatchToProps = (stateProps, {dispatch}, ownProps) => ({

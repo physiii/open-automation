@@ -13,22 +13,25 @@ constructor () {
 		});
 }
 
-connect (callback, errorHandler) {
+connect(callback, errorHandler) {
 	if (this.client) return callback(this.client);
 
-	MongoClient.connect('mongodb://localhost:27017/', (error, client) => {
-		if (error) {
-			console.error(TAG, 'Unable to connect to the mongoDB server.', error);
+	const options = {
+			useUnifiedTopology: true
+	};
 
-			if (typeof errorHandler === 'function') {
-				errorHandler(error);
+	MongoClient.connect('mongodb://127.0.0.1:27017/', options, (error, client) => {
+			if (error) {
+					console.error(TAG, 'Unable to connect to the mongoDB server.', error);
+
+					if (typeof errorHandler === 'function') {
+							errorHandler(error);
+					}
+
+					return;
 			}
 
-			return;
-		}
-
-		// client.db(process.env.OA_DATABASE_COLLECTION_NAME || 'relay')
-		callback(client);
+			callback(client);
 	});
 }
 
