@@ -318,6 +318,28 @@ class Api {
 		});
 	}
 
+	changePassword({username, currentPassword, newPassword}) {
+		return new Promise((resolve, reject) => {
+			axios.post('/api/change-password', {
+				username,
+				currentPassword,
+				newPassword
+			}, {
+				headers: {
+					'x-xsrf-token': localStorage.getItem('xsrf_token')
+				}
+			}).then(response => {
+				if(response.data && response.data.success) {
+					resolve(response.data);
+				} else {
+					reject(new Error('Failed to change password.'));
+				}
+			}).catch(error => {
+				reject(error);
+			});
+		});
+	}	
+
 	static openSocket () {
 		return new Promise((resolve, reject) => {
 			this.closeSocket();

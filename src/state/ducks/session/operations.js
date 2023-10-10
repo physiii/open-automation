@@ -60,6 +60,17 @@ const initialize = () => (dispatch) => {
 			dispatch(actions.registerError(error));
 		});
 	},
+	changePassword = (username, currentPassword, newPassword) => (dispatch) => {
+		dispatch(actions.changePassword());
+	
+		Api.changePassword({username, currentPassword, newPassword})
+			.then(() => {
+				dispatch(actions.changePasswordSuccess());
+			})
+			.catch((error) => {
+				dispatch(actions.changePasswordError(error));
+			});
+	},	
 	setArmed = (mode) => (dispatch) => {
 		dispatch(actions.setArmed());
 
@@ -75,5 +86,6 @@ export {
 	login,
 	logout,
 	register,
+	changePassword,
 	setArmed
 };

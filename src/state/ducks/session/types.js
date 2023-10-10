@@ -10,3 +10,6 @@ export const REGISTER_ERROR = 'open-automation/session/REGISTER_ERROR';
 export const SET_ARMED = 'open-automation/session/SET_ARMED';
 export const SET_ARMED_SUCCESS = 'open-automation/session/SET_ARMED_SUCCESS';
 export const SET_ARMED_ERROR = 'open-automation/session/SET_ARMED_ERROR';
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
+export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS';
+export const CHANGE_PASSWORD_ERROR = 'CHANGE_PASSWORD_ERROR';

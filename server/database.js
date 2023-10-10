@@ -210,6 +210,34 @@ saveAccount (account) {
 	});
 }
 
+updateAccountPassword (accountId, hashedPassword) {
+	return new Promise((resolve, reject) => {
+		this.connect((client) => {
+			client.db(DATABASE_NAME).collection('accounts').updateOne(
+				{_id: ObjectId(accountId)},
+				{$set: {password: hashedPassword}},
+				(error, data) => {
+					// client.close();
+
+					if (error) {
+						console.error(TAG, 'updateAccountPassword', error);
+						reject(error);
+
+						return;
+					}
+
+					if (data.matchedCount === 0) {
+						reject(new Error('No account found with the given ID.'));
+						return;
+					}
+
+					resolve();
+				}
+			);
+		});
+	});
+}
+
 convertRoomIdsToObjectIds (rooms = []) {
 	return rooms.map((room) => ({
 		...room,

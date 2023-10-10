@@ -63,6 +63,7 @@ export class App extends React.Component {
 				<Switch>
 					<Route path="/login" render={renderLoginScreen} />
 					<Route path="/register" render={renderLoginScreen} />
+                    <Route path="/change-password" render={renderLoginScreen} />
 					<PrivateRoute render={() => (
 						<React.Fragment>
 							<div className={styles.toolbar}>

@@ -94,6 +94,20 @@ class ClientConnection {
 	}
 
 	listenToClient () {
+		this.clientEndpoint('account/change-password', (data, clientCallback) => {
+			if(!this.account || !data.oldPassword || !data.newPassword) {
+				clientCallback('Error: Missing account information or password data.');
+				return;
+			}
+	
+			this.account.changePassword(data.oldPassword, data.newPassword).then(() => {
+				clientCallback(null, 'Password changed successfully');
+			}).catch(error => {
+				console.error(TAG, 'Change password error:', error);
+				clientCallback(error);
+			});
+		});
+
 		this.clientEndpoint('armed/set', (data, callback) => {
 			this.account.setArmed(data.mode).then((mode) => callback(null, {mode})).catch((error) => {
 				console.error(TAG, 'Set armed error:', error);

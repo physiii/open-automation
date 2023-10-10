@@ -60,3 +60,18 @@ export const setArmedError = (mode, error) => ({
 	payload: {mode, error},
 	error: true
 });
+
+export const changePassword = () => ({
+	type: types.CHANGE_PASSWORD
+});
+
+export const changePasswordSuccess = () => ({
+	type: types.CHANGE_PASSWORD_SUCCESS
+});
+
+export const changePasswordError = (error) => ({
+	type: types.CHANGE_PASSWORD_ERROR,
+	payload: {error},
+	error: true
+});
+

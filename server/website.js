@@ -164,6 +164,24 @@ module.exports = function (jwt_secret) {
         });
     });
 
+    app.post('/api/change-password', (req, res) => {
+        console.log(req.body);
+        const { username, currentPassword, newPassword } = req.body;
+    
+        if (!username || !currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, error: 'Required fields missing.' });
+        }
+    
+        AccountsManager.changePassword(username, currentPassword, newPassword)
+            .then(() => {
+                res.status(200).json({ success: true });
+            })
+            .catch(error => {
+                console.error(TAG, error);
+                res.status(500).json({ success: false, error: error.message || 'Error changing password.' });
+            });
+    });     
+
     app.get('*', (req, res) => {
         console.log(TAG, 'Sending index.html');
         res.sendFile('index.html', { root: path.resolve(__dirname, '../public') });

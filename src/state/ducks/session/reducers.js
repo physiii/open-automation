@@ -58,6 +58,26 @@ const initialState = {
 					loading: false,
 					error: action.payload.error.message
 				};
+			case types.CHANGE_PASSWORD:
+				return {
+					...state,
+					loading: true,
+					error: false
+				};
+			
+			case types.CHANGE_PASSWORD_SUCCESS:
+				return {
+					...state,
+					loading: false,
+					error: false
+				};
+			
+			case types.CHANGE_PASSWORD_ERROR:
+				return {
+					...state,
+					loading: false,
+					error: action.payload.error.message
+				};		
 			case types.SET_ARMED:
 				return {
 					...state,

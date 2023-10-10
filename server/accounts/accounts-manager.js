@@ -77,6 +77,27 @@ class AccountsManager {
 		return typeof password === 'string' && password.length >= PASSWORD_MINIMUM_LENGTH;
 	}
 
+	changePassword(username, oldPassword, newPassword) {
+		return new Promise((resolve, reject) => {
+			const account = this.getAccountByUsername(username);
+	
+			if (!account) {
+				reject(new Error('Username not found.'));
+				return;
+			}
+	
+			account.isCorrectPassword(oldPassword).then(isCorrect => {
+				if (isCorrect) {
+					account.setPassword(newPassword).then(() => {
+						resolve();
+					}).catch(reject);
+				} else {
+					reject(new Error('Old password is incorrect.'));
+				}
+			}).catch(reject);
+		});
+	}	
+
 	loadAccountsFromDb () {
 		return new Promise((resolve, reject) => {
 			database.getAccounts().then((accounts) => {
