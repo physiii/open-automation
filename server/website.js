@@ -7,7 +7,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const app = require('./website.setup');
 const AccountsManager = require('./accounts/accounts-manager.js');
 const setupRoutes = require('./website.routes');
-
+const crypto = require('crypto');
 const TAG = '[website.js]';
 const tmpDir = '/tmp/open-automation';
 const streamDir = path.join(tmpDir, '/stream/');
@@ -180,7 +180,43 @@ module.exports = function (jwt_secret) {
                 console.error(TAG, error);
                 res.status(500).json({ success: false, error: error.message || 'Error changing password.' });
             });
-    });     
+    });
+    
+    app.get('/firmware.bin', (req, res) => {
+        const firmwarePath = path.join(__dirname, '../firmware/firmware.bin');
+        try {
+            // Verify file exists before sending
+            fs.accessSync(firmwarePath);
+            res.sendFile(firmwarePath);
+        } catch (error) {
+            console.log(TAG, 'Firmware file not found.');
+            res.status(404).send('Firmware file not found.');
+        }
+    });    
+
+    app.get('/firmware-md5', (req, res) => {
+        const firmwarePath = path.join(__dirname, '../firmware/firmware.bin');
+        try {
+            // Verify file exists
+            fs.accessSync(firmwarePath);
+    
+            const hash = crypto.createHash('md5');
+            const fileStream = fs.createReadStream(firmwarePath);
+            
+            fileStream.on('data', chunk => hash.update(chunk));
+            fileStream.on('end', () => {
+                const md5sum = hash.digest('hex');
+                res.status(200).send(md5sum);
+            });
+            fileStream.on('error', err => {
+                console.log(TAG, `Error reading file for MD5 calculation: ${err}`);
+                res.status(500).send('Error calculating MD5.');
+            });
+        } catch (error) {
+            console.log(TAG, 'Firmware file not found.');
+            res.status(404).send('Firmware file not found.');
+        }
+    });
 
     app.get('*', (req, res) => {
         console.log(TAG, 'Sending index.html');
