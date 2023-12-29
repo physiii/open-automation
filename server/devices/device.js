@@ -211,7 +211,7 @@ setToken(token) {
 }
 
 verifyToken(token) {
-    console.log(TAG, this.id, 'Verifying token. Given:', token, 'Expected:', this.token, 'Pending:', this.pendingToken);
+    // console.log(TAG, this.id, 'Verifying token. Given:', token, 'Expected:', this.token, 'Pending:', this.pendingToken);
     return token === this.token || token === this.pendingToken;
 }
 

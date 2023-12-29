@@ -1,3 +1,4 @@
+// CameraRecordingsScreen.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRoute} from './Route.js';
@@ -130,9 +131,7 @@ export class CameraRecordingsScreen extends React.Component {
 					<div className={this.props.selectedRecording ? styles.topRecordingSelected : styles.top}>
 						{this.state.showRecording
 							? <div>
-								{ this.props.service.settings.get('network_path')
-									?
-									<div className={styles.videoContainer}>
+								{ 	<div className={styles.videoContainer}>
 										<HlsPlayer
 											cameraServiceId={this.props.service.id}
 											live={false}
@@ -140,36 +139,6 @@ export class CameraRecordingsScreen extends React.Component {
 											autoPlay={true}
 											startPosition={-100}
 											ref={this.videoPlayer} />
-									</div>
-									: <div>
-										<div className={styles.videoContainer}>
-											<AudioPlayer
-												audioServiceId={this.props.service.id}
-												recording={this.props.selectedRecording}
-												shouldShowControls={false}
-												streamingToken={this.props.selectedRecording.audio_streaming_token}
-												showControlsWhenStopped={false}
-												onPlay={this.onStreamStart}
-												onStop={this.onStreamStop}
-												ref={this.audioPlayer}
-												autoplay={true} />
-											<VideoPlayer
-												cameraServiceId={this.props.service.id}
-												recording={this.props.selectedRecording}
-												key={this.props.selectedRecording.id}
-												streamingToken={this.props.selectedRecording.streaming_token}
-												width={this.props.selectedRecording.width}
-												height={this.props.selectedRecording.height}
-												videoLength={this.props.selectedRecording.duration}
-												autoplay={true} />
-											<div className={styles.overlayTransport}>
-												<SliderControl
-													value={this.state.currentPlayLocation}
-													max={this.props.selectedRecording.duration}
-													onChange={this.transportVideo.bind(this)}
-												/>
-											</div>
-										</div>
 									</div>
 								}
 							</div>
