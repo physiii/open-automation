@@ -1,107 +1,128 @@
+/* CameraRecordingsScreen.css */
+
 .screen {
-	display: flex;
-	flex-flow: column nowrap;
-	align-items: stretch;
-	height: 100%;
-	overflow: hidden;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    height: 100%;
+    overflow: hidden;
 }
+
 @media (orientation: landscape) {
-	.screen { flex-direction: row; }
+    .screen { flex-direction: row; }
 }
 
 .top {
-	/* This element can't be flexbox. This layout needs a non-flexbox div
-	because of its descendants (video player and date picker) using the aspect
-	ratio technique.*/
-	flex: 0 1 auto;
-	position: relative;
-	background-color: rgba(255, 255, 255, 0.1);
-	border: solid rgba(255, 255, 255, 0.1);
-	border-width: 0 0 1px 0;
+    flex: 0 1 auto;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: solid rgba(255, 255, 255, 0.1);
+    border-width: 0 0 1px 0;
 }
+
 @media (orientation: landscape) {
-	.top {
-		width: 50%;
-		border-width: 0 1px 0 0;
-	}
+    .top {
+        width: 50%;
+        border-width: 0 1px 0 0;
+    }
 }
+
 @media (orientation: landscape) and (min-width: 1024px) {
-	.top { width: 60%; }
+    .top { width: 60%; }
 }
 
 .topRecordingSelected {
-	composes: top;
-	background-color: #000000;
+    composes: top;
+    background-color: #000000;
 }
+
 @media (orientation: landscape) and (max-width: 959px) {
-	.topRecordingSelected { width: 100%; }
+    .topRecordingSelected { width: 100%; }
 }
 
 .topCenterer {
-	position: relative;
-	max-width: 60vh;
-	margin: 0 auto;
+    position: relative;
+    max-width: 60vh;
+    margin: 0 auto;
 }
+
 .videoContainer,
 .datePickerContainer {
-	composes: topCenterer;
+    composes: topCenterer;
 }
+
 @media (orientation: landscape) {
-	.topCenterer {
-		display: flex;
-		flex-flow: row nowrap;
-		justify-content: center;
-		align-items: center;
-		width: 100%;
-		height: 100%;
-	}
-	.videoContainer {
-		max-width: none;
-	}
-	.datePickerContainer {
-		max-width: 500px;
-		align-items: flex-start; /* Don't vertically center the date picker in landscape orientation. */
-	}
+    .topCenterer {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+    .videoContainer {
+		position: relative;
+		overflow: hidden;
+		width: 100%; /* Fill width */
+		height: 100%; /* Fill height */
+		display: flex; /* Enable flexbox */
+		justify-content: center; /* Center content horizontally */
+		align-items: center; /* Center content vertically */
+    }
+    .videoContainer video {
+		width: 100%; /* Stretch to the width of the container */
+		height: 100%; /* Stretch to the height of the container */
+		object-fit: contain; /* Contain the video within the container without cropping */
+    }
+    .datePickerContainer {
+        max-width: 500px;
+        align-items: flex-start; /* Don't vertically center the date picker in landscape orientation. */
+    }
 }
 
 .overlayTransport {
-	composes: fillContext from "../styles/helpers.css";
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: flex-end;
-	align-items: center;
-	z-index: 2;
-	transition: background 0.15s, opacity 0.15s;
+    composes: fillContext from "../styles/helpers.css";
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 2;
+    transition: background 0.15s, opacity 0.15s;
 }
+
 .overlayTransport:hover {
-	background-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(0, 0, 0, 0.15);
 }
+
 .isPlaying > .overlayTransport {
-	opacity: 0;
+    opacity: 0;
 }
+
 /* Hide the stop button icon in fullscreen. */
 .isPlaying:not(.isFullScreen) > .overlayTransport:hover {
-	opacity: 1;
+    opacity: 1;
 }
 
 .bottom {
-	display: flex;
-	flex-flow: row nowrap;
-	justify-content: center;
-	flex: 1 1 auto;
-	overflow: auto;
-	-webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    flex: 1 1 auto;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
+
 .bottomRecordingSelected {
-	composes: bottom;
+    composes: bottom;
 }
+
 @media (orientation: landscape) and (max-width: 959px) {
-	.bottomRecordingSelected { display: none; }
+    .bottomRecordingSelected { display: none; }
 }
 
 .closeButton {
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	z-index: 10;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
 }

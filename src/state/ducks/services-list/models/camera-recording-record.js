@@ -8,6 +8,7 @@ const CameraRecordingRecord = Immutable.Record({
 	width: 640,
 	height: 480,
 	audio_streaming_token: null,
+	file: null,
 	streaming_token: null
 });
 

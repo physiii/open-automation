@@ -48,7 +48,8 @@ export class CameraRecordingsScreen extends React.Component {
 	}
 
 	getPathForDate (date) {
-		return `${this.props.match.urlWithoutOptionalParams}/${date.year()}/${date.month() + 1}/${date.date()}`; // Add 1 to month because moment months are zero-based. This just makes the url one-based.
+		// Add 1 to month because moment months are zero-based. This just makes the url one-based.
+		return `${this.props.match.urlWithoutOptionalParams}/${date.year()}/${date.month() + 1}/${date.date()}`;
 	}
 
 	goToDate (date) {
@@ -56,7 +57,9 @@ export class CameraRecordingsScreen extends React.Component {
 		this.props.history.replace(this.getPathForDate(date));
 	}
 
-	playRecording (recordingId) {
+	playRecording (recording) {
+		console.log('playRecording', recording);
+		let recordingId = recording.id
 
 		this.setState({showRecording: false}, () => {
 			this.setState({showRecording: true});
@@ -115,7 +118,7 @@ export class CameraRecordingsScreen extends React.Component {
 						secondaryLink: '/service-content/' + moment(recording.date).format('LLLL') + '.avi?service_id=' + this.props.service.id + '&recordingId=' + recording.id,
 						secondaryIcon: downloadIcon,
 						meta: () => 'Movement for ' + moment.duration(recording.duration, 'seconds').humanize(),
-						onClick: (event) => this.playRecording(recording.id, event)
+						onClick: (event) => this.playRecording(recording, event)
 					}))}
 				</List>
 			);
@@ -130,8 +133,9 @@ export class CameraRecordingsScreen extends React.Component {
 				<div className={styles.screen}>
 					<div className={this.props.selectedRecording ? styles.topRecordingSelected : styles.top}>
 						{this.state.showRecording
-							? <div>
-								{ 	<div className={styles.videoContainer}>
+							? this.props.selectedRecording.file.endsWith('.m3u8')
+								? <div>
+									<div className={styles.videoContainer}>
 										<HlsPlayer
 											cameraServiceId={this.props.service.id}
 											live={false}
@@ -140,8 +144,18 @@ export class CameraRecordingsScreen extends React.Component {
 											startPosition={-100}
 											ref={this.videoPlayer} />
 									</div>
-								}
-							</div>
+								  </div>
+								: <div>
+									<div className={styles.videoContainer}>
+										<video
+											src={this.getVideoUrlRel()}
+											controls
+											autoPlay={true}>
+										</video>
+									</div>
+								  </div>
+							: null
+						}
 							: <div className={styles.datePickerContainer}>
 								<DatePicker
 									selectedDate={this.props.selectedDate}

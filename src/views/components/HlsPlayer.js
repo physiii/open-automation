@@ -1,3 +1,4 @@
+// HlsPlayer.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import Hls from '../../lib/hls/hls.js';

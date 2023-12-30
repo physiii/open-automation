@@ -37,18 +37,26 @@ async function combineHLSChunks(cameraRecordingDir, timeStamp) {
     const METHOD_TAG = `${TAG}[combineHLSChunks]`;
     const formattedTimeStamp = formatTimestampForFilename(timeStamp);
 
-    // Generating a sorted list of .ts files
-    const { stdout } = await exec(`ls ${cameraRecordingDir}/*.ts | sort -V`);
+    // Temporary directory for processing .ts files
+    const tempProcessingDir = path.join(tmpDir, `processing_${formattedTimeStamp}`);
+    await fs.mkdir(tempProcessingDir, { recursive: true });
+
+    // Moving .ts files to temporary directory
+    const moveCmd = `mv ${cameraRecordingDir}/*.ts ${tempProcessingDir}/`;
+    await exec(moveCmd);
+
+    // Generating a sorted list of .ts files in temporary directory
+    const { stdout } = await exec(`ls ${tempProcessingDir}/*.ts | sort -V`);
     const tsFiles = stdout.split('\n').filter(file => file.endsWith('.ts'));
 
     if (tsFiles.length === 0) {
-        console.error(METHOD_TAG, 'No .ts files found');
+        console.error(METHOD_TAG, 'No .ts files found in temporary directory');
         return;
     }
 
     // Use absolute paths for the file list
     const fileListContent = tsFiles.map(file => `file '${file}'`).join('\n');
-    const tempFileList = path.join(cameraRecordingDir, 'filelist.txt');
+    const tempFileList = path.join(tempProcessingDir, 'filelist.txt');
     await fs.writeFile(tempFileList, fileListContent);
 
     const combinedFileName = `${formattedTimeStamp}.mp4`;
@@ -62,7 +70,9 @@ async function combineHLSChunks(cameraRecordingDir, timeStamp) {
         return;
     }
 
+    // Cleaning up: Delete temporary files and directory
     await fs.unlink(tempFileList);
+    await fs.rmdir(tempProcessingDir, { recursive: true });
 
     return combinedFilePath;
 }
@@ -76,28 +86,30 @@ async function recordMotion(info) {
     const cameraRecordingDir = path.join(recordingsDir, info.cameraId, timeStamp.getFullYear().toString(),
         (timeStamp.getMonth() + 1).toString().padStart(2, '0'), timeStamp.getDate().toString().padStart(2, '0'));
 
+	if (info.motionTime.start <= 0) return;
+
     await fs.mkdir(cameraRecordingDir, { recursive: true });
     await fs.copyFile(info.path, path.join(cameraRecordingDir, info.filename));
 
-    if (info.motionTime.stop > 0) {
-        const combinedFilePath = await combineHLSChunks(cameraRecordingDir, timeStamp);
-        if (!combinedFilePath) return;
-		console.log(METHOD_TAG, 'combinedFilePath:', combinedFilePath);
+    if (info.motionTime.stop <= 0) return;
+	
+	const combinedFilePath = await combineHLSChunks(cameraRecordingDir, timeStamp);
+	if (!combinedFilePath) return;
+	console.log(METHOD_TAG, 'combinedFilePath:', combinedFilePath);
 
-        const recordingInfo = {
-            id: uuid(),
-            camera_id: info.cameraId,
-            file: combinedFilePath,
-            date: timeStamp.toISOString(),
-            duration: Math.floor((info.motionTime.stop - info.motionTime.start) / MILLISECONDS_PER_SECOND)
-        };
+	const recordingInfo = {
+		id: uuid(),
+		camera_id: info.cameraId,
+		file: combinedFilePath,
+		date: timeStamp.toISOString(),
+		duration: Math.floor((info.motionTime.stop - info.motionTime.start) / MILLISECONDS_PER_SECOND)
+	};
 
-        try {
-            await database.set_camera_recording(recordingInfo);
-        } catch (err) {
-            console.error(METHOD_TAG, '[ERROR]', '[database.set_camera_recording]', recordingInfo, err);
-        }
-    }
+	try {
+		await database.set_camera_recording(recordingInfo);
+	} catch (err) {
+		console.error(METHOD_TAG, '[ERROR]', '[database.set_camera_recording]', recordingInfo, err);
+	}
 }
 
 async function cleanUpCameraStreamDir(info) {
