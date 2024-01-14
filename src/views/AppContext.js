@@ -1,3 +1,4 @@
+// AppContext.js is a React Context Provider that provides a context object to all of its children.
 import React from 'react';
 import PropTypes from 'prop-types';
 import PureComponent from './components/PureComponent.js';

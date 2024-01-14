@@ -32,7 +32,6 @@
 }
 
 .topRecordingSelected {
-    composes: top;
     background-color: #000000;
 }
 
@@ -48,7 +47,24 @@
 
 .videoContainer,
 .datePickerContainer {
-    composes: topCenterer;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: auto; /* Adjust height automatically */
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+}
+
+.videoContainer video {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Stretch to the width of the container */
+    height: 100%; /* Stretch to the height of the container */
+    object-fit: contain; /* Contain the video within the container without cropping */
 }
 
 @media (orientation: landscape) {
@@ -60,28 +76,9 @@
         width: 100%;
         height: 100%;
     }
-    .videoContainer {
-		position: relative;
-		overflow: hidden;
-		width: 100%; /* Fill width */
-		height: 100%; /* Fill height */
-		display: flex; /* Enable flexbox */
-		justify-content: center; /* Center content horizontally */
-		align-items: center; /* Center content vertically */
-    }
-    .videoContainer video {
-		width: 100%; /* Stretch to the width of the container */
-		height: 100%; /* Stretch to the height of the container */
-		object-fit: contain; /* Contain the video within the container without cropping */
-    }
-    .datePickerContainer {
-        max-width: 500px;
-        align-items: flex-start; /* Don't vertically center the date picker in landscape orientation. */
-    }
 }
 
 .overlayTransport {
-    composes: fillContext from "../styles/helpers.css";
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-end;
@@ -98,7 +95,6 @@
     opacity: 0;
 }
 
-/* Hide the stop button icon in fullscreen. */
 .isPlaying:not(.isFullScreen) > .overlayTransport:hover {
     opacity: 1;
 }
@@ -113,7 +109,7 @@
 }
 
 .bottomRecordingSelected {
-    composes: bottom;
+    display: none;
 }
 
 @media (orientation: landscape) and (max-width: 959px) {

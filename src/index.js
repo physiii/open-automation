@@ -1,3 +1,4 @@
+// index.js
 import 'normalize.css';
 import './views/styles/base.css';
 import React from 'react';

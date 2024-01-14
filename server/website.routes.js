@@ -77,6 +77,22 @@ async function combineHLSChunks(cameraRecordingDir, timeStamp) {
     return combinedFilePath;
 }
 
+async function transcribeFile(combinedFilePath) {
+    const METHOD_TAG = `${TAG}[transcribeFile]`;
+    console.log(METHOD_TAG, 'Transcribing file:', combinedFilePath);
+
+	const whisperPath = '/usr/local/src/venv/bin/whisper';
+    const outputDir = path.dirname(combinedFilePath);
+    const whisperCmd = `${whisperPath} --language English ${combinedFilePath} --output_dir ${outputDir}`;
+    
+    try {
+        const { stdout, stderr } = await exec(whisperCmd);
+        console.log(METHOD_TAG, 'Transcription completed:', stdout, stderr);
+    } catch (err) {
+        console.error(METHOD_TAG, 'Error executing Whisper:', err);
+    }
+}
+
 async function recordMotion(info) {
     const METHOD_TAG = `${TAG}[recordMotion]`;
     const timeStamp = new Date(info.motionTime.start);
@@ -96,6 +112,7 @@ async function recordMotion(info) {
 	const combinedFilePath = await combineHLSChunks(cameraRecordingDir, timeStamp);
 	if (!combinedFilePath) return;
 	console.log(METHOD_TAG, 'combinedFilePath:', combinedFilePath);
+	// await transcribeFile(combinedFilePath);
 
 	const recordingInfo = {
 		id: uuid(),

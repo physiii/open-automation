@@ -82,6 +82,8 @@ export class CameraRecordingsScreen extends React.Component {
 	}
 
 	getVideoUrlRel () {
+		// log props
+		console.log(this.props.selectedRecording);
 		if (!this.props.selectedRecording) return;
 
 		const	url = '/hls/video_recording?'
@@ -128,49 +130,50 @@ export class CameraRecordingsScreen extends React.Component {
 
 		return (
 			<NavigationScreen
-				title={(this.props.cameraName || 'Camera') + ' Recordings'}
-				url={this.props.match.urlWithoutOptionalParams}>
-				<div className={styles.screen}>
-					<div className={this.props.selectedRecording ? styles.topRecordingSelected : styles.top}>
-						{this.state.showRecording
-							? this.props.selectedRecording.file.endsWith('.m3u8')
-								? <div>
-									<div className={styles.videoContainer}>
-										<HlsPlayer
-											cameraServiceId={this.props.service.id}
-											live={false}
-											videoUrl={this.getVideoUrlRel()}
-											autoPlay={true}
-											startPosition={-100}
-											ref={this.videoPlayer} />
-									</div>
-								  </div>
-								: <div>
-									<div className={styles.videoContainer}>
-										<video
-											src={this.getVideoUrlRel()}
-											controls
-											autoPlay={true}>
-										</video>
-									</div>
-								  </div>
-							: null
+			  title={(this.props.cameraName || 'Camera') + ' Recordings'}
+			  url={this.props.match.urlWithoutOptionalParams}>
+			  <div className={styles.screen}>
+				<div className={this.props.selectedRecording ? styles.topRecordingSelected : styles.top}>
+				  {this.state.showRecording
+					? <div className={styles.videoContainer}>
+						{/* Conditional rendering for video playback based on file type */}
+						{this.props.selectedRecording.file.endsWith('.m3u8')
+						  ? <HlsPlayer
+							  cameraServiceId={this.props.service.id}
+							  live={false}
+							  videoUrl={this.getVideoUrlRel()}
+							  autoPlay={true}
+							  startPosition={-100}
+							  ref={this.videoPlayer} />
+						  : <video
+							  src={this.getVideoUrlRel()}
+							  controls
+							  autoPlay={true}>
+							</video>
 						}
-							: <div className={styles.datePickerContainer}>
-								<DatePicker
-									selectedDate={this.props.selectedDate}
-									enabledDates={this.props.getDatesOfRecordings(this.state.selectedMonth).map((date) => moment(date))}
-									onSelect={this.handleDateSelected}
-									onMonthChange={(selectedMonth) => this.setState({selectedMonth})} />
-							</div>}
-						{this.state.showRecording && <a href="#" className={styles.closeButton} onClick={this.handleCloseClick}>Close</a>}
-					</div>
-					<div className={this.props.selectedRecording ? styles.bottomRecordingSelected : styles.bottom}>
-						{bottomContent}
-					</div>
+					  </div>
+					: <div className={styles.datePickerContainer}>
+						{/* Only render DatePicker if a recording is not being shown */}
+						<DatePicker
+						  selectedDate={this.props.selectedDate}
+						  enabledDates={this.props.getDatesOfRecordings(this.state.selectedMonth).map((date) => moment(date))}
+						  onSelect={this.handleDateSelected}
+						  onMonthChange={(selectedMonth) => this.setState({selectedMonth})} />
+					  </div>
+				  }
+				  {/* Close button to hide the recording/player */}
+				  {this.state.showRecording && 
+					<a href="#" className={styles.closeButton} onClick={this.handleCloseClick}>
+					  Close
+					</a>
+				  }
 				</div>
+				<div className={this.props.selectedRecording ? styles.bottomRecordingSelected : styles.bottom}>
+				  {bottomContent}
+				</div>
+			  </div>
 			</NavigationScreen>
-		);
+		  );		  
 	}
 }
 
