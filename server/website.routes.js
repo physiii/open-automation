@@ -61,7 +61,7 @@ async function combineHLSChunks(cameraRecordingDir, timeStamp) {
 
     const combinedFileName = `${formattedTimeStamp}.mp4`;
     const combinedFilePath = path.join(cameraRecordingDir, combinedFileName);
-    const ffmpegCmd = `ffmpeg -f concat -safe 0 -i ${tempFileList} -c copy ${combinedFilePath}`;
+    const ffmpegCmd = `ffmpeg -y -f concat -safe 0 -i ${tempFileList} -c copy ${combinedFilePath}`;
 
     try {
         await exec(ffmpegCmd);
@@ -81,15 +81,20 @@ async function transcribeFile(combinedFilePath) {
     const METHOD_TAG = `${TAG}[transcribeFile]`;
     console.log(METHOD_TAG, 'Transcribing file:', combinedFilePath);
 
-	const whisperPath = '/usr/local/src/venv/bin/whisper';
-    const outputDir = path.dirname(combinedFilePath);
-    const whisperCmd = `${whisperPath} --language English ${combinedFilePath} --output_dir ${outputDir}`;
+    const transcribeScriptPath = '/home/andy/scripts/transcribe.py';
+    const transcribeCmd = `/usr/bin/python ${transcribeScriptPath} ${combinedFilePath}`;
     
     try {
-        const { stdout, stderr } = await exec(whisperCmd);
+        // Include /home/andy/.local/bin in the PATH environment variable
+        const { stdout, stderr } = await exec(transcribeCmd, {
+            env: {
+                ...process.env,
+                PATH: `${process.env.PATH}:/home/andy/.local/bin`
+            }
+        });
         console.log(METHOD_TAG, 'Transcription completed:', stdout, stderr);
     } catch (err) {
-        console.error(METHOD_TAG, 'Error executing Whisper:', err);
+        console.error(METHOD_TAG, 'Error executing transcription script:', err);
     }
 }
 
@@ -112,7 +117,7 @@ async function recordMotion(info) {
 	const combinedFilePath = await combineHLSChunks(cameraRecordingDir, timeStamp);
 	if (!combinedFilePath) return;
 	console.log(METHOD_TAG, 'combinedFilePath:', combinedFilePath);
-	// await transcribeFile(combinedFilePath);
+	transcribeFile(combinedFilePath);
 
 	const recordingInfo = {
 		id: uuid(),
