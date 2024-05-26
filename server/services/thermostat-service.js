@@ -1,6 +1,25 @@
-const Service = require('./service.js');
+const Service = require('./service.js'),
+	TAG = "[ThermostatService]";
 
 class ThermostatService extends Service {
+	subscribeToDevice () {
+		Service.prototype.subscribeToDevice.apply(this, arguments);
+
+		this.deviceOn('presence', (event_data) => {
+			this._emit('presence', event_data);
+			console.log(TAG, "!! --- presence", event_data);
+		});
+		this.deviceOn('load', (event_data) => {
+			console.log(TAG, "!! --- LOAD THERMOSTAT SERVICE --- !!", event_data.device.services[0].state);
+			if (event_data.device.services[0].state.presence) {
+				this._emit('presence', event_data);
+			}
+		});
+		this.deviceOn('exit', (event_data) => this._emit('exit', event_data));
+		this.deviceOn('contact', (event_data) => this._emit('contact', event_data));
+		this.deviceOn('keypad', (event_data) => this._emit('keypad', event_data));
+	}
+	
 	action (data) {
 		switch (data.property) {
 			case 'target_temp':

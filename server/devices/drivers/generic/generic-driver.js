@@ -6,6 +6,7 @@ const EventEmitter = require('events'),
 		'dimmer': require('./service-adapters/dimmer-adapter.js'),
 		'light': require('./service-adapters/light-adapter.js'),
 		'grow-pod': require('./service-adapters/grow-pod-adapter.js'),
+		'thermostat': require('./service-adapters/thermostat-adapter.js'),
 		'access-control': require('./service-adapters/access-control-adapter.js'),
 		'scale': require('./service-adapters/scale-adapter.js'),
 		'microphone': require('./service-adapters/microphone-adapter.js'),
@@ -32,6 +33,7 @@ class GenericDeviceDriver extends DeviceDriver {
 		this._socketOn('connect', () => this._events.emit('connect'));
 		this._socketOn('disconnect', () => this._events.emit('disconnect'));
 		this._socketOn('load', (device) => {
+			console.log(TAG, "Incoming load:", device);
 			this._loadServiceAdapters(device.services);
 			this.save();
 			this._emitLoadToRelay(device);

@@ -41,13 +41,33 @@ async function combineHLSChunks(cameraRecordingDir, timeStamp) {
     const tempProcessingDir = path.join(tmpDir, `processing_${formattedTimeStamp}`);
     await fs.mkdir(tempProcessingDir, { recursive: true });
 
-    // Moving .ts files to temporary directory
-    const moveCmd = `mv ${cameraRecordingDir}/*.ts ${tempProcessingDir}/`;
-    await exec(moveCmd);
+    // List .ts files in the camera recording directory
+    let tsFiles;
+    try {
+        const { stdout } = await exec(`ls ${cameraRecordingDir}/*.ts`);
+        tsFiles = stdout.split('\n').filter(file => file.endsWith('.ts'));
+    } catch (err) {
+        console.error(METHOD_TAG, 'Error listing .ts files:', err);
+        return;
+    }
 
-    // Generating a sorted list of .ts files in temporary directory
-    const { stdout } = await exec(`ls ${tempProcessingDir}/*.ts | sort -V`);
-    const tsFiles = stdout.split('\n').filter(file => file.endsWith('.ts'));
+    // Move .ts files to temporary directory
+    for (const tsFile of tsFiles) {
+        try {
+            await exec(`mv ${tsFile} ${tempProcessingDir}/`);
+        } catch (err) {
+            console.error(METHOD_TAG, `Error moving file ${tsFile}:`, err);
+        }
+    }
+
+    // Generate a sorted list of .ts files in temporary directory
+    try {
+        const { stdout } = await exec(`ls ${tempProcessingDir}/*.ts | sort -V`);
+        tsFiles = stdout.split('\n').filter(file => file.endsWith('.ts'));
+    } catch (err) {
+        console.error(METHOD_TAG, 'Error listing .ts files in temp directory:', err);
+        return;
+    }
 
     if (tsFiles.length === 0) {
         console.error(METHOD_TAG, 'No .ts files found in temporary directory');
@@ -71,8 +91,12 @@ async function combineHLSChunks(cameraRecordingDir, timeStamp) {
     }
 
     // Cleaning up: Delete temporary files and directory
-    await fs.unlink(tempFileList);
-    await fs.rmdir(tempProcessingDir, { recursive: true });
+    try {
+        await fs.unlink(tempFileList);
+        await fs.rmdir(tempProcessingDir, { recursive: true });
+    } catch (err) {
+        console.error(METHOD_TAG, 'Error cleaning up temporary files:', err);
+    }
 
     return combinedFilePath;
 }
@@ -117,7 +141,7 @@ async function recordMotion(info) {
 	const combinedFilePath = await combineHLSChunks(cameraRecordingDir, timeStamp);
 	if (!combinedFilePath) return;
 	console.log(METHOD_TAG, 'combinedFilePath:', combinedFilePath);
-	transcribeFile(combinedFilePath);
+	// transcribeFile(combinedFilePath);
 
 	const recordingInfo = {
 		id: uuid(),
