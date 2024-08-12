@@ -1,175 +1,182 @@
-const nodemailer = require('nodemailer'),
-	smtpTransport = require('nodemailer-smtp-transport'),
-	utils = require('./utils.js'),
-	AccountsManager = require('./accounts/accounts-manager.js'),
-	moment = require('moment'),
-	CELL_PROVIDERS = {
-		'AT&T': '@mms.att.net',
-		'T-Mobile': '@tmomail.net',
-		'Verizon': '@vzwpix.com',
-		'Sprint': '@pm.sprint.com',
-		'Virgin Mobile': '@vmpix.comm',
-		'Tracfone': '@mmst5.tracfone.com',
-		'MetroPCS': '@mymetropcs.com',
-		'Boost': '@myboostmobile.com',
-		'Cricket': '@mms.cricketwireless.net',
-		'US Cellular': '@mms.uscc.net'
-	},
-	CELL_PROVIDER_ALIASES = {
-		'ATT': CELL_PROVIDERS['AT&T'],
-		'TMobile': CELL_PROVIDERS['T-Mobile'],
-		'VirginMobile': CELL_PROVIDERS['Virgin Mobile'],
-		'US_Cellular': CELL_PROVIDERS['US Cellular']
-	},
-	ALL_CELL_PROVIDERS = {
-		...CELL_PROVIDERS,
-		...CELL_PROVIDER_ALIASES
-	},
-	TAG = '[Notifications]';
+const nodemailer = require('nodemailer');
+const utils = require('./utils.js');
+const AccountsManager = require('./accounts/accounts-manager.js');
+
+const CELL_PROVIDERS = {
+    'AT&T': '@mms.att.net',
+    'T-Mobile': '@tmomail.net',
+    'Verizon': '@vzwpix.com',
+    'Sprint': '@pm.sprint.com',
+    'Virgin Mobile': '@vmpix.comm',
+    'Tracfone': '@mmst5.tracfone.com',
+    'MetroPCS': '@mymetropcs.com',
+    'Boost': '@myboostmobile.com',
+    'Cricket': '@mms.cricketwireless.net',
+    'US Cellular': '@mms.uscc.net'
+};
+
+const CELL_PROVIDER_ALIASES = {
+    'ATT': CELL_PROVIDERS['AT&T'],
+    'TMobile': CELL_PROVIDERS['T-Mobile'],
+    'VirginMobile': CELL_PROVIDERS['Virgin Mobile'],
+    'US_Cellular': CELL_PROVIDERS['US Cellular']
+};
+
+const ALL_CELL_PROVIDERS = {
+    ...CELL_PROVIDERS,
+    ...CELL_PROVIDER_ALIASES
+};
+
+const TAG = '[Notifications]';
+const MAX_RETRIES = 5;
+const INITIAL_RETRY_DELAY = 10 * 1000; // 10 seconds
 
 class Notifications {
-	constructor () {
-		this.init = this.init.bind(this);
-	}
+    constructor() {
+        this.transporter = null;
+        this.isInitialized = false;
+    }
 
-	init () {
-		return new Promise((resolve, reject) => {
-			if ((!process.env.OA_SMTP_HOST && !process.env.OA_SMTP_SERVICE) || !process.env.OA_SMTP_USER || !process.env.OA_SMTP_PASS) {
-				console.log(TAG, 'Mail server is not configured.');
-				resolve();
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-				return;
-			}
+    async retryWithExponentialBackoff(fn, retries = 0) {
+        try {
+            return await fn();
+        } catch (error) {
+            if (retries >= MAX_RETRIES) {
+                console.error(TAG, `Max retries (${MAX_RETRIES}) reached. Giving up.`);
+                throw error;
+            }
 
-			const smtpConfig = {
-				secure: true,
-				auth: {
-					user: process.env.OA_SMTP_USER,
-					pass: process.env.OA_SMTP_PASS
-				}
-			};
+            const delayTime = INITIAL_RETRY_DELAY * Math.pow(2, retries);
+            console.log(TAG, `Retry attempt ${retries + 1}. Waiting for ${delayTime}ms before next attempt.`);
+            await this.delay(delayTime);
 
-			if (process.env.OA_SMTP_SERVICE) {
-				smtpConfig.service = process.env.OA_SMTP_SERVICE;
-			} else if (process.env.OA_SMTP_HOST) {
-				smtpConfig.host = process.env.OA_SMTP_HOST;
-			}
+            return this.retryWithExponentialBackoff(fn, retries + 1);
+        }
+    }
 
-			this.transporter = nodemailer.createTransport(smtpTransport(smtpConfig));
-			this.transporter.verify((error, success) => {
-				if (error) {
-					console.error(TAG, error);
-					reject(error);
-					return;
-				}
+    init = async () => {
+        if (this.isInitialized) {
+            return;
+        }
 
-				console.log(TAG, 'Mail server is ready to send messages.');
-				resolve();
-			});
-		});
-	}
+        console.log(TAG, 'Starting initialization...');
 
-	sendNotification (type, recipient, subject, body, attachments) {
-		return new Promise((resolve, reject) => {
-			switch (type) {
-				case 'email':
-					this.sendEmail(recipient, subject, body, attachments).then(resolve).catch((error) => {
-						console.error(TAG, error);
-						reject(error);
-					});
+        try {
+            await this.retryWithExponentialBackoff(async () => {
+                this.transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.GMAIL_USER,
+                        pass: process.env.GMAIL_PASS // Use the app password here
+                    }
+                });
 
-					return;
-				case 'sms':
-					this.sendText(recipient, subject, body, attachments).then(resolve).catch((error) => {
-						console.error(TAG, error);
-						reject(error);
-					});
+                await this.transporter.verify();
+                console.log(TAG, 'Mail server is ready to send messages.');
+                this.isInitialized = true;
+            });
+        } catch (error) {
+            console.error(TAG, 'Error during transporter initialization:', error);
+            this.transporter = null;
+            this.isInitialized = false;
+            throw error;
+        }
+    }
 
-					return;
-				default:
-					const error = 'Notification type must be either "email" or "sms".';
+    sendNotification = async (type, recipient, subject, body, attachments) => {
+        if (!this.isInitialized) {
+            await this.init();
+        }
 
-					console.error(TAG, error);
-					reject(error);
-			}
-		});
-	}
+        if (!this.transporter) {
+            throw new Error('Transporter is not initialized. SMTP configuration may be missing or incorrect.');
+        }
 
-	sendEmail (recipient, subject, body, attachments) {
-		return new Promise((resolve, reject) => {
-			let email, html, text;
+        try {
+            await this.retryWithExponentialBackoff(async () => {
+                switch (type) {
+                    case 'email':
+                        await this.sendEmail(recipient, subject, body, attachments);
+                        break;
+                    case 'sms':
+                        await this.sendText(recipient, subject, body, attachments);
+                        break;
+                    default:
+                        throw new Error('Notification type must be either "email" or "sms".');
+                }
+            });
+        } catch (error) {
+            console.error(TAG, 'Error sending notification:', error);
+            throw error;
+        }
+    }
 
-			if (typeof recipient === 'string') {
-				email = recipient;
-			} else {
-				const account = AccountsManager.getAccountById(recipient.account_id);
+    sendEmail = async (recipient, subject, body, attachments) => {
+        let email, html, text;
 
-				email = recipient.email || (account && account.email);
-			}
+        if (typeof recipient === 'string') {
+            email = recipient;
+        } else {
+            const account = AccountsManager.getAccountById(recipient.account_id);
+            email = recipient.email || (account && account.email);
+        }
 
-			if (!email) {
-				const error = 'Email address or account ID is required to send an email notification.';
+        if (!email) {
+            throw new Error('Email address or account ID is required to send an email notification.');
+        }
 
-				console.error(TAG, error);
-				reject(error);
+        if (typeof body === 'string') {
+            html = text = body;
+        } else {
+            html = '<html><body>' + body.html + '</body></html>';
+            text = body.text && utils.stripHtml(body.text);
+        }
 
-				return;
-			}
+        const message = {
+            from: process.env.GMAIL_USER,
+            to: email,
+            subject,
+            text,
+            html,
+            attachments
+        };
 
-			if (typeof body === 'string') {
-				html = text = body;
-			} else {
-				html = '<html><body>' + body.html + '</body></html>';
-				text = body.text && utils.stripHtml(body.text);
-			}
+        try {
+            let info = await this.transporter.sendMail(message);
+            console.log(TAG, `Email sent to ${email}. Message ID: %s`, info.messageId);
+        } catch (error) {
+            console.error(TAG, `Error sending email to ${email}:`, error);
+            throw error;
+        }
+    }
 
-			const message = {
-				from: process.env.OA_SMTP_USER,
-				to: email,
-				subject,
-				html,
-				text,
-				attachments
-			};
+    sendText = async (recipient, subject, text, attachments) => {
+        const account = AccountsManager.getAccountById(recipient.account_id);
+        let phone = recipient.phone_number || (account && account.phone_number),
+            provider = ALL_CELL_PROVIDERS[(recipient.phone_provider || (account && account.phone_provider))];
 
-			this.transporter.sendMail(message, (error, result) => {
-				if (error) {
-					console.error(TAG, error);
-					reject(error);
+        if (!phone) {
+            throw new Error('Phone number or account ID is required to send an SMS notification.');
+        }
 
-					return;
-				}
+        if (!provider) {
+            throw new Error('Supplied phone provider is not supported.');
+        }
 
-				resolve();
-			});
-		});
-	}
-
-	sendText (recipient, subject, text, attachments) {
-		return new Promise((resolve, reject) => {
-			const account = AccountsManager.getAccountById(recipient.account_id);
-			let phone = recipient.phone_number || (account && account.phone_number),
-				provider = ALL_CELL_PROVIDERS[(recipient.phone_provider || (account && account.phone_provider))],
-				error;
-
-			if (!phone) {
-				error = 'Phone number or account ID is required to send an SMS notification.';
-			}
-
-			if (!provider) {
-				error = 'Supplied phone provider is not supported.';
-			}
-
-			if (error) {
-				console.error(TAG, error);
-				reject(error);
-
-				return;
-			}
-
-			this.sendEmail(phone + provider, subject, text, attachments).then(resolve).catch(reject);
-		});
-	}
+        try {
+            await this.sendEmail(phone + provider, subject, text, attachments);
+            console.log(TAG, `Text sent to ${phone} via ${provider}`);
+        } catch (error) {
+            console.error(TAG, `Error sending text to ${phone}:`, error);
+            throw error;
+        }
+    }
 }
 
-module.exports = new Notifications();
+const notifications = new Notifications();
+
+module.exports = notifications;

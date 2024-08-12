@@ -33,7 +33,6 @@ class GenericDeviceDriver extends DeviceDriver {
 		this._socketOn('connect', () => this._events.emit('connect'));
 		this._socketOn('disconnect', () => this._events.emit('disconnect'));
 		this._socketOn('load', (device) => {
-			console.log(TAG, "Incoming load:", device);
 			this._loadServiceAdapters(device.services);
 			this.save();
 			this._emitLoadToRelay(device);
