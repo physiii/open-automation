@@ -28,8 +28,8 @@ const ALL_CELL_PROVIDERS = {
 };
 
 const TAG = '[Notifications]';
-const MAX_RETRIES = 5;
-const INITIAL_RETRY_DELAY = 10 * 1000; // 10 seconds
+const MAX_RETRIES = 3;
+const INITIAL_RETRY_DELAY = 60 * 1000; // 10 seconds
 
 class Notifications {
     constructor() {
